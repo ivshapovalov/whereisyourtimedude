@@ -1,23 +1,17 @@
 package ru.brainworkout.whereisyourtimedude;
 
 import android.graphics.Color;
-import android.os.Environment;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Deque;
 import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -52,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void buttonWork_onClick(Button v) {
+    private void rowWork_onClick(TableRow v) {
         System.out.println(v.getId());
 
         int index = works.indexOf(new Work(v.getId(), String.valueOf(v.getId())));
@@ -64,12 +58,25 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateScreen() {
 
-        int btCurrentId = getResources().getIdentifier("btCurrentWork", "id", getPackageName());
-        Button btCurrent = (Button) findViewById(btCurrentId);
-        if (btCurrent != null) {
-            btCurrent.setText(works.get(0).getName());
-            btCurrent.setBackgroundColor(works.get(0).getArea().getColor());
-
+        int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
+        TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
+        if (tvCurrentName != null) {
+            tvCurrentName.setText(works.get(0).getName());
+        }
+        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
+        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
+        if (tvCurrentTime != null) {
+            tvCurrentTime.setText("0 time");
+        }
+        int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
+        TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
+        if (tvCurrentArea != null) {
+            tvCurrentArea.setText(works.get(0).getArea().getName());
+        }
+        int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
+        TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
+        if (tvCurrentDate != null) {
+            tvCurrentDate.setText("0 date");
         }
 
         int tableLayout = getResources().getIdentifier("tableWorks", "id", getPackageName());
@@ -78,27 +85,72 @@ public class MainActivity extends AppCompatActivity {
             table.removeAllViews();
             for (int i = 1; i < works.size(); i++
                     ) {
-                TableRow mRow = new TableRow(this);
-                Work currentWork=works.get(i);
-                Button but = new Button(this);
-                but.setBackgroundColor(currentWork.getArea().getColor());
-                but.setId(Integer.valueOf(currentWork.getId()));
-                but.setText(currentWork.getName());
-                TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-                params.weight = 100;
-                but.setLayoutParams(params);
-                but.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        buttonWork_onClick((Button) v);
-                    }
-                });
-                mRow.addView(but);
+                TableRow mRow = CreateTableRow(i);
                 table.addView(mRow);
             }
 
         }
 
+    }
+
+    @NonNull
+    private TableRow CreateTableRow(int i) {
+        Work currentWork=works.get(i);
+        TableRow rowMain = new TableRow(this);
+
+        rowMain.setId(Integer.valueOf(currentWork.getId()));
+
+        TableRow.LayoutParams params100 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        params100.weight = 100;
+        params100.topMargin=10;
+        TableRow.LayoutParams params50 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        params50.weight = 50;
+
+        TableLayout layout=new TableLayout(this);
+        layout.setLayoutParams(params100);
+
+        TableRow row1 = new TableRow(this);
+        row1.setLayoutParams(params100);
+
+        TextView txtName = new TextView(this);
+        txtName.setBackgroundColor(currentWork.getArea().getColor());
+        txtName.setText(currentWork.getName());
+        txtName.setLayoutParams(params50);
+        row1.addView(txtName);
+
+        TextView txtTime = new TextView(this);
+        txtTime.setBackgroundColor(currentWork.getArea().getColor());
+        txtTime.setText("0 time");
+        txtTime.setLayoutParams(params50);
+        row1.addView(txtTime);
+
+        layout.addView(row1);
+
+        TableRow row2 = new TableRow(this);
+        row2.setLayoutParams(params100);
+
+        TextView txtArea = new TextView(this);
+        txtArea.setBackgroundColor(currentWork.getArea().getColor());
+        txtArea.setText(currentWork.getArea().getName());
+        txtArea.setLayoutParams(params50);
+        row2.addView(txtArea);
+
+        TextView txtDate = new TextView(this);
+        txtDate.setBackgroundColor(currentWork.getArea().getColor());
+        txtDate.setText("0 date");
+        txtDate.setLayoutParams(params50);
+        row2.addView(txtDate);
+
+        layout.addView(row2);
+
+        rowMain.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rowWork_onClick((TableRow) v);
+            }
+        });
+        rowMain.addView(layout);
+        return rowMain;
     }
 
     class Work {

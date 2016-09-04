@@ -1,4 +1,4 @@
-package ru.brainworkout.whereisyourtimedude;
+package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.graphics.Color;
 import android.os.SystemClock;
@@ -10,17 +10,17 @@ import android.widget.Chronometer;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.LinkedList;
+
+import ru.brainworkout.whereisyourtimedude.R;
+
+
+public class ActivityChrono extends AppCompatActivity {
 
     private static Work currentWork;
 
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_chrono);
 
         mChronometer = (Chronometer) findViewById(R.id.mChronometer);
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {

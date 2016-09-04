@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Common;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -62,11 +63,11 @@ public class ActivityChrono extends AppCompatActivity {
 
         areas = new ArrayList<>();
 
-        areas.add(new Area(Color.GREEN, "GREEN"));
-        areas.add(new Area(Color.RED, "RED"));
-        areas.add(new Area(Color.YELLOW, "YELLOW"));
-        areas.add(new Area(Color.BLUE, "BLUE"));
-        areas.add(new Area(Color.GRAY, "GRAY"));
+        areas.add(new Area(Color.GREEN, "AREA 1"));
+        areas.add(new Area(Color.RED, "AREA 2"));
+        areas.add(new Area(Color.YELLOW, "AREA 3"));
+        areas.add(new Area(Color.BLUE, "AREA 4"));
+        areas.add(new Area(Color.GRAY, "AREA 5"));
 
         StringBuilder date = new StringBuilder();
         Calendar curDate = Calendar.getInstance();
@@ -86,28 +87,32 @@ public class ActivityChrono extends AppCompatActivity {
         practices = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             int indexArea = ((int) (Math.random() * areas.size()));
-            practices.add(new PracticeTimer(i, String.valueOf(i), areas.get(indexArea), 0));
+            practices.add(new PracticeTimer(i, "WORK "+String.valueOf(i), areas.get(indexArea), 0));
         }
         DB.put(date, practices);
 
     }
 
     public void bt1_onClick(View view) {
+        Common.blink(view);
         newDayTest("2016_08_30");
 
     }
 
     public void bt2_onClick(View view) {
+        Common.blink(view);
         newDayTest("2016_08_31");
 
     }
 
     public void bt3_onClick(View view) {
+        Common.blink(view);
         newDayTest("2016_09_03");
 
     }
 
     public void bt4_onClick(View view) {
+        Common.blink(view);
         newDayTest("2016_09_04");
 
     }
@@ -174,11 +179,12 @@ public class ActivityChrono extends AppCompatActivity {
         return s;
     }
 
-    private void rowWork_onClick(TableRow v) {
+    private void rowWork_onClick(TableRow view) {
 
+        Common.blink(view);
         stopTimer();
 
-        int index = practices.indexOf(new PracticeTimer(v.getId(), String.valueOf(v.getId())));
+        int index = practices.indexOf(new PracticeTimer(view.getId(), String.valueOf(view.getId())));
         currentPractice = practices.get(index);
         currentPractice.setLastTime(Calendar.getInstance());
 
@@ -195,6 +201,7 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     public void rowCurrentWork_onClick(View view) {
+        Common.blink(view);
         if (!mChronometerIsWorking) {
 
             if (mChronometerCount == 0) {
@@ -240,9 +247,10 @@ public class ActivityChrono extends AppCompatActivity {
         if (tvCurrentDate != null) {
             if (currentPractice.getLastTime() != null) {
                 tvCurrentDate.setText(convertCalendarToString(currentPractice.getLastTime()));
+            } else {
+                tvCurrentDate.setText("");
             }
         }
-
         int rowIDCurrentWork = getResources().getIdentifier("rowCurrentWork", "id", getPackageName());
         TableRow rowCurrentWork = (TableRow) findViewById(rowIDCurrentWork);
         if (rowCurrentWork != null) {
@@ -284,10 +292,10 @@ public class ActivityChrono extends AppCompatActivity {
         rowMain.setId(Integer.valueOf(practiceTimer.getId()));
 
         TableRow.LayoutParams params100 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params100.weight = 100;
+        //params100.weight = 100;
         params100.topMargin = 10;
         TableRow.LayoutParams params50 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params50.weight = 50;
+        params50.span = 50;
 
         TableLayout layout = new TableLayout(this);
         layout.setLayoutParams(params100);

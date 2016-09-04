@@ -44,14 +44,14 @@ public class Common{
 //
 //    }
 //
-//    public static void blink(final View v) {
-//        Animation anim = new AlphaAnimation(0.0f, 1.0f);
-//        anim.setDuration(100);
-//        anim.setStartOffset(0);
-//        anim.setRepeatMode(Animation.REVERSE);
-//        anim.setRepeatCount(1);
-//        v.startAnimation(anim);
-//    }
+    public static void blink(final View v) {
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(50);
+        anim.setStartOffset(0);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(2);
+        v.startAnimation(anim);
+    }
 //
 //
 //    public static void setTitleOfActivity(Activity currentActivity) {

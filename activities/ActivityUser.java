@@ -15,12 +15,11 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
-import ru.brainworkout.whereisyourtimedude.database.entities.Training;
+import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -177,11 +176,11 @@ public class ActivityUser extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         List<Exercise> exercisesOfUser=DB.getAllExercisesOfUser(mCurrentUser.getID());
-                        List<Training> trainingsOfUser=DB.getAllTrainingsOfUser(mCurrentUser.getID());
-                        for (Training currentTraining:trainingsOfUser
+                        List<Practice> trainingsOfUser=DB.getAllTrainingsOfUser(mCurrentUser.getID());
+                        for (Practice currentPractice :trainingsOfUser
                              ) {
-                            DB.deleteTrainingContentOfTraining(currentTraining.getID());
-                            currentTraining.dbDelete(DB);
+                            DB.deleteTrainingContentOfTraining(currentPractice.getID());
+                            currentPractice.dbDelete(DB);
 
                         }
                         for (Exercise currentExercise:exercisesOfUser

@@ -17,9 +17,6 @@ import java.util.Comparator;
 
 import java.util.LinkedList;
 
-import ru.brainworkout.whereisyourtimedude.R;
-
-
 public class ActivityChrono extends AppCompatActivity {
 
     private static Work currentWork;

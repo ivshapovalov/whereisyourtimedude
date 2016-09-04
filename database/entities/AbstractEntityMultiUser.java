@@ -8,12 +8,12 @@ public abstract class AbstractEntityMultiUser extends AbstractEntity {
 
     public AbstractEntityMultiUser() {
 
-        User currentUser=Common.dbCurrentUser;
-        if (currentUser!=null) {
-            this._id_user = currentUser.getID();
-        } else {
-            throw new NullPointerException("Current user is not defined!");
-        }
+//        User currentUser=Common.dbCurrentUser;
+//        if (currentUser!=null) {
+//            this._id_user = currentUser.getID();
+//        } else {
+//            throw new NullPointerException("Current user is not defined!");
+//        }
     }
 
     public int getIdUser() {

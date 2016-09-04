@@ -1,22 +1,15 @@
 package ru.brainworkout.whereisyourtimedude.database.entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-//import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertStringToDate;
-//import static ru.brainworkout.whereisyourtimedude.common.Common.DATE_FORMAT_STRING;
-
-public class Practice {
+public class Area  {
 
 //    private String _name;
 //
-//    private Practice(Builder builder) {
+//    private Area(Builder builder) {
 //
 //        this._id = builder._id;
 //        this._name = builder._name;
@@ -34,10 +27,10 @@ public class Practice {
 //    public void dbSave(DatabaseManager db) {
 //        try {
 //            db.getPractice(this.getID());
-//            db.updatePractice((Practice) this);
+//            db.updatePractice((Area) this);
 //        } catch (TableDoesNotContainElementException e) {
 //            //нет такого
-//            db.addPractice((Practice) this);
+//            db.addPractice((Area) this);
 //        }
 //    }
 //
@@ -46,7 +39,7 @@ public class Practice {
 //
 //            try {
 //                db.getPractice(this.getID());
-//                db.deletePractice((Practice) this);
+//                db.deletePractice((Area) this);
 //            } catch (TableDoesNotContainElementException e) {
 //                //нет такого
 //
@@ -54,7 +47,7 @@ public class Practice {
 //
 //    }
 //
-//    public static Practice getPracticeFromDB(DatabaseManager DB, int id) {
+//    public static Area getPracticeFromDB(DatabaseManager DB, int id) {
 //        return DB.getPractice(id);
 //    }
 //
@@ -74,8 +67,8 @@ public class Practice {
 //            return this;
 //        }
 //
-//        public Practice build() {
-//            Practice practice = new Practice(this);
+//        public Area build() {
+//            Area practice = new Area(this);
 //            return practice;
 //        }
 //

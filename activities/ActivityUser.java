@@ -95,7 +95,7 @@ public class ActivityUser extends AppCompatActivity {
 //        int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
 //        EditText etName = (EditText) findViewById(mNameID);
 //        if (etName != null) {
-//            etName.setText(mCurrentUser.getName());
+//            etName.setText(mCurrentUser.get_name());
 //        }
 //
 //
@@ -119,7 +119,7 @@ public class ActivityUser extends AppCompatActivity {
 //        EditText etName = (EditText) findViewById(mNameID);
 //        if (etName != null) {
 //
-//            mCurrentUser.setName(String.valueOf(etName.getText()));
+//            mCurrentUser.set_name(String.valueOf(etName.getText()));
 //
 //        }
 //

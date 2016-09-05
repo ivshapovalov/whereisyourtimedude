@@ -135,7 +135,7 @@ public class ActivityUsersList extends AppCompatActivity {
 //            mRow.addView(txt);
 //
 //            txt = new TextView(this);
-//            String name= String.valueOf(users.get(numUser).getName())+((users.get(numUser).isCurrentUser()==1)?" (CURRENT)":"");
+//            String name= String.valueOf(users.get(numUser).get_name())+((users.get(numUser).isCurrentUser()==1)?" (CURRENT)":"");
 //            txt.setText(name);
 //            txt.setBackgroundResource(R.drawable.bt_border);
 //            txt.setGravity(Gravity.CENTER);

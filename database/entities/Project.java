@@ -5,19 +5,10 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-public class Area extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
+public class Project extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
 
     private String _name;
-    private int color;
-
-
-    public int getColor() {
-        return color;
-    }
-
-    public void setColor(int color) {
-        this.color = color;
-    }
+    private Area _area;
 
     public String getName() {
         return _name;
@@ -27,27 +18,37 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
         this._name = _name;
     }
 
-    public Area(int color, String name) {
+    public Project(String name) {
 
-        this.color = color;
         this._name = name;
     }
+    public Area getArea() {
+        return _area;
+    }
 
+    public int getAreaID() {
+        return _area!=null?_area.getID():0;
+    }
 
-    private Area(Builder builder) {
+    public void setArea(Area _area) {
+        this._area = _area;
+    }
+
+    private Project(Builder builder) {
 
         this._id = builder._id;
         this._name = builder._name;
+        this._area=builder._area;
     }
 
     @Override
     public void dbSave(DatabaseManager db) {
         try {
-            db.getArea(this.getID());
-            db.updateArea((Area) this);
+            db.getProject(this.getID());
+            db.updateProject((Project) this);
         } catch (TableDoesNotContainElementException e) {
             //нет такого
-            db.addArea((Area) this);
+            db.addProject((Project) this);
         }
     }
 
@@ -55,8 +56,8 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
     public void dbDelete(DatabaseManager db) {
 
             try {
-                db.getArea(this.getID());
-                db.deleteArea((Area) this);
+                db.getProject(this.getID());
+                db.deleteProject((Project) this);
             } catch (TableDoesNotContainElementException e) {
                 //нет такого
 
@@ -64,17 +65,18 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
     }
 
-    public static Area getAreaFromDB(DatabaseManager DB, int id) {
-        return DB.getArea(id);
+    public static Project getProjectFromDB(DatabaseManager DB, int id) {
+        return DB.getProject(id);
     }
 
     public static class Builder extends AbstractEntity {
 
+        private Area _area;
         private String _name;
-        private int _color;
+
 
         public Builder(DatabaseManager DB) {
-            this._id = DB.getAreaMaxNumber() + 1;
+            this._id = DB.getProjectMaxNumber() + 1;
         }
         public Builder(int _id) {
             this._id = _id;
@@ -85,14 +87,14 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
             return this;
         }
 
-        public Builder addColor(int _color) {
-            this._color = _color;
+        public Builder addArea(Area _area) {
+            this._area = _area;
             return this;
         }
 
-        public Area build() {
-            Area area = new Area(this);
-            return area;
+        public Project build() {
+            Project project = new Project(this);
+            return project;
         }
 
     }

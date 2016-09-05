@@ -1,7 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -12,19 +11,15 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
 import ru.brainworkout.whereisyourtimedude.R;
-import ru.brainworkout.whereisyourtimedude.common.Area;
 import ru.brainworkout.whereisyourtimedude.common.Common;
-import ru.brainworkout.whereisyourtimedude.common.PracticeTimer;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeTimer;
 
 import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.areas;
 import static ru.brainworkout.whereisyourtimedude.common.Common.practices;
@@ -113,13 +108,13 @@ public class ActivityChrono extends AppCompatActivity {
 
     public void bt2_onClick(View view) {
         Common.blink(view);
-        defineNewDayPractice("2016-08-31");
+        defineNewDayPractice("2016-09-31");
 
     }
 
     public void bt3_onClick(View view) {
         Common.blink(view);
-        defineNewDayPractice("2016-09-05");
+        defineNewDayPractice("2016-10-05");
 
     }
 
@@ -127,7 +122,6 @@ public class ActivityChrono extends AppCompatActivity {
 
         Common.blink(view);
         stopTimer();
-
 
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
         intent.putExtra("CurrentActivity", "ActivityChrono");
@@ -276,7 +270,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
         if (tvCurrentArea != null) {
-            tvCurrentArea.setText(currentPractice.getArea().getName());
+            tvCurrentArea.setText(currentPractice.getArea().get_name());
         }
         int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
@@ -362,7 +356,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         TextView txtArea = new TextView(this);
         txtArea.setBackgroundColor(practiceTimer.getArea().getColor());
-        txtArea.setText(practiceTimer.getArea().getName());
+        txtArea.setText(practiceTimer.getArea().get_name());
         txtArea.setLayoutParams(paramsTextView);
         row2.addView(txtArea);
 

@@ -1,6 +1,5 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
-import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -16,6 +15,8 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
 
+import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeTimer;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
 public class Common{
@@ -81,7 +82,7 @@ public class Common{
 //
 //    public static void setTitleOfActivity(Activity currentActivity) {
 //        if (Common.dbCurrentUser != null) {
-//            currentActivity.setTitle(currentActivity.getTitle() + " : " + Common.dbCurrentUser.getName() + "");
+//            currentActivity.setTitle(currentActivity.getTitle() + " : " + Common.dbCurrentUser.get_name() + "");
 //        }
 //    }
 //

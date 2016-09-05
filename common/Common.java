@@ -1,6 +1,7 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -9,11 +10,29 @@ import android.widget.TableRow;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.TreeMap;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
 public class Common{
+
+    public static ArrayList<Area> areas;
+    public static LinkedList<PracticeTimer> practices = new LinkedList<>();
+    public static Map<String, LinkedList<PracticeTimer>> DB = new TreeMap<>();
+
+    static {
+        areas = new ArrayList<>();
+
+        areas.add(new Area(Color.GREEN, "AREA 1"));
+        areas.add(new Area(Color.RED, "AREA 2"));
+        areas.add(new Area(Color.YELLOW, "AREA 3"));
+        areas.add(new Area(Color.MAGENTA, "AREA 4"));
+        areas.add(new Area(Color.CYAN, "AREA 5"));
+    }
 
     public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
     public static User dbCurrentUser;

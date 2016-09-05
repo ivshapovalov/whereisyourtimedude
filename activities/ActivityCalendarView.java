@@ -62,11 +62,20 @@ public class ActivityCalendarView extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
 
 
+        if (mIsBeginDate ) {
+            if (mOldDateFrom != null && !"".equals(mOldDateFrom)) {
+                Date d = ConvertStringToDate(mOldDateFrom,DATE_FORMAT_STRING);
+                calendar.set(d.getYear() + 1900, d.getMonth(), d.getDate());
+                mNewDate = mOldDateFrom;
+            }
+
+        } else {
             if (mOldDateTo != null && !"".equals(mOldDateTo)) {
                 Date d = ConvertStringToDate(mOldDateTo,DATE_FORMAT_STRING);
                 calendar.set(d.getYear() + 1900, d.getMonth(), d.getDate());
                 mNewDate = mOldDateTo;
             }
+        }
 
 
         if (mNewDate==null || mNewDate.equals("")) {

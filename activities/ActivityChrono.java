@@ -18,11 +18,17 @@ import java.util.Collections;
 import java.util.Comparator;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Area;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.PracticeTimer;
 
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static ru.brainworkout.whereisyourtimedude.common.Common.areas;
+import static ru.brainworkout.whereisyourtimedude.common.Common.practices;
+import static ru.brainworkout.whereisyourtimedude.common.Common.DB;
 
 public class ActivityChrono extends AppCompatActivity {
 
@@ -34,9 +40,6 @@ public class ActivityChrono extends AppCompatActivity {
     private long mChronometerCount = 0; //millis
     private long elapsedMillis;
 
-    ArrayList<Area> areas;
-    LinkedList<PracticeTimer> practices = new LinkedList<>();
-    Map<String, LinkedList<PracticeTimer>> DB = new TreeMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,23 +67,17 @@ public class ActivityChrono extends AppCompatActivity {
         String mCurrentDate = intent.getStringExtra("CurrentDate");
         int id = intent.getIntExtra("CurrentPracticeID", 0);
 
-        init();
-        if (("".equals(mCurrentDate)) || mCurrentDate==null) {
 
+        if (("".equals(mCurrentDate)) || mCurrentDate == null) {
+            init();
         } else {
             defineNewDayPractice(mCurrentDate);
         }
+
+
     }
 
     private void init() {
-
-        areas = new ArrayList<>();
-
-        areas.add(new Area(Color.GREEN, "AREA 1"));
-        areas.add(new Area(Color.RED, "AREA 2"));
-        areas.add(new Area(Color.YELLOW, "AREA 3"));
-        areas.add(new Area(Color.MAGENTA, "AREA 4"));
-        areas.add(new Area(Color.CYAN, "AREA 5"));
 
         StringBuilder date = new StringBuilder();
         Calendar curDate = Calendar.getInstance();
@@ -91,9 +88,10 @@ public class ActivityChrono extends AppCompatActivity {
 
         Collections.sort(practices, new WorkComparatorByLastTime());
         currentPractice = practices.get(0);
-        currentDate=date.toString();
+        currentDate = date.toString();
 
         updateScreen();
+
 
     }
 
@@ -101,7 +99,7 @@ public class ActivityChrono extends AppCompatActivity {
         practices = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             int indexArea = ((int) (Math.random() * areas.size()));
-            practices.add(new PracticeTimer(i, "WORK "+String.valueOf(i), areas.get(indexArea), 0));
+            practices.add(new PracticeTimer(i, "WORK " + String.valueOf(i), areas.get(indexArea), 0));
         }
         DB.put(date, practices);
 
@@ -130,36 +128,43 @@ public class ActivityChrono extends AppCompatActivity {
         Common.blink(view);
         stopTimer();
 
+
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
         intent.putExtra("CurrentActivity", "ActivityChrono");
         intent.putExtra("CurrentDate", currentDate);
         intent.putExtra("CurrentPracticeID", currentPractice.getId());
+        currentDate = null;
         startActivity(intent);
 
     }
 
     private void defineNewDayPractice(String date) {
 
-        if (currentDate!=null && date.equals(currentDate)) {
+        if (currentDate != null && date.equals(currentDate)) {
             return;
         }
         stopTimer();
         if (DB.containsKey(date)) {
             practices = DB.get(date);
         } else {
-            if (date.compareTo(currentDate)<0){
-                System.out.println("дата меньше текущей");
-                createNewDayPractices(date);
+            if (currentDate != null) {
+                if (date.compareTo(currentDate) < 0) {
+                    System.out.println("дата меньше текущей");
+                    createNewDayPractices(date);
+                } else {
+                    System.out.println("дата больше текущей");
+                    createNewDayPractices(date);
+                }
             } else {
-                System.out.println("дата больше текущей");
                 createNewDayPractices(date);
             }
 
         }
         Collections.sort(practices, new WorkComparatorByLastTime());
         currentPractice = practices.get(0);
+        currentDate = date;
 
-        mChronometerCount = currentPractice.getDuration()*1000;
+        mChronometerCount = currentPractice.getDuration() * 1000;
         updateScreen();
     }
 
@@ -219,7 +224,7 @@ public class ActivityChrono extends AppCompatActivity {
         currentPractice = practices.get(index);
         currentPractice.setLastTime(Calendar.getInstance());
 
-        mChronometerCount = currentPractice.getDuration()*1000;
+        mChronometerCount = currentPractice.getDuration() * 1000;
         mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
         mChronometerIsWorking = true;
         mChronometer.start();
@@ -403,116 +408,5 @@ public class ActivityChrono extends AppCompatActivity {
 
     }
 
-    private class PracticeTimer {
-        int id;
-        String name;
-        int duration;
-        Calendar lastTime;
-        String date;
-        Area area;
-
-        @Override
-        public boolean equals(Object obj) {
-            return this.getId() == ((PracticeTimer) obj).getId();
-        }
-
-        @Override
-        public int hashCode() {
-            return 1;
-        }
-
-        public PracticeTimer(int id, String name, Area area) {
-            this.area = area;
-            this.id = id;
-            this.name = name;
-        }
-
-        public PracticeTimer(int id, String name, Area area, int duration) {
-            this.id = id;
-            this.name = name;
-            this.duration = duration;
-            this.area = area;
-        }
-
-        public PracticeTimer(int id, String name) {
-            this.id = id;
-            this.name = name;
-        }
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public int getDuration() {
-            return duration;
-        }
-
-        public void setDuration(int duration) {
-            this.duration = duration;
-        }
-
-        public Calendar getLastTime() {
-            return lastTime;
-        }
-
-        public void setLastTime(Calendar lastTime) {
-            this.lastTime = lastTime;
-        }
-
-        public Area getArea() {
-            return area;
-        }
-
-        public void setArea(Area area) {
-            this.area = area;
-        }
-    }
-
-    class Area {
-        int color;
-        String name;
-
-        public int getColor() {
-            return color;
-        }
-
-        public void setColor(int color) {
-            this.color = color;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        public Area(int color, String name) {
-
-            this.color = color;
-            this.name = name;
-        }
-    }
 
 }

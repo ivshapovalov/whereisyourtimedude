@@ -326,42 +326,45 @@ public class ActivityChrono extends AppCompatActivity {
         TableRow rowMain = new TableRow(this);
 
         rowMain.setId(Integer.valueOf(practiceTimer.getId()));
+        TableRow.LayoutParams paramsLayout = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        paramsLayout.weight = 100;
+        paramsLayout.topMargin = 10;
 
-        TableRow.LayoutParams params100 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params100.weight = 100;
-        params100.topMargin = 10;
-        TableRow.LayoutParams params50 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params50.weight = 50;
+        TableRow.LayoutParams paramsRow = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        paramsRow.weight = 100;
+
+        TableRow.LayoutParams paramsTextView = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT);
+        paramsTextView.weight = 50;
 
         TableLayout layout = new TableLayout(this);
-        layout.setLayoutParams(params100);
+        layout.setLayoutParams(paramsLayout);
+        layout.setStretchAllColumns(true);
 
         TableRow row1 = new TableRow(this);
-        row1.setLayoutParams(params100);
+        row1.setLayoutParams(paramsRow);
 
         TextView txtName = new TextView(this);
         txtName.setBackgroundColor(practiceTimer.getArea().getColor());
         txtName.setText(practiceTimer.getName());
-        txtName.setLayoutParams(params50);
+        txtName.setLayoutParams(paramsTextView);
         row1.addView(txtName);
 
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(practiceTimer.getArea().getColor());
         txtTime.setText(convertTimeToString(practiceTimer.getDuration()));
-        txtTime.setLayoutParams(params50);
+        txtTime.setLayoutParams(paramsTextView);
         row1.addView(txtTime);
 
         layout.addView(row1);
 
         TableRow row2 = new TableRow(this);
-        row2.setLayoutParams(params100);
+        row2.setLayoutParams(paramsRow);
 
         TextView txtArea = new TextView(this);
         txtArea.setBackgroundColor(practiceTimer.getArea().getColor());
         txtArea.setText(practiceTimer.getArea().getName());
-        txtArea.setLayoutParams(params50);
+        txtArea.setLayoutParams(paramsTextView);
         row2.addView(txtArea);
-
 
         TextView txtDate = new TextView(this);
         txtDate.setBackgroundColor(practiceTimer.getArea().getColor());
@@ -372,7 +375,7 @@ public class ActivityChrono extends AppCompatActivity {
         }
 
 
-        txtDate.setLayoutParams(params50);
+        txtDate.setLayoutParams(paramsTextView);
 
         row2.addView(txtDate);
 
@@ -385,6 +388,7 @@ public class ActivityChrono extends AppCompatActivity {
             }
         });
         rowMain.addView(layout);
+        rowMain.setLayoutParams(paramsRow);
         return rowMain;
     }
 

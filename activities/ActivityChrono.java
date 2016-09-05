@@ -1,5 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -19,13 +20,14 @@ import java.util.Comparator;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ActivityChrono extends AppCompatActivity {
 
     private static PracticeTimer currentPractice;
+    private static String currentDate;
 
     private Chronometer mChronometer;
     private boolean mChronometerIsWorking = false;
@@ -34,7 +36,7 @@ public class ActivityChrono extends AppCompatActivity {
 
     ArrayList<Area> areas;
     LinkedList<PracticeTimer> practices = new LinkedList<>();
-    Map<String, LinkedList<PracticeTimer>> DB = new HashMap<>();
+    Map<String, LinkedList<PracticeTimer>> DB = new TreeMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,18 @@ public class ActivityChrono extends AppCompatActivity {
                 }
             }
         });
+
+        Intent intent = getIntent();
+
+        String mCurrentDate = intent.getStringExtra("CurrentDate");
+        int id = intent.getIntExtra("CurrentPracticeID", 0);
+
         init();
+        if (("".equals(mCurrentDate)) || mCurrentDate==null) {
+
+        } else {
+            defineNewDayPractice(mCurrentDate);
+        }
     }
 
     private void init() {
@@ -66,18 +79,19 @@ public class ActivityChrono extends AppCompatActivity {
         areas.add(new Area(Color.GREEN, "AREA 1"));
         areas.add(new Area(Color.RED, "AREA 2"));
         areas.add(new Area(Color.YELLOW, "AREA 3"));
-        areas.add(new Area(Color.BLUE, "AREA 4"));
-        areas.add(new Area(Color.GRAY, "AREA 5"));
+        areas.add(new Area(Color.MAGENTA, "AREA 4"));
+        areas.add(new Area(Color.CYAN, "AREA 5"));
 
         StringBuilder date = new StringBuilder();
         Calendar curDate = Calendar.getInstance();
-        date.append(curDate.get(Calendar.YEAR)).append("_")
-                .append(addingZeros(String.valueOf(curDate.get(Calendar.MONTH) + 1), 2)).append("_")
+        date.append(curDate.get(Calendar.YEAR)).append("-")
+                .append(addingZeros(String.valueOf(curDate.get(Calendar.MONTH) + 1), 2)).append("-")
                 .append(addingZeros(String.valueOf(curDate.get(Calendar.DAY_OF_MONTH)), 2));
         createNewDayPractices(date.toString());
 
         Collections.sort(practices, new WorkComparatorByLastTime());
         currentPractice = practices.get(0);
+        currentDate=date.toString();
 
         updateScreen();
 
@@ -95,35 +109,52 @@ public class ActivityChrono extends AppCompatActivity {
 
     public void bt1_onClick(View view) {
         Common.blink(view);
-        newDayTest("2016_08_30");
+        defineNewDayPractice("2016-08-30");
 
     }
 
     public void bt2_onClick(View view) {
         Common.blink(view);
-        newDayTest("2016_08_31");
+        defineNewDayPractice("2016-08-31");
 
     }
 
     public void bt3_onClick(View view) {
         Common.blink(view);
-        newDayTest("2016_09_03");
+        defineNewDayPractice("2016-09-05");
 
     }
 
-    public void bt4_onClick(View view) {
+    public void btDate_onClick(View view) {
+
         Common.blink(view);
-        newDayTest("2016_09_04");
+        stopTimer();
+
+        Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
+        intent.putExtra("CurrentActivity", "ActivityChrono");
+        intent.putExtra("CurrentDate", currentDate);
+        intent.putExtra("CurrentPracticeID", currentPractice.getId());
+        startActivity(intent);
 
     }
 
-    private void newDayTest(String date) {
+    private void defineNewDayPractice(String date) {
 
+        if (currentDate!=null && date.equals(currentDate)) {
+            return;
+        }
         stopTimer();
         if (DB.containsKey(date)) {
             practices = DB.get(date);
         } else {
-            createNewDayPractices(date);
+            if (date.compareTo(currentDate)<0){
+                System.out.println("дата меньше текущей");
+                createNewDayPractices(date);
+            } else {
+                System.out.println("дата больше текущей");
+                createNewDayPractices(date);
+            }
+
         }
         Collections.sort(practices, new WorkComparatorByLastTime());
         currentPractice = practices.get(0);
@@ -251,10 +282,10 @@ public class ActivityChrono extends AppCompatActivity {
                 tvCurrentDate.setText("");
             }
         }
-        int rowIDCurrentWork = getResources().getIdentifier("rowCurrentWork", "id", getPackageName());
-        TableRow rowCurrentWork = (TableRow) findViewById(rowIDCurrentWork);
-        if (rowCurrentWork != null) {
-            rowCurrentWork.setBackgroundColor(currentPractice.getArea().getColor());
+        int tableIDCurrentWork = getResources().getIdentifier("tableCurrentWork", "id", getPackageName());
+        TableLayout tableCurrentWork = (TableLayout) findViewById(tableIDCurrentWork);
+        if (tableCurrentWork != null) {
+            tableCurrentWork.setBackgroundColor(currentPractice.getArea().getColor());
         }
 
 
@@ -292,10 +323,10 @@ public class ActivityChrono extends AppCompatActivity {
         rowMain.setId(Integer.valueOf(practiceTimer.getId()));
 
         TableRow.LayoutParams params100 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        //params100.weight = 100;
+        params100.weight = 100;
         params100.topMargin = 10;
         TableRow.LayoutParams params50 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        params50.span = 50;
+        params50.weight = 50;
 
         TableLayout layout = new TableLayout(this);
         layout.setLayoutParams(params100);

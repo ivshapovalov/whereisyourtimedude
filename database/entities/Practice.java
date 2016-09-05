@@ -18,8 +18,12 @@ public class Practice {
 
     private Practice(Builder builder) {
 
+
+
         this._id = builder._id;
         this._name = builder._name;
+
+
     }
 
     public String get_name() {

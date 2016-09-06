@@ -101,7 +101,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
             return this;
         }
 
-        public Builder setIsActive(int is_active) {
+        public Builder addIsActive(int is_active) {
             this.is_active = is_active;
             return this;
         }

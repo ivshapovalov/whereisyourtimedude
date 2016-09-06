@@ -1,5 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
@@ -23,7 +24,7 @@ public class Common{
 
     public static ArrayList<Area> areas;
     public static LinkedList<PracticeTimer> practices = new LinkedList<>();
-    public static Map<String, LinkedList<PracticeTimer>> DB = new TreeMap<>();
+    public static Map<Long, LinkedList<PracticeTimer>> DB = new TreeMap<>();
 
     static {
         areas = new ArrayList<>();
@@ -45,8 +46,8 @@ public class Common{
     public static User dbCurrentUser;
     public static final boolean isDebug=true;
 
-    public static Date ConvertStringToDate(final String date, final String format) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(format);
+    public static Date ConvertStringToDate(final String date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STRING);
         Date d = null;
         try {
             d = dateFormat.parse(String.valueOf(date));
@@ -57,9 +58,16 @@ public class Common{
         return d;
     }
 
-    public static String ConvertDateToString(final Date date, final String format) {
+    public static Date ConvertMillisToDate(final long Millis) {
+        return new Date(Millis);
+    }
 
-        SimpleDateFormat dateformat = new SimpleDateFormat(format);
+    public static String ConvertMillisToString(final long Millis) {
+        return ConvertDateToString(new Date(Millis));
+    }
+    public static String ConvertDateToString(final Date date) {
+
+        SimpleDateFormat dateformat = new SimpleDateFormat(DATE_FORMAT_STRING);
         String sDate = "";
         try {
             sDate = dateformat.format(date);
@@ -78,14 +86,13 @@ public class Common{
         anim.setRepeatCount(1);
         v.startAnimation(anim);
     }
-//
-//
-//    public static void setTitleOfActivity(Activity currentActivity) {
-//        if (Common.dbCurrentUser != null) {
-//            currentActivity.setTitle(currentActivity.getTitle() + " : " + Common.dbCurrentUser.get_name() + "");
-//        }
-//    }
-//
+
+    public static void setTitleOfActivity(Activity currentActivity) {
+        if (Common.dbCurrentUser != null) {
+            currentActivity.setTitle(currentActivity.getTitle() + " : " + Common.dbCurrentUser.getName() + "");
+        }
+    }
+
     public static void HideEditorButton(Button btEditor) {
 
         if (btEditor != null) {

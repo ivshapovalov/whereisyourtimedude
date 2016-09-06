@@ -21,6 +21,8 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeTimer;
 
 import java.util.LinkedList;
 
+import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToDate;
+import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertStringToDate;
 import static ru.brainworkout.whereisyourtimedude.common.Common.areas;
 import static ru.brainworkout.whereisyourtimedude.common.Common.practices;
 import static ru.brainworkout.whereisyourtimedude.common.Common.DB;
@@ -28,11 +30,11 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.DB;
 public class ActivityChrono extends AppCompatActivity {
 
     private static PracticeTimer currentPractice;
-    private static String currentDate;
+    private static long currentDateInMillis;
 
     private Chronometer mChronometer;
     private boolean mChronometerIsWorking = false;
-    private long mChronometerCount = 0; //millis
+    private long mChronometerCount = 0;
     private long elapsedMillis;
 
 
@@ -59,14 +61,14 @@ public class ActivityChrono extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        String mCurrentDate = intent.getStringExtra("CurrentDate");
+        currentDateInMillis= intent.getLongExtra("CurrentDateInMillis");
         int id = intent.getIntExtra("CurrentPracticeID", 0);
 
 
-        if (("".equals(mCurrentDate)) || mCurrentDate == null) {
+        if (currentDateInMillis==0) {
             init();
         } else {
-            defineNewDayPractice(mCurrentDate);
+            defineNewDayPractice(currentDateInMillis);
         }
 
 
@@ -74,27 +76,28 @@ public class ActivityChrono extends AppCompatActivity {
 
     private void init() {
 
-        StringBuilder date = new StringBuilder();
-        Calendar curDate = Calendar.getInstance();
-        date.append(curDate.get(Calendar.YEAR)).append("-")
-                .append(addingZeros(String.valueOf(curDate.get(Calendar.MONTH) + 1), 2)).append("-")
-                .append(addingZeros(String.valueOf(curDate.get(Calendar.DAY_OF_MONTH)), 2));
-        createNewDayPractices(date.toString());
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear(Calendar.HOUR);
+        calendar.clear(Calendar.HOUR_OF_DAY);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+        currentDateInMillis =calendar.getTimeInMillis();
+        createNewDayPractices();
 
         Collections.sort(practices, new WorkComparatorByLastTime());
         currentPractice = practices.get(0);
-        currentDate = date.toString();
 
         updateScreen();
 
 
     }
 
-    private void createNewDayPractices(String date) {
+    private void createNewDayPractices(Long date) {
         practices = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             int indexArea = ((int) (Math.random() * areas.size()));
-            practices.add(new PracticeTimer(i, "WORK " + String.valueOf(i), areas.get(indexArea), 0));
+            practices.add(new PracticeTimer.Builder(i, "WORK " + String.valueOf(i), areas.get(indexArea), 0));
         }
         DB.put(date, practices);
 
@@ -102,19 +105,19 @@ public class ActivityChrono extends AppCompatActivity {
 
     public void bt1_onClick(View view) {
         Common.blink(view);
-        defineNewDayPractice("2016-08-30");
+        defineNewDayPractice(ConvertStringToDate("2016-08-30").getTime());
 
     }
 
     public void bt2_onClick(View view) {
         Common.blink(view);
-        defineNewDayPractice("2016-09-31");
+        defineNewDayPractice(ConvertStringToDate("2016-09-31").getTime());
 
     }
 
     public void bt3_onClick(View view) {
         Common.blink(view);
-        defineNewDayPractice("2016-10-05");
+        defineNewDayPractice(ConvertStringToDate("2016-10-05").getTime());
 
     }
 
@@ -125,24 +128,24 @@ public class ActivityChrono extends AppCompatActivity {
 
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
         intent.putExtra("CurrentActivity", "ActivityChrono");
-        intent.putExtra("CurrentDate", currentDate);
+        intent.putExtra("CurrentDateInMillis", currentDateInMillis);
         intent.putExtra("CurrentPracticeID", currentPractice.getId());
-        currentDate = null;
+        currentDateInMillis = 0;
         startActivity(intent);
 
     }
 
-    private void defineNewDayPractice(String date) {
+    private void defineNewDayPractice(Long date) {
 
-        if (currentDate != null && date.equals(currentDate)) {
+        if (currentDateInMillis !=0 && date==currentDateInMillis) {
             return;
         }
         stopTimer();
         if (DB.containsKey(date)) {
             practices = DB.get(date);
         } else {
-            if (currentDate != null) {
-                if (date.compareTo(currentDate) < 0) {
+            if (currentDateInMillis != 0) {
+                if (date<currentDateInMillis) {
                     System.out.println("дата меньше текущей");
                     createNewDayPractices(date);
                 } else {
@@ -156,7 +159,7 @@ public class ActivityChrono extends AppCompatActivity {
         }
         Collections.sort(practices, new WorkComparatorByLastTime());
         currentPractice = practices.get(0);
-        currentDate = date;
+        currentDateInMillis = date;
 
         mChronometerCount = currentPractice.getDuration() * 1000;
         updateScreen();

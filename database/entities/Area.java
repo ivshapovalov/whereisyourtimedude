@@ -7,7 +7,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 public class Area extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
 
-    private String _name;
+    private String name;
     private int color;
 
 
@@ -20,24 +20,24 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
     }
 
     public String getName() {
-        return _name;
+        return name;
     }
 
     public void setName(String _name) {
-        this._name = _name;
+        this.name = _name;
     }
 
     public Area(int color, String name) {
 
         this.color = color;
-        this._name = name;
+        this.name = name;
     }
 
 
     private Area(Builder builder) {
 
-        this._id = builder._id;
-        this._name = builder._name;
+        this.id = builder.id;
+        this.name = builder._name;
     }
 
     @Override
@@ -70,23 +70,23 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
     public static class Builder extends AbstractEntity {
 
-        private String _name;
-        private int _color;
+        private String name;
+        private int color;
 
         public Builder(DatabaseManager DB) {
-            this._id = DB.getAreaMaxNumber() + 1;
+            this.id = DB.getAreaMaxNumber() + 1;
         }
-        public Builder(int _id) {
-            this._id = _id;
+        public Builder(int id) {
+            this.id = id;
         }
 
-        public Builder addName(String _name) {
-            this._name = _name;
+        public Builder addName(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder addColor(int _color) {
-            this._color = _color;
+        public Builder addColor(int color) {
+            this.color = color;
             return this;
         }
 

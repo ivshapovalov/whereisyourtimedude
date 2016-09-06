@@ -14,44 +14,40 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.DATE_FORMAT_STRI
 
 public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
 
-    private String _name;
-    private Project _project;
-    private int _is_active;
+    private String name;
+    private int id_project;
+    private int is_active;
 
     private Practice(Builder builder) {
 
-        this._id = builder._id;
-        this._name = builder._name;
-        this._project=builder._project;
+        this.id = builder.id;
+        this.name = builder.name;
+        this.id_project=builder.id_project;
 
     }
 
-    public Project getProject() {
-        return _project;
+    public int getIdProject() {
+        return id_project;
     }
 
-    public int getProjectID() {
-        return _project!=null?_project.getID():0;
-    }
-
-    public void setProject(Project _project) {
-        this._project = _project;
+    public void setIdProject(int id_project) {
+        this.id_project = id_project;
     }
 
     public int getIsActive() {
-        return _is_active;
+        return is_active;
     }
 
-    public void setIsActive(int _is_active) {
-        this._is_active = _is_active;
+    public void setIsActive(int is_active) {
+        this.is_active = is_active;
     }
 
     public String getName() {
-        return _name;
+        return name;
     }
 
-    public void setName(String _name) {
-        this._name = _name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -84,29 +80,29 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
     public static class Builder extends AbstractEntity {
 
-        private String _name;
-        private Project _project;
-        private int _is_active;
+        private String name;
+        private int id_project;
+        private int is_active;
 
         public Builder(DatabaseManager DB) {
-            this._id = DB.getPracticeMaxNumber() + 1;
+            this.id = DB.getPracticeMaxNumber() + 1;
         }
-        public Builder(int _id) {
-            this._id = _id;
+        public Builder(int id) {
+            this.id = id;
         }
 
         public Builder addName(String name) {
-            this._name = name;
+            this.name = name;
             return this;
         }
 
-        public Builder addProject(Project _project) {
-            this._project = _project;
+        public Builder addIDProject(int id_project) {
+            this.id_project = id_project;
             return this;
         }
 
-        public Builder setIsActive(int _is_active) {
-            this._is_active = _is_active;
+        public Builder setIsActive(int is_active) {
+            this.is_active = is_active;
             return this;
         }
 

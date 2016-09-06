@@ -7,38 +7,34 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 public class Project extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
 
-    private String _name;
-    private Area _area;
+    private String name;
+    private int id_area;
 
     public String getName() {
-        return _name;
+        return name;
     }
 
-    public void setName(String _name) {
-        this._name = _name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Project(String name) {
 
-        this._name = name;
+        this.name = name;
     }
-    public Area getArea() {
-        return _area;
-    }
-
-    public int getAreaID() {
-        return _area!=null?_area.getID():0;
+    public int getIdArea() {
+        return id_area;
     }
 
-    public void setArea(Area _area) {
-        this._area = _area;
+    public void setIdArea(int id_area) {
+        this.id_area = id_area;
     }
 
     private Project(Builder builder) {
 
-        this._id = builder._id;
-        this._name = builder._name;
-        this._area=builder._area;
+        this.id = builder.id;
+        this.name = builder.name;
+        this.id_area=builder.id_area;
     }
 
     @Override
@@ -71,24 +67,24 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
     public static class Builder extends AbstractEntity {
 
-        private Area _area;
-        private String _name;
+        private int id_area;
+        private String name;
 
 
         public Builder(DatabaseManager DB) {
-            this._id = DB.getProjectMaxNumber() + 1;
+            this.id = DB.getProjectMaxNumber() + 1;
         }
-        public Builder(int _id) {
-            this._id = _id;
+        public Builder(int id) {
+            this.id = id;
         }
 
-        public Builder addName(String _name) {
-            this._name = _name;
+        public Builder addName(String name) {
+            this.name = name;
             return this;
         }
 
-        public Builder addArea(Area _area) {
-            this._area = _area;
+        public Builder addArea(int id_area) {
+            this.id_area = id_area;
             return this;
         }
 

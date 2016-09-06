@@ -17,11 +17,10 @@ import java.util.Comparator;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
-import ru.brainworkout.whereisyourtimedude.database.entities.PracticeTimer;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 
 import java.util.LinkedList;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToDate;
 import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertStringToDate;
 import static ru.brainworkout.whereisyourtimedude.common.Common.areas;
 import static ru.brainworkout.whereisyourtimedude.common.Common.practices;
@@ -29,7 +28,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.DB;
 
 public class ActivityChrono extends AppCompatActivity {
 
-    private static PracticeTimer currentPractice;
+    private static PracticeHistory currentPractice;
     private static long currentDateInMillis;
 
     private Chronometer mChronometer;
@@ -97,7 +96,7 @@ public class ActivityChrono extends AppCompatActivity {
         practices = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             int indexArea = ((int) (Math.random() * areas.size()));
-            practices.add(new PracticeTimer.Builder(i, "WORK " + String.valueOf(i), areas.get(indexArea), 0));
+            practices.add(new PracticeHistory.Builder(i, "WORK " + String.valueOf(i), areas.get(indexArea), 0));
         }
         DB.put(date, practices);
 
@@ -217,7 +216,7 @@ public class ActivityChrono extends AppCompatActivity {
         Common.blink(view);
         stopTimer();
 
-        int index = practices.indexOf(new PracticeTimer(view.getId(), String.valueOf(view.getId())));
+        int index = practices.indexOf(new PracticeHistory(view.getId(), String.valueOf(view.getId())));
         currentPractice = practices.get(index);
         currentPractice.setLastTime(Calendar.getInstance());
 
@@ -319,10 +318,10 @@ public class ActivityChrono extends AppCompatActivity {
 
     @NonNull
     private TableRow CreateTableRow(int i) {
-        PracticeTimer practiceTimer = practices.get(i);
+        PracticeHistory practiceHistory = practices.get(i);
         TableRow rowMain = new TableRow(this);
 
-        rowMain.setId(Integer.valueOf(practiceTimer.getId()));
+        rowMain.setId(Integer.valueOf(practiceHistory.getId()));
         TableRow.LayoutParams paramsLayout = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
         paramsLayout.weight = 100;
         paramsLayout.topMargin = 10;
@@ -341,14 +340,14 @@ public class ActivityChrono extends AppCompatActivity {
         row1.setLayoutParams(paramsRow);
 
         TextView txtName = new TextView(this);
-        txtName.setBackgroundColor(practiceTimer.getArea().getColor());
-        txtName.setText(practiceTimer.getName());
+        txtName.setBackgroundColor(practiceHistory.getArea().getColor());
+        txtName.setText(practiceHistory.getName());
         txtName.setLayoutParams(paramsTextView);
         row1.addView(txtName);
 
         TextView txtTime = new TextView(this);
-        txtTime.setBackgroundColor(practiceTimer.getArea().getColor());
-        txtTime.setText(convertTimeToString(practiceTimer.getDuration()));
+        txtTime.setBackgroundColor(practiceHistory.getArea().getColor());
+        txtTime.setText(convertTimeToString(practiceHistory.getDuration()));
         txtTime.setLayoutParams(paramsTextView);
         row1.addView(txtTime);
 
@@ -358,16 +357,16 @@ public class ActivityChrono extends AppCompatActivity {
         row2.setLayoutParams(paramsRow);
 
         TextView txtArea = new TextView(this);
-        txtArea.setBackgroundColor(practiceTimer.getArea().getColor());
-        txtArea.setText(practiceTimer.getArea().get_name());
+        txtArea.setBackgroundColor(practiceHistory.getArea().getColor());
+        txtArea.setText(practiceHistory.getArea().get_name());
         txtArea.setLayoutParams(paramsTextView);
         row2.addView(txtArea);
 
         TextView txtDate = new TextView(this);
-        txtDate.setBackgroundColor(practiceTimer.getArea().getColor());
+        txtDate.setBackgroundColor(practiceHistory.getArea().getColor());
 
-        if (practiceTimer.getLastTime() != null) {
-            String date = convertCalendarToString(practiceTimer.getLastTime());
+        if (practiceHistory.getLastTime() != null) {
+            String date = convertCalendarToString(practiceHistory.getLastTime());
             txtDate.setText(date);
         }
 
@@ -390,10 +389,10 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
 
-    public class WorkComparatorByLastTime implements Comparator<PracticeTimer> {
+    public class WorkComparatorByLastTime implements Comparator<PracticeHistory> {
 
         @Override
-        public int compare(PracticeTimer w1, PracticeTimer w2) {
+        public int compare(PracticeHistory w1, PracticeHistory w2) {
 
             if (w1.getLastTime() == null && w2.getLastTime() == null) {
                 return 0;

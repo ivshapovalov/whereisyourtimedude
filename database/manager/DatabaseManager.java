@@ -14,7 +14,7 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
-import ru.brainworkout.whereisyourtimedude.database.entities.PracticeTimer;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
@@ -257,16 +257,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 //TODO тут остановился
-    public void addPracticeTimer(PracticeTimer practiceTimer) {
+    public void addPracticeTimer(PracticeHistory practiceHistory) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_PRACTICE_TIMER_ID, practiceTimer.getID());
-        values.put(KEY_PRACTICE_TIMER_ID_USER, practiceTimer.getIdUser());
-        values.put(KEY_PRACTICE_TIMER_ID_PRACTICE, practiceTimer.getPracticeID());
-        values.put(KEY_PRACTICE_TIMER_DATE, practiceTimer.getDate());
-        values.put(KEY_PRACTICE_TIMER_DURATION, practiceTimer.getDuration());
-        values.put(KEY_PRACTICE_TIMER_LAST_TIME, practiceTimer.getLastTime());
+        values.put(KEY_PRACTICE_TIMER_ID, practiceHistory.getID());
+        values.put(KEY_PRACTICE_TIMER_ID_USER, practiceHistory.getIdUser());
+        values.put(KEY_PRACTICE_TIMER_ID_PRACTICE, practiceHistory.getPracticeID());
+        values.put(KEY_PRACTICE_TIMER_DATE, practiceHistory.getDate());
+        values.put(KEY_PRACTICE_TIMER_DURATION, practiceHistory.getDuration());
+        values.put(KEY_PRACTICE_TIMER_LAST_TIME, practiceHistory.getLastTime());
 
         // Inserting Row
         db.insert(TABLE_PROJECTS, null, values);

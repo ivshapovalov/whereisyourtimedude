@@ -17,14 +17,14 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.PracticeTimer;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
 public class Common{
 
     public static ArrayList<Area> areas;
-    public static LinkedList<PracticeTimer> practices = new LinkedList<>();
-    public static Map<Long, LinkedList<PracticeTimer>> DB = new TreeMap<>();
+    public static LinkedList<PracticeHistory> practices = new LinkedList<>();
+    public static Map<Long, LinkedList<PracticeHistory>> DB = new TreeMap<>();
 
     static {
         areas = new ArrayList<>();

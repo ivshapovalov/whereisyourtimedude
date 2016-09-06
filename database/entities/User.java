@@ -7,40 +7,40 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 public class User extends AbstractEntity implements SavingIntoDB,DeletingFromDb {
-    private int _id;
-    private String _name;
-    private int _isCurrentUser;
+    private int id;
+    private String name;
+    private int isCurrentUser;
 
     private User(Builder builder) {
 
-        this._id = builder._id;
-        this._name = builder._name;
-        this._isCurrentUser = builder._isCurrentUser;
+        this.id = builder.id;
+        this.name = builder.name;
+        this.isCurrentUser = builder.isCurrentUser;
 
     }
 
     public int getID() {
-        return _id;
+        return id;
     }
 
-    public void setID(int _id) {
-        this._id = _id;
+    public void setID(int id) {
+        this.id = id;
     }
 
     public String getName() {
-        return _name;
+        return name;
     }
 
-    public void setName(String _name) {
-        this._name = _name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int isCurrentUser() {
-        return _isCurrentUser;
+        return isCurrentUser;
     }
 
-    public void setIsCurrentUser(int _isCurrentUser) {
-        this._isCurrentUser = _isCurrentUser;
+    public void setIsCurrentUser(int isCurrentUser) {
+        this.isCurrentUser = isCurrentUser;
     }
 
     @Override
@@ -74,31 +74,31 @@ public class User extends AbstractEntity implements SavingIntoDB,DeletingFromDb 
 
         User user = (User) o;
 
-        return _id == user._id;
+        return id == user.id;
 
     }
 
     @Override
     public int hashCode() {
-        return _id;
+        return id;
     }
 
     public static class Builder extends AbstractEntity {
 
-        private String _name;
-        private int _isCurrentUser;
+        private String name;
+        private int isCurrentUser;
 
         public Builder(int id) {
-            this._id = id;
+            this.id = id;
         }
 
         public Builder addName(String name) {
-            this._name = name;
+            this.name = name;
             return this;
         }
 
         public Builder addIsCurrentUser(int isCurrentUser) {
-            this._isCurrentUser = isCurrentUser;
+            this.isCurrentUser = isCurrentUser;
             return this;
         }
 

@@ -10,17 +10,18 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 /**
  * Created by Ivan on 05.09.2016.
  */
-public class PracticeTimer extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
+public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
 
+    private int id_practice;
     private String name;
-    private int duration;
-    private Calendar lastTime;
-    private String date;
-    private Practice practice;
+    private long duration;
+    private long lastTime;
+    private long date;
+
 
     @Override
     public boolean equals(Object obj) {
-        return this.getId() == ((PracticeTimer) obj).getId();
+        return this.getId() == ((PracticeHistory) obj).getId();
     }
 
     @Override
@@ -28,36 +29,33 @@ public class PracticeTimer extends AbstractEntityMultiUser implements SavingInto
         return 1;
     }
 
-    public PracticeTimer(Builder builder) {
+    public PracticeHistory(Builder builder) {
 
-        this._id = builder._id;
+        this.id = builder.id;
         this.duration = builder.duration;
         this.lastTime=builder.lastTime;
         this.date=builder.date;
-        this.practice=builder.practice;
+        this.id_practice=builder.id_practice;
     }
 
-    public Practice getPractice() {
-        return practice;
-    }
-    public int getPracticeID() {
-        return practice!=null?practice.getID():0;
+    public int getIdPractice() {
+        return id_practice;
     }
 
-    public void setPractice(Practice practice) {
-        this.practice = practice;
+    public void setIdPractice(int id_practice) {
+        this.id_practice = id_practice;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(long date) {
         this.date = date;
     }
 
     public int getId() {
-        return _id;
+        return id;
     }
 
     public String getName() {
@@ -68,30 +66,30 @@ public class PracticeTimer extends AbstractEntityMultiUser implements SavingInto
         this.name = name;
     }
 
-    public int getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 
-    public Calendar getLastTime() {
+    public long getLastTime() {
         return lastTime;
     }
 
-    public void setLastTime(Calendar lastTime) {
+    public void setLastTime(long lastTime) {
         this.lastTime = lastTime;
     }
 
     @Override
     public void dbSave(DatabaseManager db) {
         try {
-            db.getPracticeTimer(this.getID());
-            db.updatePracticeTimer((PracticeTimer) this);
+            db.getPracticeHistory(this.getID());
+            db.updatePracticeHistory((PracticeHistory) this);
         } catch (TableDoesNotContainElementException e) {
             //нет такого
-            db.addPracticeTimer((PracticeTimer) this);
+            db.addPracticeHistory((PracticeHistory) this);
         }
     }
 
@@ -99,8 +97,8 @@ public class PracticeTimer extends AbstractEntityMultiUser implements SavingInto
     public void dbDelete(DatabaseManager db) {
 
         try {
-            db.getPractice(this.getID());
-            db.deletePractice((Practice) this);
+            db.getPracticeHistory(this.getID());
+            db.deletePracticeHistory((PracticeHistory) this);
         } catch (TableDoesNotContainElementException e) {
             //нет такого
 
@@ -108,23 +106,23 @@ public class PracticeTimer extends AbstractEntityMultiUser implements SavingInto
 
     }
 
-    public static Practice getPracticeTimerFromDB(DatabaseManager DB, int id) {
-        return DB.getPracticeTimer(id);
+    public static PracticeHistory getPracticeTimerFromDB(DatabaseManager DB, int id) {
+        return DB.getPracticeHistory(id);
     }
 
     public static class Builder extends AbstractEntity {
 
         private String name;
-        private Practice practice;
-        private int duration;
-        private Calendar lastTime;
-        private String date;
+        private int id_practice;
+        private long duration;
+        private long lastTime;
+        private long date;
 
         public Builder(DatabaseManager DB) {
-            this._id = DB.getPracticeTimerMaxNumber() + 1;
+            this.id = DB.getPracticeTimerMaxNumber() + 1;
         }
-        public Builder(int _id) {
-            this._id = _id;
+        public Builder(int id) {
+            this.id = id;
         }
 
         public Builder addName(String name) {
@@ -132,30 +130,30 @@ public class PracticeTimer extends AbstractEntityMultiUser implements SavingInto
             return this;
         }
 
-        public Builder addPractice(Practice practice) {
-            this.practice = practice;
+        public Builder addIdPractice(int id_practice) {
+            this.id_practice = id_practice;
             return this;
         }
 
-        public Builder addDuration(int duration) {
+        public Builder addDuration(long duration) {
             this.duration = duration;
             return this;
         }
 
-        public Builder addDate(String date) {
+        public Builder addDate(long date) {
             this.date = date;
             return this;
         }
 
-        public Builder addLastTime(Calendar lastTime) {
+        public Builder addLastTime(long lastTime) {
             this.lastTime = lastTime;
             return this;
         }
 
 
-        public PracticeTimer build() {
-            PracticeTimer practiceTimer = new PracticeTimer(this);
-            return practiceTimer;
+        public PracticeHistory build() {
+            PracticeHistory practiceHistory = new PracticeHistory(this);
+            return practiceHistory;
         }
 
     }

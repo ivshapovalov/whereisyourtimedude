@@ -23,8 +23,8 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
         return name;
     }
 
-    public void setName(String _name) {
-        this.name = _name;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Area(int color, String name) {
@@ -37,7 +37,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
     private Area(Builder builder) {
 
         this.id = builder.id;
-        this.name = builder._name;
+        this.name = builder.name;
     }
 
     @Override

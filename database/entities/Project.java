@@ -83,7 +83,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB,Del
             return this;
         }
 
-        public Builder addArea(int id_area) {
+        public Builder addIdArea(int id_area) {
             this.id_area = id_area;
             return this;
         }

@@ -13,7 +13,6 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
 
     private int id_practice;
-    private String name;
     private long duration;
     private long lastTime;
     private long date;
@@ -56,14 +55,6 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
     public int getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public long getDuration() {
@@ -112,22 +103,16 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
     public static class Builder extends AbstractEntity {
 
-        private String name;
         private int id_practice;
         private long duration;
         private long lastTime;
         private long date;
 
         public Builder(DatabaseManager DB) {
-            this.id = DB.getPracticeTimerMaxNumber() + 1;
+            this.id = DB.getPracticeHistoryMaxNumber() + 1;
         }
         public Builder(int id) {
             this.id = id;
-        }
-
-        public Builder addName(String name) {
-            this.name = name;
-            return this;
         }
 
         public Builder addIdPractice(int id_practice) {

@@ -500,7 +500,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_USERS;
+        String selectQuery = "SELECT  "+KEY_USER_ID+","+KEY_USER_NAME+","+KEY_USER_IS_CURRENT+" FROM " + TABLE_USERS;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -519,47 +519,47 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return userList;
     }
 
-    public List<WeightChangeCalendar> getAllWeightChangeCalendar() {
-        List<WeightChangeCalendar> weightChangeCalendarList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_WEIGHT_CHANGE_CALENDAR;
+    public List<Area> getAllAreas() {
+        List<Area> areas = new ArrayList<>();
+        String selectQuery = "SELECT "+ KEY_AREA_ID+","+KEY_AREA_NAME+","+KEY_AREA_COLOR +" FROM " + TABLE_AREAS;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
-                WeightChangeCalendar weightChangeCalendar = new WeightChangeCalendar.Builder(cursor.getInt(0))
-                        .addDay(cursor.getString(2))
-                        .addWeight(Integer.parseInt(cursor.getString(3)))
+                Area area = new Area.Builder(cursor.getInt(0))
+                        .addName(cursor.getString(1))
+                        .addColor(cursor.getInt(2))
                         .build();
-                weightChangeCalendarList.add(weightChangeCalendar);
+                areas.add(area);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
-        return weightChangeCalendarList;
+        return areas;
     }
 
-    public List<WeightChangeCalendar> getAllWeightChangeCalendarOfUser(int user_id) {
-        List<WeightChangeCalendar> weightChangeCalendarList = new ArrayList<>();
-        String selectQuery = "SELECT  * FROM " + TABLE_WEIGHT_CHANGE_CALENDAR + " WHERE "
-                + KEY_WEIGHT_CHANGE_CALENDAR_ID_USER + "=" + user_id + " ORDER BY " + KEY_WEIGHT_CHANGE_CALENDAR_DAY;
+    public List<Area> getAllAreasOfUser(int user_id) {
+        List<Area> areas = new ArrayList<>();
+        String selectQuery = "SELECT "+ KEY_AREA_ID+","+KEY_AREA_NAME+","+KEY_AREA_COLOR +" FROM " + TABLE_AREAS
+                + " WHERE "   + KEY_AREA_ID_USER + "=" + user_id + " ORDER BY " + KEY_AREA_ID;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
             do {
-                WeightChangeCalendar weightChangeCalendar = new WeightChangeCalendar.Builder(cursor.getInt(0))
-                        .addDay(cursor.getString(2))
-                        .addWeight(Integer.parseInt(cursor.getString(3)))
+                Area area = new Area.Builder(cursor.getInt(0))
+                        .addName(cursor.getString(1))
+                        .addColor(cursor.getInt(2))
                         .build();
-                weightChangeCalendarList.add(weightChangeCalendar);
+                areas.add(area);
             } while (cursor.moveToNext());
         }
 
         cursor.close();
-        return weightChangeCalendarList;
+        return areas;
     }
 
     public List<Exercise> getAllExercises() {

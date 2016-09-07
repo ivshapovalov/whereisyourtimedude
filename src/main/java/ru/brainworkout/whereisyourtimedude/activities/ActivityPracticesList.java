@@ -194,7 +194,6 @@ public class ActivityPracticesList extends AppCompatActivity {
         sv.addView(layout);
 
     }
-
     private void rowPractice_onClick(final TableRow v) {
 
         blink(v);

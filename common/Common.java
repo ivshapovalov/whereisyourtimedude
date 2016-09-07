@@ -20,7 +20,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
-public class Common{
+public class Common {
 
     public static ArrayList<Area> areas;
     public static LinkedList<PracticeHistory> practices = new LinkedList<>();
@@ -29,10 +29,10 @@ public class Common{
     static {
         areas = new ArrayList<>();
 
-        ArrayList<Integer> colors=AlphabetColors();
-        for (int i=0;i<colors.size();i++
-             ) {
-            areas.add(new Area(colors.get(i),"AREA "+i));
+        ArrayList<Integer> colors = AlphabetColors();
+        for (int i = 0; i < colors.size(); i++
+                ) {
+            areas.add(new Area(colors.get(i), "AREA " + i));
         }
 
         areas.add(new Area(Color.GREEN, "AREA 1"));
@@ -44,7 +44,7 @@ public class Common{
 
     public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
     public static User dbCurrentUser;
-    public static final boolean isDebug=true;
+    public static final boolean isDebug = true;
 
     public static Date ConvertStringToDate(final String date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STRING);
@@ -65,6 +65,7 @@ public class Common{
     public static String ConvertMillisToString(final long Millis) {
         return ConvertDateToString(new Date(Millis));
     }
+
     public static String ConvertDateToString(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(DATE_FORMAT_STRING);

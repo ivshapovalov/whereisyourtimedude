@@ -84,33 +84,33 @@ public class ActivityMain extends AppCompatActivity {
 
     }
 
-    public void btAreas_onClick(final View view) {
-
-        Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
-        startActivity(intent);
-
-    }
-
-    public void btProjects_onClick(final View view) {
-
-        Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
-        startActivity(intent);
-
-    }
-
-    public void btPractices_onClick(final View view) {
-
-        Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
-        startActivity(intent);
-
-    }
-
-    public void btPracticeHistory_onClick(final View view) {
-
-        Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
-        startActivity(intent);
-
-    }
+//    public void btAreas_onClick(final View view) {
+//
+//        Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
+//        startActivity(intent);
+//
+//    }
+//
+//    public void btProjects_onClick(final View view) {
+//
+//        Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
+//        startActivity(intent);
+//
+//    }
+//
+//    public void btPractices_onClick(final View view) {
+//
+//        Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
+//        startActivity(intent);
+//
+//    }
+//
+//    public void btPracticeHistory_onClick(final View view) {
+//
+//        Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
+//        startActivity(intent);
+//
+//    }
 
     public void btChrono_onClick(final View view) {
 

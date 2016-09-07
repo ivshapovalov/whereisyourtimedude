@@ -22,25 +22,25 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
 public class Common {
 
-    public static ArrayList<Area> areas;
-    public static LinkedList<PracticeHistory> practices = new LinkedList<>();
-    public static Map<Long, LinkedList<PracticeHistory>> DB = new TreeMap<>();
-
-    static {
-        areas = new ArrayList<>();
-
-        ArrayList<Integer> colors = AlphabetColors();
-        for (int i = 0; i < colors.size(); i++
-                ) {
-            areas.add(new Area(colors.get(i), "AREA " + i));
-        }
-
-        areas.add(new Area(Color.GREEN, "AREA 1"));
-        areas.add(new Area(Color.RED, "AREA 2"));
-        areas.add(new Area(Color.YELLOW, "AREA 3"));
-        areas.add(new Area(Color.MAGENTA, "AREA 4"));
-        areas.add(new Area(Color.CYAN, "AREA 5"));
-    }
+//    public static ArrayList<Area> areas;
+//    public static LinkedList<PracticeHistory> practices = new LinkedList<>();
+//    public static Map<Long, LinkedList<PracticeHistory>> DB = new TreeMap<>();
+//
+//    static {
+//        areas = new ArrayList<>();
+//
+//        ArrayList<Integer> colors = AlphabetColors();
+//        for (int i = 0; i < colors.size(); i++
+//                ) {
+//            areas.add(new Area(colors.get(i), "AREA " + i));
+//        }
+//
+//        areas.add(new Area(Color.GREEN, "AREA 1"));
+//        areas.add(new Area(Color.RED, "AREA 2"));
+//        areas.add(new Area(Color.YELLOW, "AREA 3"));
+//        areas.add(new Area(Color.MAGENTA, "AREA 4"));
+//        areas.add(new Area(Color.CYAN, "AREA 5"));
+//    }
 
     public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
     public static User dbCurrentUser;

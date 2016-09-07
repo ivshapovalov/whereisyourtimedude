@@ -84,12 +84,12 @@ public class ActivityMain extends AppCompatActivity {
 
     }
 
-//    public void btAreas_onClick(final View view) {
-//
-//        Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
-//        startActivity(intent);
-//
-//    }
+    public void btAreas_onClick(final View view) {
+
+        Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
+        startActivity(intent);
+
+    }
 //
 //    public void btProjects_onClick(final View view) {
 //

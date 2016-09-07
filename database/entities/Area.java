@@ -38,6 +38,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
         this.id = builder.id;
         this.name = builder.name;
+        this.color=builder.color;
     }
 
     @Override

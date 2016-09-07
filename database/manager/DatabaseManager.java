@@ -305,7 +305,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public Area getArea(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_AREAS, new String[]{KEY_AREA_ID, KEY_AREA_ID_USER, KEY_AREA_NAME, KEY_AREA_COLOR}, KEY_AREA_ID + "=?",
+        Cursor cursor = db.query(TABLE_AREAS, new String[]{KEY_AREA_ID, KEY_AREA_NAME, KEY_AREA_COLOR}, KEY_AREA_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -314,8 +314,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
             throw new TableDoesNotContainElementException("There is no Area with id - " + id);
         } else {
             area = new Area.Builder(Integer.parseInt(cursor.getString(0)))
-                    .addName(cursor.getString(2))
-                    .addColor(cursor.getInt(3)).build();
+                    .addName(cursor.getString(1))
+                    .addColor(cursor.getInt(2)).build();
 
             cursor.close();
             return area;

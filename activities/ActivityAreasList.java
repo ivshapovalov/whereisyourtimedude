@@ -16,16 +16,17 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
+import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
-public class ActivityUsersList extends AppCompatActivity {
+public class ActivityAreasList extends AppCompatActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
@@ -42,15 +43,15 @@ public class ActivityUsersList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_users_list);
+        setContentView(R.layout.activity_areas_list);
 
         if (!Common.isDebug) {
-            int mEditorID = getResources().getIdentifier("btUsersDBEditor", "id", getPackageName());
+            int mEditorID = getResources().getIdentifier("btAreasDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
             HideEditorButton(btEditor);
         }
 
-        showUsers();
+        showAreas();
 
         setTitleOfActivity(this);
     }
@@ -60,14 +61,14 @@ public class ActivityUsersList extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        showUsers();
+        showAreas();
 
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 0);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
         if (mRow != null) {
-            int mScrID = getResources().getIdentifier("svTableUsers", "id", getPackageName());
+            int mScrID = getResources().getIdentifier("svTableAreas", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
 
@@ -77,20 +78,26 @@ public class ActivityUsersList extends AppCompatActivity {
     }
 
 
-    public void btUsersAdd_onClick(final View view) {
+    public void btAreasAdd_onClick(final View view) {
 
         blink(view);
-        Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("IsNew", true);
         startActivity(intent);
 
     }
 
-    private void showUsers() {
+    private void showAreas() {
 
-        List<User> users= DB.getAllUsers();
+        List<Area> areas;
+        if (dbCurrentUser != null) {
 
-        ScrollView sv = (ScrollView) findViewById(R.id.svTableUsers);
+            areas = DB.getAllAreasOfUser(dbCurrentUser.getID());
+        } else {
+            areas = DB.getAllAreas();
+        }
+
+        ScrollView sv = (ScrollView) findViewById(R.id.svTableAreas);
         try {
 
             sv.removeAllViews();
@@ -101,7 +108,7 @@ public class ActivityUsersList extends AppCompatActivity {
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
 
         mHeight = displaymetrics.heightPixels / MAX_VERTICAL_BUTTON_COUNT;
-        mWidth = displaymetrics.widthPixels/ MAX_HORIZONTAL_BUTTON_COUNT;
+        mWidth = displaymetrics.widthPixels / MAX_HORIZONTAL_BUTTON_COUNT;
         mTextSize = (int) (Math.min(mWidth, mHeight) / 1.5 / getApplicationContext().getResources().getDisplayMetrics().density);
 
         TableRow trowButtons = (TableRow) findViewById(R.id.trowButtons);
@@ -113,20 +120,23 @@ public class ActivityUsersList extends AppCompatActivity {
         TableLayout layout = new TableLayout(this);
         layout.setStretchAllColumns(true);
 
-        for (int numUser = 0; numUser < users.size(); numUser++) {
+        for (int numArea = 0; numArea < areas.size(); numArea++) {
+
+            Area currentArea=areas.get(numArea);
+
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + users.get(numUser).getID());
+            mRow.setId(NUMBER_OF_VIEWS + currentArea.getID());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    rowUser_onClick((TableRow) v);
+                    rowArea_onClick((TableRow) v);
                 }
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(users.get(numUser).getID()));
+            txt.setText(String.valueOf(currentArea.getID()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -135,13 +145,20 @@ public class ActivityUsersList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name= String.valueOf(users.get(numUser).getName())+((users.get(numUser).isCurrentUser()==1)?" (CURRENT)":"");
+            String name = String.valueOf(currentArea.getName());
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
+            mRow.addView(txt);
+
+            txt = new TextView(this);
+            txt.setBackgroundColor(currentArea.getColor());
+            txt.setGravity(Gravity.CENTER);
+            txt.setHeight(mHeight);
+            txt.setTextSize(mTextSize);
             mRow.addView(txt);
 
             mRow.setBackgroundResource(R.drawable.bt_border);
@@ -152,20 +169,20 @@ public class ActivityUsersList extends AppCompatActivity {
 
     }
 
-    private void rowUser_onClick(final TableRow v) {
+    private void rowArea_onClick(final TableRow v) {
 
         blink(v);
 
         int id = v.getId() % NUMBER_OF_VIEWS;
 
-        Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("id", id);
         intent.putExtra("IsNew", false);
         startActivity(intent);
 
     }
 
-    public void bt_Edit_onClick(final View view) {
+    public void btEdit_onClick(final View view) {
 
         blink(view);
 

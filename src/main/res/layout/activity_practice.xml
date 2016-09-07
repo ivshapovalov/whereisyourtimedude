@@ -81,14 +81,15 @@
                         android:layout_span="5"
                         style="@android:style/TextAppearance.Small"/>
 
-                    <TextView
+                    <CheckBox
                         style="@android:style/TextAppearance.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tvArea"
+                        android:text="IS ACTIVE"
+                        android:id="@+id/cbIsActive"
                         android:layout_span="15"
-                        android:onClick="tvArea_onClick"
-                        android:text="CHOOSE AREA"/>
+                        android:enabled="true"
+                        android:textColor="@color/text_color"/>
 
                 </TableRow>
 
@@ -115,6 +116,25 @@
                         style="@android:style/TextAppearance.Small"
                         android:textColor="@color/text_color" />
 
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="20dp"
+                    android:layout_gravity="center"
+                    android:gravity="center">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvProject"
+                        android:layout_span="30"
+                        android:onClick="tvProject_onClick"
+                        android:text="CHOOSE PROJECT"
+                        android:gravity="center"
+                        android:textStyle="bold"/>
                 </TableRow>
 
             </TableLayout>

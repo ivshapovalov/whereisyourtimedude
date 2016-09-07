@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ActivityArea">
+    tools:context=".activities.ActivityProject">
 
 
     <TableLayout
@@ -70,7 +70,7 @@
                         android:layout_height="wrap_content"
                         android:text="ID"
                         android:id="@+id/textView"
-                        android:layout_span="10"
+                        android:layout_span="5"
                         style="@android:style/TextAppearance.Small"
                         android:textColor="@color/text_color" />
 
@@ -85,11 +85,10 @@
                         style="@android:style/TextAppearance.Small"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="AREA COLOR"
-                        android:id="@+id/tvColor"
-                        android:layout_span="10"
-                        android:textColor="@color/text_color"
-                        android:onClick="tvColor_onClick"/>
+                        android:id="@+id/tvArea"
+                        android:layout_span="20"
+                        android:onClick="tvArea_onClick"
+                        android:text="CHOOSE AREA"/>
 
                 </TableRow>
 

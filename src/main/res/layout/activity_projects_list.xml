@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context=".activities.ActivityUsersList">
+    tools:context=".activities.ActivityProjectsList">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -33,8 +33,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ADD"
-                android:id="@+id/btAreasAdd"
-                android:onClick="btAreasAdd_onClick"
+                android:id="@+id/btProjectsAdd"
+                android:onClick="btProjectAdd_onClick"
                 android:layout_span="8"
                 android:layout_gravity="center_vertical"
                 android:background="@drawable/bt_border"
@@ -43,7 +43,7 @@
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btAreasDBEditor"
+                android:id="@+id/btProjectDBEditor"
                 android:onClick="btEdit_onClick"
                 android:layout_span="10"
                 android:text="EDITOR"
@@ -57,7 +57,7 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/svTableAreas"
+            android:id="@+id/svTableProjects"
             android:layout_marginTop="20dp">
 
         </ScrollView>

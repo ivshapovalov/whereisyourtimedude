@@ -16,20 +16,16 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
-import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
+import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToString;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
-public class ActivityPracticeHistoryList extends AppCompatActivity {
+public class ActivityUsersList extends AppCompatActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
@@ -46,15 +42,15 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practices_history_list);
+        setContentView(R.layout.activity_users_list);
 
         if (!Common.isDebug) {
-            int mEditorID = getResources().getIdentifier("btPracticeHistoryDBEditor", "id", getPackageName());
+            int mEditorID = getResources().getIdentifier("btUsersDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
             HideEditorButton(btEditor);
         }
 
-        showPracticeHistory();
+        showUsers();
 
         setTitleOfActivity(this);
     }
@@ -64,14 +60,14 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        showPracticeHistory();
+        showUsers();
 
         Intent intent = getIntent();
-        int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+        int id = intent.getIntExtra("id", 0);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
         if (mRow != null) {
-            int mScrID = getResources().getIdentifier("svTablePractices", "id", getPackageName());
+            int mScrID = getResources().getIdentifier("svTableUsers", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
 
@@ -81,26 +77,20 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     }
 
 
-    public void btPracticeHistoryAdd_onClick(final View view) {
+    public void btUsersAdd_onClick(final View view) {
 
         blink(view);
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
         intent.putExtra("IsNew", true);
         startActivity(intent);
 
     }
 
-    private void showPracticeHistory() {
+    private void showUsers() {
 
-        List<PracticeHistory> practiceHistoryList;
-        if (dbCurrentUser != null) {
+        List<User> users= DB.getAllUsers();
 
-            practiceHistoryList = DB.getAllPracticeHistoryOfUser(dbCurrentUser.getID());
-        } else {
-            practiceHistoryList = DB.getAllPracticeHistory();
-        }
-
-        ScrollView sv = (ScrollView) findViewById(R.id.svTablePracticeHistory);
+        ScrollView sv = (ScrollView) findViewById(R.id.svTableUsers);
         try {
 
             sv.removeAllViews();
@@ -111,7 +101,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
 
         mHeight = displaymetrics.heightPixels / MAX_VERTICAL_BUTTON_COUNT;
-        mWidth = displaymetrics.widthPixels / MAX_HORIZONTAL_BUTTON_COUNT;
+        mWidth = displaymetrics.widthPixels/ MAX_HORIZONTAL_BUTTON_COUNT;
         mTextSize = (int) (Math.min(mWidth, mHeight) / 1.5 / getApplicationContext().getResources().getDisplayMetrics().density);
 
         TableRow trowButtons = (TableRow) findViewById(R.id.trowButtons);
@@ -123,23 +113,20 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         TableLayout layout = new TableLayout(this);
         layout.setStretchAllColumns(true);
 
-        for (int numPracticeHistory = 0; numPracticeHistory < practiceHistoryList.size(); numPracticeHistory++) {
-
-            PracticeHistory currentPracticeHistory = practiceHistoryList.get(numPracticeHistory);
-
+        for (int numUser = 0; numUser < users.size(); numUser++) {
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentPracticeHistory.getID());
+            mRow.setId(NUMBER_OF_VIEWS + users.get(numUser).getID());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    rowPracticeHistory_onClick((TableRow) v);
+                    rowUser_onClick((TableRow) v);
                 }
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentPracticeHistory.getID()));
+            txt.setText(String.valueOf(users.get(numUser).getID()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -148,25 +135,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = ConvertMillisToString(currentPracticeHistory.getDate());
+            String name= String.valueOf(users.get(numUser).getName())+((users.get(numUser).isCurrentUser()==1)?" (CURRENT)":"");
             txt.setText(name);
-            txt.setBackgroundResource(R.drawable.bt_border);
-            txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
-            txt.setTextSize(mTextSize);
-            txt.setTextColor(getResources().getColor(R.color.text_color));
-            mRow.addView(txt);
-
-            txt = new TextView(this);
-            String namePractice="";
-            try {
-                Practice practice=DB.getPractice(currentPracticeHistory.getIdPractice());
-                namePractice=practice.getName();
-
-            } catch (TableDoesNotContainElementException e) {
-
-            }
-            txt.setText(namePractice);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -182,20 +152,20 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     }
 
-    private void rowPracticeHistory_onClick(final TableRow v) {
+    private void rowUser_onClick(final TableRow v) {
 
         blink(v);
 
         int id = v.getId() % NUMBER_OF_VIEWS;
 
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-        intent.putExtra("CurrentPracticeHistoryID", id);
+        Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
+        intent.putExtra("id", id);
         intent.putExtra("IsNew", false);
         startActivity(intent);
 
     }
 
-    public void btEdit_onClick(final View view) {
+    public void bt_Edit_onClick(final View view) {
 
         blink(view);
 

@@ -7,10 +7,13 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.OnColorSelectedListener;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import java.util.List;
 
@@ -24,100 +27,74 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
-public class ActivityPractice extends AppCompatActivity {
+public class ActivityProject extends AppCompatActivity {
 
-    private Practice mCurrentPractice;
+    private Project mCurrentProject;
     private final DatabaseManager DB = new DatabaseManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practice);
+        setContentView(R.layout.activity_project);
 
         Intent intent = getIntent();
-        boolean mPracticeIsNew = intent.getBooleanExtra("IsNew", false);
+        boolean mProjectIsNew = intent.getBooleanExtra("IsNew", false);
 
-        if (mPracticeIsNew) {
-            mCurrentPractice = new Practice.Builder(DB.getPracticeMaxNumber() + 1).build();
+
+        if (mProjectIsNew) {
+            mCurrentProject = new Project.Builder(DB.getProjectMaxNumber() + 1).build();
         } else {
-            int id = intent.getIntExtra("CurrentPracticeID", 0);
+            int id = intent.getIntExtra("CurrentProjectID", 0);
             try {
-                mCurrentPractice = DB.getPractice(id);
+                mCurrentProject = DB.getProject(id);
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
         }
-        int id_project = intent.getIntExtra("CurrentProjectID", 0);
-        if (id_project != 0) {
-            mCurrentPractice.setIdProject(id_project);
+        int id_area=intent.getIntExtra("CurrentAreaID",0);
+        if (id_area!=0) {
+            mCurrentProject.setIdArea(id_area);
         }
 
-        showPracticeOnScreen();
+        showProjectOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         setTitleOfActivity(this);
     }
 
 
-    private void showPracticeOnScreen() {
-
-
-        int mIsActiveID = getResources().getIdentifier("cbIsActive", "id", getPackageName());
-        CheckBox cbIsActive = (CheckBox) findViewById(mIsActiveID);
-        if (cbIsActive != null) {
-            if (mCurrentPractice.getIsActive() != 0) {
-                cbIsActive.setChecked(true);
-            } else {
-                cbIsActive.setChecked(false);
-            }
-            cbIsActive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                    if (mCurrentPractice != null) {
-                        if (isChecked) {
-                            mCurrentPractice.setIsActive(1);
-                        } else {
-                            mCurrentPractice.setIsActive(0);
-                        }
-
-                    }
-                }
-            });
-
-        }
-
+    private void showProjectOnScreen() {
 
         //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(mCurrentPractice.getID()));
+            tvID.setText(String.valueOf(mCurrentProject.getID()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(mCurrentPractice.getName());
+            etName.setText(mCurrentProject.getName());
         }
 
         //ID
-        int mProject = getResources().getIdentifier("tvProject", "id", getPackageName());
-        TextView tvProject = (TextView) findViewById(mProject);
-        if (tvProject != null) {
+        int mArea = getResources().getIdentifier("tvArea", "id", getPackageName());
+        TextView tvArea = (TextView) findViewById(mArea);
+        if (tvArea != null) {
 
-            String nameProject = "";
+            String nameArea = "";
             try {
-                Project project = DB.getProject(mCurrentPractice.getIdProject());
-                nameProject = project.getName();
-
+                Area area = DB.getArea(mCurrentProject.getIdArea());
+                nameArea = area.getName();
+                tvArea.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
 
             }
-            tvProject.setText(nameProject);
+            tvArea.setText(nameArea);
         }
 
     }
@@ -125,8 +102,8 @@ public class ActivityPractice extends AppCompatActivity {
     public void btClose_onClick(final View view) {
 
         blink(view);
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
+        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+        intent.putExtra("CurrentProjectID", mCurrentProject.getID());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -140,28 +117,28 @@ public class ActivityPractice extends AppCompatActivity {
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
-            mCurrentPractice.setName(String.valueOf(etName.getText()));
+            mCurrentProject.setName(String.valueOf(etName.getText()));
 
         }
 
     }
 
-    public void tvProject_onClick(View view) {
+    public void tvArea_onClick(View view) {
 
         blink(view);
 
         getPropertiesFromScreen();
 
-        mCurrentPractice.dbSave(DB);
+        mCurrentProject.dbSave(DB);
 
-        int id_project = mCurrentPractice.getIdProject();
+        int id_area = mCurrentProject.getIdArea();
 
-        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
+        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+        intent.putExtra("CurrentAreaID", id_area);
         intent.putExtra("IsNew", false);
         intent.putExtra("forChoice", true);
-        intent.putExtra("CurrentProjectID", id_project);
-        intent.putExtra("CallerActivity", "ActivityPractice");
+        intent.putExtra("CurrentProjectID",mCurrentProject.getID());
+        intent.putExtra("CallerActivity","ActivityProject");
         startActivity(intent);
 
     }
@@ -171,10 +148,10 @@ public class ActivityPractice extends AppCompatActivity {
         blink(view);
         getPropertiesFromScreen();
 
-        mCurrentPractice.dbSave(DB);
+        mCurrentProject.dbSave(DB);
 
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
+        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+        intent.putExtra("CurrentProjectID", mCurrentProject.getID());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -185,13 +162,21 @@ public class ActivityPractice extends AppCompatActivity {
 
 
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущее занятие и его историю?")
+                .setMessage("Вы действительно хотите удалить текущий проект, его занятия и историю?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DB.deleteAllPracticeHistoryOfPractice(mCurrentPractice.getID());
 
-                        mCurrentPractice.dbDelete(DB);
+                        List<Practice> practices = DB.getAllActivePracticesOfProject(mCurrentProject.getID());
+
+                        for (Practice practice : practices
+                                ) {
+                            DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+
+                        }
+                        DB.deleteAllPracticesOfProject(mCurrentProject.getID());
+
+                        mCurrentProject.dbDelete(DB);
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

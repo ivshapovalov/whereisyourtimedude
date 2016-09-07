@@ -17,7 +17,6 @@ import java.util.List;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
@@ -28,7 +27,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
-public class ActivityPracticesList extends AppCompatActivity {
+public class ActivityProjectsList extends AppCompatActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
@@ -42,29 +41,29 @@ public class ActivityPracticesList extends AppCompatActivity {
 
     private boolean forChoice = false;
     private String mCallerActivity;
+    private int id_project;
     private int id_practice;
-    private int id_practice_history;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practices_list);
+        setContentView(R.layout.activity_projects_list);
 
         Intent intent = getIntent();
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
+        id_project = intent.getIntExtra("CurrentProjectID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_practice_history = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
 
         if (!Common.isDebug) {
-            int mEditorID = getResources().getIdentifier("btPracticesDBEditor", "id", getPackageName());
+            int mEditorID = getResources().getIdentifier("btProjectsDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
             HideEditorButton(btEditor);
         }
 
-        showPractices();
+        showProjects();
 
         setTitleOfActivity(this);
     }
@@ -74,17 +73,17 @@ public class ActivityPracticesList extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        showPractices();
+        showProjects();
 
         Intent intent = getIntent();
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
+        id_project = intent.getIntExtra("CurrentProjectID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_practice_history = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
 
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_practice);
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_project);
         if (mRow != null) {
-            int mScrID = getResources().getIdentifier("svTablePractices", "id", getPackageName());
+            int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
 
@@ -94,26 +93,26 @@ public class ActivityPracticesList extends AppCompatActivity {
     }
 
 
-    public void btPracticeAdd_onClick(final View view) {
+    public void btProjectAdd_onClick(final View view) {
 
         blink(view);
-        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.putExtra("IsNew", true);
         startActivity(intent);
 
     }
 
-    private void showPractices() {
+    private void showProjects() {
 
-        List<Practice> practices;
+        List<Project> projects;
         if (dbCurrentUser != null) {
 
-            practices = DB.getAllActivePracticesOfUser(dbCurrentUser.getID());
+            projects = DB.getAllProjectsOfUser(dbCurrentUser.getID());
         } else {
-            practices = DB.getAllActivePractices();
+            projects = DB.getAllProjects();
         }
 
-        ScrollView sv = (ScrollView) findViewById(R.id.svTablePractices);
+        ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);
         try {
 
             sv.removeAllViews();
@@ -136,23 +135,23 @@ public class ActivityPracticesList extends AppCompatActivity {
         TableLayout layout = new TableLayout(this);
         layout.setStretchAllColumns(true);
 
-        for (int numPractice = 0; numPractice < practices.size(); numPractice++) {
+        for (int numProject = 0; numProject < projects.size(); numProject++) {
 
-            Practice currentPractice = practices.get(numPractice);
+            Project currentProject = projects.get(numProject);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentPractice.getID());
+            mRow.setId(NUMBER_OF_VIEWS + currentProject.getID());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    rowPractice_onClick((TableRow) v);
+                    rowProject_onClick((TableRow) v);
                 }
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentPractice.getID()));
+            txt.setText(String.valueOf(currentProject.getID()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -161,7 +160,7 @@ public class ActivityPracticesList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = String.valueOf(currentPractice.getName());
+            String name = String.valueOf(currentProject.getName());
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -171,16 +170,16 @@ public class ActivityPracticesList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String nameProject="";
+            String nameArea="";
             try {
-                Project project=DB.getProject(currentPractice.getIdProject());
-                nameProject=project.getName();
-
+                Area area=DB.getArea(currentProject.getIdArea());
+                nameArea=area.getName();
+                txt.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
-
+                txt.setBackgroundResource(R.drawable.bt_border);
             }
-            txt.setText(nameProject);
-            txt.setBackgroundResource(R.drawable.bt_border);
+            txt.setText(nameArea);
+
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
@@ -195,7 +194,7 @@ public class ActivityPracticesList extends AppCompatActivity {
 
     }
 
-    private void rowPractice_onClick(final TableRow v) {
+    private void rowProject_onClick(final TableRow v) {
 
         blink(v);
         Intent intent=new Intent();
@@ -209,14 +208,14 @@ public class ActivityPracticesList extends AppCompatActivity {
             }
 
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentPracticeHistoryID", id_practice_history);
+            intent.putExtra("CurrentPracticeID", id_practice);
             intent.putExtra("IsNew", false);
-            intent.putExtra("CurrentPracticeID", id);
+            intent.putExtra("CurrentProjectID", id);
 
         } else {
 
-            intent= new Intent(getApplicationContext(), ActivityPractice.class);
-            intent.putExtra("CurrentPracticeID", id);
+            intent= new Intent(getApplicationContext(), ActivityProject.class);
+            intent.putExtra("CurrentProjectID", id);
             intent.putExtra("IsNew", false);
 
 
@@ -255,9 +254,9 @@ public class ActivityPracticesList extends AppCompatActivity {
             }
 
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentPracticeHistoryID", id_practice_history);
-            intent.putExtra("IsNew", false);
             intent.putExtra("CurrentPracticeID", id_practice);
+            intent.putExtra("IsNew", false);
+            intent.putExtra("CurrentProjectID", id_project);
 
         } else {
             intent = new Intent(getApplicationContext(), ActivityMain.class);

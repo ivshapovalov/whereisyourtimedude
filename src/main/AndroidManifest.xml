@@ -49,6 +49,14 @@
             android:label="@string/practice_name"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activities.ActivityPracticeHistoryList"
+            android:label="@string/practice_history_list_name"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.ActivityPracticeHistory"
+            android:label="@string/practice_history_name"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activities.ActivityMain"
             android:screenOrientation="portrait">
             <intent-filter>

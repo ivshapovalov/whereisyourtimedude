@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">WhereIsYourTimeDude</string>
+    <string name="tools_name">Tools"</string>
+    <string name="users_list_name">Users</string>
+    <string name="user_name">User</string>
+    <string name="areas_list_name">Areas</string>
+    <string name="area_name">Area"</string>
+    <string name="projects_list_name">Projects</string>
+    <string name="project_name">Project"</string>
+    <string name="practices_list_name">Practices</string>
+    <string name="practice_name">Practice"</string>
+    <string name="practice_history_list_name">Practice histories</string>
+    <string name="practice_history_name">Practice history"</string>
+    <string name="calendar_view_name">Date choice</string>
+    <string name="about_name">About</string>
+    <string name="about_text">2016. This program will help you to chrono your activities</string>
+</resources>

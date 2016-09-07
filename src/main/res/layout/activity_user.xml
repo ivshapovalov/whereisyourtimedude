@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ActivityUser">
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CLOSE"
+                android:id="@+id/button4"
+                android:onClick="btClose_onClick"
+                android:layout_span="10"
+                style="@android:style/TextAppearance.Small"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SAVE"
+                android:id="@+id/button3"
+                android:onClick="btSave_onClick"
+                android:layout_span="10"
+                style="@android:style/TextAppearance.Small"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DELETE"
+                android:id="@+id/button5"
+                android:onClick="btDelete_onClick"
+                android:layout_span="10"
+                style="@android:style/TextAppearance.Small"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+        </TableRow>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView"
+            android:layout_weight="30">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID"
+                        android:id="@+id/textView"
+                        android:layout_span="10"
+                        style="@android:style/TextAppearance.Small"
+                        android:textColor="@color/text_color" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvID"
+                        android:layout_span="5"
+                        style="@android:style/TextAppearance.Small"/>
+
+                    <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="IS CURRENT"
+                        android:id="@+id/cbIsCurrent"
+                        android:layout_span="15"
+                        style="@android:style/TextAppearance.Small"
+                        android:enabled="true"
+                        android:textColor="@color/text_color"
+                        android:checked="false" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="NAME"
+                        android:id="@+id/textView2"
+                        android:layout_span="10"
+                        style="@android:style/TextAppearance.Small"
+                        android:textColor="@color/text_color" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:ems="10"
+                        android:id="@+id/etName"
+                        android:layout_span="20"
+                        style="@android:style/TextAppearance.Small"
+                        android:textColor="@color/text_color" />
+
+                </TableRow>
+
+            </TableLayout>
+        </ScrollView>
+
+
+
+    </TableLayout>
+
+</RelativeLayout>
+

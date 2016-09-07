@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".activities.ActivityUsersList">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/trowButtons"
+            android:background="@drawable/bt_border">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonHome"
+                android:onClick="buttonHome_onClick"
+                android:layout_span="8"
+                android:background="@drawable/bt_border"
+                android:text="HOME"
+                android:textColor="@color/text_color" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="ADD"
+                android:id="@+id/btUsersAdd"
+                android:onClick="btUsersAdd_onClick"
+                android:layout_span="8"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btUsersDBEditor"
+                android:onClick="bt_Edit_onClick"
+                android:layout_span="10"
+                android:text="EDITOR"
+                style="?android:attr/buttonStyleSmall"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+
+        </TableRow>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/svTableUsers"
+            android:layout_marginTop="20dp">
+
+        </ScrollView>
+
+    </TableLayout>
+
+</RelativeLayout>

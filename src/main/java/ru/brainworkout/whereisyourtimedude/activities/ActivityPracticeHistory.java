@@ -24,6 +24,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
+
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
@@ -33,6 +34,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
     TextView tvID;
+
     TextView tvDate;
     TextView tvDuration;
     TextView tvLastDate;

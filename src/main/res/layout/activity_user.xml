@@ -109,12 +109,12 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textMultiLine"
                         android:ems="10"
                         android:id="@+id/etName"
                         android:layout_span="20"
                         style="@android:style/TextAppearance.Small"
-                        android:textColor="@color/text_color" />
+                        android:textColor="@color/text_color"
+                        />
 
                 </TableRow>
 

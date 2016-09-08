@@ -29,7 +29,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     private PracticeHistory mCurrentPracticeHistory;
     private final DatabaseManager DB = new DatabaseManager(this);
-
+    private  boolean isNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +38,9 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         setContentView(R.layout.activity_practice_history);
 
         Intent intent = getIntent();
-        boolean mPracticeIsNew = intent.getBooleanExtra("IsNew", false);
+        isNew= intent.getBooleanExtra("isNew", false);
 
-        if (mPracticeIsNew) {
+        if (isNew) {
             mCurrentPracticeHistory = new PracticeHistory.Builder(DB.getPracticeHistoryMaxNumber() + 1).build();
             Calendar calendar = Calendar.getInstance();
 
@@ -173,7 +173,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeHistoryID", mCurrentPracticeHistory.getID());
-        intent.putExtra("IsNew", false);
+        intent.putExtra("isNew", false);
         intent.putExtra("forChoice", true);
         intent.putExtra("CurrentPracticeID", id_practice);
         intent.putExtra("CallerActivity", "ActivityPracticeHistory");

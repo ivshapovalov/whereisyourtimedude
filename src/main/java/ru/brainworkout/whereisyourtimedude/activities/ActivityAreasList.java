@@ -69,7 +69,7 @@ public class ActivityAreasList extends AppCompatActivity {
         showAreas();
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("IsNew", false);
+        isNew = intent.getBooleanExtra("isNew", false);
         id_area = intent.getIntExtra("CurrentAreaID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
@@ -91,7 +91,7 @@ public class ActivityAreasList extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
-        intent.putExtra("IsNew", true);
+        intent.putExtra("isNew", true);
         intent.putExtra("forChoice",forChoice);
         startActivity(intent);
 
@@ -193,14 +193,14 @@ public class ActivityAreasList extends AppCompatActivity {
             }
             currentProject.setIdArea(id);
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("IsNew", isNew);
+            intent.putExtra("isNew", isNew);
 
 
         } else {
 
             intent= new Intent(getApplicationContext(), ActivityArea.class);
             intent.putExtra("CurrentAreaID", id);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("isNew", false);
 
 
         }
@@ -237,7 +237,7 @@ public class ActivityAreasList extends AppCompatActivity {
             }
 
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("IsNew", isNew);
+            intent.putExtra("isNew", isNew);
             intent.putExtra("CurrentAreaID", id_area);
 
         } else {

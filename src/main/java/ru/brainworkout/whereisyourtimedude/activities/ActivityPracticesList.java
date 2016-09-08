@@ -98,7 +98,7 @@ public class ActivityPracticesList extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
-        intent.putExtra("IsNew", true);
+        intent.putExtra("isNew", true);
         startActivity(intent);
 
     }
@@ -209,14 +209,14 @@ public class ActivityPracticesList extends AppCompatActivity {
 
             intent = new Intent(getApplicationContext(), myClass);
             intent.putExtra("CurrentPracticeHistoryID", id_practice_history);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("isNew", false);
             intent.putExtra("CurrentPracticeID", id);
 
         } else {
 
             intent= new Intent(getApplicationContext(), ActivityPractice.class);
             intent.putExtra("CurrentPracticeID", id);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("isNew", false);
 
 
         }
@@ -255,7 +255,7 @@ public class ActivityPracticesList extends AppCompatActivity {
 
             intent = new Intent(getApplicationContext(), myClass);
             intent.putExtra("CurrentPracticeHistoryID", id_practice_history);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("isNew", false);
             intent.putExtra("CurrentPracticeID", id_practice);
 
         } else {

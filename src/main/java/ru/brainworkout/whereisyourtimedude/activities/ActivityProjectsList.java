@@ -26,6 +26,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
 public class ActivityProjectsList extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class ActivityProjectsList extends AppCompatActivity {
     private boolean forChoice = false;
     private String mCallerActivity;
     private int id_project;
-    private int id_practice;
+    private boolean isNew;
 
 
     @Override
@@ -56,7 +57,6 @@ public class ActivityProjectsList extends AppCompatActivity {
         id_project = intent.getIntExtra("CurrentProjectID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btProjectsDBEditor", "id", getPackageName());
@@ -80,7 +80,6 @@ public class ActivityProjectsList extends AppCompatActivity {
         id_project = intent.getIntExtra("CurrentProjectID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_project);
         if (mRow != null) {
@@ -98,7 +97,8 @@ public class ActivityProjectsList extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
-        intent.putExtra("IsNew", true);
+        intent.putExtra("isNew", true);
+        intent.putExtra("forChoice",forChoice);
         startActivity(intent);
 
     }
@@ -207,17 +207,15 @@ public class ActivityProjectsList extends AppCompatActivity {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
+            currentPractice.setIdProject(id);
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentPracticeID", id_practice);
-            intent.putExtra("IsNew", false);
-            intent.putExtra("CurrentProjectID", id);
+            intent.putExtra("isNew", false);
 
         } else {
 
             intent= new Intent(getApplicationContext(), ActivityProject.class);
             intent.putExtra("CurrentProjectID", id);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("isNew", false);
 
 
         }
@@ -253,10 +251,8 @@ public class ActivityProjectsList extends AppCompatActivity {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentPracticeID", id_practice);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("isNew", false);
             intent.putExtra("CurrentProjectID", id_project);
 
         } else {

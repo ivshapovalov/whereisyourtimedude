@@ -3,7 +3,6 @@ package ru.brainworkout.whereisyourtimedude.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -27,13 +26,15 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentArea;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
 
 public class ActivityArea extends AppCompatActivity {
 
-    private Area mCurrentArea;
     private final DatabaseManager DB = new DatabaseManager(this);
     private boolean forChoice;
     private String mCallerActivity;
+    private boolean isNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +43,18 @@ public class ActivityArea extends AppCompatActivity {
         setContentView(R.layout.activity_area);
 
         Intent intent = getIntent();
-        boolean mAreaIsNew = intent.getBooleanExtra("IsNew", false);
+        isNew = intent.getBooleanExtra("isNew", false);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
 
-        if (mAreaIsNew) {
-            mCurrentArea = new Area.Builder(DB.getAreaMaxNumber() + 1).build();
+        if (isNew) {
+            if (currentArea == null) {
+                currentArea = new Area.Builder(DB.getAreaMaxNumber() + 1).build();
+            }
         } else {
             int id = intent.getIntExtra("CurrentAreaID", 0);
             try {
-                mCurrentArea = DB.getArea(id);
+                currentArea = DB.getArea(id);
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
@@ -71,14 +74,14 @@ public class ActivityArea extends AppCompatActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(mCurrentArea.getID()));
+            tvID.setText(String.valueOf(currentArea.getID()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(mCurrentArea.getName());
+            etName.setText(currentArea.getName());
         }
 
         //ID
@@ -86,7 +89,7 @@ public class ActivityArea extends AppCompatActivity {
         TextView tvColor = (TextView) findViewById(mColor);
         if (tvColor != null) {
 
-            tvColor.setBackgroundColor(mCurrentArea.getColor());
+            tvColor.setBackgroundColor(currentArea.getColor());
         }
 
     }
@@ -95,8 +98,9 @@ public class ActivityArea extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        intent.putExtra("CurrentAreaID", mCurrentArea.getID());
-        intent.putExtra("forChoice",forChoice);
+        intent.putExtra("CurrentAreaID", currentArea.getID());
+        currentArea = null;
+        intent.putExtra("forChoice", forChoice);
         intent.putExtra("CallerActivity", "ActivityProject");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -111,7 +115,7 @@ public class ActivityArea extends AppCompatActivity {
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
-            mCurrentArea.setName(String.valueOf(etName.getText()));
+            currentArea.setName(String.valueOf(etName.getText()));
 
         }
 
@@ -119,10 +123,11 @@ public class ActivityArea extends AppCompatActivity {
 
     public void tvColor_onClick(View view) {
 
+        getPropertiesFromScreen();
         ColorPickerDialogBuilder
                 .with(this)
                 .setTitle("Choose color")
-                .initialColor(mCurrentArea.getColor())
+                .initialColor(currentArea.getColor())
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(12)
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
@@ -134,7 +139,7 @@ public class ActivityArea extends AppCompatActivity {
                 .setPositiveButton("ok", new ColorPickerClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                        changeBackgroundColor(selectedColor);
+                        changeColor(selectedColor);
                     }
                 })
                 .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
@@ -146,10 +151,11 @@ public class ActivityArea extends AppCompatActivity {
                 .show();
     }
 
-    private void changeBackgroundColor(int selectedColor) {
-        mCurrentArea.setColor(selectedColor);
-        showAreaOnScreen();
-
+    private void changeColor(int selectedColor) {
+        if (currentArea != null) {
+            currentArea.setColor(selectedColor);
+            showAreaOnScreen();
+        }
     }
 
     public void btSave_onClick(final View view) {
@@ -157,11 +163,13 @@ public class ActivityArea extends AppCompatActivity {
         blink(view);
         getPropertiesFromScreen();
 
-        mCurrentArea.dbSave(DB);
+        currentArea.dbSave(DB);
+
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        intent.putExtra("CurrentAreaID", mCurrentArea.getID());
-        intent.putExtra("forChoice",forChoice);
+        intent.putExtra("CurrentAreaID", currentArea.getID());
+        currentArea = null;
+        intent.putExtra("forChoice", forChoice);
         intent.putExtra("CallerActivity", "ActivityProject");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -178,20 +186,21 @@ public class ActivityArea extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        List<Project> projects = DB.getAllProjectsOfArea(mCurrentArea.getID());
+                        List<Project> projects = DB.getAllProjectsOfArea(currentArea.getID());
 
                         for (Project project : projects
                                 ) {
                             List<Practice> practices = DB.getAllActivePracticesOfProject(project.getID());
-                            for (Practice practice:practices
-                                 ) {
+                            for (Practice practice : practices
+                                    ) {
                                 DB.deleteAllPracticeHistoryOfPractice(practice.getID());
                             }
                             DB.deleteAllPracticesOfProject(project.getID());
                         }
-                        DB.deleteAllProjectsOfArea(mCurrentArea.getID());
+                        DB.deleteAllProjectsOfArea(currentArea.getID());
 
-                        mCurrentArea.dbDelete(DB);
+                        currentArea.dbDelete(DB);
+                        currentArea = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

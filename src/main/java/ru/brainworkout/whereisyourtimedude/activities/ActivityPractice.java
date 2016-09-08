@@ -23,11 +23,13 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
+
 
 public class ActivityPractice extends AppCompatActivity {
 
-    private Practice mCurrentPractice;
     private final DatabaseManager DB = new DatabaseManager(this);
+    private boolean isNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,21 +38,19 @@ public class ActivityPractice extends AppCompatActivity {
         setContentView(R.layout.activity_practice);
 
         Intent intent = getIntent();
-        boolean mPracticeIsNew = intent.getBooleanExtra("IsNew", false);
+        isNew = intent.getBooleanExtra("isNew", false);
 
-        if (mPracticeIsNew) {
-            mCurrentPractice = new Practice.Builder(DB.getPracticeMaxNumber() + 1).build();
+        if (isNew) {
+            if (currentPractice == null) {
+                currentPractice = new Practice.Builder(DB.getPracticeMaxNumber() + 1).build();
+            }
         } else {
             int id = intent.getIntExtra("CurrentPracticeID", 0);
             try {
-                mCurrentPractice = DB.getPractice(id);
+                currentPractice = DB.getPractice(id);
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
-        }
-        int id_project = intent.getIntExtra("CurrentProjectID", 0);
-        if (id_project != 0) {
-            mCurrentPractice.setIdProject(id_project);
         }
 
         showPracticeOnScreen();
@@ -66,7 +66,7 @@ public class ActivityPractice extends AppCompatActivity {
         int mIsActiveID = getResources().getIdentifier("cbIsActive", "id", getPackageName());
         CheckBox cbIsActive = (CheckBox) findViewById(mIsActiveID);
         if (cbIsActive != null) {
-            if (mCurrentPractice.getIsActive() != 0) {
+            if (currentPractice.getIsActive() != 0) {
                 cbIsActive.setChecked(true);
             } else {
                 cbIsActive.setChecked(false);
@@ -75,11 +75,11 @@ public class ActivityPractice extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    if (mCurrentPractice != null) {
+                    if (currentPractice != null) {
                         if (isChecked) {
-                            mCurrentPractice.setIsActive(1);
+                            currentPractice.setIsActive(1);
                         } else {
-                            mCurrentPractice.setIsActive(0);
+                            currentPractice.setIsActive(0);
                         }
 
                     }
@@ -94,14 +94,14 @@ public class ActivityPractice extends AppCompatActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(mCurrentPractice.getID()));
+            tvID.setText(String.valueOf(currentPractice.getID()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(mCurrentPractice.getName());
+            etName.setText(currentPractice.getName());
         }
 
         //ID
@@ -111,7 +111,7 @@ public class ActivityPractice extends AppCompatActivity {
 
             String nameProject = "";
             try {
-                Project project = DB.getProject(mCurrentPractice.getIdProject());
+                Project project = DB.getProject(currentPractice.getIdProject());
                 nameProject = project.getName();
 
             } catch (TableDoesNotContainElementException e) {
@@ -126,7 +126,8 @@ public class ActivityPractice extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
+        intent.putExtra("CurrentPracticeID", currentPractice.getID());
+        currentPractice=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -140,7 +141,7 @@ public class ActivityPractice extends AppCompatActivity {
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
-            mCurrentPractice.setName(String.valueOf(etName.getText()));
+            currentPractice.setName(String.valueOf(etName.getText()));
 
         }
 
@@ -152,13 +153,13 @@ public class ActivityPractice extends AppCompatActivity {
 
         getPropertiesFromScreen();
 
-        mCurrentPractice.dbSave(DB);
+        //mCurrentPractice.dbSave(DB);
 
-        int id_project = mCurrentPractice.getIdProject();
+        int id_project = currentPractice.getIdProject();
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
-        intent.putExtra("IsNew", false);
+        //intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
+        intent.putExtra("isNew", false);
         intent.putExtra("forChoice", true);
         intent.putExtra("CurrentProjectID", id_project);
         intent.putExtra("CallerActivity", "ActivityPractice");
@@ -171,10 +172,11 @@ public class ActivityPractice extends AppCompatActivity {
         blink(view);
         getPropertiesFromScreen();
 
-        mCurrentPractice.dbSave(DB);
+        currentPractice.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
+        intent.putExtra("CurrentPracticeID", currentPractice.getID());
+        currentPractice=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -189,9 +191,10 @@ public class ActivityPractice extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DB.deleteAllPracticeHistoryOfPractice(mCurrentPractice.getID());
+                        DB.deleteAllPracticeHistoryOfPractice(currentPractice.getID());
 
-                        mCurrentPractice.dbDelete(DB);
+                        currentPractice.dbDelete(DB);
+                        currentPractice=null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

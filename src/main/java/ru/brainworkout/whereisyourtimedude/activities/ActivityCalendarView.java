@@ -40,7 +40,7 @@ public class ActivityCalendarView extends AppCompatActivity {
         Intent intent = getIntent();
 
         mIsBeginDate = intent.getBooleanExtra("IsBeginDate", true);
-        mCallerIsNew = intent.getBooleanExtra("IsNew", false);
+        mCallerIsNew = intent.getBooleanExtra("isNew", false);
         mCallerActivity = intent.getStringExtra("CurrentActivity");
         mCallerPracticeHistoryID = intent.getIntExtra("CurrentPracticeHistoryID", 0);
 
@@ -115,7 +115,7 @@ public class ActivityCalendarView extends AppCompatActivity {
         }
 
         Intent intent = new Intent(ActivityCalendarView.this, myClass);
-        intent.putExtra("IsNew", mCallerIsNew);
+        intent.putExtra("isNew", mCallerIsNew);
         intent.putExtra("IsBeginDate", mIsBeginDate);
         intent.putExtra("CurrentPracticeHistoryID", mCallerPracticeHistoryID);
         if (mIsBeginDate) {
@@ -140,7 +140,7 @@ public class ActivityCalendarView extends AppCompatActivity {
             e.printStackTrace();
         }
         Intent intent = new Intent(ActivityCalendarView.this, myClass);
-        intent.putExtra("IsNew", mCallerIsNew);
+        intent.putExtra("isNew", mCallerIsNew);
         intent.putExtra("IsBeginDate", mIsBeginDate);
         intent.putExtra("CurrentPracticeHistoryID", mCallerPracticeHistoryID);
         intent.putExtra("CurrentDateInMillis", mOldDateFromInMillis);

@@ -39,9 +39,9 @@ public class ActivityUser extends AppCompatActivity {
         setContentView(R.layout.activity_user);
 
         Intent intent = getIntent();
-        boolean mUserIsNew = intent.getBooleanExtra("IsNew", false);
+        boolean isNew = intent.getBooleanExtra("isNew", false);
 
-        if (mUserIsNew) {
+        if (isNew) {
             mCurrentUser = new User.Builder(DB.getUserMaxNumber() + 1).build();
         } else {
             int id = intent.getIntExtra("id", 0);

@@ -85,7 +85,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-        intent.putExtra("IsNew", true);
+        intent.putExtra("isNew", true);
         startActivity(intent);
 
     }
@@ -190,7 +190,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.putExtra("CurrentPracticeHistoryID", id);
-        intent.putExtra("IsNew", false);
+        intent.putExtra("isNew", false);
         startActivity(intent);
 
     }

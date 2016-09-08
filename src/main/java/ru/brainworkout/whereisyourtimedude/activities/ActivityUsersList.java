@@ -81,7 +81,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
-        intent.putExtra("IsNew", true);
+        intent.putExtra("isNew", true);
         startActivity(intent);
 
     }
@@ -160,7 +160,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
         intent.putExtra("id", id);
-        intent.putExtra("IsNew", false);
+        intent.putExtra("isNew", false);
         startActivity(intent);
 
     }

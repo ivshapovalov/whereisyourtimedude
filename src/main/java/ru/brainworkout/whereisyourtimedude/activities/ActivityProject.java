@@ -9,16 +9,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
-
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
-import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -31,9 +24,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
 
 public class ActivityProject extends AppCompatActivity {
 
-    //private Project mCurrentProject;
     private final DatabaseManager DB = new DatabaseManager(this);
-    boolean isNew;
+    private boolean isNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,8 +34,7 @@ public class ActivityProject extends AppCompatActivity {
         setContentView(R.layout.activity_project);
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("IsNew", false);
-
+        isNew = intent.getBooleanExtra("isNew", false);
 
         if (isNew) {
             if (currentProject == null) {
@@ -142,7 +133,7 @@ public class ActivityProject extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", id_area);
-        intent.putExtra("IsNew", isNew);
+        intent.putExtra("isNew", isNew);
         intent.putExtra("forChoice", true);
         //intent.putExtra("CurrentProjectID", mCurrentProject.getID());
         intent.putExtra("CallerActivity", "ActivityProject");

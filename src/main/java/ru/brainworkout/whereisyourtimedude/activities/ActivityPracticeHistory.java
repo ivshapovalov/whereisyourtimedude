@@ -28,6 +28,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
+import static ru.brainworkout.whereisyourtimedude.common.Session.queueForChoice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.queueIsNew;
 
 public class ActivityPracticeHistory extends AppCompatActivity {
 
@@ -192,10 +194,10 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         int id_practice = currentPracticeHistory.getIdPractice();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("isNew", false);
-        intent.putExtra("forChoice", true);
+        Boolean isNew = DB.containsPracticeHistory(currentPracticeHistory.getID());
+        queueIsNew.offer(!isNew);
+        queueForChoice.offer(true);
         intent.putExtra("CurrentPracticeID", id_practice);
-        intent.putExtra("CallerActivity", "ActivityPracticeHistory");
         startActivity(intent);
 
     }
@@ -206,11 +208,11 @@ public class ActivityPracticeHistory extends AppCompatActivity {
                 new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker view, int yearSelected,
                                           int monthOfYear, int dayOfMonth) {
-                        Calendar calendar=Calendar.getInstance();
+                        Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis(currentPracticeHistory.getLastTime());
-                        calendar.set(Calendar.YEAR,yearSelected);
-                        calendar.set(Calendar.MONTH,monthOfYear);
-                        calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                        calendar.set(Calendar.YEAR, yearSelected);
+                        calendar.set(Calendar.MONTH, monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                         currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
                         showPracticeHistoryOnScreen();
                         // Set the Selected Date in Select date Button
@@ -228,10 +230,10 @@ public class ActivityPracticeHistory extends AppCompatActivity {
                 new TimePickerDialog.OnTimeSetListener() {
                     // the callback received when the user "sets" the TimePickerDialog in the dialog
                     public void onTimeSet(TimePicker view, int hourOfDay, int min) {
-                        Calendar calendar=Calendar.getInstance();
+                        Calendar calendar = Calendar.getInstance();
                         calendar.setTimeInMillis(currentPracticeHistory.getLastTime());
-                        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                        calendar.set(Calendar.MINUTE,min);
+                        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        calendar.set(Calendar.MINUTE, min);
                         currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
                         showPracticeHistoryOnScreen();
                     }
@@ -242,7 +244,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     @Override
     protected Dialog onCreateDialog(int id) {
-        Calendar calendar=Calendar.getInstance();
+        Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(currentPracticeHistory.getLastTime());
         switch (id) {
             case 0:

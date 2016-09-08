@@ -42,10 +42,8 @@ public class ActivityPracticesList extends AppCompatActivity {
     private int mTextSize = 0;
 
     private boolean forChoice = false;
-    private String mCallerActivity;
     private int id_practice;
     private boolean isNew;
-
 
 
     @Override
@@ -58,8 +56,6 @@ public class ActivityPracticesList extends AppCompatActivity {
         isNew = intent.getBooleanExtra("isNew", false);
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
-        mCallerActivity = intent.getStringExtra("CallerActivity");
-
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btPracticesDBEditor", "id", getPackageName());
@@ -82,7 +78,6 @@ public class ActivityPracticesList extends AppCompatActivity {
         Intent intent = getIntent();
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
-        mCallerActivity = intent.getStringExtra("CallerActivity");
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_practice);
         if (mRow != null) {
@@ -101,7 +96,7 @@ public class ActivityPracticesList extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("isNew", true);
-        intent.putExtra("forChoice",forChoice);
+        intent.putExtra("forChoice", forChoice);
         startActivity(intent);
 
     }
@@ -174,10 +169,10 @@ public class ActivityPracticesList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String nameProject="";
+            String nameProject = "";
             try {
-                Project project=DB.getProject(currentPractice.getIdProject());
-                nameProject=project.getName();
+                Project project = DB.getProject(currentPractice.getIdProject());
+                nameProject = project.getName();
 
             } catch (TableDoesNotContainElementException e) {
 
@@ -197,27 +192,28 @@ public class ActivityPracticesList extends AppCompatActivity {
         sv.addView(layout);
 
     }
+
     private void rowPractice_onClick(final TableRow v) {
 
         blink(v);
-        Intent intent=new Intent();
+        Intent intent = new Intent();
         int id = v.getId() % NUMBER_OF_VIEWS;
         if (forChoice) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+//            Class<?> myClass = null;
+//            try {
+//                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
+//            } catch (ClassNotFoundException e) {
+//                e.printStackTrace();
+//            }
+
             currentPracticeHistory.setIdPractice(id);
-            intent = new Intent(getApplicationContext(), myClass);
+            intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
             intent.putExtra("isNew", isNew);
             intent.putExtra("CurrentPracticeID", id);
 
-
         } else {
 
-            intent= new Intent(getApplicationContext(), ActivityPractice.class);
+            intent = new Intent(getApplicationContext(), ActivityPractice.class);
             intent.putExtra("CurrentPracticeID", id);
             intent.putExtra("isNew", false);
 
@@ -249,16 +245,9 @@ public class ActivityPracticesList extends AppCompatActivity {
 
         Intent intent = new Intent();
         if (forChoice) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
 
-            intent = new Intent(getApplicationContext(), myClass);
+            intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
             intent.putExtra("isNew", isNew);
-            intent.putExtra("CurrentPracticeID", id_practice);
 
         } else {
             intent = new Intent(getApplicationContext(), ActivityMain.class);

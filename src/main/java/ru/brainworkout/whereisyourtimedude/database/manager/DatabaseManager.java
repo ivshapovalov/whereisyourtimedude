@@ -364,6 +364,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean containsPracticeHistory(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_PRACTICE_HISTORY, new String[]{KEY_PRACTICE_HISTORY_ID},
+                KEY_PRACTICE_HISTORY_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        if (cursor.getCount() == 0) {
+            return false;
+        } else {
+
+            return true;
+        }
+    }
+
     public PracticeHistory getPracticeHistory(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 

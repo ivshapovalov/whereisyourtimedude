@@ -24,8 +24,9 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
+
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
 public class ActivityProjectsList extends AppCompatActivity {
 
@@ -105,9 +106,9 @@ public class ActivityProjectsList extends AppCompatActivity {
     private void showProjects() {
 
         List<Project> projects;
-        if (dbCurrentUser != null) {
+        if (sessionUser != null) {
 
-            projects = DB.getAllProjectsOfUser(dbCurrentUser.getID());
+            projects = DB.getAllProjectsOfUser(sessionUser.getID());
         } else {
             projects = DB.getAllProjects();
         }

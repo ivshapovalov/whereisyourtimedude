@@ -18,6 +18,7 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
@@ -56,11 +57,11 @@ public class ActivityMain extends AppCompatActivity {
 
     private void defineCurrentUser() {
 
-        if (dbCurrentUser == null) {
+        if (sessionUser == null) {
             List<User> userList = DB.getAllUsers();
             if (userList.size() == 1) {
                 User currentUser=userList.get(0);
-                dbCurrentUser = currentUser;
+                sessionUser = currentUser;
                 currentUser.setIsCurrentUser(1);
                 currentUser.dbSave(DB);
             } else {
@@ -68,7 +69,7 @@ public class ActivityMain extends AppCompatActivity {
                 for (User user:userList
                         ) {
                     if (user.isCurrentUser()==1) {
-                        dbCurrentUser =user;
+                        sessionUser =user;
                         break;
                     }
                 }
@@ -145,7 +146,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private boolean isUserDefined() {
-        if (dbCurrentUser ==null) {
+        if (sessionUser ==null) {
             Toast toast = Toast.makeText(ActivityMain.this,
                     "Не выбран пользатель. Создайте пользователя и сделайте его активным!", Toast.LENGTH_SHORT);
             toast.show();
@@ -157,10 +158,10 @@ public class ActivityMain extends AppCompatActivity {
     private boolean isDBNotEmpty() {
 
         List<Practice> list=new ArrayList<Practice>();
-        if (dbCurrentUser == null) {
+        if (sessionUser == null) {
             //list = DB.getAllActiveExercises();
         } else {
-            list = DB.getAllActivePracticesOfUser(dbCurrentUser.getID());
+            list = DB.getAllActivePracticesOfUser(sessionUser.getID());
         }
         if (list.size() == 0) {
             Toast toast = Toast.makeText(ActivityMain.this,

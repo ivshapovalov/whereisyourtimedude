@@ -1,6 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.database.entities;
 
-import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 
 public abstract class AbstractEntityMultiUser extends AbstractEntity {
 
@@ -8,7 +8,7 @@ public abstract class AbstractEntityMultiUser extends AbstractEntity {
 
     public AbstractEntityMultiUser() {
 
-        User currentUser=Common.dbCurrentUser;
+        User currentUser= Session.sessionUser;
         if (currentUser!=null) {
             this.id_user = currentUser.getID();
         } else {

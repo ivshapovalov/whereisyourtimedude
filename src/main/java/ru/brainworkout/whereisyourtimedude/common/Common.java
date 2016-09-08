@@ -12,13 +12,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.Map;
-import java.util.TreeMap;
-
-import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
-import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
 public class Common {
 
@@ -43,7 +36,7 @@ public class Common {
 //    }
 
     public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
-    public static User dbCurrentUser;
+
     public static final boolean isDebug = true;
 
     public static Date ConvertStringToDate(final String date) {
@@ -89,8 +82,8 @@ public class Common {
     }
 
     public static void setTitleOfActivity(Activity currentActivity) {
-        if (Common.dbCurrentUser != null) {
-            currentActivity.setTitle(currentActivity.getTitle() + " : " + Common.dbCurrentUser.getName() + "");
+        if (Session.sessionUser != null) {
+            currentActivity.setTitle(currentActivity.getTitle() + " : " + Session.sessionUser.getName() + "");
         }
     }
 

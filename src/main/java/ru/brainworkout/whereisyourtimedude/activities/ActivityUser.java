@@ -24,7 +24,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityUser extends AppCompatActivity {
@@ -147,7 +147,7 @@ public class ActivityUser extends AppCompatActivity {
     private void setDBCurrentUser() {
 
         if (mCurrentUser.isCurrentUser() == 1) {
-            dbCurrentUser =mCurrentUser;
+            sessionUser =mCurrentUser;
             List<User> userList = DB.getAllUsers();
 
             for (User user : userList) {
@@ -158,8 +158,8 @@ public class ActivityUser extends AppCompatActivity {
                 }
             }
         } else {
-            if (dbCurrentUser!=null && dbCurrentUser.equals(mCurrentUser)) {
-                dbCurrentUser=null;
+            if (sessionUser!=null && sessionUser.equals(mCurrentUser)) {
+                sessionUser=null;
             }
         }
 
@@ -176,21 +176,21 @@ public class ActivityUser extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        DB.deleteAllPracticeHistoryOfUser(dbCurrentUser.getID());
+                        DB.deleteAllPracticeHistoryOfUser(sessionUser.getID());
 
-                        DB.deleteAllPracticesOfUser(dbCurrentUser.getID());
+                        DB.deleteAllPracticesOfUser(sessionUser.getID());
 
-                        DB.deleteAllProjectsOfUser(dbCurrentUser.getID());
+                        DB.deleteAllProjectsOfUser(sessionUser.getID());
 
-                        DB.deleteAllAreasOfUser(dbCurrentUser.getID());
+                        DB.deleteAllAreasOfUser(sessionUser.getID());
 
                         mCurrentUser.dbDelete(DB);
 
-                        if (mCurrentUser.equals(dbCurrentUser)) {
+                        if (mCurrentUser.equals(sessionUser)) {
                             List<User> userList = DB.getAllUsers();
                             if (userList.size() == 1) {
                                 User currentUser=userList.get(0);
-                                dbCurrentUser = currentUser;
+                                sessionUser = currentUser;
                                 currentUser.setIsCurrentUser(1);
                                 currentUser.dbSave(DB);
                             }

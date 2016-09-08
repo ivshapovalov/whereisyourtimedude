@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.flask.colorpicker.*;
 import com.flask.colorpicker.OnColorSelectedListener;
@@ -23,18 +22,18 @@ import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
-import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityArea extends AppCompatActivity {
 
     private Area mCurrentArea;
     private final DatabaseManager DB = new DatabaseManager(this);
+    private boolean forChoice;
+    private String mCallerActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +43,8 @@ public class ActivityArea extends AppCompatActivity {
 
         Intent intent = getIntent();
         boolean mAreaIsNew = intent.getBooleanExtra("IsNew", false);
+        forChoice = intent.getBooleanExtra("forChoice", false);
+        mCallerActivity = intent.getStringExtra("CallerActivity");
 
         if (mAreaIsNew) {
             mCurrentArea = new Area.Builder(DB.getAreaMaxNumber() + 1).build();
@@ -95,6 +96,8 @@ public class ActivityArea extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", mCurrentArea.getID());
+        intent.putExtra("forChoice",forChoice);
+        intent.putExtra("CallerActivity", "ActivityProject");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -158,6 +161,8 @@ public class ActivityArea extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", mCurrentArea.getID());
+        intent.putExtra("forChoice",forChoice);
+        intent.putExtra("CallerActivity", "ActivityProject");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

@@ -17,13 +17,13 @@ import java.util.List;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityAreasList extends AppCompatActivity {
@@ -40,8 +40,8 @@ public class ActivityAreasList extends AppCompatActivity {
 
     private boolean forChoice = false;
     private String mCallerActivity;
-    private int id_project;
     private int id_area;
+    private boolean isNew;
 
 
     @Override
@@ -69,10 +69,11 @@ public class ActivityAreasList extends AppCompatActivity {
         showAreas();
 
         Intent intent = getIntent();
+        isNew = intent.getBooleanExtra("IsNew", false);
         id_area = intent.getIntExtra("CurrentAreaID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_project = intent.getIntExtra("CurrentProjectID", 0);
+        //id_project = intent.getIntExtra("CurrentProjectID", 0);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_area);
         if (mRow != null) {
@@ -91,6 +92,7 @@ public class ActivityAreasList extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("IsNew", true);
+        intent.putExtra("forChoice",forChoice);
         startActivity(intent);
 
     }
@@ -98,9 +100,9 @@ public class ActivityAreasList extends AppCompatActivity {
     private void showAreas() {
 
         List<Area> areas;
-        if (dbCurrentUser != null) {
+        if (sessionUser != null) {
 
-            areas = DB.getAllAreasOfUser(dbCurrentUser.getID());
+            areas = DB.getAllAreasOfUser(sessionUser.getID());
         } else {
             areas = DB.getAllAreas();
         }
@@ -189,15 +191,14 @@ public class ActivityAreasList extends AppCompatActivity {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
+            currentProject.setIdArea(id);
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentProjectID", id_project);
-            intent.putExtra("IsNew", false);
-            intent.putExtra("CurrentAreaID", id);
+            intent.putExtra("IsNew", isNew);
+
 
         } else {
 
-             intent= new Intent(getApplicationContext(), ActivityArea.class);
+            intent= new Intent(getApplicationContext(), ActivityArea.class);
             intent.putExtra("CurrentAreaID", id);
             intent.putExtra("IsNew", false);
 
@@ -236,8 +237,7 @@ public class ActivityAreasList extends AppCompatActivity {
             }
 
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentProjectID", id_project);
-            intent.putExtra("IsNew", false);
+            intent.putExtra("IsNew", isNew);
             intent.putExtra("CurrentAreaID", id_area);
 
         } else {

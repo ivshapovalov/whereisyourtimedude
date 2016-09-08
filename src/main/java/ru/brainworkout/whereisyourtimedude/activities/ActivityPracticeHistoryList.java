@@ -26,8 +26,8 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToString;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.dbCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
 public class ActivityPracticeHistoryList extends AppCompatActivity {
 
@@ -93,9 +93,9 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     private void showPracticeHistory() {
 
         List<PracticeHistory> practiceHistoryList;
-        if (dbCurrentUser != null) {
+        if (sessionUser != null) {
 
-            practiceHistoryList = DB.getAllPracticeHistoryOfUser(dbCurrentUser.getID());
+            practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionUser.getID());
         } else {
             practiceHistoryList = DB.getAllPracticeHistory();
         }

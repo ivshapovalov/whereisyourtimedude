@@ -18,6 +18,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -26,11 +27,13 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
 
 public class ActivityProject extends AppCompatActivity {
 
-    private Project mCurrentProject;
+    //private Project mCurrentProject;
     private final DatabaseManager DB = new DatabaseManager(this);
+    boolean isNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,23 +42,26 @@ public class ActivityProject extends AppCompatActivity {
         setContentView(R.layout.activity_project);
 
         Intent intent = getIntent();
-        boolean mProjectIsNew = intent.getBooleanExtra("IsNew", false);
+        isNew = intent.getBooleanExtra("IsNew", false);
 
 
-        if (mProjectIsNew) {
-            mCurrentProject = new Project.Builder(DB.getProjectMaxNumber() + 1).build();
+        if (isNew) {
+            if (currentProject == null) {
+                currentProject = new Project.Builder(DB.getProjectMaxNumber() + 1).build();
+            }
+
         } else {
             int id = intent.getIntExtra("CurrentProjectID", 0);
             try {
-                mCurrentProject = DB.getProject(id);
+                currentProject = DB.getProject(id);
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
         }
-        int id_area=intent.getIntExtra("CurrentAreaID",0);
-        if (id_area!=0) {
-            mCurrentProject.setIdArea(id_area);
-        }
+//        int id_area = intent.getIntExtra("CurrentAreaID", 0);
+//        if (id_area != 0) {
+//            currentProject.setIdArea(id_area);
+//        }
 
         showProjectOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -71,14 +77,14 @@ public class ActivityProject extends AppCompatActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(mCurrentProject.getID()));
+            tvID.setText(String.valueOf(currentProject.getID()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(mCurrentProject.getName());
+            etName.setText(currentProject.getName());
         }
 
         //ID
@@ -88,7 +94,7 @@ public class ActivityProject extends AppCompatActivity {
 
             String nameArea = "";
             try {
-                Area area = DB.getArea(mCurrentProject.getIdArea());
+                Area area = DB.getArea(currentProject.getIdArea());
                 nameArea = area.getName();
                 tvArea.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
@@ -103,7 +109,8 @@ public class ActivityProject extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", mCurrentProject.getID());
+        intent.putExtra("CurrentProjectID", currentProject.getID());
+        currentProject=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -117,7 +124,7 @@ public class ActivityProject extends AppCompatActivity {
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
-            mCurrentProject.setName(String.valueOf(etName.getText()));
+            currentProject.setName(String.valueOf(etName.getText()));
 
         }
 
@@ -129,16 +136,16 @@ public class ActivityProject extends AppCompatActivity {
 
         getPropertiesFromScreen();
 
-        mCurrentProject.dbSave(DB);
+        //currentProject.dbSave(DB);
 
-        int id_area = mCurrentProject.getIdArea();
+        int id_area = currentProject.getIdArea();
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", id_area);
-        intent.putExtra("IsNew", false);
+        intent.putExtra("IsNew", isNew);
         intent.putExtra("forChoice", true);
-        intent.putExtra("CurrentProjectID",mCurrentProject.getID());
-        intent.putExtra("CallerActivity","ActivityProject");
+        //intent.putExtra("CurrentProjectID", mCurrentProject.getID());
+        intent.putExtra("CallerActivity", "ActivityProject");
         startActivity(intent);
 
     }
@@ -148,10 +155,11 @@ public class ActivityProject extends AppCompatActivity {
         blink(view);
         getPropertiesFromScreen();
 
-        mCurrentProject.dbSave(DB);
+        currentProject.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", mCurrentProject.getID());
+        intent.putExtra("CurrentProjectID", currentProject.getID());
+        currentProject=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -167,16 +175,17 @@ public class ActivityProject extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        List<Practice> practices = DB.getAllActivePracticesOfProject(mCurrentProject.getID());
+                        List<Practice> practices = DB.getAllActivePracticesOfProject(currentProject.getID());
 
                         for (Practice practice : practices
                                 ) {
                             DB.deleteAllPracticeHistoryOfPractice(practice.getID());
 
                         }
-                        DB.deleteAllPracticesOfProject(mCurrentProject.getID());
+                        DB.deleteAllPracticesOfProject(currentProject.getID());
 
-                        mCurrentProject.dbDelete(DB);
+                        currentProject.dbDelete(DB);
+                        currentProject=null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

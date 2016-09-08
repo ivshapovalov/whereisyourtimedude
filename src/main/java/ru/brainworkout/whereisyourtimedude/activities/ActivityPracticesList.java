@@ -27,6 +27,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
 
 public class ActivityPracticesList extends AppCompatActivity {
 
@@ -43,7 +44,8 @@ public class ActivityPracticesList extends AppCompatActivity {
     private boolean forChoice = false;
     private String mCallerActivity;
     private int id_practice;
-    private int id_practice_history;
+    private boolean isNew;
+
 
 
     @Override
@@ -53,10 +55,11 @@ public class ActivityPracticesList extends AppCompatActivity {
         setContentView(R.layout.activity_practices_list);
 
         Intent intent = getIntent();
+        isNew = intent.getBooleanExtra("isNew", false);
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_practice_history = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btPracticesDBEditor", "id", getPackageName());
@@ -80,7 +83,6 @@ public class ActivityPracticesList extends AppCompatActivity {
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
-        id_practice_history = intent.getIntExtra("CurrentPracticeHistoryID", 0);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_practice);
         if (mRow != null) {
@@ -99,6 +101,7 @@ public class ActivityPracticesList extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("isNew", true);
+        intent.putExtra("forChoice",forChoice);
         startActivity(intent);
 
     }
@@ -206,11 +209,11 @@ public class ActivityPracticesList extends AppCompatActivity {
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
-
+            currentPracticeHistory.setIdPractice(id);
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentPracticeHistoryID", id_practice_history);
-            intent.putExtra("isNew", false);
+            intent.putExtra("isNew", isNew);
             intent.putExtra("CurrentPracticeID", id);
+
 
         } else {
 
@@ -254,8 +257,7 @@ public class ActivityPracticesList extends AppCompatActivity {
             }
 
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("CurrentPracticeHistoryID", id_practice_history);
-            intent.putExtra("isNew", false);
+            intent.putExtra("isNew", isNew);
             intent.putExtra("CurrentPracticeID", id_practice);
 
         } else {

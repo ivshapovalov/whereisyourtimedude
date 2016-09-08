@@ -46,7 +46,6 @@ public class ActivityProjectsList extends AppCompatActivity {
     private int id_project;
     private boolean isNew;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -54,6 +53,7 @@ public class ActivityProjectsList extends AppCompatActivity {
         setContentView(R.layout.activity_projects_list);
 
         Intent intent = getIntent();
+        isNew = intent.getBooleanExtra("isNew", false);
         id_project = intent.getIntExtra("CurrentProjectID", 0);
         forChoice = intent.getBooleanExtra("forChoice", false);
         mCallerActivity = intent.getStringExtra("CallerActivity");
@@ -209,7 +209,7 @@ public class ActivityProjectsList extends AppCompatActivity {
             }
             currentPractice.setIdProject(id);
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("isNew", false);
+            intent.putExtra("isNew", isNew);
 
         } else {
 
@@ -252,7 +252,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                 e.printStackTrace();
             }
             intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("isNew", false);
+            intent.putExtra("isNew", isNew);
             intent.putExtra("CurrentProjectID", id_project);
 
         } else {

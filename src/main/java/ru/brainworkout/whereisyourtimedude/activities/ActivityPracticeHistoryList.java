@@ -18,12 +18,11 @@ import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToString;
+import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToStringDate;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -148,7 +147,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = ConvertMillisToString(currentPracticeHistory.getDate());
+            String name = ConvertMillisToStringDate(currentPracticeHistory.getDate());
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);

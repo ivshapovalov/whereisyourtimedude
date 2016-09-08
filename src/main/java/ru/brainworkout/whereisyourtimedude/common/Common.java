@@ -36,6 +36,7 @@ public class Common {
 //    }
 
     public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
+    public static final String TIME_FORMAT_STRING = "HH-mm-ss";
 
     public static final boolean isDebug = true;
 
@@ -55,13 +56,30 @@ public class Common {
         return new Date(Millis);
     }
 
-    public static String ConvertMillisToString(final long Millis) {
+    public static String ConvertMillisToStringDate(final long Millis) {
         return ConvertDateToString(new Date(Millis));
+    }
+
+    public static String ConvertMillisToStringTime(final long Millis) {
+        return ConvertTimeToString(new Date(Millis));
     }
 
     public static String ConvertDateToString(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(DATE_FORMAT_STRING);
+        String sDate = "";
+        try {
+            sDate = dateformat.format(date);
+        } catch (Exception e) {
+        }
+
+        return sDate;
+
+    }
+
+    public static String ConvertTimeToString(final Date date) {
+
+        SimpleDateFormat dateformat = new SimpleDateFormat(TIME_FORMAT_STRING);
         String sDate = "";
         try {
             sDate = dateformat.format(date);

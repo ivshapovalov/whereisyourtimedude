@@ -21,7 +21,6 @@ public class ActivityCalendarView extends AppCompatActivity {
     private long mOldDateToInMillis;
 
     private boolean mCallerIsNew;
-    private int mCallerPracticeHistoryID;
     private String mCallerActivity;
 
     @Override
@@ -42,7 +41,6 @@ public class ActivityCalendarView extends AppCompatActivity {
         mIsBeginDate = intent.getBooleanExtra("IsBeginDate", true);
         mCallerIsNew = intent.getBooleanExtra("isNew", false);
         mCallerActivity = intent.getStringExtra("CurrentActivity");
-        mCallerPracticeHistoryID = intent.getIntExtra("CurrentPracticeHistoryID", 0);
 
         try {
             mOldDateFromInMillis = intent.getLongExtra("CurrentDateInMillis",0);
@@ -117,7 +115,6 @@ public class ActivityCalendarView extends AppCompatActivity {
         Intent intent = new Intent(ActivityCalendarView.this, myClass);
         intent.putExtra("isNew", mCallerIsNew);
         intent.putExtra("IsBeginDate", mIsBeginDate);
-        intent.putExtra("CurrentPracticeHistoryID", mCallerPracticeHistoryID);
         if (mIsBeginDate) {
             intent.putExtra("CurrentDateInMillis", mNewDateInMillis);
             intent.putExtra("CurrentDateToInMillis", mOldDateToInMillis);
@@ -142,7 +139,6 @@ public class ActivityCalendarView extends AppCompatActivity {
         Intent intent = new Intent(ActivityCalendarView.this, myClass);
         intent.putExtra("isNew", mCallerIsNew);
         intent.putExtra("IsBeginDate", mIsBeginDate);
-        intent.putExtra("CurrentPracticeHistoryID", mCallerPracticeHistoryID);
         intent.putExtra("CurrentDateInMillis", mOldDateFromInMillis);
         intent.putExtra("CurrentDateToInMillis", mOldDateToInMillis);
 

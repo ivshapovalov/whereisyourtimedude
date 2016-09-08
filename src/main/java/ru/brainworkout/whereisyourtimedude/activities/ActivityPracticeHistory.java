@@ -1,35 +1,45 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToString;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
 
 public class ActivityPracticeHistory extends AppCompatActivity {
 
-    private PracticeHistory mCurrentPracticeHistory;
     private final DatabaseManager DB = new DatabaseManager(this);
-    private  boolean isNew;
+    private boolean isNew;
+    TextView tvID;
+    TextView tvDate;
+    TextView tvDuration;
+    TextView tvLastDate;
+    TextView tvLastTime;
+
+    TimePickerDialog.OnTimeSetListener mTimeSetListener;
+    DatePickerDialog.OnDateSetListener mDateSetListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,34 +48,34 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         setContentView(R.layout.activity_practice_history);
 
         Intent intent = getIntent();
-        isNew= intent.getBooleanExtra("isNew", false);
+        isNew = intent.getBooleanExtra("isNew", false);
 
         if (isNew) {
-            mCurrentPracticeHistory = new PracticeHistory.Builder(DB.getPracticeHistoryMaxNumber() + 1).build();
-            Calendar calendar = Calendar.getInstance();
+            if (currentPracticeHistory == null) {
+                currentPracticeHistory = new PracticeHistory.Builder(DB.getPracticeHistoryMaxNumber() + 1).build();
 
-            calendar.clear(Calendar.HOUR);
-            calendar.clear(Calendar.HOUR_OF_DAY);
-            calendar.clear(Calendar.MINUTE);
-            calendar.clear(Calendar.SECOND);
-            calendar.clear(Calendar.MILLISECOND);
-            mCurrentPracticeHistory.setDate(calendar.getTimeInMillis());
+                Calendar calendar = Calendar.getInstance();
 
+                calendar.clear(Calendar.HOUR);
+                calendar.clear(Calendar.HOUR_OF_DAY);
+                calendar.clear(Calendar.MINUTE);
+                calendar.clear(Calendar.SECOND);
+                calendar.clear(Calendar.MILLISECOND);
+                currentPracticeHistory.setDate(calendar.getTimeInMillis());
+                currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
+            }
         } else {
             int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
             try {
-                mCurrentPracticeHistory = DB.getPracticeHistory(id);
-                long currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
-                if (currentDateInMillis != 0) {
-                    mCurrentPracticeHistory.setDate(currentDateInMillis);
-                }
+                currentPracticeHistory = DB.getPracticeHistory(id);
+
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
         }
-        int id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        if (id_practice != 0) {
-            mCurrentPracticeHistory.setIdPractice(id_practice);
+        long currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
+        if (currentDateInMillis != 0) {
+            currentPracticeHistory.setDate(currentDateInMillis);
         }
 
         showPracticeHistoryOnScreen();
@@ -79,26 +89,40 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
         //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
-        TextView tvID = (TextView) findViewById(mID);
+        tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(mCurrentPracticeHistory.getID()));
+            tvID.setText(String.valueOf(currentPracticeHistory.getID()));
         }
 
-        //ID
+        //
         int mDate = getResources().getIdentifier("tvDate", "id", getPackageName());
-        TextView tvDate = (TextView) findViewById(mDate);
+        tvDate = (TextView) findViewById(mDate);
         if (tvDate != null) {
 
-            tvDate.setText(ConvertMillisToString(mCurrentPracticeHistory.getDate()));
+            tvDate.setText(ConvertMillisToStringDate(currentPracticeHistory.getDate()));
         }
 
-        //ID
+        //
         int mDuration = getResources().getIdentifier("etDuration", "id", getPackageName());
-        TextView tvDuration = (TextView) findViewById(mDuration);
+        tvDuration = (TextView) findViewById(mDuration);
         if (tvDuration != null) {
 
-            tvDuration.setText(String.valueOf(mCurrentPracticeHistory.getDuration()));
+            tvDuration.setText(String.valueOf(currentPracticeHistory.getDuration()));
+        }
+
+        int mLastDate = getResources().getIdentifier("tvLastDate", "id", getPackageName());
+        tvLastDate = (TextView) findViewById(mLastDate);
+        if (tvLastDate != null) {
+
+            tvLastDate.setText(ConvertMillisToStringDate(currentPracticeHistory.getLastTime()));
+        }
+
+        int mLastTime = getResources().getIdentifier("tvLastTime", "id", getPackageName());
+        tvLastTime = (TextView) findViewById(mLastTime);
+        if (tvLastTime != null) {
+
+            tvLastTime.setText(ConvertMillisToStringTime(currentPracticeHistory.getLastTime()));
         }
 
         //ID
@@ -108,7 +132,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
             String namePractice = "";
             try {
-                Practice practice = DB.getPractice(mCurrentPracticeHistory.getIdPractice());
+                Practice practice = DB.getPractice(currentPracticeHistory.getIdPractice());
                 namePractice = practice.getName();
 
             } catch (TableDoesNotContainElementException e) {
@@ -123,7 +147,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", mCurrentPracticeHistory.getID());
+        intent.putExtra("CurrentPracticeHistoryID", currentPracticeHistory.getID());
+        currentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -138,7 +163,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         if (etDuration != null) {
             String dur = String.valueOf(etDuration.getText());
             if (!"".equals(dur)) {
-                mCurrentPracticeHistory.setDuration(Long.valueOf(dur));
+                currentPracticeHistory.setDuration(Long.valueOf(dur));
             }
 
         }
@@ -146,17 +171,13 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     }
 
     public void tvDate_onClick(View view) {
-
-
         blink(view);
-
         getPropertiesFromScreen();
-        mCurrentPracticeHistory.dbSave(DB);
-
+        //mCurrentPracticeHistory.dbSave(DB);
         Intent intent = new Intent(ActivityPracticeHistory.this, ActivityCalendarView.class);
         intent.putExtra("CurrentActivity", "ActivityPracticeHistory");
-        intent.putExtra("CurrentDateInMillis", mCurrentPracticeHistory.getDate());
-        intent.putExtra("CurrentPracticeHistoryID", mCurrentPracticeHistory.getId());
+        intent.putExtra("CurrentDateInMillis", currentPracticeHistory.getDate());
+        intent.putExtra("isNew", false);
         startActivity(intent);
 
     }
@@ -164,15 +185,11 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     public void tvPractice_onClick(View view) {
 
         blink(view);
-
         getPropertiesFromScreen();
 
-        mCurrentPracticeHistory.dbSave(DB);
-
-        int id_practice = mCurrentPracticeHistory.getIdPractice();
+        int id_practice = currentPracticeHistory.getIdPractice();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeHistoryID", mCurrentPracticeHistory.getID());
         intent.putExtra("isNew", false);
         intent.putExtra("forChoice", true);
         intent.putExtra("CurrentPracticeID", id_practice);
@@ -181,15 +198,75 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     }
 
+    public void tvLastDate_onClick(View view) {
+
+        mDateSetListener =
+                new DatePickerDialog.OnDateSetListener() {
+                    public void onDateSet(DatePicker view, int yearSelected,
+                                          int monthOfYear, int dayOfMonth) {
+                        Calendar calendar=Calendar.getInstance();
+                        calendar.setTimeInMillis(currentPracticeHistory.getLastTime());
+                        calendar.set(Calendar.YEAR,yearSelected);
+                        calendar.set(Calendar.MONTH,monthOfYear);
+                        calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
+                        currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
+                        showPracticeHistoryOnScreen();
+                        // Set the Selected Date in Select date Button
+                        //tvLastDate.setText("Date selected : " + day + "-" + month + "-" + year);
+                    }
+                };
+        showDialog(0);
+
+    }
+
+    public void tvLastTime_onClick(View view) {
+
+        // Register  TimePickerDialog listener
+        mTimeSetListener =
+                new TimePickerDialog.OnTimeSetListener() {
+                    // the callback received when the user "sets" the TimePickerDialog in the dialog
+                    public void onTimeSet(TimePicker view, int hourOfDay, int min) {
+                        Calendar calendar=Calendar.getInstance();
+                        calendar.setTimeInMillis(currentPracticeHistory.getLastTime());
+                        calendar.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                        calendar.set(Calendar.MINUTE,min);
+                        currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
+                        showPracticeHistoryOnScreen();
+                    }
+                };
+        showDialog(1);
+
+    }
+
+    @Override
+    protected Dialog onCreateDialog(int id) {
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTimeInMillis(currentPracticeHistory.getLastTime());
+        switch (id) {
+            case 0:
+                // create a new DatePickerDialog with values you want to show
+                return new DatePickerDialog(this,
+                        mDateSetListener,
+                        calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH));
+            // create a new TimePickerDialog with values you want to show
+            case 1:
+                return new TimePickerDialog(this,
+                        mTimeSetListener, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true);
+
+        }
+        return null;
+    }
+
+
     public void btSave_onClick(final View view) {
 
         blink(view);
         getPropertiesFromScreen();
-
-        mCurrentPracticeHistory.dbSave(DB);
+        currentPracticeHistory.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", mCurrentPracticeHistory.getID());
+        intent.putExtra("CurrentPracticeHistoryID", currentPracticeHistory.getID());
+        currentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -204,7 +281,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        mCurrentPracticeHistory.dbDelete(DB);
+                        currentPracticeHistory.dbDelete(DB);
+                        currentPracticeHistory = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

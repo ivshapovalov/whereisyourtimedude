@@ -1,16 +1,9 @@
 package ru.brainworkout.whereisyourtimedude.database.entities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
-
-import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertStringToDate;
-import static ru.brainworkout.whereisyourtimedude.common.Common.DATE_FORMAT_STRING;
 
 public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
 

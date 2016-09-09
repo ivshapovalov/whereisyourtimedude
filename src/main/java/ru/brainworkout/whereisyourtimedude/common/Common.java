@@ -15,33 +15,14 @@ import java.util.Date;
 
 public class Common {
 
-//    public static ArrayList<Area> areas;
-//    public static LinkedList<PracticeHistory> practices = new LinkedList<>();
-//    public static Map<Long, LinkedList<PracticeHistory>> DB = new TreeMap<>();
-//
-//    static {
-//        areas = new ArrayList<>();
-//
-//        ArrayList<Integer> colors = AlphabetColors();
-//        for (int i = 0; i < colors.size(); i++
-//                ) {
-//            areas.add(new Area(colors.get(i), "AREA " + i));
-//        }
-//
-//        areas.add(new Area(Color.GREEN, "AREA 1"));
-//        areas.add(new Area(Color.RED, "AREA 2"));
-//        areas.add(new Area(Color.YELLOW, "AREA 3"));
-//        areas.add(new Area(Color.MAGENTA, "AREA 4"));
-//        areas.add(new Area(Color.CYAN, "AREA 5"));
-//    }
-
-    public static final String DATE_FORMAT_STRING = "yyyy-MM-dd";
-    public static final String TIME_FORMAT_STRING = "HH-mm-ss";
+    public static final String SYMBOL_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String SYMBOL_TIME_FORMAT = "HH-mm-ss";
+    public static final String SYMBOL_EDIT="►";
 
     public static final boolean isDebug = true;
 
     public static Date ConvertStringToDate(final String date) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT_STRING);
+        SimpleDateFormat dateFormat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
         Date d = null;
         try {
             d = dateFormat.parse(String.valueOf(date));
@@ -66,7 +47,7 @@ public class Common {
 
     public static String ConvertDateToString(final Date date) {
 
-        SimpleDateFormat dateformat = new SimpleDateFormat(DATE_FORMAT_STRING);
+        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
         String sDate = "";
         try {
             sDate = dateformat.format(date);
@@ -79,7 +60,7 @@ public class Common {
 
     public static String ConvertTimeToString(final Date date) {
 
-        SimpleDateFormat dateformat = new SimpleDateFormat(TIME_FORMAT_STRING);
+        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_TIME_FORMAT);
         String sDate = "";
         try {
             sDate = dateformat.format(date);

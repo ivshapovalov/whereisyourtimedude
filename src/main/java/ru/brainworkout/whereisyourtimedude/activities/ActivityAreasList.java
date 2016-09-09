@@ -21,7 +21,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
@@ -157,7 +157,7 @@ public class ActivityAreasList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            txt.setText("►");
+            txt.setText(SYMBOL_EDIT);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);

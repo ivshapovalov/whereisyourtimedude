@@ -26,7 +26,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
 import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
@@ -171,7 +171,7 @@ public class ActivityProjectsList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            txt.setText("►");
+            txt.setText(SYMBOL_EDIT);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);

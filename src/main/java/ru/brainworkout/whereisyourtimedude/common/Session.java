@@ -2,7 +2,10 @@ package ru.brainworkout.whereisyourtimedude.common;
 
 
 import java.util.ArrayDeque;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 import java.util.TreeSet;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
@@ -19,8 +22,6 @@ public class Session {
     public static Practice currentPractice;
     public static PracticeHistory currentPracticeHistory;
 
-    public static Queue<Boolean> queueIsNew= new ArrayDeque<Boolean>();
-    public static Queue<Boolean> queueForChoice= new ArrayDeque<Boolean>();
-
+    public static final Stack<ConnectionParameters> openActivities= new Stack<>();
 
 }

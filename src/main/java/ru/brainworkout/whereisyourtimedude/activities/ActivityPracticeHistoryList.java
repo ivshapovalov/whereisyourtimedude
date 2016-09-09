@@ -16,6 +16,7 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
@@ -26,6 +27,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToS
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
 public class ActivityPracticeHistoryList extends AppCompatActivity {
@@ -40,6 +42,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
+    ConnectionParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +86,19 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     public void btPracticeHistoryAdd_onClick(final View view) {
 
         blink(view);
+
+        ConnectionParameters paramsNew= new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticeHistory")
+                .isTransmitterNew(true)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityPracticeHistoryList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.clear();
+        openActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-        intent.putExtra("isNew", true);
+        intent.putExtra("isDirectionForward", false);
         startActivity(intent);
 
     }
@@ -187,9 +201,19 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
         int id = v.getId() % NUMBER_OF_VIEWS;
 
+        ConnectionParameters params= new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticeHistoryList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityPracticeHistory")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.clear();
+        openActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+        intent.putExtra("isDirectionForward", false);
         intent.putExtra("CurrentPracticeHistoryID", id);
-        intent.putExtra("isNew", false);
         startActivity(intent);
 
     }

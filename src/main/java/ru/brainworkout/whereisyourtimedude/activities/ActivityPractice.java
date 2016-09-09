@@ -11,7 +11,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
@@ -20,12 +22,15 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 
 
 public class ActivityPractice extends AppCompatActivity {
 
     private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
+    ConnectionParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class ActivityPractice extends AppCompatActivity {
         setContentView(R.layout.activity_practice);
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
+        getIntentParams(intent);
 
         if (isNew) {
             if (currentPractice == null) {
@@ -55,6 +60,18 @@ public class ActivityPractice extends AppCompatActivity {
         setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+
+        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
+        if (isDirectionForward) {
+            params = openActivities.peek();
+        } else {
+            params = openActivities.pop();
+        }
+
+        isNew = (params != null ? params.isReceiverNew() : false);
+
+    }
 
     private void showPracticeOnScreen() {
 
@@ -123,7 +140,8 @@ public class ActivityPractice extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", currentPractice.getID());
-        currentPractice=null;
+        intent.putExtra("isDirectionForward", false);
+        currentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -146,20 +164,23 @@ public class ActivityPractice extends AppCompatActivity {
     public void tvProject_onClick(View view) {
 
         blink(view);
-
         getPropertiesFromScreen();
-
-        //mCurrentPractice.dbSave(DB);
-
         int id_project = currentPractice.getIdProject();
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        //intent.putExtra("CurrentPracticeID", mCurrentPractice.getID());
-        intent.putExtra("isNew", false);
-        intent.putExtra("forChoice", true);
+        Boolean isNew = params!=null?params.isReceiverNew():false;
+        ConnectionParameters paramsNew= new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPractice")
+                .isTransmitterNew(isNew)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityProjectsList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(true)
+                .build();
+        openActivities.push(params);
+        intent.putExtra("isDirectionForward", true);
         intent.putExtra("CurrentProjectID", id_project);
-        intent.putExtra("CallerActivity", "ActivityPractice");
-        startActivity(intent);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
     }
 
@@ -172,9 +193,24 @@ public class ActivityPractice extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", currentPractice.getID());
-        currentPractice=null;
+        intent.putExtra("isDirectionForward", false);
+        currentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void onBackPressed() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+
+        if (params != null) {
+                intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+                intent.putExtra("isDirectionForward", false);
+                intent.putExtra("CurrentPracticeID", currentPractice.getID());
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
     public void btDelete_onClick(final View view) {
@@ -190,9 +226,10 @@ public class ActivityPractice extends AppCompatActivity {
                         DB.deleteAllPracticeHistoryOfPractice(currentPractice.getID());
 
                         currentPractice.dbDelete(DB);
-                        currentPractice=null;
+                        currentPractice = null;
 
-                        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+                        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+                        intent.putExtra("isDirectionForward", false);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

@@ -17,6 +17,7 @@ import java.util.List;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
@@ -26,6 +27,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
 
@@ -41,9 +43,8 @@ public class ActivityPracticesList extends AppCompatActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private boolean forChoice = false;
     private int id_practice;
-    private boolean isNew;
+    ConnectionParameters params;
 
 
     @Override
@@ -51,11 +52,8 @@ public class ActivityPracticesList extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practices_list);
-
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        forChoice = intent.getBooleanExtra("forChoice", false);
+        getIntentParams(intent);
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btPracticesDBEditor", "id", getPackageName());
@@ -64,20 +62,6 @@ public class ActivityPracticesList extends AppCompatActivity {
         }
 
         showPractices();
-
-        setTitleOfActivity(this);
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        showPractices();
-
-        Intent intent = getIntent();
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        forChoice = intent.getBooleanExtra("forChoice", false);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_practice);
         if (mRow != null) {
@@ -88,15 +72,52 @@ public class ActivityPracticesList extends AppCompatActivity {
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
+
+        setTitleOfActivity(this);
+    }
+
+    private void getIntentParams(Intent intent) {
+
+        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
+        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
+        if (isDirectionForward) {
+            params = openActivities.peek();
+        } else {
+            params = openActivities.pop();
+        }
+
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        getIntentParams(intent);
+
+        showPractices();
+
+
     }
 
 
     public void btPracticeAdd_onClick(final View view) {
 
         blink(view);
+
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticesList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityPractice")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
-        intent.putExtra("isNew", true);
-        intent.putExtra("forChoice", forChoice);
+        intent.putExtra("isDirectionForward", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -196,29 +217,21 @@ public class ActivityPracticesList extends AppCompatActivity {
     private void rowPractice_onClick(final TableRow v) {
 
         blink(v);
-        Intent intent = new Intent();
+
         int id = v.getId() % NUMBER_OF_VIEWS;
-        if (forChoice) {
-//            Class<?> myClass = null;
-//            try {
-//                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-//            } catch (ClassNotFoundException e) {
-//                e.printStackTrace();
-//            }
+        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
+        intent.putExtra("CurrentPracticeID", id);
+        intent.putExtra("isNew", false);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                currentPracticeHistory.setIdPractice(id);
 
-            currentPracticeHistory.setIdPractice(id);
-            intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-            intent.putExtra("isNew", isNew);
-            intent.putExtra("CurrentPracticeID", id);
-
-        } else {
-
-            intent = new Intent(getApplicationContext(), ActivityPractice.class);
-            intent.putExtra("CurrentPracticeID", id);
-            intent.putExtra("isNew", false);
-
-
+                intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+                intent.putExtra("isDirectionForward", false);
+                intent.putExtra("CurrentPracticeID", id);
+            }
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -235,6 +248,7 @@ public class ActivityPracticesList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view);
+        openActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -243,14 +257,14 @@ public class ActivityPracticesList extends AppCompatActivity {
 
     public void onBackPressed() {
 
-        Intent intent = new Intent();
-        if (forChoice) {
+        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
 
-            intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-            intent.putExtra("isNew", isNew);
-
-        } else {
-            intent = new Intent(getApplicationContext(), ActivityMain.class);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+                intent.putExtra("isDirectionForward", false);
+                intent.putExtra("CurrentPracticeID", id_practice);
+            }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

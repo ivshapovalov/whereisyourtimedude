@@ -16,6 +16,7 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
@@ -27,6 +28,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
 public class ActivityProjectsList extends AppCompatActivity {
@@ -41,10 +44,9 @@ public class ActivityProjectsList extends AppCompatActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private boolean forChoice = false;
-    private String mCallerActivity;
     private int id_project;
-    private boolean isNew;
+
+    ConnectionParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +55,7 @@ public class ActivityProjectsList extends AppCompatActivity {
         setContentView(R.layout.activity_projects_list);
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
-        id_project = intent.getIntExtra("CurrentProjectID", 0);
-        forChoice = intent.getBooleanExtra("forChoice", false);
-        mCallerActivity = intent.getStringExtra("CallerActivity");
+        getIntentParams(intent);
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btProjectsDBEditor", "id", getPackageName());
@@ -69,18 +68,26 @@ public class ActivityProjectsList extends AppCompatActivity {
         setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+
+        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
+        id_project = intent.getIntExtra("CurrentProjectID", 0);
+        if (isDirectionForward) {
+            params = openActivities.peek();
+        } else {
+            params = openActivities.pop();
+        }
+
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
 
-        showProjects();
-
         Intent intent = getIntent();
-        id_project = intent.getIntExtra("CurrentProjectID", 0);
-        forChoice = intent.getBooleanExtra("forChoice", false);
-        mCallerActivity = intent.getStringExtra("CallerActivity");
-
+        getIntentParams(intent);
+        showProjects();
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_project);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
@@ -95,12 +102,21 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     public void btProjectAdd_onClick(final View view) {
 
-        blink(view);
-        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
-        intent.putExtra("isNew", true);
-        intent.putExtra("forChoice",forChoice);
-        startActivity(intent);
 
+        blink(view);
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityProjectsList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityProject")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
+        intent.putExtra("isDirectionForward", true);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void showProjects() {
@@ -198,27 +214,20 @@ public class ActivityProjectsList extends AppCompatActivity {
     private void rowProject_onClick(final TableRow v) {
 
         blink(v);
-        Intent intent=new Intent();
         int id = v.getId() % NUMBER_OF_VIEWS;
-        if (forChoice) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
+        intent.putExtra("CurrentProjectID", id);
+        intent.putExtra("isNew", false);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                currentPractice.setIdProject(id);
+
+                intent = new Intent(getApplicationContext(), ActivityPractice.class);
+                intent.putExtra("isDirectionForward", false);
+                intent.putExtra("CurrentProjectID", id);
             }
-            currentPractice.setIdProject(id);
-            intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("isNew", isNew);
-
-        } else {
-
-            intent= new Intent(getApplicationContext(), ActivityProject.class);
-            intent.putExtra("CurrentProjectID", id);
-            intent.putExtra("isNew", false);
-
-
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -243,24 +252,17 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     public void onBackPressed() {
 
-        Intent intent = new Intent();
-        if (forChoice) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("isNew", isNew);
-            intent.putExtra("CurrentProjectID", id_project);
+        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
 
-        } else {
-            intent = new Intent(getApplicationContext(), ActivityMain.class);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                intent = new Intent(getApplicationContext(), ActivityPractice.class);
+                intent.putExtra("isDirectionForward", false);
+                intent.putExtra("CurrentProjectID", id_project);
+            }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
-    }
+      }
 }
 

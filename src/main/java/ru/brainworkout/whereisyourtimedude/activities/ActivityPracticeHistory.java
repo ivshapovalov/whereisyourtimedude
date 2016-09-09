@@ -18,6 +18,7 @@ import android.widget.TimePicker;
 import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
@@ -27,9 +28,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
-import static ru.brainworkout.whereisyourtimedude.common.Session.queueForChoice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.queueIsNew;
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
+
 
 public class ActivityPracticeHistory extends AppCompatActivity {
 
@@ -45,6 +45,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     TimePickerDialog.OnTimeSetListener mTimeSetListener;
     DatePickerDialog.OnDateSetListener mDateSetListener;
 
+    ConnectionParameters params;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -52,7 +54,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         setContentView(R.layout.activity_practice_history);
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
+
+        getIntentParams(intent);
 
         if (isNew) {
             if (currentPracticeHistory == null) {
@@ -88,6 +91,18 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+
+        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
+        if (isDirectionForward) {
+            params = openActivities.peek();
+        } else {
+            params = openActivities.pop();
+        }
+
+        isNew=(params!=null?params.isTransmitterNew():false);
+
+    }
 
     private void showPracticeHistoryOnScreen() {
 
@@ -194,10 +209,19 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         int id_practice = currentPracticeHistory.getIdPractice();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        Boolean isNew = DB.containsPracticeHistory(currentPracticeHistory.getID());
-        queueIsNew.offer(!isNew);
-        queueForChoice.offer(true);
+        Boolean isNew = !DB.containsPracticeHistory(currentPracticeHistory.getID());
+        ConnectionParameters params= new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticeHistory")
+                .isTransmitterNew(isNew)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityPracticesList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(true)
+                .build();
+        openActivities.push(params);
+        intent.putExtra("isDirectionForward", true);
         intent.putExtra("CurrentPracticeID", id_practice);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -288,7 +312,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
                         currentPracticeHistory.dbDelete(DB);
                         currentPracticeHistory = null;
 
-                        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+                        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

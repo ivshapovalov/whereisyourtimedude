@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -20,12 +21,16 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 
 public class ActivityProject extends AppCompatActivity {
 
     private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
+
+    ConnectionParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +39,7 @@ public class ActivityProject extends AppCompatActivity {
         setContentView(R.layout.activity_project);
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
+        getIntentParams(intent);
 
         if (isNew) {
             if (currentProject == null) {
@@ -60,6 +65,18 @@ public class ActivityProject extends AppCompatActivity {
         setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+
+        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
+        if (isDirectionForward) {
+            params = openActivities.peek();
+        } else {
+            params = openActivities.pop();
+        }
+
+        isNew = (params != null ? params.isReceiverNew() : false);
+
+    }
 
     private void showProjectOnScreen() {
 
@@ -101,6 +118,7 @@ public class ActivityProject extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", currentProject.getID());
+        intent.putExtra("isDirectionForward", false);
         currentProject=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -124,19 +142,23 @@ public class ActivityProject extends AppCompatActivity {
     public void tvArea_onClick(View view) {
 
         blink(view);
-
         getPropertiesFromScreen();
-
-        //currentProject.dbSave(DB);
-
         int id_area = currentProject.getIdArea();
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+        Boolean isNew = params!=null?params.isReceiverNew():false;
+        ConnectionParameters paramsNew= new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityProject")
+                .isTransmitterNew(isNew)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityAreasList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(true)
+                .build();
+        openActivities.push(params);
+        intent.putExtra("isDirectionForward", true);
         intent.putExtra("CurrentAreaID", id_area);
-        intent.putExtra("isNew", isNew);
-        intent.putExtra("forChoice", true);
-        //intent.putExtra("CurrentProjectID", mCurrentProject.getID());
-        intent.putExtra("CallerActivity", "ActivityProject");
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -150,9 +172,24 @@ public class ActivityProject extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", currentProject.getID());
+        intent.putExtra("isDirectionForward", false);
         currentProject=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void onBackPressed() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+
+        if (params != null) {
+            intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+            intent.putExtra("isDirectionForward", false);
+            intent.putExtra("CurrentProjectID", currentProject.getID());
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
     public void btDelete_onClick(final View view) {
@@ -179,6 +216,7 @@ public class ActivityProject extends AppCompatActivity {
                         currentProject=null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+                        intent.putExtra("isDirectionForward", false);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

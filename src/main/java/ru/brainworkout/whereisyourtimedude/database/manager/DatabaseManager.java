@@ -859,13 +859,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
+        int id_practice_count=0;
         if (cursor.moveToFirst()) {
             do {
                 int id_practice = cursor.getInt(0);
                 int id_practice_history = cursor.getInt(1);
                 PracticeHistory.Builder practiceHistoryBuilder;
                 if (id_practice_history == 0) {
-                    practiceHistoryBuilder = new PracticeHistory.Builder(getPracticeHistoryMaxNumber()+1);
+                    practiceHistoryBuilder = new PracticeHistory.Builder(getPracticeHistoryMaxNumber()+id_practice_count+++1);
                 } else {
 
                     practiceHistoryBuilder = new PracticeHistory.Builder(id_practice_history);

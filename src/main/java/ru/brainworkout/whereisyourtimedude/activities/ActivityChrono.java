@@ -91,7 +91,7 @@ public class ActivityChrono extends AppCompatActivity {
 //        calendar.add(Calendar.DAY_OF_YEAR,1);
 //        long endOfDayInMillis=calendar.getTimeInMillis();
         updatePractices(currentDateInMillis);
-         //Collections.sort(practices, new PracticeHistoryComparatorByLastTime());
+        //Collections.sort(practices, new PracticeHistoryComparatorByLastTime());
         currentPracticeHistory = practices.get(0);
         mChronometerCount = currentPracticeHistory.getDuration();
 
@@ -102,13 +102,14 @@ public class ActivityChrono extends AppCompatActivity {
     public void btDay_onClick(View view) {
         Common.blink(view);
 
-        String day=String.valueOf(((TextView) view).getText());
+        String day = String.valueOf(((TextView) view).getText());
         defineNewDayPractice(ConvertStringToDate(day).getTime());
 
     }
 
     public void btDate_onClick(View view) {
 
+        //TODO при смене даты сбиваются значения и в текущей дате в БД
         Common.blink(view);
         stopTimer();
 
@@ -121,7 +122,9 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     private void defineNewDayPractice(Long date) {
-        stopTimer();
+        if (mChronometerIsWorking) {
+            stopTimer();
+        }
         updatePractices(date);
         currentPracticeHistory = practices.get(0);
         currentDateInMillis = date;
@@ -133,18 +136,22 @@ public class ActivityChrono extends AppCompatActivity {
     //
     private void stopTimer() {
 
-        currentPracticeHistory.setDuration((int) ((SystemClock.elapsedRealtime() - mChronometer.getBase())));
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-        currentPracticeHistory.dbSave(DB);
+
         if (mChronometerIsWorking) {
+            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
+            currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometer.getBase());
             mChronometer.stop();
             mChronometerIsWorking = false;
+        } else {
+            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
         }
+        currentPracticeHistory.dbSave(DB);
 
     }
 
     private void changeTimer(long elapsedMillis) {
-        currentPracticeHistory.setDuration((int) ((SystemClock.elapsedRealtime() - mChronometer.getBase()) ));
+        currentPracticeHistory.setDuration((int) ((SystemClock.elapsedRealtime() - mChronometer.getBase())));
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
 
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
@@ -186,7 +193,7 @@ public class ActivityChrono extends AppCompatActivity {
 
     private void updatePractices(long date) {
 
-        practices = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionUser.getID(),date, date);
+        practices = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionUser.getID(), date, date);
 
     }
 
@@ -218,14 +225,14 @@ public class ActivityChrono extends AppCompatActivity {
 
     private void updateScreen() {
 
-        String areaName="";
-        int areaColor=0;
+        String areaName = "";
+        int areaColor = 0;
         try {
             Practice practice = DB.getPractice(currentPracticeHistory.getIdPractice());
             Project project = DB.getProject(practice.getIdProject());
             Area area = DB.getArea(project.getIdArea());
-            areaName=area.getName();
-            areaColor=area.getColor();
+            areaName = area.getName();
+            areaColor = area.getColor();
         } catch (TableDoesNotContainElementException e) {
 
         }
@@ -255,7 +262,7 @@ public class ActivityChrono extends AppCompatActivity {
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
         if (tvCurrentDate != null) {
             if (currentPracticeHistory.getLastTime() != 0) {
-                tvCurrentDate.setText(ConvertMillisToStringDate(currentPracticeHistory.getLastTime()) +" "+ ConvertMillisToStringTime(currentPracticeHistory.getLastTime()));
+                tvCurrentDate.setText(ConvertMillisToStringDate(currentPracticeHistory.getLastTime()) + " " + ConvertMillisToStringTime(currentPracticeHistory.getLastTime()));
                 ;
             } else {
                 tvCurrentDate.setText("");
@@ -286,16 +293,16 @@ public class ActivityChrono extends AppCompatActivity {
     private TableRow CreateTableRow(int i) {
         PracticeHistory practiceHistory = practices.get(i);
 
-        String practiceName="";
-        String areaName="";
-        int areaColor= Color.WHITE;
+        String practiceName = "";
+        String areaName = "";
+        int areaColor = Color.WHITE;
         try {
             Practice practice = DB.getPractice(practiceHistory.getIdPractice());
-            practiceName=practice.getName();
+            practiceName = practice.getName();
             Project project = DB.getProject(practice.getIdProject());
             Area area = DB.getArea(project.getIdArea());
-            areaName=area.getName();
-            areaColor=area.getColor();
+            areaName = area.getName();
+            areaColor = area.getColor();
         } catch (TableDoesNotContainElementException e) {
 
         }

@@ -111,6 +111,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
         public Builder(DatabaseManager DB) {
             this.id = DB.getPracticeHistoryMaxNumber() + 1;
         }
+
         public Builder(int id) {
             this.id = id;
         }

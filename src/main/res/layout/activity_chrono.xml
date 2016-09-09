@@ -14,6 +14,19 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvCurrentDay"
+                android:layout_span="100"
+                android:gravity="center"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:background="@android:drawable/progress_horizontal"
             >
 

@@ -45,6 +45,10 @@ public class Common {
         return ConvertTimeToString(new Date(Millis));
     }
 
+    public static String ConvertMillisToStringDateTime(final long Millis) {
+        return ConvertDateToString(new Date(Millis))+" "+ConvertTimeToString(new Date(Millis));
+    }
+
     public static String ConvertDateToString(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);

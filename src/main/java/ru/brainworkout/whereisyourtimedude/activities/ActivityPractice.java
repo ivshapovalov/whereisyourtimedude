@@ -61,16 +61,8 @@ public class ActivityPractice extends AppCompatActivity {
     }
 
     private void getIntentParams(Intent intent) {
-
-        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
-        if (isDirectionForward) {
-            params = openActivities.peek();
-        } else {
-            params = openActivities.pop();
-        }
-
+        params = openActivities.peek();
         isNew = (params != null ? params.isReceiverNew() : false);
-
     }
 
     private void showPracticeOnScreen() {
@@ -140,7 +132,7 @@ public class ActivityPractice extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", currentPractice.getID());
-        intent.putExtra("isDirectionForward", false);
+        openActivities.pop();
         currentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -177,10 +169,10 @@ public class ActivityPractice extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        openActivities.push(params);
-        intent.putExtra("isDirectionForward", true);
+        openActivities.push(paramsNew);
         intent.putExtra("CurrentProjectID", id_project);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 
@@ -193,7 +185,7 @@ public class ActivityPractice extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", currentPractice.getID());
-        intent.putExtra("isDirectionForward", false);
+        openActivities.pop();
         currentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -205,7 +197,7 @@ public class ActivityPractice extends AppCompatActivity {
 
         if (params != null) {
                 intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                intent.putExtra("isDirectionForward", false);
+                openActivities.pop();
                 intent.putExtra("CurrentPracticeID", currentPractice.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -229,7 +221,7 @@ public class ActivityPractice extends AppCompatActivity {
                         currentPractice = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                        intent.putExtra("isDirectionForward", false);
+                        openActivities.pop();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

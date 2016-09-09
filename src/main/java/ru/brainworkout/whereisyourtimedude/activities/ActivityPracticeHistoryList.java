@@ -58,16 +58,6 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
         showPracticeHistory();
 
-        setTitleOfActivity(this);
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        showPracticeHistory();
-
         Intent intent = getIntent();
         int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
 
@@ -80,8 +70,9 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
-    }
 
+        setTitleOfActivity(this);
+    }
 
     public void btPracticeHistoryAdd_onClick(final View view) {
 
@@ -98,7 +89,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         openActivities.clear();
         openActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-        intent.putExtra("isDirectionForward", false);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -212,7 +203,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         openActivities.clear();
         openActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-        intent.putExtra("isDirectionForward", false);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);
         startActivity(intent);
 

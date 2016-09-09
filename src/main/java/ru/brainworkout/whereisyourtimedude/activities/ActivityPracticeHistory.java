@@ -93,14 +93,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
-        if (isDirectionForward) {
-            params = openActivities.peek();
-        } else {
-            params = openActivities.pop();
-        }
-
-        isNew=(params!=null?params.isTransmitterNew():false);
+       params = openActivities.peek();
+       isNew=(params!=null?params.isTransmitterNew():false);
 
     }
 
@@ -219,7 +213,6 @@ public class ActivityPracticeHistory extends AppCompatActivity {
                 .isReceiverForChoice(true)
                 .build();
         openActivities.push(params);
-        intent.putExtra("isDirectionForward", true);
         intent.putExtra("CurrentPracticeID", id_practice);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -297,6 +290,16 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         currentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void onBackPressed() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
+        intent.putExtra("CurrentPracticeHistoryID", currentPracticeHistory.getID());
+        currentPracticeHistory = null;
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
     public void btDelete_onClick(final View view) {

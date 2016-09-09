@@ -30,7 +30,7 @@ public class ActivityProject extends AppCompatActivity {
     private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
 
-    ConnectionParameters params;
+    private ConnectionParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +54,6 @@ public class ActivityProject extends AppCompatActivity {
                 tableDoesNotContainElementException.printStackTrace();
             }
         }
-//        int id_area = intent.getIntExtra("CurrentAreaID", 0);
-//        if (id_area != 0) {
-//            currentProject.setIdArea(id_area);
-//        }
 
         showProjectOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -67,13 +63,7 @@ public class ActivityProject extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
-        if (isDirectionForward) {
-            params = openActivities.peek();
-        } else {
-            params = openActivities.pop();
-        }
-
+        params = openActivities.peek();
         isNew = (params != null ? params.isReceiverNew() : false);
 
     }
@@ -118,7 +108,7 @@ public class ActivityProject extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", currentProject.getID());
-        intent.putExtra("isDirectionForward", false);
+        openActivities.pop();
         currentProject=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -155,8 +145,7 @@ public class ActivityProject extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        openActivities.push(params);
-        intent.putExtra("isDirectionForward", true);
+        openActivities.push(paramsNew);
         intent.putExtra("CurrentAreaID", id_area);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -172,7 +161,7 @@ public class ActivityProject extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", currentProject.getID());
-        intent.putExtra("isDirectionForward", false);
+        openActivities.pop();
         currentProject=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -184,7 +173,7 @@ public class ActivityProject extends AppCompatActivity {
 
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-            intent.putExtra("isDirectionForward", false);
+            openActivities.pop();
             intent.putExtra("CurrentProjectID", currentProject.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -216,7 +205,7 @@ public class ActivityProject extends AppCompatActivity {
                         currentProject=null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-                        intent.putExtra("isDirectionForward", false);
+                        openActivities.pop();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

@@ -64,30 +64,6 @@ public class ActivityProjectsList extends AppCompatActivity {
         }
 
         showProjects();
-
-        setTitleOfActivity(this);
-    }
-
-    private void getIntentParams(Intent intent) {
-
-        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
-        id_project = intent.getIntExtra("CurrentProjectID", 0);
-        if (isDirectionForward) {
-            params = openActivities.peek();
-        } else {
-            params = openActivities.pop();
-        }
-
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        getIntentParams(intent);
-        showProjects();
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_project);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
@@ -97,12 +73,16 @@ public class ActivityProjectsList extends AppCompatActivity {
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
+
+        setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+        id_project = intent.getIntExtra("CurrentProjectID", 0);
+        params = openActivities.peek();
+    }
 
     public void btProjectAdd_onClick(final View view) {
-
-
         blink(view);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProjectsList")
@@ -114,7 +94,6 @@ public class ActivityProjectsList extends AppCompatActivity {
                 .build();
         openActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
-        intent.putExtra("isDirectionForward", true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -187,10 +166,10 @@ public class ActivityProjectsList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String nameArea="";
+            String nameArea = "";
             try {
-                Area area=DB.getArea(currentProject.getIdArea());
-                nameArea=area.getName();
+                Area area = DB.getArea(currentProject.getIdArea());
+                nameArea = area.getName();
                 txt.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
                 txt.setBackgroundResource(R.drawable.bt_border);
@@ -217,14 +196,13 @@ public class ActivityProjectsList extends AppCompatActivity {
         int id = v.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.putExtra("CurrentProjectID", id);
-        intent.putExtra("isNew", false);
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 currentPractice.setIdProject(id);
 
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                intent.putExtra("isDirectionForward", false);
-                intent.putExtra("CurrentProjectID", id);
+                openActivities.pop();
+
             }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -244,6 +222,7 @@ public class ActivityProjectsList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view);
+        openActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -257,12 +236,12 @@ public class ActivityProjectsList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                intent.putExtra("isDirectionForward", false);
+                openActivities.pop();
                 intent.putExtra("CurrentProjectID", id_project);
             }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-      }
+    }
 }
 

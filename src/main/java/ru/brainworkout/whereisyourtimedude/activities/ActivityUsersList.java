@@ -52,16 +52,6 @@ public class ActivityUsersList extends AppCompatActivity {
 
         showUsers();
 
-        setTitleOfActivity(this);
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        showUsers();
-
         Intent intent = getIntent();
         int id = intent.getIntExtra("id", 0);
 
@@ -74,8 +64,9 @@ public class ActivityUsersList extends AppCompatActivity {
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
-    }
 
+        setTitleOfActivity(this);
+    }
 
     public void btUsersAdd_onClick(final View view) {
 

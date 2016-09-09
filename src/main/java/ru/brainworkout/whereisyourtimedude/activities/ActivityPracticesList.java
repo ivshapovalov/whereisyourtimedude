@@ -78,29 +78,10 @@ public class ActivityPracticesList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        boolean isDirectionForward = intent.getBooleanExtra("isDirectionForward", false);
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        if (isDirectionForward) {
-            params = openActivities.peek();
-        } else {
-            params = openActivities.pop();
-        }
+        params = openActivities.peek();
 
     }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        getIntentParams(intent);
-
-        showPractices();
-
-
-    }
-
 
     public void btPracticeAdd_onClick(final View view) {
 
@@ -116,7 +97,6 @@ public class ActivityPracticesList extends AppCompatActivity {
                 .build();
         openActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
-        intent.putExtra("isDirectionForward", true);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -221,13 +201,12 @@ public class ActivityPracticesList extends AppCompatActivity {
         int id = v.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("CurrentPracticeID", id);
-        intent.putExtra("isNew", false);
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 currentPracticeHistory.setIdPractice(id);
 
                 intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-                intent.putExtra("isDirectionForward", false);
+                openActivities.pop();
                 intent.putExtra("CurrentPracticeID", id);
             }
         }
@@ -262,7 +241,7 @@ public class ActivityPracticesList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-                intent.putExtra("isDirectionForward", false);
+                openActivities.pop();
                 intent.putExtra("CurrentPracticeID", id_practice);
             }
         }

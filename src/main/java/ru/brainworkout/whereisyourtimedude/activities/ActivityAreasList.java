@@ -16,13 +16,16 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
+import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
@@ -38,10 +41,8 @@ public class ActivityAreasList extends AppCompatActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private boolean forChoice = false;
-    private String mCallerActivity;
     private int id_area;
-    private boolean isNew;
+    ConnectionParameters params;
 
 
     @Override
@@ -57,23 +58,8 @@ public class ActivityAreasList extends AppCompatActivity {
         }
 
         showAreas();
-
-        setTitleOfActivity(this);
-    }
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        showAreas();
-
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
-        id_area = intent.getIntExtra("CurrentAreaID", 0);
-        forChoice = intent.getBooleanExtra("forChoice", false);
-        mCallerActivity = intent.getStringExtra("CallerActivity");
-        //id_project = intent.getIntExtra("CurrentProjectID", 0);
+        getIntentParams(intent);
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_area);
         if (mRow != null) {
@@ -84,17 +70,31 @@ public class ActivityAreasList extends AppCompatActivity {
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
+
+        setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+        id_area = intent.getIntExtra("CurrentAreaID", 0);
+        params = openActivities.peek();
+
+    }
 
     public void btAreasAdd_onClick(final View view) {
 
         blink(view);
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityAreasList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityArea")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
-        intent.putExtra("isNew", true);
-        intent.putExtra("forChoice",forChoice);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     private void showAreas() {
@@ -182,30 +182,20 @@ public class ActivityAreasList extends AppCompatActivity {
     private void rowArea_onClick(final TableRow v) {
 
         blink(v);
-        Intent intent=new Intent();
         int id = v.getId() % NUMBER_OF_VIEWS;
-        if (forChoice) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+        Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
+        intent.putExtra("CurrentAreaID", id);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                currentProject.setIdArea(id);
+
+                intent = new Intent(getApplicationContext(), ActivityProject.class);
+                openActivities.pop();
+
             }
-            currentProject.setIdArea(id);
-            intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("isNew", isNew);
-
-
-        } else {
-
-            intent= new Intent(getApplicationContext(), ActivityArea.class);
-            intent.putExtra("CurrentAreaID", id);
-            intent.putExtra("isNew", false);
-
-
         }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btEdit_onClick(final View view) {
@@ -220,6 +210,7 @@ public class ActivityAreasList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view);
+        openActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -227,25 +218,18 @@ public class ActivityAreasList extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        Intent intent = new Intent();
-        if (forChoice) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
+
+        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                intent = new Intent(getApplicationContext(), ActivityProject.class);
+                openActivities.pop();
+                intent.putExtra("CurrentAreaID", id_area);
             }
-
-            intent = new Intent(getApplicationContext(), myClass);
-            intent.putExtra("isNew", isNew);
-            intent.putExtra("CurrentAreaID", id_area);
-
-        } else {
-            intent = new Intent(getApplicationContext(), ActivityMain.class);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
-    }
+       }
 }
 

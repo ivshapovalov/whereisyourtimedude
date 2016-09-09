@@ -18,6 +18,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -28,12 +29,12 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentArea;
 import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
 
 public class ActivityArea extends AppCompatActivity {
 
     private final DatabaseManager DB = new DatabaseManager(this);
-    private boolean forChoice;
-    private String mCallerActivity;
+    private ConnectionParameters params;
     private boolean isNew;
 
     @Override
@@ -43,9 +44,7 @@ public class ActivityArea extends AppCompatActivity {
         setContentView(R.layout.activity_area);
 
         Intent intent = getIntent();
-        isNew = intent.getBooleanExtra("isNew", false);
-        forChoice = intent.getBooleanExtra("forChoice", false);
-        mCallerActivity = intent.getStringExtra("CallerActivity");
+        getIntentParams(intent);
 
         if (isNew) {
             if (currentArea == null) {
@@ -66,6 +65,12 @@ public class ActivityArea extends AppCompatActivity {
         setTitleOfActivity(this);
     }
 
+    private void getIntentParams(Intent intent) {
+
+        params = openActivities.peek();
+        isNew = (params != null ? params.isReceiverNew() : false);
+
+    }
 
     private void showAreaOnScreen() {
 
@@ -99,9 +104,8 @@ public class ActivityArea extends AppCompatActivity {
         blink(view);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", currentArea.getID());
-        currentArea = null;
-        intent.putExtra("forChoice", forChoice);
-        intent.putExtra("CallerActivity", "ActivityProject");
+        openActivities.pop();
+        currentArea=null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -169,10 +173,24 @@ public class ActivityArea extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", currentArea.getID());
         currentArea = null;
-        intent.putExtra("forChoice", forChoice);
-        intent.putExtra("CallerActivity", "ActivityProject");
+        openActivities.pop();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+
+    public void onBackPressed() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+
+        if (params != null) {
+            intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+            openActivities.pop();
+            intent.putExtra("CurrentAreaID", currentArea.getID());
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
     public void btDelete_onClick(final View view) {
@@ -201,6 +219,7 @@ public class ActivityArea extends AppCompatActivity {
 
                         currentArea.dbDelete(DB);
                         currentArea = null;
+                        openActivities.pop();
 
                         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

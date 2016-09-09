@@ -79,26 +79,9 @@ public class ActivityPracticesList extends AppCompatActivity {
     private void getIntentParams(Intent intent) {
 
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        params = openActivities.peek();
-
-    }
-
-    public void btPracticeAdd_onClick(final View view) {
-
-        blink(view);
-
-        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityPracticesList")
-                .isTransmitterNew(false)
-                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
-                .addReceiverActivityName("ActivityPractice")
-                .isReceiverNew(true)
-                .isReceiverForChoice(false)
-                .build();
-        openActivities.push(paramsNew);
-        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        if (!openActivities.empty()) {
+            params = openActivities.peek();
+        }
 
     }
 
@@ -186,11 +169,67 @@ public class ActivityPracticesList extends AppCompatActivity {
             txt.setTextColor(getResources().getColor(R.color.text_color));
             mRow.addView(txt);
 
+            txt = new TextView(this);
+            txt.setText("►");
+            txt.setBackgroundResource(R.drawable.bt_border);
+            txt.setGravity(Gravity.CENTER);
+            txt.setHeight(mHeight);
+            txt.setTextSize(mTextSize);
+            txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    txtPracticeEdit_onClick((TextView) v);
+                }
+            });
+            mRow.addView(txt);
+
+
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
 
         }
         sv.addView(layout);
+
+    }
+
+    public void btPracticeAdd_onClick(final View view) {
+
+        blink(view);
+
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticesList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityPractice")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
+
+    private void txtPracticeEdit_onClick(TextView v) {
+        blink(v);
+
+        int id = ((TableRow)v.getParent()).getId() % NUMBER_OF_VIEWS;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticesList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityPractice")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
+        intent.putExtra("CurrentPracticeID", id);
+
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 
@@ -209,6 +248,16 @@ public class ActivityPracticesList extends AppCompatActivity {
                 openActivities.pop();
                 intent.putExtra("CurrentPracticeID", id);
             }
+        } else {
+            ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                    .addTransmitterActivityName("ActivityPracticesList")
+                    .isTransmitterNew(false)
+                    .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                    .addReceiverActivityName("ActivityPractice")
+                    .isReceiverNew(false)
+                    .isReceiverForChoice(false)
+                    .build();
+            openActivities.push(paramsNew);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

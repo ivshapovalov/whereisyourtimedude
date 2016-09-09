@@ -178,11 +178,47 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
             txt.setTextColor(getResources().getColor(R.color.text_color));
             mRow.addView(txt);
 
+            txt = new TextView(this);
+            txt.setText("►");
+            txt.setBackgroundResource(R.drawable.bt_border);
+            txt.setGravity(Gravity.CENTER);
+            txt.setHeight(mHeight);
+            txt.setTextSize(mTextSize);
+            txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    txtPracticeHistoryEdit_onClick((TextView) v);
+                }
+            });
+            mRow.addView(txt);
+
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
 
         }
         sv.addView(layout);
+
+    }
+
+    private void txtPracticeHistoryEdit_onClick(TextView v) {
+
+        blink(v);
+        int id = ((TableRow)v.getParent()).getId() % NUMBER_OF_VIEWS;
+        ConnectionParameters params= new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityPracticeHistoryList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityPracticeHistory")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.clear();
+        openActivities.push(params);
+        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("CurrentPracticeHistoryID", id);
+        startActivity(intent);
 
     }
 

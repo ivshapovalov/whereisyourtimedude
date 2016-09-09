@@ -76,25 +76,10 @@ public class ActivityAreasList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_area = intent.getIntExtra("CurrentAreaID", 0);
-        params = openActivities.peek();
+        if (!openActivities.empty()) {
+            params = openActivities.peek();
+        }
 
-    }
-
-    public void btAreasAdd_onClick(final View view) {
-
-        blink(view);
-        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityAreasList")
-                .isTransmitterNew(false)
-                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
-                .addReceiverActivityName("ActivityArea")
-                .isReceiverNew(true)
-                .isReceiverForChoice(false)
-                .build();
-        openActivities.push(paramsNew);
-        Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 
     private void showAreas() {
@@ -171,11 +156,64 @@ public class ActivityAreasList extends AppCompatActivity {
             txt.setTextSize(mTextSize);
             mRow.addView(txt);
 
+            txt = new TextView(this);
+            txt.setText("►");
+            txt.setBackgroundResource(R.drawable.bt_border);
+            txt.setGravity(Gravity.CENTER);
+            txt.setHeight(mHeight);
+            txt.setTextSize(mTextSize);
+            txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    txtAreaEdit_onClick((TextView) v);
+                }
+            });
+            mRow.addView(txt);
+
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
 
         }
         sv.addView(layout);
+
+    }
+
+
+    public void btAreasAdd_onClick(final View view) {
+
+        blink(view);
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityAreasList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityArea")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void txtAreaEdit_onClick(TextView v) {
+
+        blink(v);
+        int id = ((TableRow) v.getParent()).getId() % NUMBER_OF_VIEWS;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityAreasList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityArea")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
+        intent.putExtra("CurrentAreaID", id);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 
@@ -193,6 +231,16 @@ public class ActivityAreasList extends AppCompatActivity {
                 openActivities.pop();
 
             }
+        } else {
+            ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                    .addTransmitterActivityName("ActivityAreasList")
+                    .isTransmitterNew(false)
+                    .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                    .addReceiverActivityName("ActivityArea")
+                    .isReceiverNew(false)
+                    .isReceiverForChoice(false)
+                    .build();
+            openActivities.push(paramsNew);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -230,6 +278,6 @@ public class ActivityAreasList extends AppCompatActivity {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-       }
+    }
 }
 

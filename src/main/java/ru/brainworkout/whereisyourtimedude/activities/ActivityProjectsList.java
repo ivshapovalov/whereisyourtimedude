@@ -79,24 +79,12 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_project = intent.getIntExtra("CurrentProjectID", 0);
-        params = openActivities.peek();
+        if (!openActivities.empty()) {
+            params = openActivities.peek();
+        }
     }
 
-    public void btProjectAdd_onClick(final View view) {
-        blink(view);
-        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityProjectsList")
-                .isTransmitterNew(false)
-                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
-                .addReceiverActivityName("ActivityProject")
-                .isReceiverNew(true)
-                .isReceiverForChoice(false)
-                .build();
-        openActivities.push(paramsNew);
-        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
+
 
     private void showProjects() {
 
@@ -182,12 +170,63 @@ public class ActivityProjectsList extends AppCompatActivity {
             txt.setTextColor(getResources().getColor(R.color.text_color));
             mRow.addView(txt);
 
+            txt = new TextView(this);
+            txt.setText("►");
+            txt.setBackgroundResource(R.drawable.bt_border);
+            txt.setGravity(Gravity.CENTER);
+            txt.setHeight(mHeight);
+            txt.setTextSize(mTextSize);
+            txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    txtProjectEdit_onClick((TextView) v);
+                }
+            });
+            mRow.addView(txt);
+
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
 
         }
         sv.addView(layout);
 
+    }
+
+    public void btProjectAdd_onClick(final View view) {
+        blink(view);
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityProjectsList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityProject")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
+    private void txtProjectEdit_onClick(TextView v) {
+
+        blink(v);
+
+        int id = ((TableRow)v.getParent()).getId() % NUMBER_OF_VIEWS;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityProjectsList")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityProject")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        openActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
+        intent.putExtra("CurrentProjectID", id);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void rowProject_onClick(final TableRow v) {
@@ -204,6 +243,17 @@ public class ActivityProjectsList extends AppCompatActivity {
                 openActivities.pop();
 
             }
+        } else {
+            ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                    .addTransmitterActivityName("ActivityProjectsList")
+                    .isTransmitterNew(false)
+                    .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                    .addReceiverActivityName("ActivityProject")
+                    .isReceiverNew(false)
+                    .isReceiverForChoice(false)
+                    .build();
+            openActivities.push(paramsNew);
+
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

@@ -81,15 +81,6 @@
                         android:layout_span="5"
                         style="@android:style/TextAppearance.Small"/>
 
-                    <TextView
-                        style="@android:style/TextAppearance.Small"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/tvArea"
-                        android:layout_span="15"
-                        android:onClick="tvArea_onClick"
-                        android:text="CHOOSE AREA"/>
-
                 </TableRow>
 
                 <TableRow
@@ -115,6 +106,22 @@
                         style="@android:style/TextAppearance.Small"
                         android:textColor="@color/text_color" />
 
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvArea"
+                        android:layout_span="30"
+                        android:onClick="tvArea_onClick"
+                        android:text="CHOOSE AREA"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"/>
                 </TableRow>
 
             </TableLayout>

@@ -63,7 +63,9 @@ public class ActivityProject extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        params = openActivities.peek();
+        if (!openActivities.empty()) {
+            params = openActivities.peek();
+        }
         isNew = (params != null ? params.isReceiverNew() : false);
 
     }
@@ -169,7 +171,7 @@ public class ActivityProject extends AppCompatActivity {
 
     public void onBackPressed() {
 
-        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
 
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);

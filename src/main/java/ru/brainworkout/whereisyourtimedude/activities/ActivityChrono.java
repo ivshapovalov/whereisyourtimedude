@@ -22,12 +22,10 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import java.util.LinkedList;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertStringToDate;
-//import static ru.brainworkout.whereisyourtimedude.common.Common.areas;
-//import static ru.brainworkout.whereisyourtimedude.common.Common.practices;
-//import static ru.brainworkout.whereisyourtimedude.common.Common.DB;
+
 
 public class ActivityChrono extends AppCompatActivity {
-
+//
 //    private static PracticeHistory currentPractice;
 //    private static long currentDateInMillis;
 //

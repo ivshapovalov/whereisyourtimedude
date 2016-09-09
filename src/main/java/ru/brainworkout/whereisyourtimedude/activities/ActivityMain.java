@@ -113,7 +113,7 @@ public class ActivityMain extends AppCompatActivity {
 
     }
 
-    public void btChrono_onClick(final View view) {
+    public void btChronometer_onClick(final View view) {
 
         Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
         startActivity(intent);

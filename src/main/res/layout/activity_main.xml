@@ -21,10 +21,10 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="TIMER"
+                android:text="CHRONOMETER"
                 android:id="@+id/btMain1"
                 android:layout_weight="100"
-                android:onClick="btChrono_onClick"/>
+                android:onClick="btChronometer_onClick"/>
 
         </TableRow>
 

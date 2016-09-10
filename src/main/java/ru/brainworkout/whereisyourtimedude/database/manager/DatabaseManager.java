@@ -70,7 +70,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
+    public void update(SQLiteDatabase db) {
+        // some code
+    }
+
     // Creating Tables
+
     @Override
     public void onCreate(SQLiteDatabase db) {
 

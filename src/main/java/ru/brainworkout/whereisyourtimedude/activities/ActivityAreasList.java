@@ -1,5 +1,7 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +19,11 @@ import java.util.List;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
+import ru.brainworkout.whereisyourtimedude.database.entities.Project;
+import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
@@ -263,6 +269,41 @@ public class ActivityAreasList extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }
+
+    public void btClear_onClick(final View view) {
+
+        blink(view);
+
+        new AlertDialog.Builder(this)
+                .setMessage("Вы действительно хотите удалить все области,их проекты и занятия?")
+                .setCancelable(false)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        if (Session.sessionUser!=null) {
+                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionUser.getID());
+                            for (Area area : areas
+                                    ) {
+                                List<Project> projects=DB.getAllProjectsOfArea(area.getID());
+                                for (Project project:projects
+                                     ) {
+                                    List<Practice> practices=DB.getAllActivePracticesOfProject(project.getID());
+                                    for (Practice practice:practices
+                                         ) {
+                                        DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                                    }
+                                    DB.deleteAllPracticesOfProject(project.getID());
+                                }
+                                DB.deleteAllProjectsOfArea(area.getID());
+                           }
+
+                            DB.deleteAllAreasOfUser(Session.sessionUser.getID());
+                            showAreas();
+                        }
+                    }
+
+                }).setNegativeButton("Нет", null).show();
     }
 
     public void onBackPressed() {

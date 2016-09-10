@@ -1,5 +1,7 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +20,7 @@ import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
@@ -281,6 +284,29 @@ public class ActivityPracticesList extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }
+
+    public void btClear_onClick(final View view) {
+
+        blink(view);
+
+        new AlertDialog.Builder(this)
+                .setMessage("Вы действительно хотите удалить занятия и их историю?")
+                .setCancelable(false)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        if (Session.sessionUser != null) {
+                                List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionUser.getID());
+                                for (Practice practice : practices
+                                        ) {
+                                    DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                                }
+                                DB.deleteAllPracticesOfUser(Session.sessionUser.getID());
+                            showPractices();
+                        }
+                    }
+
+                }).setNegativeButton("Нет", null).show();
     }
 
     public void onBackPressed() {

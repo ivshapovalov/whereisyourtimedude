@@ -108,6 +108,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btPracticeHistory_onClick(final View view) {
 
+        //DB.update(DB.getReadableDatabase());
         Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
         startActivity(intent);
 

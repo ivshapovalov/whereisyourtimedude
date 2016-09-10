@@ -41,6 +41,17 @@
                 android:textColor="@color/text_color" />
 
             <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button2"
+                android:onClick="btEdit_onClick"
+                android:layout_span="10"
+                android:text="CLEAR"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+
+            <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/btPracticeHistoryDBEditor"

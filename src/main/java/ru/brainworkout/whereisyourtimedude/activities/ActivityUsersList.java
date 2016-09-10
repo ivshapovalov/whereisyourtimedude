@@ -1,5 +1,7 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
@@ -79,7 +82,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
     private void showUsers() {
 
-        List<User> users= DB.getAllUsers();
+        List<User> users = DB.getAllUsers();
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableUsers);
         try {
@@ -92,7 +95,7 @@ public class ActivityUsersList extends AppCompatActivity {
         DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
 
         mHeight = displaymetrics.heightPixels / MAX_VERTICAL_BUTTON_COUNT;
-        mWidth = displaymetrics.widthPixels/ MAX_HORIZONTAL_BUTTON_COUNT;
+        mWidth = displaymetrics.widthPixels / MAX_HORIZONTAL_BUTTON_COUNT;
         mTextSize = (int) (Math.min(mWidth, mHeight) / 1.5 / getApplicationContext().getResources().getDisplayMetrics().density);
 
         TableRow trowButtons = (TableRow) findViewById(R.id.trowButtons);
@@ -126,7 +129,7 @@ public class ActivityUsersList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name= String.valueOf(users.get(numUser).getName())+((users.get(numUser).isCurrentUser()==1)?" (CURRENT)":"");
+            String name = String.valueOf(users.get(numUser).getName()) + ((users.get(numUser).isCurrentUser() == 1) ? " (CURRENT)" : "");
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -156,7 +159,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
     }
 
-    public void bt_Edit_onClick(final View view) {
+    public void btEdit_onClick(final View view) {
 
         blink(view);
 
@@ -172,6 +175,35 @@ public class ActivityUsersList extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }
+
+    public void btClear_onClick(final View view) {
+
+        blink(view);
+
+        new AlertDialog.Builder(this)
+                .setMessage("Вы действительно хотите удалить всех пользователей, их проекты, области, занятия?")
+                .setCancelable(false)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                        List<User> users = DB.getAllUsers();
+                        for (User user : users
+                                ) {
+                            DB.deleteAllPracticeHistoryOfUser(user.getID());
+                            DB.deleteAllPracticesOfUser(user.getID());
+                            DB.deleteAllProjectsOfUser(user.getID());
+                            DB.deleteAllAreasOfUser(user.getID());
+
+                        }
+                        ;
+                        DB.deleteAllUsers();
+                        Session.sessionUser = null;
+
+                        showUsers();
+                    }
+
+                }).setNegativeButton("Нет", null).show();
     }
 
     public void onBackPressed() {

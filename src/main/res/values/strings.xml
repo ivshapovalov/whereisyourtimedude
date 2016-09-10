@@ -13,5 +13,6 @@
     <string name="practice_history_name">Practice history"</string>
     <string name="calendar_view_name">Date choice</string>
     <string name="about_name">About</string>
+    <string name="date_time_picker_name">Choose the date</string>
     <string name="about_text">2016. This program will help you to chrono your activities</string>
 </resources>

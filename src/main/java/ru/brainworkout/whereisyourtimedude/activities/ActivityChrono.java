@@ -180,7 +180,7 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     private void changeTimer(long elapsedMillis) {
-        currentPracticeHistory.setDuration((int) ((SystemClock.elapsedRealtime() - mChronometer.getBase())));
+        currentPracticeHistory.setDuration(((SystemClock.elapsedRealtime() - mChronometer.getBase())));
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
 
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());

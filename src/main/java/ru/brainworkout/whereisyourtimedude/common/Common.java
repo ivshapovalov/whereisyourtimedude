@@ -41,13 +41,14 @@ public class Common {
 
     public static String ConvertMillisToStringTime(long millis) {
 
-        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis)-TimeUnit.DAYS.toHours(days);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) -
-                TimeUnit.HOURS.toMinutes(hours);
+                TimeUnit.DAYS.toMinutes(days)-TimeUnit.HOURS.toMinutes(hours);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         //millis -= TimeUnit.SECONDS.toMillis(second);
-        String timeString=String.format("%02d:%02d:%02d", hours, minutes, seconds);
+        String timeString=String.format("%02d:%02d:%02d:%02d", days,hours, minutes, seconds);
         return timeString;
     }
 

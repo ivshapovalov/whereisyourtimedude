@@ -21,6 +21,10 @@
             android:label="@string/users_list_name"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activities.ActivityDateTimePickerDialog"
+            android:label="@string/date_time_picker_name"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activities.ActivityUser"
             android:label="@string/user_name"
             android:screenOrientation="portrait"/>

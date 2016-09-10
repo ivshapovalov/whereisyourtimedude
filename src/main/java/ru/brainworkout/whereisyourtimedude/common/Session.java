@@ -14,6 +14,8 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
+import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer.*;
+
 public class Session {
 
     public static User sessionUser;
@@ -23,5 +25,12 @@ public class Session {
     public static PracticeHistory currentPracticeHistory;
 
     public static final Stack<ConnectionParameters> openActivities= new Stack<>();
+
+    public static final BackgroundChronometer backgroundChronometer=BackgroundChronometer.INSTANCE;
+
+    static {
+       // backgroundChronometer.start();
+    }
+
 
 }

@@ -14,10 +14,10 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Comparator;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
@@ -93,9 +93,29 @@ public class ActivityChrono extends AppCompatActivity {
         updatePractices(currentDateInMillis);
         //Collections.sort(practices, new PracticeHistoryComparatorByLastTime());
         currentPracticeHistory = practices.get(0);
-        mChronometerCount = currentPracticeHistory.getDuration();
+
+
+        if (Session.backgroundChronometer.isAlive()) {
+
+            if (Session.backgroundChronometer.isRunning()) {
+                mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
+                rowCurrentWork_onClick(new TextView(this));
+            } else {
+                mChronometerCount = currentPracticeHistory.getDuration();
+                Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+            }
+
+
+        } else {
+            Session.backgroundChronometer.start();
+            Session.backgroundChronometer.pause();
+            mChronometerCount = currentPracticeHistory.getDuration();
+            Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+
+        }
 
         updateScreen();
+
 
     }
 
@@ -122,6 +142,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         mChronometerCount = currentPracticeHistory.getDuration();
         updateScreen();
+
     }
 
     //
@@ -151,8 +172,21 @@ public class ActivityChrono extends AppCompatActivity {
         String strTime = ConvertMillisToStringTime(elapsedMillis);
         String txt = String.valueOf(strTime);
         tvTimer.setText(txt);
+        updateGlobalCounter();
 
 
+    }
+
+    private void updateGlobalCounter() {
+        String strTime;
+        String txt;//global chrono
+        long count = Session.backgroundChronometer.getGlobalChronometerCount();
+        int tvGlobalChronometerID = getResources().getIdentifier("tvGlobalChronometer", "id", getPackageName());
+        TextView tvGlobalChronometer = (TextView) findViewById(tvGlobalChronometerID);
+
+        strTime = ConvertMillisToStringTime(count);
+        txt = String.valueOf(strTime);
+        tvGlobalChronometer.setText(txt);
     }
 
     private String addingZeros(String s, int length) {
@@ -171,13 +205,15 @@ public class ActivityChrono extends AppCompatActivity {
         if (DB.containsPracticeHistory(id_practice_history)) {
             currentPracticeHistory = DB.getPracticeHistory(id_practice_history);
         } else {
-            int index=practices.indexOf(new PracticeHistory.Builder(id_practice_history).build());
-            currentPracticeHistory=practices.get(index);
+            int index = practices.indexOf(new PracticeHistory.Builder(id_practice_history).build());
+            currentPracticeHistory = practices.get(index);
         }
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
 
         mChronometerCount = currentPracticeHistory.getDuration();
+        Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+        Session.backgroundChronometer.resumepause();
         mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
         mChronometerIsWorking = true;
         mChronometer.start();
@@ -197,18 +233,24 @@ public class ActivityChrono extends AppCompatActivity {
         Common.blink(view);
         if (!mChronometerIsWorking) {
 
+            if (Session.backgroundChronometer.isAlive()) {
+                Session.backgroundChronometer.resumepause();
+            }
+
             if (mChronometerCount == 0) {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
+                Session.backgroundChronometer.setGlobalChronometerCount(0);
             } else {
                 mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
             }
-
 
             mChronometerIsWorking = true;
             mChronometer.start();
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
 
         } else {
+
+            Session.backgroundChronometer.pause();
 
             mChronometerCount = SystemClock.elapsedRealtime() - mChronometer.getBase();
             mChronometer.stop();
@@ -222,6 +264,8 @@ public class ActivityChrono extends AppCompatActivity {
 
 
     private void updateScreen() {
+
+        updateGlobalCounter();
 
         String areaName = "";
         int areaColor = 0;

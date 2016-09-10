@@ -20,6 +20,20 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/tvGlobalChronometer"
+                android:gravity="center"
+                android:textStyle="bold"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@android:drawable/progress_horizontal">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:id="@+id/tvCurrentDay"
                 android:gravity="center"
                 android:onClick="tvDate_onClick"

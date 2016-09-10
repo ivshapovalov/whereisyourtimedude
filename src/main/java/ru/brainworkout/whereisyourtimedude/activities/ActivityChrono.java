@@ -210,6 +210,7 @@ public class ActivityChrono extends AppCompatActivity {
 
             mChronometerIsWorking = true;
             mChronometer.start();
+            currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
 
         } else {
 
@@ -218,6 +219,7 @@ public class ActivityChrono extends AppCompatActivity {
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             currentPracticeHistory.dbSave(DB);
+            updateScreen();
         }
 
     }

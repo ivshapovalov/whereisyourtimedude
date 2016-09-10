@@ -6,7 +6,7 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-public class User extends AbstractEntity implements SavingIntoDB,DeletingFromDb {
+public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb {
     private int id;
     private String name;
     private int isCurrentUser;
@@ -45,25 +45,21 @@ public class User extends AbstractEntity implements SavingIntoDB,DeletingFromDb 
 
     @Override
     public void dbSave(DatabaseManager db) {
-        User user = (User) this;
-        try {
-            db.getUser(this.getID());
-            db.updateUser(user);
-
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
-            db.addUser(user);
-
+        if (db.containsUser(this.getID())) {
+            db.updateUser(this);
+        } else
+       {
+            db.addUser(this);
         }
     }
 
     @Override
     public void dbDelete(DatabaseManager db) {
-        try {
-            db.getUser(this.getID());
-            db.deleteUser((User) this);
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
+        if (db.containsUser(this.getID())) {
+            db.deleteUser(this);
+        } else
+        {
+            db.addUser(this);
         }
     }
 

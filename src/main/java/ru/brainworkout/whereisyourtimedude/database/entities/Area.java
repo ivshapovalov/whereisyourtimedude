@@ -43,25 +43,20 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
     @Override
     public void dbSave(DatabaseManager db) {
-        try {
-            db.getArea(this.getID());
-            db.updateArea((Area) this);
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
-            db.addArea((Area) this);
+        if (db.containsArea(this.getID())) {
+            db.updateArea(this);
+        } else {
+            db.addArea(this);
         }
     }
 
     @Override
     public void dbDelete(DatabaseManager db) {
-
-            try {
-                db.getArea(this.getID());
-                db.deleteArea((Area) this);
-            } catch (TableDoesNotContainElementException e) {
-                //нет такого
-
-            }
+        if (db.containsArea(this.getID())) {
+            db.deleteArea(this);
+        } else {
+            db.addArea(this);
+        }
 
     }
 

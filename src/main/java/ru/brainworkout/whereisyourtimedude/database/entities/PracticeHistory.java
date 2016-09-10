@@ -10,7 +10,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 /**
  * Created by Ivan on 05.09.2016.
  */
-public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
+public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private int id_practice;
     private long duration;
@@ -32,9 +32,9 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
         this.id = builder.id;
         this.duration = builder.duration;
-        this.lastTime=builder.lastTime;
-        this.date=builder.date;
-        this.id_practice=builder.id_practice;
+        this.lastTime = builder.lastTime;
+        this.date = builder.date;
+        this.id_practice = builder.id_practice;
     }
 
     public int getIdPractice() {
@@ -75,11 +75,10 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
     @Override
     public void dbSave(DatabaseManager db) {
-        try {
-            db.getPracticeHistory(this.getID());
+
+        if (db.containsPracticeHistory(this.getID())) {
             db.updatePracticeHistory((PracticeHistory) this);
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
+        } else {
             db.addPracticeHistory((PracticeHistory) this);
         }
     }
@@ -87,18 +86,10 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     @Override
     public void dbDelete(DatabaseManager db) {
 
-        try {
-            db.getPracticeHistory(this.getID());
+        if (db.containsPracticeHistory(this.getID())) {
             db.deletePracticeHistory((PracticeHistory) this);
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
-
         }
 
-    }
-
-    public static PracticeHistory getPracticeTimerFromDB(DatabaseManager DB, int id) {
-        return DB.getPracticeHistory(id);
     }
 
     public static class Builder extends AbstractEntity {

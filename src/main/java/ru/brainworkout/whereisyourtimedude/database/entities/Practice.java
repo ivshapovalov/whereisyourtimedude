@@ -46,25 +46,20 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
     @Override
     public void dbSave(DatabaseManager db) {
-        try {
-            db.getPractice(this.getID());
-            db.updatePractice((Practice) this);
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
-            db.addPractice((Practice) this);
+        if (db.containsPractice(this.getID())) {
+            db.updatePractice(this);
+        } else {
+            db.addPractice(this);
         }
     }
 
     @Override
     public void dbDelete(DatabaseManager db) {
-
-            try {
-                db.getPractice(this.getID());
-                db.deletePractice((Practice) this);
-            } catch (TableDoesNotContainElementException e) {
-                //нет такого
-
-            }
+        if (db.containsPractice(this.getID())) {
+            db.deletePractice(this);
+        } else {
+            db.addPractice(this);
+        }
 
     }
 

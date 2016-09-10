@@ -5,7 +5,7 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-public class Project extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
+public class Project extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private String name;
     private int id_area;
@@ -22,6 +22,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
         this.name = name;
     }
+
     public int getIdArea() {
         return id_area;
     }
@@ -34,30 +35,28 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
         this.id = builder.id;
         this.name = builder.name;
-        this.id_area=builder.id_area;
+        this.id_area = builder.id_area;
     }
 
     @Override
     public void dbSave(DatabaseManager db) {
-        try {
-            db.getProject(this.getID());
-            db.updateProject((Project) this);
-        } catch (TableDoesNotContainElementException e) {
-            //нет такого
-            db.addProject((Project) this);
+
+        if (db.containsProject(this.getID())) {
+            db.updateProject(this);
+        } else {
+            db.addProject(this);
         }
+
     }
 
     @Override
     public void dbDelete(DatabaseManager db) {
 
-            try {
-                db.getProject(this.getID());
-                db.deleteProject((Project) this);
-            } catch (TableDoesNotContainElementException e) {
-                //нет такого
-
-            }
+        if (db.containsProject(this.getID())) {
+            db.deleteProject(this);
+        } else {
+            db.addProject(this);
+        }
 
     }
 
@@ -74,6 +73,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB,Del
         public Builder(DatabaseManager DB) {
             this.id = DB.getProjectMaxNumber() + 1;
         }
+
         public Builder(int id) {
             this.id = id;
         }

@@ -280,7 +280,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public boolean containsUser(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = db.query(TABLE_USERS, new String[]{KEY_USER_ID}, KEY_USER_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        if (cursor.getCount() == 0) {
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
     public User getUser(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -301,7 +315,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return user;
         }
     }
+    public boolean containsArea(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
 
+        Cursor cursor = db.query(TABLE_AREAS, new String[]{KEY_AREA_ID}, KEY_AREA_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        if (cursor.getCount() == 0) {
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
     public Area getArea(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -322,6 +350,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    public boolean containsProject(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_PROJECTS, new String[]{KEY_PROJECT_ID}, KEY_PROJECT_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        if (cursor.getCount() == 0) {
+           return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
     public Project getProject(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -339,6 +382,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
             cursor.close();
             return project;
+        }
+    }
+
+    public boolean containsPractice(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_PRACTICES, new String[]{KEY_PRACTICE_ID}, KEY_PRACTICE_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        if (cursor.getCount() == 0) {
+            return false;
+        } else {
+            cursor.close();
+            return true;
         }
     }
 
@@ -376,7 +434,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         if (cursor.getCount() == 0) {
             return false;
         } else {
-
+            cursor.close();
             return true;
         }
     }
@@ -867,12 +925,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 PracticeHistory.Builder practiceHistoryBuilder;
                 if (id_practice_history == 0) {
                     practiceHistoryBuilder = new PracticeHistory.Builder(getPracticeHistoryMaxNumber()+id_practice_count+++1);
+                    practiceHistoryBuilder.addDate(dateFrom);
                 } else {
 
                     practiceHistoryBuilder = new PracticeHistory.Builder(id_practice_history);
+                    practiceHistoryBuilder.addDate(cursor.getLong(2));
                 }
                 practiceHistoryBuilder.addIdPractice(id_practice)
-                        .addDate(cursor.getLong(2))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
                         .build();
@@ -1007,7 +1066,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public int getPracticeHistoryMaxNumber() {
-        String countQuery = "SELECT  MAX(" + KEY_PRACTICE_HISTORY_ID + ") FROM " + TABLE_PRACTICE_HISTORY + "";
+        String countQuery = "SELECT  MAX(" + KEY_PRACTICE_HISTORY_ID + ") FROM " + TABLE_PRACTICE_HISTORY+"";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 

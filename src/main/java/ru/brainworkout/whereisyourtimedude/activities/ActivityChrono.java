@@ -165,9 +165,8 @@ public class ActivityChrono extends AppCompatActivity {
     //
     private void stopTimer() {
 
-        currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-
         if (mChronometerIsWorking) {
+            currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
             currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometer.getBase());
             mChronometer.stop();

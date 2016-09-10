@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class Common {
 
     public static final String SYMBOL_DATE_FORMAT = "yyyy-MM-dd";
-    public static final String SYMBOL_TIME_FORMAT = "HH-mm-ss";
+    public static final String SYMBOL_TIME_FORMAT = "HH:mm:ss";
     public static final String SYMBOL_EDIT="►";
 
     public static final boolean isDebug = true;
@@ -40,11 +40,14 @@ public class Common {
     }
 
     public static String ConvertMillisToStringTime(long millis) {
-        long second = TimeUnit.MILLISECONDS.toSeconds(millis);
-        long minute = TimeUnit.MILLISECONDS.toMinutes(millis);
-        long hour = TimeUnit.MILLISECONDS.toHours(millis);
+
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) -
+                TimeUnit.HOURS.toMinutes(hours);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         //millis -= TimeUnit.SECONDS.toMillis(second);
-        String timeString=String.format("%02d:%02d:%02d", hour, minute, second);
+        String timeString=String.format("%02d:%02d:%02d", hours, minutes, seconds);
         return timeString;
     }
 

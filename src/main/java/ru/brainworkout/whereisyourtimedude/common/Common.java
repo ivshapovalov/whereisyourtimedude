@@ -12,6 +12,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public class Common {
 
@@ -33,25 +35,26 @@ public class Common {
         return d;
     }
 
-    public static Date ConvertMillisToDate(final long Millis) {
-        return new Date(Millis);
+    public static String ConvertMillisToStringDate(final long millis) {
+        return ConvertDateToStringDate(new Date(millis));
     }
 
-    public static String ConvertMillisToStringDate(final long Millis) {
-        return ConvertDateToString(new Date(Millis));
+    public static String ConvertMillisToStringTime(long millis) {
+        long second = TimeUnit.MILLISECONDS.toSeconds(millis);
+        long minute = TimeUnit.MILLISECONDS.toMinutes(millis);
+        long hour = TimeUnit.MILLISECONDS.toHours(millis);
+        //millis -= TimeUnit.SECONDS.toMillis(second);
+        String timeString=String.format("%02d:%02d:%02d", hour, minute, second);
+        return timeString;
     }
 
-    public static String ConvertMillisToStringTime(final long Millis) {
-        return ConvertTimeToString(new Date(Millis));
+    public static String ConvertMillisToStringDateTime(final long millis) {
+        return ConvertDateToStringDateTime(new Date(millis));
     }
 
-    public static String ConvertMillisToStringDateTime(final long Millis) {
-        return ConvertDateToString(new Date(Millis))+" "+ConvertTimeToString(new Date(Millis));
-    }
+    public static String ConvertDateToStringDateTime(final Date date) {
 
-    public static String ConvertDateToString(final Date date) {
-
-        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
+        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT+" "+SYMBOL_TIME_FORMAT);
         String sDate = "";
         try {
             sDate = dateformat.format(date);
@@ -62,9 +65,9 @@ public class Common {
 
     }
 
-    public static String ConvertTimeToString(final Date date) {
+    public static String ConvertDateToStringDate(final Date date) {
 
-        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_TIME_FORMAT);
+        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
         String sDate = "";
         try {
             sDate = dateformat.format(date);

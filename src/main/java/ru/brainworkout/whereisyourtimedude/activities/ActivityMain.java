@@ -12,9 +12,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
@@ -115,11 +119,11 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     public void btChronometer_onClick(final View view) {
-
         Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
-        startActivity(intent);
+            startActivity(intent);
 
     }
+
 
     public void btClearBD_onClick(final View view) {
 

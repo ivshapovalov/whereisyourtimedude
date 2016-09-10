@@ -188,6 +188,7 @@ public class ActivityChrono extends AppCompatActivity {
         TextView tvTimer = (TextView) findViewById(tvTimerID);
 
         String strTime = ConvertMillisToStringTime(elapsedMillis);
+        //String strTime = String.valueOf(elapsedMillis);
         String txt = String.valueOf(strTime);
         tvTimer.setText(txt);
         updateGlobalCounter();
@@ -322,8 +323,8 @@ public class ActivityChrono extends AppCompatActivity {
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
         if (tvCurrentDate != null) {
             if (currentPracticeHistory.getLastTime() != 0) {
-                tvCurrentDate.setText(ConvertMillisToStringDate(currentPracticeHistory.getLastTime()) + " " + ConvertMillisToStringTime(currentPracticeHistory.getLastTime()));
-                ;
+                tvCurrentDate.setText(ConvertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
+
             } else {
                 tvCurrentDate.setText("");
             }
@@ -394,6 +395,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(areaColor);
+        //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
         txtTime.setText(ConvertMillisToStringTime(practiceHistory.getDuration()));
         txtTime.setLayoutParams(paramsTextView);
         row1.addView(txtTime);
@@ -413,7 +415,7 @@ public class ActivityChrono extends AppCompatActivity {
         txtDate.setBackgroundColor(areaColor);
 
         if (practiceHistory.getLastTime() != 0) {
-            String date = ConvertMillisToStringDate(practiceHistory.getLastTime()) + " " + ConvertMillisToStringTime(practiceHistory.getLastTime());
+            String date = ConvertMillisToStringDateTime(practiceHistory.getLastTime());
             txtDate.setText(date);
         }
 

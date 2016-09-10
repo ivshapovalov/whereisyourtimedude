@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/button"
-                android:onClick="btEdit_onClick"
+                android:onClick="btClear_onClick"
                 android:layout_span="10"
                 android:text="CLEAR"
                 android:background="@drawable/bt_border"

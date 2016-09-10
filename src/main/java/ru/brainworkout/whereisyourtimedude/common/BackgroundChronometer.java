@@ -33,15 +33,15 @@ public class BackgroundChronometer extends Thread {
         running=true;
         while(true) {
             if (running) {
-                IncreaseChronometer();
+                increaseChronometer();
             }
             else {
-                DontIncreaseChronometer();
+                dontIncreaseChronometer();
             }
         }
     }
 
-    private void IncreaseChronometer() {
+    private void increaseChronometer() {
         while (running) {
             try {
                 this.sleep(1000);
@@ -52,14 +52,14 @@ public class BackgroundChronometer extends Thread {
         }
     }
 
-    private void DontIncreaseChronometer() {
-        while (!running) {
-            try {
-                this.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+    private void dontIncreaseChronometer() {
+//        while (!running) {
+//            try {
+//                this.sleep(1000);
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
     }
 
 

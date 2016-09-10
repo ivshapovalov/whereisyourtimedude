@@ -140,7 +140,24 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory = practices.get(0);
         currentDateInMillis = date;
 
-        mChronometerCount = currentPracticeHistory.getDuration();
+        if (Session.backgroundChronometer.isAlive()) {
+
+            if (Session.backgroundChronometer.isRunning()) {
+                mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
+                rowCurrentWork_onClick(new TextView(this));
+            } else {
+                mChronometerCount = currentPracticeHistory.getDuration();
+                Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+            }
+
+
+        } else {
+            Session.backgroundChronometer.start();
+            Session.backgroundChronometer.pause();
+            mChronometerCount = currentPracticeHistory.getDuration();
+            Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+
+        }
         updateScreen();
 
     }
@@ -154,6 +171,7 @@ public class ActivityChrono extends AppCompatActivity {
             //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
             currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometer.getBase());
             mChronometer.stop();
+            Session.backgroundChronometer.pause();
             mChronometerIsWorking = false;
         } else {
             //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
@@ -178,15 +196,15 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     private void updateGlobalCounter() {
-        String strTime;
-        String txt;//global chrono
-        long count = Session.backgroundChronometer.getGlobalChronometerCount();
-        int tvGlobalChronometerID = getResources().getIdentifier("tvGlobalChronometer", "id", getPackageName());
-        TextView tvGlobalChronometer = (TextView) findViewById(tvGlobalChronometerID);
-
-        strTime = ConvertMillisToStringTime(count);
-        txt = String.valueOf(strTime);
-        tvGlobalChronometer.setText(txt);
+//        String strTime;
+//        String txt;//global chrono
+//        long count = Session.backgroundChronometer.getGlobalChronometerCount();
+//        int tvGlobalChronometerID = getResources().getIdentifier("tvGlobalChronometer", "id", getPackageName());
+//        TextView tvGlobalChronometer = (TextView) findViewById(tvGlobalChronometerID);
+//
+//        strTime = ConvertMillisToStringTime(count);
+//        txt = String.valueOf(strTime);
+//        tvGlobalChronometer.setText(txt);
     }
 
     private String addingZeros(String s, int length) {

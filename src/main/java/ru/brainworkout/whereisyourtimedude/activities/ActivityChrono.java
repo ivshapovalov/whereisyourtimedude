@@ -99,17 +99,8 @@ public class ActivityChrono extends AppCompatActivity {
 
     }
 
-    public void btDay_onClick(View view) {
-        Common.blink(view);
+    public void tvDate_onClick(View view) {
 
-        String day = String.valueOf(((TextView) view).getText());
-        defineNewDayPractice(ConvertStringToDate(day).getTime());
-
-    }
-
-    public void btDate_onClick(View view) {
-
-        //TODO при смене даты сбиваются значения и в текущей дате в БД
         Common.blink(view);
         stopTimer();
 
@@ -177,7 +168,12 @@ public class ActivityChrono extends AppCompatActivity {
         stopTimer();
 
         int id_practice_history = view.getId();
-        currentPracticeHistory = DB.getPracticeHistory(id_practice_history);
+        if (DB.containsPracticeHistory(id_practice_history)) {
+            currentPracticeHistory = DB.getPracticeHistory(id_practice_history);
+        } else {
+            int index=practices.indexOf(new PracticeHistory.Builder(id_practice_history).build());
+            currentPracticeHistory=practices.get(index);
+        }
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
 
@@ -376,19 +372,5 @@ public class ActivityChrono extends AppCompatActivity {
         rowMain.setLayoutParams(paramsRow);
         return rowMain;
     }
-
-
-    public class PracticeHistoryComparatorByLastTime implements Comparator<PracticeHistory> {
-
-        @Override
-        public int compare(PracticeHistory w1, PracticeHistory w2) {
-
-            return (int) (w2.getLastTime() - w1.getLastTime());
-
-
-        }
-
-    }
-
 
 }

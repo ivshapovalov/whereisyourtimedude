@@ -14,61 +14,17 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            >
+            android:layout_margin="5dp"
+            android:background="@android:drawable/progress_horizontal">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tvCurrentDay"
-                android:layout_span="100"
-                android:gravity="center"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:drawable/progress_horizontal"
-            >
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/button"
-                android:text="2016-08-30"
-                android:onClick="btDay_onClick"
-                android:textSize="10dp"
-                android:layout_weight="25"
-                android:layout_span="0"/>
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="2016-08-31"
-                android:id="@+id/button4"
-                android:onClick="btDay_onClick"
-                android:textSize="10dp"
-                android:layout_span="0"
-                android:layout_weight="25"/>
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="2016-09-08"
-                android:id="@+id/button5"
-                android:onClick="btDay_onClick"
-                android:textSize="10dp"
-                android:layout_span="0"
-                android:layout_weight="25"/>
-
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:text="DATE"
-                android:id="@+id/button6"
-                android:onClick="btDate_onClick"
-                android:textSize="10dp"
-                android:layout_span="0"
-                android:layout_weight="25"/>
+                android:gravity="center"
+                android:onClick="tvDate_onClick"
+                android:textStyle="bold"
+                />
         </TableRow>
 
         <TableRow

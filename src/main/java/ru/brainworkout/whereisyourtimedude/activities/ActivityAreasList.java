@@ -188,7 +188,7 @@ public class ActivityAreasList extends AppCompatActivity {
 
     public void btAreasAdd_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityAreasList")
                 .isTransmitterNew(false)
@@ -203,10 +203,10 @@ public class ActivityAreasList extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void txtAreaEdit_onClick(TextView v) {
+    private void txtAreaEdit_onClick(TextView view) {
 
-        blink(v);
-        int id = ((TableRow) v.getParent()).getId() % NUMBER_OF_VIEWS;
+        blink(view,this);
+        int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityAreasList")
                 .isTransmitterNew(false)
@@ -223,10 +223,10 @@ public class ActivityAreasList extends AppCompatActivity {
 
     }
 
-    private void rowArea_onClick(final TableRow v) {
+    private void rowArea_onClick(final TableRow view) {
 
-        blink(v);
-        int id = v.getId() % NUMBER_OF_VIEWS;
+        blink(view,this);
+        int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("CurrentAreaID", id);
         if (params != null) {
@@ -254,7 +254,7 @@ public class ActivityAreasList extends AppCompatActivity {
 
     public void btEdit_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -263,7 +263,7 @@ public class ActivityAreasList extends AppCompatActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         openActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -273,7 +273,7 @@ public class ActivityAreasList extends AppCompatActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить все области,их проекты и занятия?")

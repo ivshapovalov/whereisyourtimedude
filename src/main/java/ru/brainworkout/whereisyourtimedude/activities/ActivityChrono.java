@@ -121,7 +121,7 @@ public class ActivityChrono extends AppCompatActivity {
 
     public void tvDate_onClick(View view) {
 
-        Common.blink(view);
+        blink(view,this);
         stopTimer();
 
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
@@ -216,7 +216,7 @@ public class ActivityChrono extends AppCompatActivity {
 
     private void rowWork_onClick(TableRow view) {
 
-        Common.blink(view);
+        blink(view,this);
         stopTimer();
 
         int id_practice_history = view.getId();
@@ -248,7 +248,7 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     public void rowCurrentWork_onClick(View view) {
-        Common.blink(view);
+        blink(view,this);
         if (!mChronometerIsWorking) {
 
             if (Session.backgroundChronometer.isAlive()) {

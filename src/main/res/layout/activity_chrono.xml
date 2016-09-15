@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="5dp"
-            android:background="@android:drawable/progress_horizontal">
+            android:background="@android:drawable/progress_horizontal"
+            android:measureWithLargestChild="false">
 
             <TextView
                 android:layout_width="match_parent"

@@ -1,7 +1,9 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
+import android.os.Vibrator;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -82,7 +84,12 @@ public class Common {
 
     }
 
-    public static void blink(final View v) {
+    public static void blink(final View v, Activity activity) {
+
+        long mills = 100L;
+        Vibrator vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
+        vibrator.vibrate(mills);
+
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
         anim.setDuration(30);
         anim.setStartOffset(0);

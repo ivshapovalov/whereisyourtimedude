@@ -103,7 +103,7 @@ public class ActivityArea extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", currentArea.getID());
         openActivities.pop();
@@ -166,7 +166,7 @@ public class ActivityArea extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
 
         currentArea.dbSave(DB);
@@ -197,7 +197,7 @@ public class ActivityArea extends AppCompatActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
 
         new AlertDialog.Builder(this)

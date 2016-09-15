@@ -158,7 +158,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
         intent.putExtra("CurrentPracticeHistoryID", currentPracticeHistory.getID());
         currentPracticeHistory = null;
@@ -184,7 +184,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     }
 
     public void tvDate_onClick(View view) {
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
         //mCurrentPracticeHistory.dbSave(DB);
         Intent intent = new Intent(ActivityPracticeHistory.this, ActivityCalendarView.class);
@@ -197,7 +197,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void tvPractice_onClick(View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
 
         int id_practice = currentPracticeHistory.getIdPractice();
@@ -221,6 +221,9 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void tvLastDate_onClick(View view) {
 
+
+        blink(view,this);
+
         mDateSetListener =
                 new DatePickerDialog.OnDateSetListener() {
                     public void onDateSet(DatePicker view, int yearSelected,
@@ -241,6 +244,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     }
 
     public void tvLastTime_onClick(View view) {
+
+        blink(view,this);
 
         // Register  TimePickerDialog listener
         mTimeSetListener =
@@ -281,7 +286,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
         currentPracticeHistory.dbSave(DB);
 
@@ -304,7 +309,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
 
         new AlertDialog.Builder(this)

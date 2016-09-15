@@ -131,7 +131,7 @@ public class ActivityPractice extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", currentPractice.getID());
         openActivities.pop();
@@ -157,7 +157,7 @@ public class ActivityPractice extends AppCompatActivity {
 
     public void tvProject_onClick(View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
         int id_project = currentPractice.getIdProject();
 
@@ -180,7 +180,7 @@ public class ActivityPractice extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
 
         currentPractice.dbSave(DB);
@@ -208,8 +208,7 @@ public class ActivityPractice extends AppCompatActivity {
     }
 
     public void btDelete_onClick(final View view) {
-
-        blink(view);
+        blink(view,this);
 
 
         new AlertDialog.Builder(this)

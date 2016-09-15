@@ -104,7 +104,7 @@ public class ActivityCalendarView extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Class<?> myClass = null;
         try {
             myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
@@ -128,8 +128,7 @@ public class ActivityCalendarView extends AppCompatActivity {
     }
 
     public void btClose_onClick(final View view) {
-
-        blink(view);
+        blink(view,this);
         Class<?> myClass = null;
         try {
             myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);

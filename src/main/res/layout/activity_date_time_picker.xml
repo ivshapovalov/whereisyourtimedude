@@ -1,76 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+<TableLayout
              android:layout_width="match_parent"
              android:layout_height="match_parent"
              android:stretchColumns="*"
-             android:shrinkColumns="*">
+    >
 
     <TableRow
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/tableRow"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
-        >
+        android:layout_gravity="center"
+        android:gravity="top|left">
 
         <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="TEST"
-            android:id="@+id/textView10"
-            android:layout_span="10"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
-            />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:ems="10"
-            android:id="@+id/etOldTime"
-            android:layout_span="25"
-            />
-
-        <Button
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="CALC"
-            android:id="@+id/button26"
-            android:onClick="btUpdate_onClick"
-            android:layout_span="20"
-            />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/tvNewTime"
-            android:layout_span="20"
-            />
+            android:textStyle="bold"
+            android:textSize="20dp"
+            android:gravity="center"
+            android:text="100"
+            android:layout_span="70"/>
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/rowDays"
         android:layout_marginTop="30dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
-        android:layout_marginBottom="5dp">
+        android:layout_marginBottom="5dp"
+        android:layout_gravity="center"
+        android:gravity="top|left">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="DAYS"
             android:id="@+id/textView7"
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
             android:layout_span="20"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-10"
             android:id="@+id/btDaysMinus10"
@@ -79,7 +63,7 @@
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-1"
             android:id="@+id/btDaysMinus1"
@@ -87,15 +71,15 @@
             android:layout_span="10"/>
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvDays"
-            android:layout_span="10"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            android:layout_span="10"/>
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+1"
             android:id="@+id/btDaysPlus1"
@@ -104,7 +88,7 @@
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+10"
             android:id="@+id/btDaysPlus10"
@@ -114,30 +98,34 @@
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/rowHours"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:gravity="top|left">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="HOURS"
             android:layout_span="20"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-10"
             android:id="@+id/button7"
             android:onClick="btHoursMinus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-1"
             android:id="@+id/button8"
@@ -146,205 +134,228 @@
             />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvHours"
             android:layout_span="10"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+1"
             android:id="@+id/button9"
             android:onClick="btHoursPlus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+10"
             android:id="@+id/button10"
             android:onClick="btHoursPlus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/rowMinutes"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:gravity="top|left">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="MINUTES"
             android:layout_span="20"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-10"
             android:id="@+id/button11"
             android:onClick="btMinutesMinus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-1"
             android:id="@+id/button12"
             android:onClick="btMinutesMinus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvMinutes"
             android:layout_span="10"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+1"
             android:id="@+id/button13"
             android:onClick="btMinutesPlus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+10"
             android:id="@+id/button14"
             android:onClick="btMinutesPlus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/rowSeconds"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:gravity="top|left">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="SECONDS"
             android:layout_span="20"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-10"
             android:id="@+id/button15"
             android:onClick="btSecondsMinus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-1"
             android:id="@+id/button16"
             android:onClick="btSecondsMinus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvSeconds"
             android:layout_span="10"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+1"
             android:id="@+id/button17"
             android:onClick="btSecondsPlus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+10"
             android:id="@+id/button18"
             android:onClick="btSecondsPlus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
     </TableRow>
 
     <TableRow
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/rowMillis"
-        android:layout_margin="5dp">
+        android:layout_margin="5dp"
+        android:gravity="top|left"
+        android:layout_gravity="center">
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="MILLISECONDS"
             android:layout_span="20"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-10"
             android:id="@+id/button19"
             android:onClick="btMillisMinus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="-1"
             android:id="@+id/button20"
             android:onClick="btMillisMinus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tvMillis"
             android:layout_span="10"
-            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"/>
+            android:background="@drawable/abc_ab_share_pack_mtrl_alpha"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+1"
             android:id="@+id/button21"
             android:onClick="btMillisPlus1_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
 
         <Button
             style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="+10"
             android:id="@+id/button22"
             android:onClick="btMillisPlus10_onClick"
-            android:layout_span="10"/>
+            android:layout_span="10"
+            />
     </TableRow>
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </GridLayout>
-
 </TableLayout>
+</RelativeLayout>

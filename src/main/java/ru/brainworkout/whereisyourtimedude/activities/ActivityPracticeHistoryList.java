@@ -79,7 +79,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void btPracticeHistoryAdd_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         ConnectionParameters paramsNew= new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistory")
@@ -204,10 +204,10 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     }
 
-    private void txtPracticeHistoryEdit_onClick(TextView v) {
+    private void txtPracticeHistoryEdit_onClick(TextView view) {
 
-        blink(v);
-        int id = ((TableRow)v.getParent()).getId() % NUMBER_OF_VIEWS;
+        blink(view,this);
+        int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters params= new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
                 .isTransmitterNew(false)
@@ -225,11 +225,11 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     }
 
-    private void rowPracticeHistory_onClick(final TableRow v) {
+    private void rowPracticeHistory_onClick(final TableRow view) {
 
-        blink(v);
+        blink(view,this);
 
-        int id = v.getId() % NUMBER_OF_VIEWS;
+        int id = view.getId() % NUMBER_OF_VIEWS;
 
         ConnectionParameters params= new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
@@ -250,7 +250,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void btEdit_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -259,7 +259,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -268,7 +268,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить всю историю занятий?")

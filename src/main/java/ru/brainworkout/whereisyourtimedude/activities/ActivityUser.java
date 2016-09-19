@@ -11,10 +11,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
@@ -106,7 +108,7 @@ public class ActivityUser extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
         intent.putExtra("id", mCurrentUser.getID());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -130,44 +132,54 @@ public class ActivityUser extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
 
-        mCurrentUser.dbSave(DB);
+        if (mCurrentUser.isCurrentUser() == 1) {
+            if (Session.backgroundChronometer.isTicking()) {
+                Toast toast = Toast.makeText(ActivityUser.this,
+                        "Вернитесь в хронометраж и остановите счетчик прежде чем поменять активного" +
+                                "пользователя", Toast.LENGTH_SHORT);
+                toast.show();
+                return;
+            }
+        }
+            mCurrentUser.dbSave(DB);
+            setDBCurrentUser();
 
-        setDBCurrentUser();
+            Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
+            intent.putExtra("id", mCurrentUser.getID());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
 
-        Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
-        intent.putExtra("id", mCurrentUser.getID());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
 
     }
 
     private void setDBCurrentUser() {
 
         if (mCurrentUser.isCurrentUser() == 1) {
-            sessionUser =mCurrentUser;
+            sessionUser = mCurrentUser;
             List<User> userList = DB.getAllUsers();
 
             for (User user : userList) {
 
-                if (user.getID()!=mCurrentUser.getID()) {
+                if (user.getID() != mCurrentUser.getID()) {
                     user.setIsCurrentUser(0);
                     user.dbSave(DB);
                 }
             }
         } else {
-            if (sessionUser!=null && sessionUser.equals(mCurrentUser)) {
-                sessionUser=null;
+            if (sessionUser != null && sessionUser.equals(mCurrentUser)) {
+                sessionUser = null;
             }
         }
+
 
     }
 
     public void btDelete_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущего пользователя, его занятия, проекты и области?")
@@ -188,7 +200,7 @@ public class ActivityUser extends AppCompatActivity {
                         if (mCurrentUser.equals(sessionUser)) {
                             List<User> userList = DB.getAllUsers();
                             if (userList.size() == 1) {
-                                User currentUser=userList.get(0);
+                                User currentUser = userList.get(0);
                                 sessionUser = currentUser;
                                 currentUser.setIsCurrentUser(1);
                                 currentUser.dbSave(DB);

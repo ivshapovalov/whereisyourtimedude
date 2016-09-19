@@ -197,7 +197,7 @@ public class ActivityProjectsList extends AppCompatActivity {
     }
 
     public void btProjectAdd_onClick(final View view) {
-        blink(view);
+        blink(view,this);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProjectsList")
                 .isTransmitterNew(false)
@@ -212,11 +212,11 @@ public class ActivityProjectsList extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void txtProjectEdit_onClick(TextView v) {
+    private void txtProjectEdit_onClick(TextView view) {
 
-        blink(v);
+        blink(view,this);
 
-        int id = ((TableRow) v.getParent()).getId() % NUMBER_OF_VIEWS;
+        int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProjectsList")
                 .isTransmitterNew(false)
@@ -232,10 +232,10 @@ public class ActivityProjectsList extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void rowProject_onClick(final TableRow v) {
+    private void rowProject_onClick(final TableRow view) {
 
-        blink(v);
-        int id = v.getId() % NUMBER_OF_VIEWS;
+        blink(view,this);
+        int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.putExtra("CurrentProjectID", id);
         if (params != null) {
@@ -265,7 +265,7 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     public void btEdit_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -274,7 +274,7 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         openActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -284,7 +284,7 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить все проекты и занятия?")

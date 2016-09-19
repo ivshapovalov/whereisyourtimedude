@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
-import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
@@ -97,7 +96,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         if (Session.backgroundChronometer.isAlive()) {
 
-            if (Session.backgroundChronometer.isRunning()) {
+            if (Session.backgroundChronometer.isTicking()) {
                 mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
@@ -108,7 +107,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
             Session.backgroundChronometer.start();
-            Session.backgroundChronometer.pause();
+            Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
             Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
 
@@ -142,7 +141,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         if (Session.backgroundChronometer.isAlive()) {
 
-            if (Session.backgroundChronometer.isRunning()) {
+            if (Session.backgroundChronometer.isTicking()) {
                 mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
@@ -153,7 +152,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
             Session.backgroundChronometer.start();
-            Session.backgroundChronometer.pause();
+            Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
             Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
 
@@ -170,7 +169,7 @@ public class ActivityChrono extends AppCompatActivity {
             //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
             currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometer.getBase());
             mChronometer.stop();
-            Session.backgroundChronometer.pause();
+            Session.backgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
         } else {
             //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
@@ -231,7 +230,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         mChronometerCount = currentPracticeHistory.getDuration();
         Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
-        Session.backgroundChronometer.resumepause();
+        Session.backgroundChronometer.resumeTicking();
         mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
         mChronometerIsWorking = true;
         mChronometer.start();
@@ -252,7 +251,7 @@ public class ActivityChrono extends AppCompatActivity {
         if (!mChronometerIsWorking) {
 
             if (Session.backgroundChronometer.isAlive()) {
-                Session.backgroundChronometer.resumepause();
+                Session.backgroundChronometer.resumeTicking();
             }
 
             if (mChronometerCount == 0) {
@@ -268,7 +267,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
 
-            Session.backgroundChronometer.pause();
+            Session.backgroundChronometer.pauseTicking();
 
             mChronometerCount = SystemClock.elapsedRealtime() - mChronometer.getBase();
             mChronometer.stop();

@@ -73,7 +73,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
     public void btUsersAdd_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
         intent.putExtra("isNew", true);
         startActivity(intent);
@@ -146,11 +146,11 @@ public class ActivityUsersList extends AppCompatActivity {
 
     }
 
-    private void rowUser_onClick(final TableRow v) {
+    private void rowUser_onClick(final TableRow view) {
 
-        blink(v);
+        blink(view,this);
 
-        int id = v.getId() % NUMBER_OF_VIEWS;
+        int id = view.getId() % NUMBER_OF_VIEWS;
 
         Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
         intent.putExtra("id", id);
@@ -161,7 +161,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
     public void btEdit_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -170,7 +170,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -179,7 +179,7 @@ public class ActivityUsersList extends AppCompatActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить всех пользователей, их проекты, области, занятия?")

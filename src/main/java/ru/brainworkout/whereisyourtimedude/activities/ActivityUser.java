@@ -106,7 +106,7 @@ public class ActivityUser extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
         intent.putExtra("id", mCurrentUser.getID());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -130,7 +130,7 @@ public class ActivityUser extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
 
         mCurrentUser.dbSave(DB);
@@ -167,8 +167,7 @@ public class ActivityUser extends AppCompatActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view);
-
+        blink(view,this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущего пользователя, его занятия, проекты и области?")

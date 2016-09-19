@@ -5,7 +5,7 @@ public class BackgroundChronometer extends Thread {
 
     public static final BackgroundChronometer INSTANCE = new BackgroundChronometer();
     private volatile long globalChronometerCount = 0;
-    private volatile boolean running;
+    private volatile boolean ticking;
 
     public long getGlobalChronometerCount() {
         return globalChronometerCount;
@@ -15,34 +15,29 @@ public class BackgroundChronometer extends Thread {
         this.globalChronometerCount = globalChronometerCount;
     }
 
-    public void pause() {
-        this.running = false;
+    public void pauseTicking() {
+        this.ticking = false;
 
     }
-    public void resumepause() {
-        this.running=true;
+    public void resumeTicking() {
+        this.ticking =true;
 
     }
 
-    public boolean isRunning() {
-        return running;
+    public boolean isTicking() {
+        return ticking;
     }
 
     @Override
     public void run() {
-        running=true;
-        while(true) {
-            if (running) {
-                increaseChronometer();
-            }
-            else {
-                dontIncreaseChronometer();
-            }
-        }
+        ticking =true;
+        while(!isInterrupted()) {
+            increaseChronometer();
+         }
     }
 
     private void increaseChronometer() {
-        while (running) {
+        while (ticking) {
             try {
                 this.sleep(1000);
             } catch (InterruptedException e) {
@@ -51,18 +46,4 @@ public class BackgroundChronometer extends Thread {
             globalChronometerCount += 1000;
         }
     }
-
-    private void dontIncreaseChronometer() {
-//        while (!running) {
-//            try {
-//                this.sleep(1000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
-    }
-
-
-
-
 }

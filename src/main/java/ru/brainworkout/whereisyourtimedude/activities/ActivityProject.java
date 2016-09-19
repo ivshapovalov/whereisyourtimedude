@@ -107,7 +107,7 @@ public class ActivityProject extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", currentProject.getID());
         openActivities.pop();
@@ -133,7 +133,7 @@ public class ActivityProject extends AppCompatActivity {
 
     public void tvArea_onClick(View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
         int id_area = currentProject.getIdArea();
 
@@ -156,7 +156,7 @@ public class ActivityProject extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view);
+        blink(view,this);
         getPropertiesFromScreen();
 
         currentProject.dbSave(DB);
@@ -185,8 +185,7 @@ public class ActivityProject extends AppCompatActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view);
-
+        blink(view,this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущий проект, его занятия и историю?")

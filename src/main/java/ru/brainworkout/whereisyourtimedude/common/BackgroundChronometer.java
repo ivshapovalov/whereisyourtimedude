@@ -3,9 +3,13 @@ package ru.brainworkout.whereisyourtimedude.common;
 
 public class BackgroundChronometer extends Thread {
 
-    public static final BackgroundChronometer INSTANCE = new BackgroundChronometer();
+    public static BackgroundChronometer INSTANCE = new BackgroundChronometer();
     private volatile long globalChronometerCount = 0;
     private volatile boolean ticking;
+
+    public BackgroundChronometer() {
+        this.setDaemon(true);
+    }
 
     public long getGlobalChronometerCount() {
         return globalChronometerCount;
@@ -19,8 +23,9 @@ public class BackgroundChronometer extends Thread {
         this.ticking = false;
 
     }
+
     public void resumeTicking() {
-        this.ticking =true;
+        this.ticking = true;
 
     }
 
@@ -30,20 +35,25 @@ public class BackgroundChronometer extends Thread {
 
     @Override
     public void run() {
-        ticking =true;
-        while(!isInterrupted()) {
-            increaseChronometer();
-         }
-    }
-
-    private void increaseChronometer() {
-        while (ticking) {
-            try {
-                this.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            globalChronometerCount += 1000;
+        ticking = true;
+        while (!isInterrupted()) {
+            tick();
         }
     }
-}
+
+    private void tick() {
+        while (!isInterrupted()) {
+            while (ticking) {
+                try {
+                    this.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                globalChronometerCount += 1000;
+            }
+
+
+        }
+        }
+    }
+

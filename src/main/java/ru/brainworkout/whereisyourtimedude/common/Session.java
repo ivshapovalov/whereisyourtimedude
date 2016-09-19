@@ -26,7 +26,7 @@ public class Session {
 
     public static final Stack<ConnectionParameters> openActivities= new Stack<>();
 
-    public static final BackgroundChronometer backgroundChronometer=BackgroundChronometer.INSTANCE;
+    public static BackgroundChronometer backgroundChronometer=BackgroundChronometer.INSTANCE;
 
     static {
        // backgroundChronometer.start();

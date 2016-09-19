@@ -1,5 +1,7 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
@@ -16,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
@@ -106,6 +109,7 @@ public class ActivityChrono extends AppCompatActivity {
 
 
         } else {
+            Session.backgroundChronometer=new BackgroundChronometer();
             Session.backgroundChronometer.start();
             Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
@@ -433,6 +437,17 @@ public class ActivityChrono extends AppCompatActivity {
         rowMain.addView(layout);
         rowMain.setLayoutParams(paramsRow);
         return rowMain;
+    }
+
+    public void onBackPressed() {
+
+        if (!mChronometerIsWorking) {
+            Session.backgroundChronometer.pauseTicking();
+            Session.backgroundChronometer.interrupt();
+
+        }
+        finish();
+
     }
 
 }

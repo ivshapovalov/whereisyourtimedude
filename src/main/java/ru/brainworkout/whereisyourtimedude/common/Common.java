@@ -21,7 +21,7 @@ public class Common {
 
     public static final String SYMBOL_DATE_FORMAT = "yyyy-MM-dd";
     public static final String SYMBOL_TIME_FORMAT = "HH:mm:ss";
-    public static final String SYMBOL_EDIT="►";
+    public static final String SYMBOL_EDIT = "►";
 
     public static final boolean isDebug = true;
 
@@ -44,13 +44,13 @@ public class Common {
     public static String ConvertMillisToStringTime(long millis) {
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
-        long hours = TimeUnit.MILLISECONDS.toHours(millis)-TimeUnit.DAYS.toHours(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(days);
         long minutes = TimeUnit.MILLISECONDS.toMinutes(millis) -
-                TimeUnit.DAYS.toMinutes(days)-TimeUnit.HOURS.toMinutes(hours);
+                TimeUnit.DAYS.toMinutes(days) - TimeUnit.HOURS.toMinutes(hours);
         long seconds = TimeUnit.MILLISECONDS.toSeconds(millis) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
         //millis -= TimeUnit.SECONDS.toMillis(second);
-        String timeString=String.format("%02d:%02d:%02d:%02d", days,hours, minutes, seconds);
+        String timeString = String.format("%02d:%02d:%02d:%02d", days, hours, minutes, seconds);
         return timeString;
     }
 
@@ -60,7 +60,7 @@ public class Common {
 
     public static String ConvertDateToStringDateTime(final Date date) {
 
-        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT+" "+SYMBOL_TIME_FORMAT);
+        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT + " " + SYMBOL_TIME_FORMAT);
         String sDate = "";
         try {
             sDate = dateformat.format(date);
@@ -87,7 +87,7 @@ public class Common {
     public static void blink(final View v, Activity activity) {
 
         long mills = 100L;
-        Vibrator vibrator = (Vibrator)activity.getSystemService(Context.VIBRATOR_SERVICE);
+        Vibrator vibrator = (Vibrator) activity.getSystemService(Context.VIBRATOR_SERVICE);
         vibrator.vibrate(mills);
 
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
@@ -100,7 +100,12 @@ public class Common {
 
     public static void setTitleOfActivity(Activity currentActivity) {
         if (Session.sessionUser != null) {
-            currentActivity.setTitle(currentActivity.getTitle() + " : " + Session.sessionUser.getName() + "");
+            if (Session.backgroundChronometer.isTicking()) {
+                currentActivity.setTitle(Session.sessionUser.getName() + ":" + currentActivity.getTitle() + " ("+Session.backgroundChronometer.getGlobalChronometerCount()+")");
+            } else {
+                currentActivity.setTitle(Session.sessionUser.getName() + ":" + currentActivity.getTitle());
+
+            }
         }
     }
 

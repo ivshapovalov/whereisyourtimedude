@@ -1,6 +1,9 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
 import android.content.Context;
+
+import java.util.Calendar;
+
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
@@ -73,10 +76,10 @@ public class BackgroundChronometer extends Thread {
                 }
                 globalChronometerCount += 1000;
                if (globalChronometerCount% Common.SAVE_INTERVAL ==0){
-                    //TODO save to db
                 if (context!=null && currentPracticeHistory!=null) {
                     DatabaseManager DB = new DatabaseManager(context);
                     currentPracticeHistory.setDuration(globalChronometerCount);
+                    currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
                     currentPracticeHistory.dbSave(DB);
                 }
 

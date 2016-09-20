@@ -1,7 +1,5 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
@@ -203,7 +201,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvTimer = (TextView) findViewById(tvTimerID);
 
-        String strTime = ConvertMillisToStringTime(elapsedMillis);
+        String strTime = ConvertMillisToStringWithAllTime(elapsedMillis);
         //String strTime = String.valueOf(elapsedMillis);
         String txt = String.valueOf(strTime);
         tvTimer.setText(txt);
@@ -219,7 +217,7 @@ public class ActivityChrono extends AppCompatActivity {
 //        int tvGlobalChronometerID = getResources().getIdentifier("tvGlobalChronometer", "id", getPackageName());
 //        TextView tvGlobalChronometer = (TextView) findViewById(tvGlobalChronometerID);
 //
-//        strTime = ConvertMillisToStringTime(count);
+//        strTime = ConvertMillisToStringWithAllTime(count);
 //        txt = String.valueOf(strTime);
 //        tvGlobalChronometer.setText(txt);
     }
@@ -330,7 +328,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
         if (tvCurrentTime != null) {
-            tvCurrentTime.setText(ConvertMillisToStringTime(currentPracticeHistory.getDuration()));
+            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration()));
         }
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
@@ -414,7 +412,7 @@ public class ActivityChrono extends AppCompatActivity {
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(areaColor);
         //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
-        txtTime.setText(ConvertMillisToStringTime(practiceHistory.getDuration()));
+        txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration()));
         txtTime.setLayoutParams(paramsTextView);
         row1.addView(txtTime);
 

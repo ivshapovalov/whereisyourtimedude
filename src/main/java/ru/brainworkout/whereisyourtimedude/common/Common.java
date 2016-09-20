@@ -42,7 +42,11 @@ public class Common {
         return ConvertDateToStringDate(new Date(millis));
     }
 
-    public static String ConvertMillisToStringTime(long millis) {
+    public static String ConvertMillisToStringTime(final long millis) {
+        return ConvertDateToStringTime(new Date(millis));
+    }
+
+    public static String ConvertMillisToStringWithAllTime(long millis) {
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(days);
@@ -62,6 +66,19 @@ public class Common {
     public static String ConvertDateToStringDateTime(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT + " " + SYMBOL_TIME_FORMAT);
+        String sDate = "";
+        try {
+            sDate = dateformat.format(date);
+        } catch (Exception e) {
+        }
+
+        return sDate;
+
+    }
+
+    public static String ConvertDateToStringTime(final Date date) {
+
+        SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_TIME_FORMAT);
         String sDate = "";
         try {
             sDate = dateformat.format(date);

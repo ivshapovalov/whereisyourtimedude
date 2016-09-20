@@ -94,7 +94,13 @@ public class ActivityChrono extends AppCompatActivity {
 //        long endOfDayInMillis=calendar.getTimeInMillis();
         updatePractices(currentDateInMillis);
         //Collections.sort(practices, new PracticeHistoryComparatorByLastTime());
+
+        if (practices.isEmpty()) {
+            return;
+        }
+
         currentPracticeHistory = practices.get(0);
+
 
 
         if (Session.backgroundChronometer.isAlive()) {
@@ -110,6 +116,8 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
             Session.backgroundChronometer=new BackgroundChronometer();
+            Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+            Session.backgroundChronometer.setContext(this);
             Session.backgroundChronometer.start();
             Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
@@ -140,6 +148,10 @@ public class ActivityChrono extends AppCompatActivity {
             stopTimer();
         }
         updatePractices(date);
+
+        if (practices.isEmpty()) {
+            return;
+        }
         currentPracticeHistory = practices.get(0);
         currentDateInMillis = date;
 
@@ -156,6 +168,8 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
             Session.backgroundChronometer.start();
+            Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+            Session.backgroundChronometer.setContext(this);
             Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
             Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
@@ -234,6 +248,8 @@ public class ActivityChrono extends AppCompatActivity {
 
         mChronometerCount = currentPracticeHistory.getDuration();
         Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+        Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+        Session.backgroundChronometer.setContext(this);
         Session.backgroundChronometer.resumeTicking();
         mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
         mChronometerIsWorking = true;

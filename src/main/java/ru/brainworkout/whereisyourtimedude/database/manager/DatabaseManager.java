@@ -300,6 +300,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return true;
         }
     }
+
     public User getUser(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -320,6 +321,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return user;
         }
     }
+
     public boolean containsArea(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -335,6 +337,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return true;
         }
     }
+
     public Area getArea(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -364,12 +367,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
             cursor.moveToFirst();
 
         if (cursor.getCount() == 0) {
-           return false;
+            return false;
         } else {
             cursor.close();
             return true;
         }
     }
+
     public Project getProject(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -910,8 +914,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + "ifnull(history." + KEY_PRACTICE_HISTORY_DATE + ",0),ifnull(history." + KEY_PRACTICE_HISTORY_LAST_TIME + ",0),ifnull(history."
                 + KEY_PRACTICE_HISTORY_DURATION + ",0)"
                 + " FROM (select " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID + " from " + TABLE_PRACTICES
-                + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 AND "+TABLE_PRACTICES+"."+KEY_PRACTICE_ID_USER+"="+id_user
-                +") as active_practices "
+                + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + id_user
+                + ") as active_practices "
                 + " left join ( select " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE
                 + "," + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " from " + TABLE_PRACTICE_HISTORY
@@ -922,14 +926,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        int id_practice_count=0;
+        int id_practice_count = 0;
+        if (cursor.getCount() == 0) {
+            return practiceHistoryList;
+        }
         if (cursor.moveToFirst()) {
             do {
                 int id_practice = cursor.getInt(0);
                 int id_practice_history = cursor.getInt(1);
                 PracticeHistory.Builder practiceHistoryBuilder;
                 if (id_practice_history == 0) {
-                    practiceHistoryBuilder = new PracticeHistory.Builder(getPracticeHistoryMaxNumber()+id_practice_count+++1);
+                    practiceHistoryBuilder = new PracticeHistory.Builder(getPracticeHistoryMaxNumber() + id_practice_count++ + 1);
                     practiceHistoryBuilder.addDate(dateFrom);
                 } else {
 
@@ -1071,7 +1078,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public int getPracticeHistoryMaxNumber() {
-        String countQuery = "SELECT  MAX(" + KEY_PRACTICE_HISTORY_ID + ") FROM " + TABLE_PRACTICE_HISTORY+"";
+        String countQuery = "SELECT  MAX(" + KEY_PRACTICE_HISTORY_ID + ") FROM " + TABLE_PRACTICE_HISTORY + "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
 

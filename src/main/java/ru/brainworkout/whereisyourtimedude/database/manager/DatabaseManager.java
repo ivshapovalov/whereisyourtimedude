@@ -827,7 +827,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
-                + " FROM " + TABLE_PRACTICE_HISTORY;
+                + " FROM " + TABLE_PRACTICE_HISTORY +" ORDER BY "+KEY_PRACTICE_HISTORY_LAST_TIME+ " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -883,7 +883,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
                 + " WHERE " + KEY_PRACTICE_HISTORY_ID_USER + "=" + id_user +
-                " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME;
+                " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME +" DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

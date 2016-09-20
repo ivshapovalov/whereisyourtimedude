@@ -30,12 +30,24 @@
             android:label="@string/user_name"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activities.ActivityTools"
+            android:label="@string/tools_name"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".activities.ActivityAbout"
+            android:label="@string/about_name"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".activities.ActivityAreasList"
             android:label="@string/areas_list_name"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ActivityArea"
             android:label="@string/area_name"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.ActivityOptions"
+            android:label="@string/options_name"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ActivityProjectsList"

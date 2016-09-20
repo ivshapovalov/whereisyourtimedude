@@ -13,6 +13,7 @@
     <string name="practice_history_name">HISTORY</string>
     <string name="calendar_view_name">DATE CHOICE</string>
     <string name="about_name">ABOUT</string>
+    <string name="options_name">OPTIONS</string>
     <string name="chrono_name">TIME SIEVE</string>
     <string name="date_time_picker_name">CHOOSE THE DATE</string>
     <string name="about_text">2016. This program will help you to chrono your activities</string>

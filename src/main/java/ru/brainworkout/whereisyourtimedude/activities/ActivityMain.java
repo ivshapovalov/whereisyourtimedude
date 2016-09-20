@@ -1,8 +1,10 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,12 +26,17 @@ import ru.brainworkout.whereisyourtimedude.R;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
 
+import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 
 public class ActivityMain extends AppCompatActivity {
+
+    private SharedPreferences mSettings;
+    public static final String APP_PREFERENCES = "mysettings";
+    public static final String APP_PREFERENCES_SAVE_INTERVAL= "save_interval";
 
     private static final int MAX_VERTICAL_BUTTON_COUNT = 10;
     private final DatabaseManager DB = new DatabaseManager(this);
@@ -39,10 +46,24 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getPreferencesFromFile();
+
         showElementsOnScreen();
 
         defineCurrentUser();
-        setTitleOfActivity(this);
+        //setTitleOfActivity(this);
+    }
+
+    private void getPreferencesFromFile() {
+        mSettings = getSharedPreferences(ActivityMain.APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        if (mSettings.contains(ActivityMain.APP_PREFERENCES_SAVE_INTERVAL)) {
+            Common.SAVE_INTERVAL = mSettings.getInt(ActivityMain.APP_PREFERENCES_SAVE_INTERVAL, 10);
+        } else {
+            Common.SAVE_INTERVAL = 10;
+        }
+
+
     }
 
     private void showElementsOnScreen() {
@@ -132,31 +153,6 @@ public class ActivityMain extends AppCompatActivity {
     }
 
 
-    public void btClearBD_onClick(final View view) {
-
-        new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите очистить базу данных?")
-                .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        try {
-
-                            SQLiteDatabase dbSQL = DB.getWritableDatabase();
-                            //DB.DeleteDB(dbSQL);
-                            DB.onUpgrade(dbSQL, 1, 2);
-
-
-
-                        } catch (Exception e) {
-                            Toast toast = Toast.makeText(ActivityMain.this,
-                                    "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
-                            toast.show();
-                        }
-                    }
-                }).setNegativeButton("Нет", null).show();
-
-    }
-
     private boolean isUserDefined() {
         if (sessionUser ==null) {
             Toast toast = Toast.makeText(ActivityMain.this,
@@ -184,6 +180,15 @@ public class ActivityMain extends AppCompatActivity {
             return true;
 
         }
+    }
+
+    public void btTools_onClick(final View view) {
+
+        blink(view,this);
+        Intent intent = new Intent(ActivityMain.this, ActivityTools.class);
+        startActivity(intent);
+
+
     }
 
     public void onBackPressed() {

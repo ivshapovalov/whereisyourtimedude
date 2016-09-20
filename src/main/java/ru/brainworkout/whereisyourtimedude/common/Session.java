@@ -23,10 +23,8 @@ public class Session {
     public static Area currentArea;
     public static Practice currentPractice;
     public static PracticeHistory currentPracticeHistory;
-
     public static final Stack<ConnectionParameters> openActivities= new Stack<>();
-
-    public static BackgroundChronometer backgroundChronometer=BackgroundChronometer.INSTANCE;
+    public static BackgroundChronometer backgroundChronometer=new BackgroundChronometer();
 
     static {
        // backgroundChronometer.start();

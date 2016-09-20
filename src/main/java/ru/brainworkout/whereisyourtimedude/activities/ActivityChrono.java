@@ -166,9 +166,9 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
             Session.backgroundChronometer.start();
+            Session.backgroundChronometer.pauseTicking();
             Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
             Session.backgroundChronometer.setContext(this);
-            Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
             Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
 
@@ -292,8 +292,9 @@ public class ActivityChrono extends AppCompatActivity {
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             currentPracticeHistory.dbSave(DB);
-            updateScreen();
+
         }
+        updateScreen();
 
     }
 

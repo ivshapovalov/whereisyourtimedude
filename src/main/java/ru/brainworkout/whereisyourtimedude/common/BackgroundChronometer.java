@@ -59,7 +59,6 @@ public class BackgroundChronometer extends Thread {
 
     @Override
     public void run() {
-        ticking = true;
         while (!isInterrupted()) {
             tick();
         }
@@ -75,19 +74,21 @@ public class BackgroundChronometer extends Thread {
                     e.printStackTrace();
                 }
                 globalChronometerCount += 1000;
-               if (globalChronometerCount% Common.SAVE_INTERVAL ==0){
-                if (context!=null && currentPracticeHistory!=null) {
-                    DatabaseManager DB = new DatabaseManager(context);
-                    currentPracticeHistory.setDuration(globalChronometerCount);
-                    currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-                    currentPracticeHistory.dbSave(DB);
-                }
+                if (globalChronometerCount % (Common.SAVE_INTERVAL * 1000) == 0) {
+                    if (ticking) {
+                        if (context != null && currentPracticeHistory != null) {
+                            DatabaseManager DB = new DatabaseManager(context);
+                            currentPracticeHistory.setDuration(globalChronometerCount);
+                            currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
+                            currentPracticeHistory.dbSave(DB);
+                        }
+                    }
 
                 }
             }
 
 
         }
-        }
     }
+}
 

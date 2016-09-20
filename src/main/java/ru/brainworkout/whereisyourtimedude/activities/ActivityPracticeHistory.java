@@ -277,7 +277,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
             // create a new TimePickerDialog with values you want to show
             case 1:
                 return new TimePickerDialog(this,
-                        mTimeSetListener, calendar.get(Calendar.HOUR), calendar.get(Calendar.MINUTE), true);
+                        mTimeSetListener, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true);
 
         }
         return null;

@@ -194,7 +194,7 @@ public class Common {
 
         //Areas
         for (int i = 0; i < AREAS_COUNT; i++) {
-            Area a=new Area.Builder(DB).addName("Area "+ i).addColor(AlphabetColors().get(i)).build();
+            Area a=new Area.Builder(DB).addName("Область  "+ i).addColor(AlphabetColors().get(i)).build();
             //a.setIdUser(currentUserIndex);
             a.dbSave(DB);
         }
@@ -203,7 +203,7 @@ public class Common {
         for (int i = 0; i < PROJECTS_COUNT; i++) {
             int idArea=random.nextInt(AREAS_COUNT)+1;
             System.out.println("idArea="+idArea);
-            Project a=new Project.Builder(DB).addName("Project "+ i).addIdArea(idArea).build();
+            Project a=new Project.Builder(DB).addName("Проект "+ i).addIdArea(idArea).build();
             //a.setIdUser(currentUserIndex);
             a.dbSave(DB);
         }
@@ -212,7 +212,7 @@ public class Common {
         for (int i = 0; i < PRACTICES_COUNT; i++) {
             int idProject=random.nextInt(PROJECTS_COUNT)+1;
             System.out.println("idProject="+idProject);
-            Practice a=new Practice.Builder(DB).addName("Practice "+ i).addIDProject(idProject).addIsActive(1).build();
+            Practice a=new Practice.Builder(DB).addName("Занятие "+ i).addIDProject(idProject).addIsActive(1).build();
             //a.setIdUser(currentUserIndex);
             a.dbSave(DB);
         }

@@ -18,6 +18,9 @@ android {
 //    }
 
     buildTypes{
+        debug {
+            debuggable true
+        }
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->

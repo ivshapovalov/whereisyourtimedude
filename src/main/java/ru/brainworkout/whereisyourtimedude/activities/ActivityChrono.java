@@ -44,6 +44,8 @@ public class ActivityChrono extends AppCompatActivity {
     private long elapsedMillis;
 
 
+    //TODO Смена даты  - обновление экрана
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,7 +117,7 @@ public class ActivityChrono extends AppCompatActivity {
         } else {
             Session.backgroundChronometer=new BackgroundChronometer();
             Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-            Session.backgroundChronometer.setContext(this);
+            Session.backgroundChronometer.setDB(DB);
             Session.backgroundChronometer.start();
             Session.backgroundChronometer.pauseTicking();
             mChronometerCount = currentPracticeHistory.getDuration();
@@ -168,7 +170,7 @@ public class ActivityChrono extends AppCompatActivity {
             Session.backgroundChronometer.start();
             Session.backgroundChronometer.pauseTicking();
             Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-            Session.backgroundChronometer.setContext(this);
+            Session.backgroundChronometer.setDB(DB);
             mChronometerCount = currentPracticeHistory.getDuration();
             Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
 
@@ -247,7 +249,7 @@ public class ActivityChrono extends AppCompatActivity {
         mChronometerCount = currentPracticeHistory.getDuration();
         Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
         Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-        Session.backgroundChronometer.setContext(this);
+        Session.backgroundChronometer.setDB(DB);
         Session.backgroundChronometer.resumeTicking();
         mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
         mChronometerIsWorking = true;

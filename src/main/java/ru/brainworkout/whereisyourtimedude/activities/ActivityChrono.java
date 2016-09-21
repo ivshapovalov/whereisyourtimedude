@@ -232,7 +232,7 @@ public class ActivityChrono extends AppCompatActivity {
         if (mChronometerIsWorking) {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
-            currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometer.getBase());
+            currentPracticeHistory.setDuration(backgroundChronometer.getGlobalChronometerCount());
             mChronometer.stop();
             Session.backgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
@@ -251,7 +251,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
 
-            currentPracticeHistory.setDuration(((SystemClock.elapsedRealtime() - mChronometer.getBase())));
+            currentPracticeHistory.setDuration(backgroundChronometer.getGlobalChronometerCount());
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
 

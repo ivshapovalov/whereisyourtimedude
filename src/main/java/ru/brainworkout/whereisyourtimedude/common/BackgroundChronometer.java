@@ -67,56 +67,65 @@ public class BackgroundChronometer extends Thread {
     private void tick() {
 
         while (!isInterrupted()) {
+
+            if ((globalChronometerCount/1000)%Common.SAVE_INTERVAL == 0) {
+                if (DB != null && currentPracticeHistory != null) {
+                    checkAndChangeDateIfNeeded();
+                }
+            }
             while (ticking) {
-                //current date
-                Calendar today = Calendar.getInstance();
-                today.clear(Calendar.HOUR);
-                today.clear(Calendar.HOUR_OF_DAY);
-                today.clear(Calendar.MINUTE);
-                today.clear(Calendar.SECOND);
-                today.clear(Calendar.MILLISECOND);
-                long todayInMillis = today.getTimeInMillis();
                 try {
                     this.sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-
                 globalChronometerCount += 1000;
-                if (globalChronometerCount % (Common.SAVE_INTERVAL * 1000) == 0) {
+                checkAndChangeDateIfNeeded();
+                if ((globalChronometerCount/1000)%Common.SAVE_INTERVAL == 0) {
                     if (ticking) {
                         if (DB != null && currentPracticeHistory != null) {
-                            if (currentPracticeHistory.getDate() < todayInMillis) {
-                                currentPracticeHistory.setDuration(globalChronometerCount);
-                                Calendar calendar = Calendar.getInstance();
-                                calendar.setTimeInMillis(currentPracticeHistory.getDate());
-                                calendar.set(Calendar.HOUR_OF_DAY,23);
-                                calendar.set(Calendar.MINUTE,59);
-                                calendar.set(Calendar.SECOND,59);
-                                calendar.set(Calendar.MILLISECOND,59);
-                                currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
-                                currentPracticeHistory.dbSave(DB);
-                                //change practice history
-                                currentPracticeHistory = new PracticeHistory.Builder(DB)
-                                        .addDate(todayInMillis)
-                                        .addIdPractice(currentPracticeHistory.getIdPractice())
-                                        .addLastTime(currentPracticeHistory.getLastTime())
-                                        .addDuration(0)
-                                        .build();
-                                globalChronometerCount = 0;
-
-                            } else {
-                                currentPracticeHistory.setDuration(globalChronometerCount);
-                                currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-                                currentPracticeHistory.dbSave(DB);
-                            }
-
+                            currentPracticeHistory.setDuration(globalChronometerCount);
+                            currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
+                            currentPracticeHistory.dbSave(DB);
                         }
+
+
                     }
 
                 }
             }
+
+        }
+    }
+
+    private void checkAndChangeDateIfNeeded() {
+        //current date
+        Calendar today = Calendar.getInstance();
+        today.clear(Calendar.HOUR);
+        today.clear(Calendar.HOUR_OF_DAY);
+        today.clear(Calendar.MINUTE);
+        today.clear(Calendar.SECOND);
+        today.clear(Calendar.MILLISECOND);
+        long todayInMillis = today.getTimeInMillis();
+
+        if (currentPracticeHistory.getDate() < todayInMillis) {
+            currentPracticeHistory.setDuration(globalChronometerCount);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(currentPracticeHistory.getDate());
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 59);
+            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.MILLISECOND, 59);
+            currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
+            currentPracticeHistory.dbSave(DB);
+            //change practice history
+            currentPracticeHistory = new PracticeHistory.Builder(DB)
+                    .addDate(todayInMillis)
+                    .addIdPractice(currentPracticeHistory.getIdPractice())
+                    .addLastTime(todayInMillis)
+                    .addDuration(0)
+                    .build();
+            globalChronometerCount = 0;
         }
     }
 }

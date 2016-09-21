@@ -15,7 +15,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
+
+import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
+import ru.brainworkout.whereisyourtimedude.database.entities.Project;
+import ru.brainworkout.whereisyourtimedude.database.entities.User;
+import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 public class Common {
 
@@ -164,4 +171,52 @@ public class Common {
         return AlphabetColors;
     }
 
+    public static void DefaultTestFilling(DatabaseManager DB) {
+
+        Random random= new Random();
+        final int USERS_COUNT=5;
+        final int AREAS_COUNT=10;
+        final int PROJECTS_COUNT=20;
+        final int PRACTICES_COUNT=50;
+
+        int maxUser=DB.getUserMaxNumber();
+        //Users
+        for (int i = 1; i <= USERS_COUNT; i++) {
+            User a=new User.Builder(maxUser+i).addName("User "+ i).build();
+            a.dbSave(DB);
+        }
+        int currentUserIndex=random.nextInt(USERS_COUNT)+maxUser;
+
+        User currentUser=DB.getUser(currentUserIndex);
+        currentUser.setIsCurrentUser(1);
+        currentUser.dbSave(DB);
+        Session.sessionUser=currentUser;
+
+        //Areas
+        for (int i = 0; i < AREAS_COUNT; i++) {
+            Area a=new Area.Builder(DB).addName("Area "+ i).addColor(AlphabetColors().get(i)).build();
+            //a.setIdUser(currentUserIndex);
+            a.dbSave(DB);
+        }
+
+        //Projects
+        for (int i = 0; i < PROJECTS_COUNT; i++) {
+            int idArea=random.nextInt(AREAS_COUNT)+1;
+            System.out.println("idArea="+idArea);
+            Project a=new Project.Builder(DB).addName("Project "+ i).addIdArea(idArea).build();
+            //a.setIdUser(currentUserIndex);
+            a.dbSave(DB);
+        }
+
+        //Practices
+        for (int i = 0; i < PRACTICES_COUNT; i++) {
+            int idProject=random.nextInt(PROJECTS_COUNT)+1;
+            System.out.println("idProject="+idProject);
+            Practice a=new Practice.Builder(DB).addName("Practice "+ i).addIDProject(idProject).addIsActive(1).build();
+            //a.setIdUser(currentUserIndex);
+            a.dbSave(DB);
+        }
+
+
+    }
 }

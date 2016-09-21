@@ -36,7 +36,6 @@
                 android:id="@+id/btPracticesAdd"
                 android:onClick="btPracticeAdd_onClick"
                 android:layout_span="8"
-                android:layout_gravity="center_vertical"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color" />
 

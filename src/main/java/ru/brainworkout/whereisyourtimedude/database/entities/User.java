@@ -84,6 +84,10 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
         private String name;
         private int isCurrentUser;
 
+        public Builder(DatabaseManager DB) {
+            this.id = DB.getAreaMaxNumber() + 1;
+        }
+
         public Builder(int id) {
             this.id = id;
         }

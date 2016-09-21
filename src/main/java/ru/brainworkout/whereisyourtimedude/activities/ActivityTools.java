@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
@@ -56,6 +57,12 @@ public class ActivityTools extends AppCompatActivity {
 
         Intent intent = new Intent(ActivityTools.this, ActivityAbout.class);
         startActivity(intent);
+
+    }
+
+    public void btTestFill_onClick(final View view) {
+
+        Common.DefaultTestFilling(DB);
 
     }
 

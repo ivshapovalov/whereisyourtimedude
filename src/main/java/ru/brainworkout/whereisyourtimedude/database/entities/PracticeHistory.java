@@ -12,10 +12,10 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
  */
 public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
-    private int id_practice;
-    private long duration;
-    private long lastTime;
-    private long date;
+    private volatile int id_practice;
+    private volatile long duration;
+    private volatile long lastTime;
+    private volatile long date;
 
 
     @Override
@@ -58,28 +58,38 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     }
 
     public long getDuration() {
-        return duration;
+        synchronized (this) {
+            return duration;
+        }
     }
 
     public void setDuration(long duration) {
-        this.duration = duration;
+        synchronized (this) {
+            this.duration = duration;
+        }
     }
 
     public long getLastTime() {
-        return lastTime;
+        synchronized (this) {
+            return lastTime;
+        }
     }
 
     public void setLastTime(long lastTime) {
-        this.lastTime = lastTime;
+        synchronized (this) {
+        this.lastTime = lastTime;}
+
     }
 
     @Override
     public void dbSave(DatabaseManager db) {
+        synchronized (this) {
 
-        if (db.containsPracticeHistory(this.getID())) {
-            db.updatePracticeHistory((PracticeHistory) this);
-        } else {
-            db.addPracticeHistory((PracticeHistory) this);
+            if (db.containsPracticeHistory(this.getID())) {
+                db.updatePracticeHistory((PracticeHistory) this);
+            } else {
+                db.addPracticeHistory((PracticeHistory) this);
+            }
         }
     }
 

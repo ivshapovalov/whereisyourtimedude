@@ -2,6 +2,7 @@ package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -61,7 +62,7 @@ public class ActivityChrono extends AppCompatActivity {
                 if (elapsedMillis > 1000) {
 
 
-                    changeTimer(elapsedMillis);
+                    changeTimer();
 
                 }
             }
@@ -86,7 +87,6 @@ public class ActivityChrono extends AppCompatActivity {
             }
         });
         mChronometerEternity.start();
-
 
         Intent intent = getIntent();
 
@@ -183,11 +183,8 @@ public class ActivityChrono extends AppCompatActivity {
                 mChronometerCount = currentPracticeHistory.getDuration();
                 Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
             }
-
-
-        }
+       }
         updateScreen();
-
     }
 
     private void defineNewDayPractice(Long date) {
@@ -243,7 +240,7 @@ public class ActivityChrono extends AppCompatActivity {
 
     }
 
-    private void changeTimer(long elapsedMillis) {
+    private void changeTimer() {
 
 
         if (currentPracticeHistory.getDate() < backgroundChronometer.getCurrentPracticeHistory().getDate()) {
@@ -251,7 +248,8 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
 
-            currentPracticeHistory.setDuration(backgroundChronometer.getGlobalChronometerCount());
+            mChronometerCount=backgroundChronometer.getGlobalChronometerCount();
+            currentPracticeHistory.setDuration(mChronometerCount);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
 
@@ -259,7 +257,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvTimer = (TextView) findViewById(tvTimerID);
 
-        String strTime = ConvertMillisToStringWithAllTime(elapsedMillis);
+        String strTime = ConvertMillisToStringWithAllTime(mChronometerCount);
         String txt = String.valueOf(strTime);
         tvTimer.setText(txt);
 
@@ -319,7 +317,7 @@ public class ActivityChrono extends AppCompatActivity {
 
             if (mChronometerCount == 0) {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
-                Session.backgroundChronometer.setGlobalChronometerCount(0);
+                Session.backgroundChronometer.setGlobalChronometerCount(0L);
             } else {
                 mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
             }
@@ -332,7 +330,7 @@ public class ActivityChrono extends AppCompatActivity {
 
             Session.backgroundChronometer.pauseTicking();
 
-            mChronometerCount = SystemClock.elapsedRealtime() - mChronometer.getBase();
+            mChronometerCount = backgroundChronometer.getGlobalChronometerCount();
             mChronometer.stop();
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());

@@ -31,6 +31,7 @@ public class Common {
     public static final String SYMBOL_EDIT = "►";
     public static int SAVE_INTERVAL;
 
+
     public static final boolean isDebug = true;
 
     public static Date ConvertStringToDate(final String date) {

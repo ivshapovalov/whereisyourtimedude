@@ -1,16 +1,19 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.SystemClock;
 
 import java.util.Calendar;
 
+import ru.brainworkout.whereisyourtimedude.activities.ActivityMain;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 public class BackgroundChronometer extends Thread {
 
-    private volatile Long globalChronometerCountInSeconds = 0L;//seconds
-    private volatile Long beginTimeinMillis =0L;//millis
+    private volatile Long globalChronometerCountInSeconds = 0L;
+    private volatile Long beginTimeinMillis = 0L;
     private volatile boolean ticking;
     private volatile PracticeHistory currentPracticeHistory;
     private volatile DatabaseManager DB;
@@ -19,6 +22,7 @@ public class BackgroundChronometer extends Thread {
     public BackgroundChronometer() {
         //this.setDaemon(true);
         this.setPriority(Thread.MAX_PRIORITY);
+
     }
 
     public long getGlobalChronometerCountInSeconds() {
@@ -30,21 +34,12 @@ public class BackgroundChronometer extends Thread {
     public void setGlobalChronometerCountInSeconds(Long globalChronometerCountInSeconds) {
         synchronized (globalChronometerCountInSeconds) {
             this.globalChronometerCountInSeconds = globalChronometerCountInSeconds;
-            //this.beginTimeinMillis=System.nanoTime()-globalChronometerCountInSeconds*1_000_000_000;
-            this.beginTimeinMillis = SystemClock.elapsedRealtime()- globalChronometerCountInSeconds *1_000;
-        }
-    }
-
-
-    private void increaseGlobalChronometerCount() {
-        synchronized (globalChronometerCountInSeconds) {
-            globalChronometerCountInSeconds =(SystemClock.elapsedRealtime()- beginTimeinMillis)/1_000;
+            this.beginTimeinMillis = System.currentTimeMillis() - globalChronometerCountInSeconds * 1_000;
         }
     }
 
     public void pauseTicking() {
         this.ticking = false;
-
     }
 
     public void resumeTicking() {
@@ -82,8 +77,6 @@ public class BackgroundChronometer extends Thread {
         while (!isInterrupted()) {
             tick();
         }
-
-
     }
 
     private void tick() {
@@ -101,8 +94,10 @@ public class BackgroundChronometer extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-              globalChronometerCountInSeconds =(SystemClock.elapsedRealtime()- beginTimeinMillis)/1_000;
-               // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
+                synchronized (globalChronometerCountInSeconds) {
+                    globalChronometerCountInSeconds = (System.currentTimeMillis() - beginTimeinMillis) / 1_000;
+                }
+                // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
                 checkAndChangeDateIfNeeded();
                 if (globalChronometerCountInSeconds % Common.SAVE_INTERVAL == 0) {
                     if (ticking) {
@@ -111,7 +106,7 @@ public class BackgroundChronometer extends Thread {
                                 currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
                                 currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
                                 currentPracticeHistory.dbSave(DB);
-                               // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
+                                // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
                             }
                         }
                     }

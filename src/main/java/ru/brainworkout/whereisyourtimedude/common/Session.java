@@ -25,6 +25,7 @@ public class Session {
     public static PracticeHistory currentPracticeHistory;
     public static final Stack<ConnectionParameters> openActivities= new Stack<>();
     public static BackgroundChronometer backgroundChronometer=new BackgroundChronometer();
+    public static boolean CHRONO_IS_WORKING;
 
     static {
        // backgroundChronometer.start();

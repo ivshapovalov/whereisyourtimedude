@@ -919,7 +919,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + " left join ( select " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE
                 + "," + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " from " + TABLE_PRACTICE_HISTORY
-                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= '" + dateFrom + "' AND " + KEY_PRACTICE_HISTORY_DATE + " <='" + dateTo + "') as history"
+                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo + ") as history"
                 + " on active_practices." + KEY_PRACTICE_ID + "=history." + KEY_PRACTICE_HISTORY_ID_PRACTICE
                 + " order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc";
 
@@ -956,6 +956,36 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
+    public PracticeHistory getLastPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
+        dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
+        dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
+
+        String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
+                + " FROM " + TABLE_PRACTICE_HISTORY
+                + " WHERE " + TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_ID_USER + "=" + id_user
+                + " AND "+KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo
+                + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME +" DESC LIMIT 1";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        PracticeHistory practiceHistory=null;
+        if (cursor.moveToFirst()) {
+
+                practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
+                        .addIdPractice(cursor.getInt(1))
+                        .addDate(cursor.getLong(2))
+                        .addLastTime(cursor.getLong(3))
+                        .addDuration(cursor.getLong(4))
+                        .build();
+
+        }
+
+        cursor.close();
+        return practiceHistory;
+    }
+
     public List<PracticeHistory> getAllPracticeHistoryByDates(long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
@@ -964,7 +994,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
-                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= \"" + dateFrom + "\" AND " + KEY_PRACTICE_HISTORY_DATE + " <=\"" + dateTo
+                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + "\" AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo
                 + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME;
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -995,7 +1025,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
                 + " WHERE " + KEY_PRACTICE_HISTORY_ID_PRACTICE + "=" + id_practice
-                + KEY_PRACTICE_HISTORY_DATE + ">= \"" + dateFrom + "\" AND " + KEY_PRACTICE_HISTORY_DATE + "<=\"" + dateTo
+                + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + "<=" + dateTo
                 + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME;
 
         SQLiteDatabase db = this.getWritableDatabase();

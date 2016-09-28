@@ -1,8 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
-import android.app.Service;
-import android.content.Context;
-import android.os.PowerManager;
+import android.os.SystemClock;
 
 import java.util.Calendar;
 
@@ -11,7 +9,8 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 public class BackgroundChronometer extends Thread {
 
-    private volatile Long globalChronometerCount = 0L;
+    private volatile Long globalChronometerCountInSeconds = 0L;//seconds
+    private volatile Long beginTimeinMillis =0L;//millis
     private volatile boolean ticking;
     private volatile PracticeHistory currentPracticeHistory;
     private volatile DatabaseManager DB;
@@ -22,22 +21,24 @@ public class BackgroundChronometer extends Thread {
         this.setPriority(Thread.MAX_PRIORITY);
     }
 
-    public long getGlobalChronometerCount() {
-        synchronized (globalChronometerCount) {
-            return globalChronometerCount;
+    public long getGlobalChronometerCountInSeconds() {
+        synchronized (globalChronometerCountInSeconds) {
+            return globalChronometerCountInSeconds;
         }
     }
 
-    public void setGlobalChronometerCount(Long globalChronometerCount) {
-        synchronized (globalChronometerCount) {
-            this.globalChronometerCount = globalChronometerCount;
+    public void setGlobalChronometerCountInSeconds(Long globalChronometerCountInSeconds) {
+        synchronized (globalChronometerCountInSeconds) {
+            this.globalChronometerCountInSeconds = globalChronometerCountInSeconds;
+            //this.beginTimeinMillis=System.nanoTime()-globalChronometerCountInSeconds*1_000_000_000;
+            this.beginTimeinMillis = SystemClock.elapsedRealtime()- globalChronometerCountInSeconds *1_000;
         }
     }
 
 
-    private void increaseGlobalChronometerCount(int i) {
-        synchronized (globalChronometerCount) {
-            globalChronometerCount+=1000;
+    private void increaseGlobalChronometerCount() {
+        synchronized (globalChronometerCountInSeconds) {
+            globalChronometerCountInSeconds =(SystemClock.elapsedRealtime()- beginTimeinMillis)/1_000;
         }
     }
 
@@ -89,7 +90,7 @@ public class BackgroundChronometer extends Thread {
 
         while (!isInterrupted()) {
 
-            if ((globalChronometerCount / 1000) % Common.SAVE_INTERVAL == 0) {
+            if ((globalChronometerCountInSeconds) % Common.SAVE_INTERVAL == 0) {
                 if (DB != null && currentPracticeHistory != null) {
                     checkAndChangeDateIfNeeded();
                 }
@@ -100,15 +101,17 @@ public class BackgroundChronometer extends Thread {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                increaseGlobalChronometerCount(1000);
+              globalChronometerCountInSeconds =(SystemClock.elapsedRealtime()- beginTimeinMillis)/1_000;
+               // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
                 checkAndChangeDateIfNeeded();
-                if ((globalChronometerCount / 1000) % Common.SAVE_INTERVAL == 0) {
+                if (globalChronometerCountInSeconds % Common.SAVE_INTERVAL == 0) {
                     if (ticking) {
                         if (DB != null && currentPracticeHistory != null) {
                             synchronized (currentPracticeHistory) {
-                                currentPracticeHistory.setDuration(globalChronometerCount);
+                                currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
                                 currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
                                 currentPracticeHistory.dbSave(DB);
+                               // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
                             }
                         }
                     }
@@ -131,7 +134,7 @@ public class BackgroundChronometer extends Thread {
 
         if (currentPracticeHistory.getDate() < todayInMillis) {
             synchronized (currentPracticeHistory) {
-                currentPracticeHistory.setDuration(globalChronometerCount);
+                currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(currentPracticeHistory.getDate());
                 calendar.set(Calendar.HOUR_OF_DAY, 23);
@@ -148,7 +151,7 @@ public class BackgroundChronometer extends Thread {
                         .addDuration(0)
                         .build();
             }
-            setGlobalChronometerCount(0L);
+            setGlobalChronometerCountInSeconds(0L);
         }
     }
 }

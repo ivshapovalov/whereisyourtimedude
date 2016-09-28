@@ -126,7 +126,7 @@ public class Common {
     public static void setTitleOfActivity(Activity currentActivity) {
         if (Session.sessionUser != null) {
 //            if (Session.backgroundChronometer.isTicking()) {
-//                currentActivity.setTitle(Session.sessionUser.getName() + ":" + currentActivity.getTitle() + " ("+Session.backgroundChronometer.getGlobalChronometerCount()+")");
+//                currentActivity.setTitle(Session.sessionUser.getName() + ":" + currentActivity.getTitle() + " ("+Session.backgroundChronometer.getGlobalChronometerCountInSeconds()+")");
 //            } else {
                 currentActivity.setTitle(currentActivity.getTitle()+"("+Session.sessionUser.getName() + ")");
 

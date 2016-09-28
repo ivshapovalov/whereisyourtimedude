@@ -13,9 +13,9 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private volatile int id_practice;
-    private volatile long duration;
-    private volatile long lastTime;
-    private volatile long date;
+    private volatile long duration;//seconds
+    private volatile long lastTime;//millis
+    private volatile long date;//millis
 
 
     @Override

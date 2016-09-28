@@ -2,7 +2,6 @@ package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.CountDownTimer;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -43,7 +42,7 @@ public class ActivityChrono extends AppCompatActivity {
     private Chronometer mChronometer;
     private Chronometer mChronometerEternity;
     private boolean mChronometerIsWorking = false;
-    private long mChronometerCount = 0;
+    private long localChronometerCountInSeconds = 0;//seconds
     private long elapsedMillis;
 
 
@@ -126,11 +125,11 @@ public class ActivityChrono extends AppCompatActivity {
         if (Session.backgroundChronometer.isAlive()) {
 
             if (Session.backgroundChronometer.isTicking()) {
-                mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
+                localChronometerCountInSeconds = Session.backgroundChronometer.getGlobalChronometerCountInSeconds();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
-                mChronometerCount = currentPracticeHistory.getDuration();
-                Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+                localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
 
 
@@ -140,8 +139,8 @@ public class ActivityChrono extends AppCompatActivity {
             Session.backgroundChronometer.setDB(DB);
             Session.backgroundChronometer.start();
             Session.backgroundChronometer.pauseTicking();
-            mChronometerCount = currentPracticeHistory.getDuration();
-            Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+            localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+            Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
         }
 
@@ -177,11 +176,11 @@ public class ActivityChrono extends AppCompatActivity {
         if (Session.backgroundChronometer.isAlive()) {
 
             if (Session.backgroundChronometer.isTicking()) {
-                mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
+                localChronometerCountInSeconds = Session.backgroundChronometer.getGlobalChronometerCountInSeconds();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
-                mChronometerCount = currentPracticeHistory.getDuration();
-                Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+                localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
        }
         updateScreen();
@@ -202,11 +201,11 @@ public class ActivityChrono extends AppCompatActivity {
         if (Session.backgroundChronometer.isAlive()) {
 
             if (Session.backgroundChronometer.isTicking()) {
-                mChronometerCount = Session.backgroundChronometer.getGlobalChronometerCount();
+                localChronometerCountInSeconds = Session.backgroundChronometer.getGlobalChronometerCountInSeconds();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
-                mChronometerCount = currentPracticeHistory.getDuration();
-                Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+                localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
             Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
 
@@ -215,8 +214,8 @@ public class ActivityChrono extends AppCompatActivity {
             Session.backgroundChronometer.pauseTicking();
             Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
             Session.backgroundChronometer.setDB(DB);
-            mChronometerCount = currentPracticeHistory.getDuration();
-            Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+            localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+            Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
         }
         updateScreen();
@@ -228,13 +227,13 @@ public class ActivityChrono extends AppCompatActivity {
 
         if (mChronometerIsWorking) {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
-            currentPracticeHistory.setDuration(backgroundChronometer.getGlobalChronometerCount());
+            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
+            currentPracticeHistory.setDuration(backgroundChronometer.getGlobalChronometerCountInSeconds());
             mChronometer.stop();
             Session.backgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
         } else {
-            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - mChronometerCount);
+            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
         }
         currentPracticeHistory.dbSave(DB);
 
@@ -248,8 +247,8 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
 
-            mChronometerCount=backgroundChronometer.getGlobalChronometerCount();
-            currentPracticeHistory.setDuration(mChronometerCount);
+            localChronometerCountInSeconds =backgroundChronometer.getGlobalChronometerCountInSeconds();
+            currentPracticeHistory.setDuration(localChronometerCountInSeconds);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
 
@@ -257,7 +256,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvTimer = (TextView) findViewById(tvTimerID);
 
-        String strTime = ConvertMillisToStringWithAllTime(mChronometerCount);
+        String strTime = ConvertMillisToStringWithAllTime(localChronometerCountInSeconds *1000);
         String txt = String.valueOf(strTime);
         tvTimer.setText(txt);
 
@@ -287,12 +286,12 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
 
-        mChronometerCount = currentPracticeHistory.getDuration();
-        Session.backgroundChronometer.setGlobalChronometerCount(mChronometerCount);
+        localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+        Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
         Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
         Session.backgroundChronometer.setDB(DB);
         Session.backgroundChronometer.resumeTicking();
-        mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
+        mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
         mChronometerIsWorking = true;
         mChronometer.start();
 
@@ -315,11 +314,11 @@ public class ActivityChrono extends AppCompatActivity {
                 Session.backgroundChronometer.resumeTicking();
             }
 
-            if (mChronometerCount == 0) {
+            if (localChronometerCountInSeconds == 0) {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
-                Session.backgroundChronometer.setGlobalChronometerCount(0L);
+                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(0L);
             } else {
-                mChronometer.setBase(SystemClock.elapsedRealtime() - mChronometerCount);
+                mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
             }
 
             mChronometerIsWorking = true;
@@ -330,7 +329,7 @@ public class ActivityChrono extends AppCompatActivity {
 
             Session.backgroundChronometer.pauseTicking();
 
-            mChronometerCount = backgroundChronometer.getGlobalChronometerCount();
+            localChronometerCountInSeconds = backgroundChronometer.getGlobalChronometerCountInSeconds();
             mChronometer.stop();
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
@@ -371,7 +370,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
         if (tvCurrentTime != null) {
-            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration()));
+            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration()*1000));
         }
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
@@ -455,7 +454,7 @@ public class ActivityChrono extends AppCompatActivity {
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(areaColor);
         //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
-        txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration()));
+        txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration()*1000));
         txtTime.setLayoutParams(paramsTextView);
         row1.addView(txtTime);
 

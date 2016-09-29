@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TableLayout;
@@ -453,6 +454,7 @@ public class ActivityChrono extends AppCompatActivity {
         } catch (TableDoesNotContainElementException e) {
 
         }
+
         TableRow rowMain = new TableRow(this);
 
         rowMain.setId(practiceHistory.getId());
@@ -476,6 +478,7 @@ public class ActivityChrono extends AppCompatActivity {
         TextView txtName = new TextView(this);
         txtName.setBackgroundColor(areaColor);
         txtName.setText(practiceName);
+       // txtName.setMinimumHeight(mHeight);
         txtName.setLayoutParams(paramsTextView);
         row1.addView(txtName);
 
@@ -484,6 +487,7 @@ public class ActivityChrono extends AppCompatActivity {
         //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
         txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration()*1000));
         txtTime.setLayoutParams(paramsTextView);
+        //txtTime.setMinimumHeight(mHeight);
         row1.addView(txtTime);
 
         layout.addView(row1);
@@ -491,10 +495,12 @@ public class ActivityChrono extends AppCompatActivity {
         TableRow row2 = new TableRow(this);
         row2.setLayoutParams(paramsRow);
 
+
         TextView txtArea = new TextView(this);
         txtArea.setBackgroundColor(areaColor);
         txtArea.setText(areaName);
         txtArea.setLayoutParams(paramsTextView);
+        //txtArea.setMinimumHeight(mHeight);
         row2.addView(txtArea);
 
         TextView txtDate = new TextView(this);
@@ -507,6 +513,7 @@ public class ActivityChrono extends AppCompatActivity {
 
 
         txtDate.setLayoutParams(paramsTextView);
+       // txtDate.setMinimumHeight(mHeight);
 
         row2.addView(txtDate);
 

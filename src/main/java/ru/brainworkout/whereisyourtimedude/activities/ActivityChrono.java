@@ -338,6 +338,7 @@ public class ActivityChrono extends AppCompatActivity {
                 Session.backgroundChronometer.setGlobalChronometerCountInSeconds(0L);
             } else {
                 mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
+                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
 
             mChronometerIsWorking = true;

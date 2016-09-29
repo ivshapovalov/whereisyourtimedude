@@ -69,8 +69,6 @@ public class ActivityMain extends AppCompatActivity {
     private void resumeBackgroundChronometer() {
         PracticeHistory resumedPracticeHistory = DB.getLastPracticeHistoryOfUserByDates(Session.sessionUser.getID(), 0, System.currentTimeMillis());
         if (resumedPracticeHistory != null) {
-            //check date
-
             Calendar today = Calendar.getInstance();
             today.clear(Calendar.HOUR);
             today.clear(Calendar.HOUR_OF_DAY);
@@ -78,7 +76,7 @@ public class ActivityMain extends AppCompatActivity {
             today.clear(Calendar.SECOND);
             today.clear(Calendar.MILLISECOND);
             long todayInMillis = today.getTimeInMillis();
-
+            long duration=0;
             long resumedPracticeHistoryDateInMillis = resumedPracticeHistory.getDate();
             if (resumedPracticeHistoryDateInMillis < todayInMillis) {
                 Calendar calendarEndOfDay = Calendar.getInstance();
@@ -89,10 +87,10 @@ public class ActivityMain extends AppCompatActivity {
                     calendarEndOfDay.set(Calendar.MINUTE, 59);
                     calendarEndOfDay.set(Calendar.SECOND, 59);
                     calendarEndOfDay.set(Calendar.MILLISECOND, 59);
-                    resumedPracticeHistory.setLastTime(calendarEndOfDay.getTimeInMillis());
                     long beginTimeinMillis = resumedPracticeHistory.getLastTime() - resumedPracticeHistory.getDuration() * 1_000;
-                    long duration = (resumedPracticeHistory.getLastTime() - beginTimeinMillis) / 1_000;
-                    resumedPracticeHistory.setDuration(duration);
+                    long resumedDuration = (calendarEndOfDay.getTimeInMillis() - beginTimeinMillis) / 1_000;
+                    resumedPracticeHistory.setLastTime(calendarEndOfDay.getTimeInMillis());
+                    resumedPracticeHistory.setDuration(resumedDuration);
                     resumedPracticeHistory.dbSave(DB);
                 }
 
@@ -105,7 +103,7 @@ public class ActivityMain extends AppCompatActivity {
                 long nextDayEndInMillis=calendarEndOfDay.getTimeInMillis();
                 while (nextDayBeginInMillis != todayInMillis) {
 
-                    PracticeHistory currentPracticeHistory = new PracticeHistory.Builder(DB)
+                    PracticeHistory newDayPracticeHistory = new PracticeHistory.Builder(DB)
                             .addDate(nextDayBeginInMillis)
                             .addIdPractice(resumedPracticeHistory.getIdPractice())
                             .addLastTime(nextDayEndInMillis)
@@ -115,34 +113,28 @@ public class ActivityMain extends AppCompatActivity {
                     nextDayBeginInMillis = calendarBeginOfDay.getTimeInMillis();
                     calendarEndOfDay.add(Calendar.DAY_OF_MONTH,1);
                     nextDayEndInMillis=calendarEndOfDay.getTimeInMillis();
+                    newDayPracticeHistory.dbSave(DB);
                  }
 
-                long duration=(System.currentTimeMillis()-todayInMillis)/1_000;
-                PracticeHistory currentPracticeHistory = new PracticeHistory.Builder(DB)
+                duration=(System.currentTimeMillis()-todayInMillis)/1_000;
+                resumedPracticeHistory = new PracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
                         .addIdPractice(resumedPracticeHistory.getIdPractice())
                         .addLastTime(System.currentTimeMillis())
                         .addDuration(duration)
                         .build();
 
-                Session.backgroundChronometer = new BackgroundChronometer();
-                Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-                Session.backgroundChronometer.setDB(DB);
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(duration);
-                Session.backgroundChronometer.start();
-                Session.backgroundChronometer.resumeTicking();
-
             } else {
 
-                Session.backgroundChronometer = new BackgroundChronometer();
-                Session.backgroundChronometer.setCurrentPracticeHistory(resumedPracticeHistory);
-                Session.backgroundChronometer.setDB(DB);
                 long beginTimeinMillis = resumedPracticeHistory.getLastTime() - resumedPracticeHistory.getDuration() * 1_000;
-                long duration = (System.currentTimeMillis() - beginTimeinMillis) / 1_000;
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(duration);
-                Session.backgroundChronometer.start();
-                Session.backgroundChronometer.resumeTicking();
+                duration = (System.currentTimeMillis() - beginTimeinMillis) / 1_000;
             }
+            Session.backgroundChronometer = new BackgroundChronometer();
+            Session.backgroundChronometer.setCurrentPracticeHistory(resumedPracticeHistory);
+            Session.backgroundChronometer.setDB(DB);
+            Session.backgroundChronometer.setGlobalChronometerCountInSeconds(duration);
+            Session.backgroundChronometer.start();
+            Session.backgroundChronometer.resumeTicking();
         }
     }
 
@@ -155,6 +147,7 @@ public class ActivityMain extends AppCompatActivity {
             Common.SAVE_INTERVAL = 10;
         }
 
+        //Session.CHRONO_IS_WORKING=true;
         if (mSettings.contains(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING)) {
             Session.CHRONO_IS_WORKING = mSettings.getBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
         } else {

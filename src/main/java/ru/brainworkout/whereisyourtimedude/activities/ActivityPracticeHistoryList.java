@@ -64,9 +64,10 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         Intent intent = getIntent();
         int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
 
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
+        TableRow mRow = (TableRow) findViewById(id);
+        //TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
         if (mRow != null) {
-            int mScrID = getResources().getIdentifier("svTablePractices", "id", getPackageName());
+            int mScrID = getResources().getIdentifier("svTablePracticeHistory", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
 
@@ -76,6 +77,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
         setTitleOfActivity(this);
     }
+
 
     public void btPracticeHistoryAdd_onClick(final View view) {
 
@@ -135,7 +137,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
             PracticeHistory currentPracticeHistory = practiceHistoryList.get(numPracticeHistory);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentPracticeHistory.getID());
+            mRow.setId(currentPracticeHistory.getID());
+           // mRow.setId(NUMBER_OF_VIEWS + currentPracticeHistory.getID());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -207,7 +210,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     private void txtPracticeHistoryEdit_onClick(TextView view) {
 
         blink(view,this);
-        int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
+        int id = ((TableRow)view.getParent()).getId();
+        //int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters params= new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
                 .isTransmitterNew(false)
@@ -229,7 +233,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
         blink(view,this);
 
-        int id = view.getId() % NUMBER_OF_VIEWS;
+        int id = view.getId();
+        //int id = view.getId() % NUMBER_OF_VIEWS;
 
         ConnectionParameters params= new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")

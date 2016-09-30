@@ -51,8 +51,8 @@ public class ActivityMain extends AppCompatActivity {
 
         defineCurrentUser();
 
-        resumeChronoIfWorking();
-        //setTitleOfActivity(this);
+        //resumeChronoIfWorking();
+
     }
 
     private void resumeChronoIfWorking() {
@@ -61,7 +61,11 @@ public class ActivityMain extends AppCompatActivity {
                     Session.backgroundChronometer.isAlive() ||
                     Session.backgroundChronometer.isTicking()) {
             } else {
-                resumeBackgroundChronometer();
+                synchronized (Session.backgroundChronometer) {
+                    if (Session.backgroundChronometer == null) {
+                        resumeBackgroundChronometer();
+                    }
+                }
             }
         }
     }
@@ -76,7 +80,7 @@ public class ActivityMain extends AppCompatActivity {
             today.clear(Calendar.SECOND);
             today.clear(Calendar.MILLISECOND);
             long todayInMillis = today.getTimeInMillis();
-            long duration=0;
+            long duration = 0;
             long resumedPracticeHistoryDateInMillis = resumedPracticeHistory.getDate();
             if (resumedPracticeHistoryDateInMillis < todayInMillis) {
                 Calendar calendarEndOfDay = Calendar.getInstance();
@@ -99,24 +103,24 @@ public class ActivityMain extends AppCompatActivity {
                 calendarBeginOfDay.setTimeInMillis(resumedPracticeHistoryDateInMillis);
                 calendarBeginOfDay.add(Calendar.DAY_OF_MONTH, 1);
                 long nextDayBeginInMillis = calendarBeginOfDay.getTimeInMillis();
-                calendarEndOfDay.add(Calendar.DAY_OF_MONTH,1);
-                long nextDayEndInMillis=calendarEndOfDay.getTimeInMillis();
+                calendarEndOfDay.add(Calendar.DAY_OF_MONTH, 1);
+                long nextDayEndInMillis = calendarEndOfDay.getTimeInMillis();
                 while (nextDayBeginInMillis != todayInMillis) {
 
                     PracticeHistory newDayPracticeHistory = new PracticeHistory.Builder(DB)
                             .addDate(nextDayBeginInMillis)
                             .addIdPractice(resumedPracticeHistory.getIdPractice())
                             .addLastTime(nextDayEndInMillis)
-                            .addDuration(20*60*60)
+                            .addDuration(20 * 60 * 60)
                             .build();
                     calendarBeginOfDay.add(Calendar.DAY_OF_MONTH, 1);
                     nextDayBeginInMillis = calendarBeginOfDay.getTimeInMillis();
-                    calendarEndOfDay.add(Calendar.DAY_OF_MONTH,1);
-                    nextDayEndInMillis=calendarEndOfDay.getTimeInMillis();
+                    calendarEndOfDay.add(Calendar.DAY_OF_MONTH, 1);
+                    nextDayEndInMillis = calendarEndOfDay.getTimeInMillis();
                     newDayPracticeHistory.dbSave(DB);
-                 }
+                }
 
-                duration=(System.currentTimeMillis()-todayInMillis)/1_000;
+                duration = (System.currentTimeMillis() - todayInMillis) / 1_000;
                 resumedPracticeHistory = new PracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
                         .addIdPractice(resumedPracticeHistory.getIdPractice())

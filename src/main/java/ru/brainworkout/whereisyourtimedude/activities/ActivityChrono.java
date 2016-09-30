@@ -8,7 +8,6 @@ import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TableLayout;
@@ -49,10 +48,15 @@ public class ActivityChrono extends AppCompatActivity {
     private long localChronometerCountInSeconds = 0;
     private long elapsedMillis;
 
+    private TableLayout tableHistory;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chrono);
+
+        int tableLayout = getResources().getIdentifier("tablePractices", "id", getPackageName());
+        tableHistory = (TableLayout) findViewById(tableLayout);
 
         mSettings = getSharedPreferences(ActivityMain.APP_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -152,7 +156,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         }
 
-        updateScreen();
+        updateAllRows();
 
 
     }
@@ -190,8 +194,8 @@ public class ActivityChrono extends AppCompatActivity {
                 localChronometerCountInSeconds = currentPracticeHistory.getDuration();
                 Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
-       }
-        updateScreen();
+        }
+        updateAllRows();
     }
 
     private void defineNewDayPractice(Long date) {
@@ -230,7 +234,7 @@ public class ActivityChrono extends AppCompatActivity {
             editor.apply();
 
         }
-        updateScreen();
+        updateAllRows();
 
     }
 
@@ -263,7 +267,7 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
 
-            localChronometerCountInSeconds =backgroundChronometer.getGlobalChronometerCountInSeconds();
+            localChronometerCountInSeconds = backgroundChronometer.getGlobalChronometerCountInSeconds();
             currentPracticeHistory.setDuration(localChronometerCountInSeconds);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
@@ -272,7 +276,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvTimer = (TextView) findViewById(tvTimerID);
 
-        String strTime = ConvertMillisToStringWithAllTime(localChronometerCountInSeconds *1000);
+        String strTime = ConvertMillisToStringWithAllTime(localChronometerCountInSeconds * 1000);
         String txt = String.valueOf(strTime);
         tvTimer.setText(txt);
 
@@ -316,7 +320,12 @@ public class ActivityChrono extends AppCompatActivity {
         editor.apply();
 
         updatePractices(currentDateInMillis);
-        updateScreen();
+
+        long time=System.currentTimeMillis();
+        tableHistory.removeView(view);
+        updateAllRowsIDs();
+        //updateAllRows();
+        System.out.println(System.currentTimeMillis()-time);
 
     }
 
@@ -365,13 +374,12 @@ public class ActivityChrono extends AppCompatActivity {
             editor.apply();
 
         }
-        updateScreen();
+        updateAllRows();
 
     }
 
 
-    private void updateScreen() {
-
+    private void updateAllRows() {
 
         String areaName = "";
         int areaColor = 0;
@@ -399,7 +407,7 @@ public class ActivityChrono extends AppCompatActivity {
         int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
         if (tvCurrentTime != null) {
-            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration()*1000));
+            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
         }
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
@@ -422,20 +430,73 @@ public class ActivityChrono extends AppCompatActivity {
             tableCurrentWork.setBackgroundColor(areaColor);
         }
 
+        tableHistory.removeAllViews();
+        for (int i = 1; i < practices.size(); i++
+                ) {
+            TableRow mRow = CreateTableRow(i);
+            tableHistory.addView(mRow);
+        }
+    }
 
-        int tableLayout = getResources().getIdentifier("tablePractices", "id", getPackageName());
-        TableLayout table = (TableLayout) findViewById(tableLayout);
-        if (table != null) {
-            table.removeAllViews();
-            for (int i = 1; i < practices.size(); i++
-                    ) {
-                TableRow mRow = CreateTableRow(i);
-                table.addView(mRow);
-            }
+    private void updateAllRowsIDs() {
+
+        String areaName = "";
+        int areaColor = 0;
+        try {
+            Practice practice = DB.getPractice(currentPracticeHistory.getIdPractice());
+            Project project = DB.getProject(practice.getIdProject());
+            Area area = DB.getArea(project.getIdArea());
+            areaName = area.getName();
+            areaColor = area.getColor();
+        } catch (TableDoesNotContainElementException e) {
 
         }
 
+        int tvIDCurrentDay = getResources().getIdentifier("tvCurrentDay", "id", getPackageName());
+        TextView tvCurrentDay = (TextView) findViewById(tvIDCurrentDay);
+        if (tvCurrentDay != null) {
+            tvCurrentDay.setText(ConvertMillisToStringDate(currentDateInMillis));
+        }
+
+        int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
+        TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
+        if (tvCurrentName != null) {
+            tvCurrentName.setText(DB.getPractice(currentPracticeHistory.getIdPractice()).getName());
+        }
+        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
+        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
+        if (tvCurrentTime != null) {
+            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
+        }
+        int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
+        TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
+        if (tvCurrentArea != null) {
+            tvCurrentArea.setText(areaName);
+        }
+        int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
+        TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
+        if (tvCurrentDate != null) {
+            if (currentPracticeHistory.getLastTime() != 0) {
+                tvCurrentDate.setText(ConvertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
+
+            } else {
+                tvCurrentDate.setText("");
+            }
+        }
+        int tableIDCurrentWork = getResources().getIdentifier("tableCurrentWork", "id", getPackageName());
+        TableLayout tableCurrentWork = (TableLayout) findViewById(tableIDCurrentWork);
+        if (tableCurrentWork != null) {
+            tableCurrentWork.setBackgroundColor(areaColor);
+        }
+
+        TableRow mRow = CreateTableRow(1);
+        tableHistory.addView(mRow,0);
+        for (int i = 1; i < practices.size(); i++
+                ) {
+            tableHistory.getChildAt(i-1).setId(practices.get(i).getId());
+        }
     }
+
 
     @NonNull
     private TableRow CreateTableRow(int i) {
@@ -478,14 +539,14 @@ public class ActivityChrono extends AppCompatActivity {
         TextView txtName = new TextView(this);
         txtName.setBackgroundColor(areaColor);
         txtName.setText(practiceName);
-       // txtName.setMinimumHeight(mHeight);
+        // txtName.setMinimumHeight(mHeight);
         txtName.setLayoutParams(paramsTextView);
         row1.addView(txtName);
 
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(areaColor);
         //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
-        txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration()*1000));
+        txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration() * 1000));
         txtTime.setLayoutParams(paramsTextView);
         //txtTime.setMinimumHeight(mHeight);
         row1.addView(txtTime);
@@ -513,7 +574,7 @@ public class ActivityChrono extends AppCompatActivity {
 
 
         txtDate.setLayoutParams(paramsTextView);
-       // txtDate.setMinimumHeight(mHeight);
+        // txtDate.setMinimumHeight(mHeight);
 
         row2.addView(txtDate);
 

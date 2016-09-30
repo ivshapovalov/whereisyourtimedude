@@ -20,8 +20,8 @@ public class BackgroundChronometer extends Thread {
 
 
     public BackgroundChronometer() {
-        //this.setDaemon(true);
-        this.setPriority(Thread.MAX_PRIORITY);
+
+        this.setName("backgroundChronometer");
 
     }
 

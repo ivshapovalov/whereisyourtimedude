@@ -194,14 +194,14 @@ public class Common {
         Session.sessionUser=currentUser;
 
         //Areas
-        for (int i = 0; i < AREAS_COUNT; i++) {
+        for (int i = 1; i <= AREAS_COUNT; i++) {
             Area a=new Area.Builder(DB).addName("Область  "+ i).addColor(AlphabetColors().get(i)).build();
             //a.setIdUser(currentUserIndex);
             a.dbSave(DB);
         }
 
         //Projects
-        for (int i = 0; i < PROJECTS_COUNT; i++) {
+        for (int i = 1; i <= PROJECTS_COUNT; i++) {
             int idArea=random.nextInt(AREAS_COUNT)+1;
             //System.out.println("idArea="+idArea);
             Project a=new Project.Builder(DB).addName("Проект "+ i).addIdArea(idArea).build();
@@ -210,7 +210,7 @@ public class Common {
         }
 
         //Practices
-        for (int i = 0; i < PRACTICES_COUNT; i++) {
+        for (int i = 1; i <= PRACTICES_COUNT; i++) {
             int idProject=random.nextInt(PROJECTS_COUNT)+1;
             //System.out.println("idProject="+idProject);
             Practice a=new Practice.Builder(DB).addName("Занятие "+ i).addIDProject(idProject).addIsActive(1).build();

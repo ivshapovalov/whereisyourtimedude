@@ -320,13 +320,7 @@ public class ActivityChrono extends AppCompatActivity {
         editor.apply();
 
         updatePractices(currentDateInMillis);
-
-        long time=System.currentTimeMillis();
-        tableHistory.removeView(view);
-        updateAllRowsIDs();
-        //updateAllRows();
-        System.out.println(System.currentTimeMillis()-time);
-
+        updateAllRows();
     }
 
     private void updatePractices(long date) {
@@ -438,67 +432,7 @@ public class ActivityChrono extends AppCompatActivity {
         }
     }
 
-    private void updateAllRowsIDs() {
-
-        String areaName = "";
-        int areaColor = 0;
-        try {
-            Practice practice = DB.getPractice(currentPracticeHistory.getIdPractice());
-            Project project = DB.getProject(practice.getIdProject());
-            Area area = DB.getArea(project.getIdArea());
-            areaName = area.getName();
-            areaColor = area.getColor();
-        } catch (TableDoesNotContainElementException e) {
-
-        }
-
-        int tvIDCurrentDay = getResources().getIdentifier("tvCurrentDay", "id", getPackageName());
-        TextView tvCurrentDay = (TextView) findViewById(tvIDCurrentDay);
-        if (tvCurrentDay != null) {
-            tvCurrentDay.setText(ConvertMillisToStringDate(currentDateInMillis));
-        }
-
-        int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
-        TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
-        if (tvCurrentName != null) {
-            tvCurrentName.setText(DB.getPractice(currentPracticeHistory.getIdPractice()).getName());
-        }
-        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
-        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
-        if (tvCurrentTime != null) {
-            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
-        }
-        int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
-        TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
-        if (tvCurrentArea != null) {
-            tvCurrentArea.setText(areaName);
-        }
-        int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
-        TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
-        if (tvCurrentDate != null) {
-            if (currentPracticeHistory.getLastTime() != 0) {
-                tvCurrentDate.setText(ConvertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
-
-            } else {
-                tvCurrentDate.setText("");
-            }
-        }
-        int tableIDCurrentWork = getResources().getIdentifier("tableCurrentWork", "id", getPackageName());
-        TableLayout tableCurrentWork = (TableLayout) findViewById(tableIDCurrentWork);
-        if (tableCurrentWork != null) {
-            tableCurrentWork.setBackgroundColor(areaColor);
-        }
-
-        TableRow mRow = CreateTableRow(1);
-        tableHistory.addView(mRow,0);
-        for (int i = 1; i < practices.size(); i++
-                ) {
-            tableHistory.getChildAt(i-1).setId(practices.get(i).getId());
-        }
-    }
-
-
-    @NonNull
+      @NonNull
     private TableRow CreateTableRow(int i) {
         PracticeHistory practiceHistory = practices.get(i);
 

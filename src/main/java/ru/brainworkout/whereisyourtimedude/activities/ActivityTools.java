@@ -64,6 +64,10 @@ public class ActivityTools extends AppCompatActivity {
 
         Common.DefaultTestFilling(DB);
 
+        Toast toast = Toast.makeText(ActivityTools.this,
+                "База данных заполнена тестовыми данными!", Toast.LENGTH_SHORT);
+        toast.show();
+
     }
 
     public void btOptions_onClick(final View view) {
@@ -86,6 +90,9 @@ public class ActivityTools extends AppCompatActivity {
                             //DB.DeleteDB(dbSQL);
                             DB.onUpgrade(dbSQL, 1, 2);
 
+                            Toast toast = Toast.makeText(ActivityTools.this,
+                                    "База данных очищена!", Toast.LENGTH_SHORT);
+                            toast.show();
 
 
                         } catch (Exception e) {

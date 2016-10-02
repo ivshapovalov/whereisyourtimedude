@@ -21,9 +21,8 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
-import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
 
 public class ActivityProject extends AppCompatActivity {
 
@@ -42,14 +41,14 @@ public class ActivityProject extends AppCompatActivity {
         getIntentParams(intent);
 
         if (isNew) {
-            if (currentProject == null) {
-                currentProject = new Project.Builder(DB.getProjectMaxNumber() + 1).build();
+            if (sessionCurrentProject == null) {
+                sessionCurrentProject = new Project.Builder(DB.getProjectMaxNumber() + 1).build();
             }
 
         } else {
             int id = intent.getIntExtra("CurrentProjectID", 0);
             try {
-                currentProject = DB.getProject(id);
+                sessionCurrentProject = DB.getProject(id);
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
@@ -63,8 +62,8 @@ public class ActivityProject extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        if (!openActivities.empty()) {
-            params = openActivities.peek();
+        if (!sesionOpenActivities.empty()) {
+            params = sesionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);
 
@@ -77,14 +76,14 @@ public class ActivityProject extends AppCompatActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(currentProject.getID()));
+            tvID.setText(String.valueOf(sessionCurrentProject.getID()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(currentProject.getName());
+            etName.setText(sessionCurrentProject.getName());
         }
 
         //ID
@@ -94,7 +93,7 @@ public class ActivityProject extends AppCompatActivity {
 
             String nameArea = "";
             try {
-                Area area = DB.getArea(currentProject.getIdArea());
+                Area area = DB.getArea(sessionCurrentProject.getIdArea());
                 nameArea = area.getName();
                 tvArea.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
@@ -109,9 +108,9 @@ public class ActivityProject extends AppCompatActivity {
 
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", currentProject.getID());
-        openActivities.pop();
-        currentProject=null;
+        intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
+        sesionOpenActivities.pop();
+        sessionCurrentProject =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -125,7 +124,7 @@ public class ActivityProject extends AppCompatActivity {
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
-            currentProject.setName(String.valueOf(etName.getText()));
+            sessionCurrentProject.setName(String.valueOf(etName.getText()));
 
         }
 
@@ -135,7 +134,7 @@ public class ActivityProject extends AppCompatActivity {
 
         blink(view,this);
         getPropertiesFromScreen();
-        int id_area = currentProject.getIdArea();
+        int id_area = sessionCurrentProject.getIdArea();
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         Boolean isNew = params!=null?params.isReceiverNew():false;
@@ -147,7 +146,7 @@ public class ActivityProject extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.push(paramsNew);
         intent.putExtra("CurrentAreaID", id_area);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -159,12 +158,12 @@ public class ActivityProject extends AppCompatActivity {
         blink(view,this);
         getPropertiesFromScreen();
 
-        currentProject.dbSave(DB);
+        sessionCurrentProject.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", currentProject.getID());
-        openActivities.pop();
-        currentProject=null;
+        intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
+        sesionOpenActivities.pop();
+        sessionCurrentProject =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -175,8 +174,8 @@ public class ActivityProject extends AppCompatActivity {
 
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-            openActivities.pop();
-            intent.putExtra("CurrentProjectID", currentProject.getID());
+            sesionOpenActivities.pop();
+            intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -193,20 +192,20 @@ public class ActivityProject extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        List<Practice> practices = DB.getAllActivePracticesOfProject(currentProject.getID());
+                        List<Practice> practices = DB.getAllActivePracticesOfProject(sessionCurrentProject.getID());
 
                         for (Practice practice : practices
                                 ) {
                             DB.deleteAllPracticeHistoryOfPractice(practice.getID());
 
                         }
-                        DB.deleteAllPracticesOfProject(currentProject.getID());
+                        DB.deleteAllPracticesOfProject(sessionCurrentProject.getID());
 
-                        currentProject.dbDelete(DB);
-                        currentProject=null;
+                        sessionCurrentProject.dbDelete(DB);
+                        sessionCurrentProject =null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-                        openActivities.pop();
+                        sesionOpenActivities.pop();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

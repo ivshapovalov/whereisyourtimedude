@@ -30,8 +30,8 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import java.util.List;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Session.backgroundChronometer;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgroundChronometer;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 
 public class ActivityChrono extends AppCompatActivity {
@@ -86,9 +86,9 @@ public class ActivityChrono extends AppCompatActivity {
                 if (elapsedMillis > 1000) {
 
 
-                    if (currentPracticeHistory.getDate() < backgroundChronometer.getCurrentPracticeHistory().getDate()) {
+                    if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
 
-                        autoChangeDay(backgroundChronometer.getCurrentPracticeHistory().getDate());
+                        autoChangeDay(sessionBackgroundChronometer.getCurrentPracticeHistory().getDate());
                     }
 
                 }
@@ -131,28 +131,28 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory = practices.get(0);
 
 
-        if (Session.backgroundChronometer.isAlive()) {
+        if (Session.sessionBackgroundChronometer.isAlive()) {
 
-            if (Session.backgroundChronometer.isTicking()) {
-                localChronometerCountInSeconds = Session.backgroundChronometer.getGlobalChronometerCountInSeconds();
+            if (Session.sessionBackgroundChronometer.isTicking()) {
+                localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
                 localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
 
 
         } else {
-            Session.backgroundChronometer = new BackgroundChronometer();
-            Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-            Session.backgroundChronometer.setDB(DB);
-            Session.backgroundChronometer.start();
-            Session.backgroundChronometer.pauseTicking();
+            Session.sessionBackgroundChronometer = new BackgroundChronometer();
+            Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+            Session.sessionBackgroundChronometer.setDB(DB);
+            Session.sessionBackgroundChronometer.start();
+            Session.sessionBackgroundChronometer.pauseTicking();
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
             editor.apply();
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-            Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+            Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
         }
 
@@ -185,14 +185,14 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory = practices.get(0);
         currentDateInMillis = newDateInMillis;
 
-        if (Session.backgroundChronometer.isAlive()) {
+        if (Session.sessionBackgroundChronometer.isAlive()) {
 
-            if (Session.backgroundChronometer.isTicking()) {
-                localChronometerCountInSeconds = Session.backgroundChronometer.getGlobalChronometerCountInSeconds();
+            if (Session.sessionBackgroundChronometer.isTicking()) {
+                localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
                 localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
         }
         updateAllRows();
@@ -210,24 +210,24 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory = practices.get(0);
         currentDateInMillis = date;
 
-        if (Session.backgroundChronometer.isAlive()) {
+        if (Session.sessionBackgroundChronometer.isAlive()) {
 
-            if (Session.backgroundChronometer.isTicking()) {
-                localChronometerCountInSeconds = Session.backgroundChronometer.getGlobalChronometerCountInSeconds();
+            if (Session.sessionBackgroundChronometer.isTicking()) {
+                localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
                 localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
-            Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+            Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
 
         } else {
-            Session.backgroundChronometer.start();
-            Session.backgroundChronometer.pauseTicking();
-            Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-            Session.backgroundChronometer.setDB(DB);
+            Session.sessionBackgroundChronometer.start();
+            Session.sessionBackgroundChronometer.pauseTicking();
+            Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+            Session.sessionBackgroundChronometer.setDB(DB);
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-            Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+            Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
@@ -243,17 +243,15 @@ public class ActivityChrono extends AppCompatActivity {
 
         if (mChronometerIsWorking) {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
-            currentPracticeHistory.setDuration(backgroundChronometer.getGlobalChronometerCountInSeconds());
+            currentPracticeHistory.setDuration(sessionBackgroundChronometer.getGlobalChronometerCountInSeconds());
             mChronometer.stop();
-            Session.backgroundChronometer.pauseTicking();
+            Session.sessionBackgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
 
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
             editor.apply();
         } else {
-            //currentPracticeHistory.setDuration(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
         }
         currentPracticeHistory.dbSave(DB);
 
@@ -262,12 +260,12 @@ public class ActivityChrono extends AppCompatActivity {
     private void changeTimer() {
 
 
-        if (currentPracticeHistory.getDate() < backgroundChronometer.getCurrentPracticeHistory().getDate()) {
+        if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
 
 
         } else {
 
-            localChronometerCountInSeconds = backgroundChronometer.getGlobalChronometerCountInSeconds();
+            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
             currentPracticeHistory.setDuration(localChronometerCountInSeconds);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
@@ -307,10 +305,10 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory.dbSave(DB);
 
         localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-        Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
-        Session.backgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-        Session.backgroundChronometer.setDB(DB);
-        Session.backgroundChronometer.resumeTicking();
+        Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+        Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+        Session.sessionBackgroundChronometer.setDB(DB);
+        Session.sessionBackgroundChronometer.resumeTicking();
         mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
         mChronometerIsWorking = true;
         mChronometer.start();
@@ -325,7 +323,7 @@ public class ActivityChrono extends AppCompatActivity {
 
     private void updatePractices(long date) {
 
-        practices = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionUser.getID(), date, date);
+        practices = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getID(), date, date);
 
     }
 
@@ -333,16 +331,16 @@ public class ActivityChrono extends AppCompatActivity {
         blink(view, this);
         if (!mChronometerIsWorking) {
 
-            if (Session.backgroundChronometer.isAlive()) {
-                Session.backgroundChronometer.resumeTicking();
+            if (Session.sessionBackgroundChronometer.isAlive()) {
+                Session.sessionBackgroundChronometer.resumeTicking();
             }
 
             if (localChronometerCountInSeconds == 0) {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(0L);
+                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(0L);
             } else {
                 mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
-                Session.backgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
 
             mChronometerIsWorking = true;
@@ -355,9 +353,9 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
 
-            Session.backgroundChronometer.pauseTicking();
+            Session.sessionBackgroundChronometer.pauseTicking();
 
-            localChronometerCountInSeconds = backgroundChronometer.getGlobalChronometerCountInSeconds();
+            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
             mChronometer.stop();
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
@@ -528,8 +526,8 @@ public class ActivityChrono extends AppCompatActivity {
     public void onBackPressed() {
 
         if (!mChronometerIsWorking) {
-            Session.backgroundChronometer.pauseTicking();
-            Session.backgroundChronometer.interrupt();
+            Session.sessionBackgroundChronometer.pauseTicking();
+            Session.sessionBackgroundChronometer.interrupt();
 
             SharedPreferences.Editor editor = mSettings.edit();
             editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);

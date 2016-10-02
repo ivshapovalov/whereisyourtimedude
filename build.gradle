@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
     }
-    compileSdkVersion 23
+    compileSdkVersion 24
     buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "ru.brainworkout.whereisyourtimedude"
@@ -16,18 +16,19 @@ android {
 //        time_release {
 //        }
 //    }
-
-    buildTypes{
+    buildTypes {
         debug {
             debuggable true
         }
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                //output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
-                output.outputFile = file("Q://Dropbox/android/timer_test.apk")
+                output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
+                //output.outputFile = file("Q://Dropbox/android/timer_test.apk")
             }
         }
+    }
+    productFlavors {
     }
 }
 

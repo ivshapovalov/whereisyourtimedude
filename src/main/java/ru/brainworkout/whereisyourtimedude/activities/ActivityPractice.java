@@ -21,9 +21,8 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
-import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
 
 
 public class ActivityPractice extends AppCompatActivity {
@@ -42,13 +41,13 @@ public class ActivityPractice extends AppCompatActivity {
         getIntentParams(intent);
 
         if (isNew) {
-            if (currentPractice == null) {
-                currentPractice = new Practice.Builder(DB.getPracticeMaxNumber() + 1).build();
+            if (sessionCurrentPractice == null) {
+                sessionCurrentPractice = new Practice.Builder(DB.getPracticeMaxNumber() + 1).build();
             }
         } else {
             int id = intent.getIntExtra("CurrentPracticeID", 0);
             try {
-                currentPractice = DB.getPractice(id);
+                sessionCurrentPractice = DB.getPractice(id);
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
@@ -61,8 +60,8 @@ public class ActivityPractice extends AppCompatActivity {
     }
 
     private void getIntentParams(Intent intent) {
-        if (!openActivities.empty()) {
-            params = openActivities.peek();
+        if (!sesionOpenActivities.empty()) {
+            params = sesionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);
     }
@@ -73,7 +72,7 @@ public class ActivityPractice extends AppCompatActivity {
         int mIsActiveID = getResources().getIdentifier("cbIsActive", "id", getPackageName());
         CheckBox cbIsActive = (CheckBox) findViewById(mIsActiveID);
         if (cbIsActive != null) {
-            if (currentPractice.getIsActive() != 0) {
+            if (sessionCurrentPractice.getIsActive() != 0) {
                 cbIsActive.setChecked(true);
             } else {
                 cbIsActive.setChecked(false);
@@ -82,11 +81,11 @@ public class ActivityPractice extends AppCompatActivity {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                    if (currentPractice != null) {
+                    if (sessionCurrentPractice != null) {
                         if (isChecked) {
-                            currentPractice.setIsActive(1);
+                            sessionCurrentPractice.setIsActive(1);
                         } else {
-                            currentPractice.setIsActive(0);
+                            sessionCurrentPractice.setIsActive(0);
                         }
 
                     }
@@ -101,14 +100,14 @@ public class ActivityPractice extends AppCompatActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(currentPractice.getID()));
+            tvID.setText(String.valueOf(sessionCurrentPractice.getID()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(currentPractice.getName());
+            etName.setText(sessionCurrentPractice.getName());
         }
 
         //ID
@@ -118,7 +117,7 @@ public class ActivityPractice extends AppCompatActivity {
 
             String nameProject = "";
             try {
-                Project project = DB.getProject(currentPractice.getIdProject());
+                Project project = DB.getProject(sessionCurrentPractice.getIdProject());
                 nameProject = project.getName();
 
             } catch (TableDoesNotContainElementException e) {
@@ -133,9 +132,9 @@ public class ActivityPractice extends AppCompatActivity {
 
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", currentPractice.getID());
-        openActivities.pop();
-        currentPractice = null;
+        intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
+        sesionOpenActivities.pop();
+        sessionCurrentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -149,7 +148,7 @@ public class ActivityPractice extends AppCompatActivity {
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
-            currentPractice.setName(String.valueOf(etName.getText()));
+            sessionCurrentPractice.setName(String.valueOf(etName.getText()));
 
         }
 
@@ -159,7 +158,7 @@ public class ActivityPractice extends AppCompatActivity {
 
         blink(view,this);
         getPropertiesFromScreen();
-        int id_project = currentPractice.getIdProject();
+        int id_project = sessionCurrentPractice.getIdProject();
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         Boolean isNew = params!=null?params.isReceiverNew():false;
@@ -171,7 +170,7 @@ public class ActivityPractice extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.push(paramsNew);
         intent.putExtra("CurrentProjectID", id_project);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -183,12 +182,12 @@ public class ActivityPractice extends AppCompatActivity {
         blink(view,this);
         getPropertiesFromScreen();
 
-        currentPractice.dbSave(DB);
+        sessionCurrentPractice.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", currentPractice.getID());
-        openActivities.pop();
-        currentPractice = null;
+        intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
+        sesionOpenActivities.pop();
+        sessionCurrentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -199,8 +198,8 @@ public class ActivityPractice extends AppCompatActivity {
 
         if (params != null) {
                 intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                openActivities.pop();
-                intent.putExtra("CurrentPracticeID", currentPractice.getID());
+                sesionOpenActivities.pop();
+                intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -216,13 +215,13 @@ public class ActivityPractice extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DB.deleteAllPracticeHistoryOfPractice(currentPractice.getID());
+                        DB.deleteAllPracticeHistoryOfPractice(sessionCurrentPractice.getID());
 
-                        currentPractice.dbDelete(DB);
-                        currentPractice = null;
+                        sessionCurrentPractice.dbDelete(DB);
+                        sessionCurrentPractice = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                        openActivities.pop();
+                        sesionOpenActivities.pop();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

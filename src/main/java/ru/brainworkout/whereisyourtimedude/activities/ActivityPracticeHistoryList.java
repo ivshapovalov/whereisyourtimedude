@@ -30,8 +30,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public class ActivityPracticeHistoryList extends AppCompatActivity {
 
@@ -91,8 +91,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.clear();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.clear();
+        sesionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -102,9 +102,9 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     private void showPracticeHistory() {
 
         List<PracticeHistory> practiceHistoryList;
-        if (sessionUser != null) {
+        if (sessionCurrentUser != null) {
 
-            practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionUser.getID());
+            practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getID());
         } else {
             practiceHistoryList = DB.getAllPracticeHistory();
         }
@@ -138,7 +138,6 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
             TableRow mRow = new TableRow(this);
             mRow.setId(currentPracticeHistory.getID());
-           // mRow.setId(NUMBER_OF_VIEWS + currentPracticeHistory.getID());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -220,8 +219,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.clear();
-        openActivities.push(params);
+        sesionOpenActivities.clear();
+        sesionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);
@@ -244,8 +243,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.clear();
-        openActivities.push(params);
+        sesionOpenActivities.clear();
+        sesionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);
@@ -280,8 +279,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (Session.sessionUser != null) {
-                            DB.deleteAllPracticeHistoryOfUser(Session.sessionUser.getID());
+                        if (Session.sessionCurrentUser != null) {
+                            DB.deleteAllPracticeHistoryOfUser(Session.sessionCurrentUser.getID());
                             showPracticeHistory();
                         }
                     }

@@ -19,7 +19,7 @@ import java.util.List;
 import ru.brainworkout.whereisyourtimedude.R;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.Common;
@@ -56,13 +56,13 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private void resumeChronoIfWorking() {
-        if (Session.CHRONO_IS_WORKING) {
-            if (Session.backgroundChronometer != null &&
-                    Session.backgroundChronometer.isAlive() ||
-                    Session.backgroundChronometer.isTicking()) {
+        if (Session.sessionChronometerIsWorking) {
+            if (Session.sessionBackgroundChronometer != null &&
+                    Session.sessionBackgroundChronometer.isAlive() ||
+                    Session.sessionBackgroundChronometer.isTicking()) {
             } else {
-                synchronized (Session.backgroundChronometer) {
-                    if (Session.backgroundChronometer == null) {
+                synchronized (Session.sessionBackgroundChronometer) {
+                    if (Session.sessionBackgroundChronometer == null) {
                         resumeBackgroundChronometer();
                     }
                 }
@@ -71,7 +71,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private void resumeBackgroundChronometer() {
-        PracticeHistory resumedPracticeHistory = DB.getLastPracticeHistoryOfUserByDates(Session.sessionUser.getID(), 0, System.currentTimeMillis());
+        PracticeHistory resumedPracticeHistory = DB.getLastPracticeHistoryOfUserByDates(Session.sessionCurrentUser.getID(), 0, System.currentTimeMillis());
         if (resumedPracticeHistory != null) {
             Calendar today = Calendar.getInstance();
             today.clear(Calendar.HOUR);
@@ -133,12 +133,12 @@ public class ActivityMain extends AppCompatActivity {
                 long beginTimeinMillis = resumedPracticeHistory.getLastTime() - resumedPracticeHistory.getDuration() * 1_000;
                 duration = (System.currentTimeMillis() - beginTimeinMillis) / 1_000;
             }
-            Session.backgroundChronometer = new BackgroundChronometer();
-            Session.backgroundChronometer.setCurrentPracticeHistory(resumedPracticeHistory);
-            Session.backgroundChronometer.setDB(DB);
-            Session.backgroundChronometer.setGlobalChronometerCountInSeconds(duration);
-            Session.backgroundChronometer.start();
-            Session.backgroundChronometer.resumeTicking();
+            Session.sessionBackgroundChronometer = new BackgroundChronometer();
+            Session.sessionBackgroundChronometer.setCurrentPracticeHistory(resumedPracticeHistory);
+            Session.sessionBackgroundChronometer.setDB(DB);
+            Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(duration);
+            Session.sessionBackgroundChronometer.start();
+            Session.sessionBackgroundChronometer.resumeTicking();
         }
     }
 
@@ -151,11 +151,11 @@ public class ActivityMain extends AppCompatActivity {
             Common.SAVE_INTERVAL = 10;
         }
 
-        //Session.CHRONO_IS_WORKING=true;
+        //Session.sessionChronometerIsWorking=true;
         if (mSettings.contains(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING)) {
-            Session.CHRONO_IS_WORKING = mSettings.getBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
+            Session.sessionChronometerIsWorking = mSettings.getBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
         } else {
-            Session.CHRONO_IS_WORKING = false;
+            Session.sessionChronometerIsWorking = false;
         }
 
 
@@ -177,11 +177,11 @@ public class ActivityMain extends AppCompatActivity {
 
     private void defineCurrentUser() {
 
-        if (sessionUser == null) {
+        if (sessionCurrentUser == null) {
             List<User> userList = DB.getAllUsers();
             if (userList.size() == 1) {
                 User currentUser = userList.get(0);
-                sessionUser = currentUser;
+                sessionCurrentUser = currentUser;
                 currentUser.setIsCurrentUser(1);
                 currentUser.dbSave(DB);
             } else {
@@ -189,7 +189,7 @@ public class ActivityMain extends AppCompatActivity {
                 for (User user : userList
                         ) {
                     if (user.isCurrentUser() == 1) {
-                        sessionUser = user;
+                        sessionCurrentUser = user;
                         break;
                     }
                 }
@@ -256,7 +256,7 @@ public class ActivityMain extends AppCompatActivity {
 
 
     private boolean isUserDefined() {
-        if (sessionUser == null) {
+        if (sessionCurrentUser == null) {
             Toast toast = Toast.makeText(ActivityMain.this,
                     "Не выбран пользатель. Создайте пользователя и сделайте его активным!", Toast.LENGTH_SHORT);
             toast.show();
@@ -268,10 +268,10 @@ public class ActivityMain extends AppCompatActivity {
     private boolean isDBNotEmpty() {
 
         List<Practice> list = new ArrayList<Practice>();
-        if (sessionUser == null) {
+        if (sessionCurrentUser == null) {
             //list = DB.getAllActiveExercises();
         } else {
-            list = DB.getAllActivePracticesOfUser(sessionUser.getID());
+            list = DB.getAllActivePracticesOfUser(sessionCurrentUser.getID());
         }
         if (list.size() == 0) {
             Toast toast = Toast.makeText(ActivityMain.this,

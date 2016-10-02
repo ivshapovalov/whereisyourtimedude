@@ -1,6 +1,5 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -10,8 +9,6 @@ import android.widget.TextView;
 import java.util.concurrent.TimeUnit;
 
 import ru.brainworkout.whereisyourtimedude.R;
-
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
 
 /**
  * Created by Ivan on 10.09.2016.

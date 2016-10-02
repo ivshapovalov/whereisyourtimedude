@@ -23,7 +23,6 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -198,7 +197,7 @@ public class ActivityUsersList extends AppCompatActivity {
                         }
                         ;
                         DB.deleteAllUsers();
-                        Session.sessionUser = null;
+                        Session.sessionCurrentUser = null;
 
                         showUsers();
                     }

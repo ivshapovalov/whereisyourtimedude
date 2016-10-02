@@ -8,7 +8,7 @@ public abstract class AbstractEntityMultiUser extends AbstractEntity {
 
     public AbstractEntityMultiUser() {
 
-        User currentUser= Session.sessionUser;
+        User currentUser= Session.sessionCurrentUser;
         if (currentUser!=null) {
             this.id_user = currentUser.getID();
         } else {

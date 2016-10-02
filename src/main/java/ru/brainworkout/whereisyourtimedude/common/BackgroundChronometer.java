@@ -21,7 +21,7 @@ public class BackgroundChronometer extends Thread {
 
     public BackgroundChronometer() {
 
-        this.setName("backgroundChronometer");
+        this.setName("sessionBackgroundChronometer");
 
     }
 

@@ -31,10 +31,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPracticeHistory;
-import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public class ActivityProjectsList extends AppCompatActivity {
 
@@ -83,8 +82,8 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_project = intent.getIntExtra("CurrentProjectID", 0);
-        if (!openActivities.empty()) {
-            params = openActivities.peek();
+        if (!sesionOpenActivities.empty()) {
+            params = sesionOpenActivities.peek();
         }
     }
 
@@ -92,9 +91,9 @@ public class ActivityProjectsList extends AppCompatActivity {
     private void showProjects() {
 
         List<Project> projects;
-        if (sessionUser != null) {
+        if (sessionCurrentUser != null) {
 
-            projects = DB.getAllProjectsOfUser(sessionUser.getID());
+            projects = DB.getAllProjectsOfUser(sessionCurrentUser.getID());
         } else {
             projects = DB.getAllProjects();
         }
@@ -206,7 +205,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                 .isReceiverNew(true)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -225,7 +224,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.putExtra("CurrentProjectID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -240,10 +239,10 @@ public class ActivityProjectsList extends AppCompatActivity {
         intent.putExtra("CurrentProjectID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                currentPractice.setIdProject(id);
+                sessionCurrentPractice.setIdProject(id);
 
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                openActivities.pop();
+                sesionOpenActivities.pop();
 
             }
         } else {
@@ -255,7 +254,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                     .isReceiverNew(false)
                     .isReceiverForChoice(false)
                     .build();
-            openActivities.push(paramsNew);
+            sesionOpenActivities.push(paramsNew);
 
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -275,7 +274,7 @@ public class ActivityProjectsList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view,this);
-        openActivities.clear();
+        sesionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -292,9 +291,9 @@ public class ActivityProjectsList extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        if (Session.sessionUser != null) {
+                        if (Session.sessionCurrentUser != null) {
 
-                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionUser.getID());
+                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionCurrentUser.getID());
                             for (Project project : projects
                                     ) {
                                 List<Practice> practices = DB.getAllActivePracticesOfProject(project.getID());
@@ -304,7 +303,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                                 }
                                 DB.deleteAllPracticesOfProject(project.getID());
                             }
-                            DB.deleteAllProjectsOfUser(Session.sessionUser.getID());
+                            DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getID());
 
                             showProjects();
                         }
@@ -320,7 +319,7 @@ public class ActivityProjectsList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                openActivities.pop();
+                sesionOpenActivities.pop();
                 intent.putExtra("CurrentProjectID", id_project);
             }
         }

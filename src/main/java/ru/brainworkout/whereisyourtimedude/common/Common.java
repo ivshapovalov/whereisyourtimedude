@@ -14,7 +14,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -125,11 +124,11 @@ public class Common {
     }
 
     public static void setTitleOfActivity(Activity currentActivity) {
-        if (Session.sessionUser != null) {
-//            if (Session.backgroundChronometer.isTicking()) {
-//                currentActivity.setTitle(Session.sessionUser.getName() + ":" + currentActivity.getTitle() + " ("+Session.backgroundChronometer.getGlobalChronometerCountInSeconds()+")");
+        if (Session.sessionCurrentUser != null) {
+//            if (Session.sessionBackgroundChronometer.isTicking()) {
+//                currentActivity.setTitle(Session.sessionCurrentUser.getName() + ":" + currentActivity.getTitle() + " ("+Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds()+")");
 //            } else {
-                currentActivity.setTitle(currentActivity.getTitle()+"("+Session.sessionUser.getName() + ")");
+                currentActivity.setTitle(currentActivity.getTitle()+"("+Session.sessionCurrentUser.getName() + ")");
 
 //            }
         }
@@ -191,7 +190,7 @@ public class Common {
         User currentUser=DB.getUser(currentUserIndex);
         currentUser.setIsCurrentUser(1);
         currentUser.dbSave(DB);
-        Session.sessionUser=currentUser;
+        Session.sessionCurrentUser =currentUser;
 
         //Areas
         for (int i = 1; i <= AREAS_COUNT; i++) {

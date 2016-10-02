@@ -23,16 +23,14 @@ import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
-import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.currentProject;
-import static ru.brainworkout.whereisyourtimedude.common.Session.openActivities;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityAreasList extends AppCompatActivity {
@@ -82,8 +80,8 @@ public class ActivityAreasList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_area = intent.getIntExtra("CurrentAreaID", 0);
-        if (!openActivities.empty()) {
-            params = openActivities.peek();
+        if (!sesionOpenActivities.empty()) {
+            params = sesionOpenActivities.peek();
         }
 
     }
@@ -91,9 +89,9 @@ public class ActivityAreasList extends AppCompatActivity {
     private void showAreas() {
 
         List<Area> areas;
-        if (sessionUser != null) {
+        if (sessionCurrentUser != null) {
 
-            areas = DB.getAllAreasOfUser(sessionUser.getID());
+            areas = DB.getAllAreasOfUser(sessionCurrentUser.getID());
         } else {
             areas = DB.getAllAreas();
         }
@@ -197,7 +195,7 @@ public class ActivityAreasList extends AppCompatActivity {
                 .isReceiverNew(true)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -215,7 +213,7 @@ public class ActivityAreasList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        openActivities.push(paramsNew);
+        sesionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("CurrentAreaID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -231,10 +229,10 @@ public class ActivityAreasList extends AppCompatActivity {
         intent.putExtra("CurrentAreaID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                currentProject.setIdArea(id);
+                sessionCurrentProject.setIdArea(id);
 
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
-                openActivities.pop();
+                sesionOpenActivities.pop();
 
             }
         } else {
@@ -246,7 +244,7 @@ public class ActivityAreasList extends AppCompatActivity {
                     .isReceiverNew(false)
                     .isReceiverForChoice(false)
                     .build();
-            openActivities.push(paramsNew);
+            sesionOpenActivities.push(paramsNew);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -264,7 +262,7 @@ public class ActivityAreasList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view,this);
-        openActivities.clear();
+        sesionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -281,8 +279,8 @@ public class ActivityAreasList extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        if (Session.sessionUser!=null) {
-                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionUser.getID());
+                        if (Session.sessionCurrentUser !=null) {
+                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getID());
                             for (Area area : areas
                                     ) {
                                 List<Project> projects=DB.getAllProjectsOfArea(area.getID());
@@ -298,7 +296,7 @@ public class ActivityAreasList extends AppCompatActivity {
                                 DB.deleteAllProjectsOfArea(area.getID());
                            }
 
-                            DB.deleteAllAreasOfUser(Session.sessionUser.getID());
+                            DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getID());
                             showAreas();
                         }
                     }
@@ -313,7 +311,7 @@ public class ActivityAreasList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
-                openActivities.pop();
+                sesionOpenActivities.pop();
                 intent.putExtra("CurrentAreaID", id_area);
             }
         }

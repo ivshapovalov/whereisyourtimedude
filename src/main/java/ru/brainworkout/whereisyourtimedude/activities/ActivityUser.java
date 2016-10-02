@@ -17,16 +17,12 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Session;
-import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
-import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityUser extends AppCompatActivity {
@@ -136,7 +132,7 @@ public class ActivityUser extends AppCompatActivity {
         getPropertiesFromScreen();
 
         if (mCurrentUser.isCurrentUser() == 1) {
-            if (Session.backgroundChronometer.isTicking()) {
+            if (Session.sessionBackgroundChronometer.isTicking()) {
                 Toast toast = Toast.makeText(ActivityUser.this,
                         "Вернитесь в хронометраж и остановите счетчик прежде чем поменять активного" +
                                 "пользователя", Toast.LENGTH_SHORT);
@@ -158,7 +154,7 @@ public class ActivityUser extends AppCompatActivity {
     private void setDBCurrentUser() {
 
         if (mCurrentUser.isCurrentUser() == 1) {
-            sessionUser = mCurrentUser;
+            sessionCurrentUser = mCurrentUser;
             List<User> userList = DB.getAllUsers();
 
             for (User user : userList) {
@@ -169,8 +165,8 @@ public class ActivityUser extends AppCompatActivity {
                 }
             }
         } else {
-            if (sessionUser != null && sessionUser.equals(mCurrentUser)) {
-                sessionUser = null;
+            if (sessionCurrentUser != null && sessionCurrentUser.equals(mCurrentUser)) {
+                sessionCurrentUser = null;
             }
         }
 
@@ -187,21 +183,21 @@ public class ActivityUser extends AppCompatActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        DB.deleteAllPracticeHistoryOfUser(sessionUser.getID());
+                        DB.deleteAllPracticeHistoryOfUser(sessionCurrentUser.getID());
 
-                        DB.deleteAllPracticesOfUser(sessionUser.getID());
+                        DB.deleteAllPracticesOfUser(sessionCurrentUser.getID());
 
-                        DB.deleteAllProjectsOfUser(sessionUser.getID());
+                        DB.deleteAllProjectsOfUser(sessionCurrentUser.getID());
 
-                        DB.deleteAllAreasOfUser(sessionUser.getID());
+                        DB.deleteAllAreasOfUser(sessionCurrentUser.getID());
 
                         mCurrentUser.dbDelete(DB);
 
-                        if (mCurrentUser.equals(sessionUser)) {
+                        if (mCurrentUser.equals(sessionCurrentUser)) {
                             List<User> userList = DB.getAllUsers();
                             if (userList.size() == 1) {
                                 User currentUser = userList.get(0);
-                                sessionUser = currentUser;
+                                sessionCurrentUser = currentUser;
                                 currentUser.setIsCurrentUser(1);
                                 currentUser.dbSave(DB);
                             }

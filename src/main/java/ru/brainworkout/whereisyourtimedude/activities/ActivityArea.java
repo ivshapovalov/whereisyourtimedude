@@ -28,7 +28,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentArea;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 public class ActivityArea extends AppCompatActivity {
 
@@ -66,8 +66,8 @@ public class ActivityArea extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        if (!sesionOpenActivities.empty()) {
-            params = sesionOpenActivities.peek();
+        if (!sessionOpenActivities.empty()) {
+            params = sessionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);
 
@@ -105,7 +105,7 @@ public class ActivityArea extends AppCompatActivity {
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", sessionCurrentArea.getID());
-        sesionOpenActivities.pop();
+        sessionOpenActivities.pop();
         sessionCurrentArea =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -174,7 +174,7 @@ public class ActivityArea extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", sessionCurrentArea.getID());
         sessionCurrentArea = null;
-        sesionOpenActivities.pop();
+        sessionOpenActivities.pop();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -186,7 +186,7 @@ public class ActivityArea extends AppCompatActivity {
 
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-            sesionOpenActivities.pop();
+            sessionOpenActivities.pop();
             intent.putExtra("CurrentAreaID", sessionCurrentArea.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -220,7 +220,7 @@ public class ActivityArea extends AppCompatActivity {
 
                         sessionCurrentArea.dbDelete(DB);
                         sessionCurrentArea = null;
-                        sesionOpenActivities.pop();
+                        sessionOpenActivities.pop();
 
                         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

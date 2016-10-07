@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
@@ -79,6 +80,12 @@ public class ActivityTools extends AppCompatActivity {
 
     public void btClearBD_onClick(final View view) {
 
+        if (Session.sessionBackgroundChronometer.isTicking()) {
+            Toast toast = Toast.makeText(ActivityTools.this,
+                    "Остановите хронометраж. Нельзя очистить базу данных при работающем хронометраже!", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите очистить базу данных?")
                 .setCancelable(false)

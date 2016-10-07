@@ -29,7 +29,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
@@ -80,8 +80,8 @@ public class ActivityAreasList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_area = intent.getIntExtra("CurrentAreaID", 0);
-        if (!sesionOpenActivities.empty()) {
-            params = sesionOpenActivities.peek();
+        if (!sessionOpenActivities.empty()) {
+            params = sessionOpenActivities.peek();
         }
 
     }
@@ -195,7 +195,7 @@ public class ActivityAreasList extends AppCompatActivity {
                 .isReceiverNew(true)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -213,7 +213,7 @@ public class ActivityAreasList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("CurrentAreaID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -232,7 +232,7 @@ public class ActivityAreasList extends AppCompatActivity {
                 sessionCurrentProject.setIdArea(id);
 
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
 
             }
         } else {
@@ -244,7 +244,7 @@ public class ActivityAreasList extends AppCompatActivity {
                     .isReceiverNew(false)
                     .isReceiverForChoice(false)
                     .build();
-            sesionOpenActivities.push(paramsNew);
+            sessionOpenActivities.push(paramsNew);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -262,7 +262,7 @@ public class ActivityAreasList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view,this);
-        sesionOpenActivities.clear();
+        sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -311,7 +311,7 @@ public class ActivityAreasList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
                 intent.putExtra("CurrentAreaID", id_area);
             }
         }

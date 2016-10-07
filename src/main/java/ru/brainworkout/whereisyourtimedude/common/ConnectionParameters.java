@@ -3,7 +3,6 @@ package ru.brainworkout.whereisyourtimedude.common;
 
 public class ConnectionParameters {
 
-
     private String transmitterActivityName;
     private String receiverActivityName;
     private boolean isTransmitterNew;
@@ -18,6 +17,7 @@ public class ConnectionParameters {
         this.isReceiverNew = builder.isReceiverNew;
         this.isTransmitterForChoice = builder.isTransmitterForChoice;
         this.isReceiverForChoice = builder.isReceiverForChoice;
+
     }
 
     public String getTransmitterActivityName() {

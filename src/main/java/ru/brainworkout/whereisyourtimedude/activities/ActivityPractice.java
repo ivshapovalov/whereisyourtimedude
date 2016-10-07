@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 
 public class ActivityPractice extends AppCompatActivity {
@@ -60,8 +60,8 @@ public class ActivityPractice extends AppCompatActivity {
     }
 
     private void getIntentParams(Intent intent) {
-        if (!sesionOpenActivities.empty()) {
-            params = sesionOpenActivities.peek();
+        if (!sessionOpenActivities.empty()) {
+            params = sessionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);
     }
@@ -133,7 +133,7 @@ public class ActivityPractice extends AppCompatActivity {
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
-        sesionOpenActivities.pop();
+        sessionOpenActivities.pop();
         sessionCurrentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -170,7 +170,7 @@ public class ActivityPractice extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         intent.putExtra("CurrentProjectID", id_project);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -186,7 +186,7 @@ public class ActivityPractice extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
-        sesionOpenActivities.pop();
+        sessionOpenActivities.pop();
         sessionCurrentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -198,7 +198,7 @@ public class ActivityPractice extends AppCompatActivity {
 
         if (params != null) {
                 intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
                 intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -221,7 +221,7 @@ public class ActivityPractice extends AppCompatActivity {
                         sessionCurrentPractice = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                        sesionOpenActivities.pop();
+                        sessionOpenActivities.pop();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

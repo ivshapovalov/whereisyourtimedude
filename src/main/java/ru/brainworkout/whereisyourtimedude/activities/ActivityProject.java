@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 public class ActivityProject extends AppCompatActivity {
 
@@ -62,8 +62,8 @@ public class ActivityProject extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        if (!sesionOpenActivities.empty()) {
-            params = sesionOpenActivities.peek();
+        if (!sessionOpenActivities.empty()) {
+            params = sessionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);
 
@@ -109,7 +109,7 @@ public class ActivityProject extends AppCompatActivity {
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
-        sesionOpenActivities.pop();
+        sessionOpenActivities.pop();
         sessionCurrentProject =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -146,7 +146,7 @@ public class ActivityProject extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         intent.putExtra("CurrentAreaID", id_area);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -162,7 +162,7 @@ public class ActivityProject extends AppCompatActivity {
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
-        sesionOpenActivities.pop();
+        sessionOpenActivities.pop();
         sessionCurrentProject =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -174,7 +174,7 @@ public class ActivityProject extends AppCompatActivity {
 
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-            sesionOpenActivities.pop();
+            sessionOpenActivities.pop();
             intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -205,7 +205,7 @@ public class ActivityProject extends AppCompatActivity {
                         sessionCurrentProject =null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-                        sesionOpenActivities.pop();
+                        sessionOpenActivities.pop();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

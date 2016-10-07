@@ -30,7 +30,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPracticeHistory;
 
@@ -82,8 +82,8 @@ public class ActivityPracticesList extends AppCompatActivity {
     private void getIntentParams(Intent intent) {
 
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        if (!sesionOpenActivities.empty()) {
-            params = sesionOpenActivities.peek();
+        if (!sessionOpenActivities.empty()) {
+            params = sessionOpenActivities.peek();
         }
 
     }
@@ -208,7 +208,7 @@ public class ActivityPracticesList extends AppCompatActivity {
                 .isReceiverNew(true)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -227,7 +227,7 @@ public class ActivityPracticesList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("CurrentPracticeID", id);
 
@@ -248,7 +248,7 @@ public class ActivityPracticesList extends AppCompatActivity {
                 sessionCurrentPracticeHistory.setIdPractice(id);
 
                 intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
                 intent.putExtra("CurrentPracticeID", id);
             }
         } else {
@@ -260,7 +260,7 @@ public class ActivityPracticesList extends AppCompatActivity {
                     .isReceiverNew(false)
                     .isReceiverForChoice(false)
                     .build();
-            sesionOpenActivities.push(paramsNew);
+            sessionOpenActivities.push(paramsNew);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -279,7 +279,7 @@ public class ActivityPracticesList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view,this);
-        sesionOpenActivities.clear();
+        sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -316,7 +316,7 @@ public class ActivityPracticesList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
                 intent.putExtra("CurrentPracticeID", id_practice);
             }
         }

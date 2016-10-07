@@ -1,14 +1,26 @@
 package ru.brainworkout.whereisyourtimedude.common;
 
+import android.app.Activity;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.support.v4.app.NotificationCompat;
 
 import java.util.Calendar;
 
+import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.activities.ActivityChrono;
 import ru.brainworkout.whereisyourtimedude.activities.ActivityMain;
+import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 public class BackgroundChronometer extends Thread {
 
@@ -17,12 +29,21 @@ public class BackgroundChronometer extends Thread {
     private volatile boolean ticking;
     private volatile PracticeHistory currentPracticeHistory;
     private volatile DatabaseManager DB;
-
+    private Service service;
 
     public BackgroundChronometer() {
 
+
         this.setName("sessionBackgroundChronometer");
 
+    }
+
+    public Service getService() {
+        return service;
+    }
+
+    public void setService(Service service) {
+        this.service = service;
     }
 
     public long getGlobalChronometerCountInSeconds() {
@@ -43,6 +64,7 @@ public class BackgroundChronometer extends Thread {
     }
 
     public void resumeTicking() {
+
         this.ticking = true;
 
     }
@@ -108,11 +130,43 @@ public class BackgroundChronometer extends Thread {
                                 currentPracticeHistory.dbSave(DB);
                                 // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
                             }
+                            if (ticking) {
+                                updateNotification(Common.SYMBOL_PLAY);
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    public void updateNotification(String symbol) {
+
+        Notification notification = getCurrentNotification(symbol);
+
+        NotificationManager mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(Session.SESSION_NOTIFICATION_ID, notification);
+    }
+
+    public Notification getCurrentNotification(String symbol) {
+
+        Intent notificationIntent = new Intent(service, ActivityChrono.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(service, 0,
+                notificationIntent, 0);
+        int currentPracticeHistoryID = this.getCurrentPracticeHistory().getIdPractice();
+        Practice practice = DB.getPractice(currentPracticeHistoryID);
+        String practiceName = "WIYTD";
+        if (practice != null) {
+            practiceName = practice.getName().trim();
+        }
+        String currentDuration = Common.ConvertMillisToStringWithAllTime(this.getGlobalChronometerCountInSeconds() * 1000);
+        Notification notification = new NotificationCompat.Builder(service)
+                .setSmallIcon(R.drawable.sand_clock)
+                .setContentTitle(practiceName)
+                .setContentText(symbol + " " + currentDuration)
+                .setContentIntent(pendingIntent).build();
+        return notification;
     }
 
 

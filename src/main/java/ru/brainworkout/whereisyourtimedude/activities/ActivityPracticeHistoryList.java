@@ -30,7 +30,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public class ActivityPracticeHistoryList extends AppCompatActivity {
@@ -91,8 +91,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.clear();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.clear();
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -219,8 +219,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.clear();
-        sesionOpenActivities.push(params);
+        sessionOpenActivities.clear();
+        sessionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);
@@ -243,8 +243,8 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.clear();
-        sesionOpenActivities.push(params);
+        sessionOpenActivities.clear();
+        sessionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);

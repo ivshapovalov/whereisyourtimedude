@@ -28,6 +28,9 @@ public class Common {
     public static final String SYMBOL_DATE_FORMAT = "yyyy-MM-dd";
     public static final String SYMBOL_TIME_FORMAT = "HH:mm:ss";
     public static final String SYMBOL_EDIT = "►";
+    public static final String SYMBOL_PLAY = "►";
+    public static final String SYMBOL_STOP = "■";
+
     public static int SAVE_INTERVAL;
 
 
@@ -185,7 +188,7 @@ public class Common {
             User a=new User.Builder(maxUser+i).addName("User "+ i).build();
             a.dbSave(DB);
         }
-        int currentUserIndex=random.nextInt(USERS_COUNT)+maxUser;
+        int currentUserIndex=random.nextInt(USERS_COUNT)+maxUser+1;
 
         User currentUser=DB.getUser(currentUserIndex);
         currentUser.setIsCurrentUser(1);
@@ -195,6 +198,7 @@ public class Common {
         //Areas
         for (int i = 1; i <= AREAS_COUNT; i++) {
             Area a=new Area.Builder(DB).addName("Область  "+ i).addColor(AlphabetColors().get(i)).build();
+            //Area a=new Area.Builder(DB).addName("Область  "+ i).build();
             //a.setIdUser(currentUserIndex);
             a.dbSave(DB);
         }

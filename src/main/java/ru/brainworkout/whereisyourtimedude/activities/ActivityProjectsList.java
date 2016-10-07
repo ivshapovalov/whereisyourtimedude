@@ -32,7 +32,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sesionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public class ActivityProjectsList extends AppCompatActivity {
@@ -82,8 +82,8 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_project = intent.getIntExtra("CurrentProjectID", 0);
-        if (!sesionOpenActivities.empty()) {
-            params = sesionOpenActivities.peek();
+        if (!sessionOpenActivities.empty()) {
+            params = sessionOpenActivities.peek();
         }
     }
 
@@ -205,7 +205,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                 .isReceiverNew(true)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -224,7 +224,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sesionOpenActivities.push(paramsNew);
+        sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.putExtra("CurrentProjectID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -242,7 +242,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                 sessionCurrentPractice.setIdProject(id);
 
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
 
             }
         } else {
@@ -254,7 +254,7 @@ public class ActivityProjectsList extends AppCompatActivity {
                     .isReceiverNew(false)
                     .isReceiverForChoice(false)
                     .build();
-            sesionOpenActivities.push(paramsNew);
+            sessionOpenActivities.push(paramsNew);
 
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -274,7 +274,7 @@ public class ActivityProjectsList extends AppCompatActivity {
     public void buttonHome_onClick(final View view) {
 
         blink(view,this);
-        sesionOpenActivities.clear();
+        sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -319,7 +319,7 @@ public class ActivityProjectsList extends AppCompatActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                sesionOpenActivities.pop();
+                sessionOpenActivities.pop();
                 intent.putExtra("CurrentProjectID", id_project);
             }
         }

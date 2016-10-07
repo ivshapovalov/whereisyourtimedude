@@ -93,7 +93,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-       params = sesionOpenActivities.peek();
+       params = sessionOpenActivities.peek();
        isNew=(params!=null?params.isTransmitterNew():false);
 
     }
@@ -212,7 +212,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        sesionOpenActivities.push(params);
+        sessionOpenActivities.push(params);
         intent.putExtra("CurrentPracticeID", id_practice);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

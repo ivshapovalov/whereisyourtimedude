@@ -23,8 +23,8 @@ android {
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
-                //output.outputFile = file("Q://Dropbox/android/timer_test.apk")
+                //output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
+                output.outputFile = file("Q://Dropbox/android/timer_test.apk")
             }
         }
     }

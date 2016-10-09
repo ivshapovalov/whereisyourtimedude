@@ -44,12 +44,97 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/lineRecoverySwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/lineMain"
+        android:longClickable="true">
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="50"
+            android:text="RECOVERY"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_color"/>
+
+        <RadioGroup
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:orientation="horizontal"
+            android:id="@+id/rgRecoverySwitch">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:id="@+id/rbRecoverySwitchOn"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OFF"
+                android:id="@+id/rbRecoverySwitchOff"
+                android:checked="true"/>
+        </RadioGroup>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lineDisplayForeground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/lineRecoverySwitch"
+        android:longClickable="true">
+
+        <TextView
+            android:id="@+id/textView10"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="50"
+            android:text="DISPLAY"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_color"/>
+
+        <RadioGroup
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="50"
+            android:orientation="horizontal"
+            android:id="@+id/rgDisplayForeground">
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ON"
+                android:id="@+id/rbDisplayForegroundOn"/>
+
+            <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="OFF"
+                android:id="@+id/rbDisplayForegroundOff"
+                android:checked="true"/>
+        </RadioGroup>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/lineSaveInterval"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
-        android:layout_below="@+id/lineMain">
+        android:layout_below="@+id/lineDisplayForeground">
 
         <TextView
             android:id="@+id/textView9"

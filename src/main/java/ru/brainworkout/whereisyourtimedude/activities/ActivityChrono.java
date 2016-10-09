@@ -1,6 +1,5 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -61,8 +60,6 @@ public class ActivityChrono extends AppCompatActivity {
         startService(backgroundServiceIntent);
         int tableLayout = getResources().getIdentifier("tablePractices", "id", getPackageName());
         tableHistory = (TableLayout) findViewById(tableLayout);
-
-        mSettings = getSharedPreferences(ActivityMain.APP_PREFERENCES, Context.MODE_PRIVATE);
 
         mChronometer = (Chronometer) findViewById(R.id.mChronometer);
         mChronometer.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -151,9 +148,7 @@ public class ActivityChrono extends AppCompatActivity {
             Session.sessionBackgroundChronometer.setDB(DB);
             Session.sessionBackgroundChronometer.start();
             Session.sessionBackgroundChronometer.pauseTicking();
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
-            editor.apply();
+            setAndSaveChronometerState(true);
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
@@ -233,9 +228,7 @@ public class ActivityChrono extends AppCompatActivity {
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
-            editor.apply();
+            setAndSaveChronometerState(false);
 
         }
         updateAllRows();
@@ -251,9 +244,7 @@ public class ActivityChrono extends AppCompatActivity {
             mChronometer.stop();
             Session.sessionBackgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
-            editor.apply();
+            setAndSaveChronometerState(false);
         } else {
         }
         currentPracticeHistory.dbSave(DB);
@@ -318,9 +309,7 @@ public class ActivityChrono extends AppCompatActivity {
         mChronometerIsWorking = true;
         mChronometer.start();
 
-        SharedPreferences.Editor editor = mSettings.edit();
-        editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, true);
-        editor.apply();
+        setAndSaveChronometerState(true);
 
         updatePractices(currentDateInMillis);
         updateAllRows();
@@ -352,10 +341,7 @@ public class ActivityChrono extends AppCompatActivity {
             mChronometer.start();
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
 
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, true);
-            editor.apply();
-
+            setAndSaveChronometerState(true);
         } else {
 
             Session.sessionBackgroundChronometer.pauseTicking();
@@ -366,9 +352,7 @@ public class ActivityChrono extends AppCompatActivity {
             currentPracticeHistory.dbSave(DB);
             Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
 
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
-            editor.apply();
+            setAndSaveChronometerState(false);
 
         }
         updateAllRows();
@@ -532,13 +516,10 @@ public class ActivityChrono extends AppCompatActivity {
 
         if (!mChronometerIsWorking) {
             Session.sessionBackgroundChronometer.pauseTicking();
-            Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
+            //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
             Session.sessionBackgroundChronometer.interrupt();
             stopService(backgroundServiceIntent);
-
-            SharedPreferences.Editor editor = mSettings.edit();
-            editor.putBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
-            editor.apply();
+            setAndSaveChronometerState(false);
 
         }
         //finish();
@@ -546,6 +527,11 @@ public class ActivityChrono extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }
+
+    private void setAndSaveChronometerState(boolean state) {
+        Session.sessionOptions.setChronoIsWorking(state?1:0);
+        Session.sessionOptions.dbSave(DB);
     }
 
 }

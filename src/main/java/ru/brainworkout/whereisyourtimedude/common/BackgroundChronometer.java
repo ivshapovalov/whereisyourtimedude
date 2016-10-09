@@ -105,7 +105,7 @@ public class BackgroundChronometer extends Thread {
 
         while (!isInterrupted()) {
 
-            if ((globalChronometerCountInSeconds) % Common.SAVE_INTERVAL == 0) {
+            if ((globalChronometerCountInSeconds) % Session.saveInterval == 0) {
                 if (DB != null && currentPracticeHistory != null) {
                     checkAndChangeDateIfNeeded();
                 }
@@ -121,7 +121,7 @@ public class BackgroundChronometer extends Thread {
                 }
                 // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
                 checkAndChangeDateIfNeeded();
-                if (globalChronometerCountInSeconds % Common.SAVE_INTERVAL == 0) {
+                if (globalChronometerCountInSeconds % Session.saveInterval == 0) {
                     if (ticking) {
                         if (DB != null && currentPracticeHistory != null) {
                             synchronized (currentPracticeHistory) {
@@ -131,7 +131,11 @@ public class BackgroundChronometer extends Thread {
                                 // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
                             }
                             if (ticking) {
-                                updateNotification(Common.SYMBOL_PLAY);
+                                if (Session.sessionOptions != null && Session.sessionOptions.getDisplaySwitch() == 1) {
+                                    updateNotification(Common.SYMBOL_PLAY);
+                                } else {
+                                    //service.stopForeground(true);
+                                }
                             }
                         }
                     }
@@ -142,10 +146,11 @@ public class BackgroundChronometer extends Thread {
 
     public void updateNotification(String symbol) {
 
-        Notification notification = getCurrentNotification(symbol);
-
-        NotificationManager mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(Session.SESSION_NOTIFICATION_ID, notification);
+        if (Session.sessionOptions != null && Session.sessionOptions.getDisplaySwitch() == 1) {
+            Notification notification = getCurrentNotification(symbol);
+            NotificationManager mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(Session.SESSION_NOTIFICATION_ID, notification);
+        }
     }
 
     public Notification getCurrentNotification(String symbol) {

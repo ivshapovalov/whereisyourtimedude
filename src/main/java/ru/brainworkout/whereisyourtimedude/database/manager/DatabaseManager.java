@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -37,8 +38,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     //options
     private static final String KEY_OPTIONS_ID = "options_id";
-    private static final String KEY_OPTIONS_RECOVERY_MODE = "options_recovery_mode";
-    private static final String KEY_OPTIONS_DISPLAY_MODE = "options_display_mode";
+    private static final String KEY_OPTIONS_ID_USER = "options_id_user";
+    private static final String KEY_OPTIONS_RECOVERY = "options_recovery_mode";
+    private static final String KEY_OPTIONS_DISPLAY_FOREGROUND = "options_display_foreground";
+    private static final String KEY_OPTIONS_SAVE_INTERVAL= "options_save_interval";
+    private static final String KEY_OPTIONS_CHRONO_IS_WORKING= "options_chrono_is_working";
 
     // Practice Columns names
     private static final String KEY_PRACTICE_ID = "practice_id";
@@ -78,10 +82,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public void update(SQLiteDatabase db) {
         // some code
-//        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
-//                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
-//                + KEY_OPTIONS_RECOVERY_MODE + " INTEGER," + KEY_OPTIONS_DISPLAY_MODE + " INTEGER)";
-//        db.execSQL(CREATE_OPTIONS_TABLE);
+        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
+                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+                + KEY_OPTIONS_ID_USER + " INTEGER, "
+                + KEY_OPTIONS_RECOVERY + " INTEGER," + KEY_OPTIONS_DISPLAY_FOREGROUND + " INTEGER,"
+                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
+        db.execSQL(CREATE_OPTIONS_TABLE);
     }
 
     // Creating Tables
@@ -90,10 +96,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
 
         //options
-//        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
-//                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
-//                + KEY_OPTIONS_RECOVERY_MODE + " INTEGER," + KEY_OPTIONS_DISPLAY_MODE + " INTEGER)";
-//        db.execSQL(CREATE_OPTIONS_TABLE);
+        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
+                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+                + KEY_OPTIONS_ID_USER + " INTEGER, "
+                + KEY_OPTIONS_RECOVERY + " INTEGER," + KEY_OPTIONS_DISPLAY_FOREGROUND + " INTEGER,"
+                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
+        db.execSQL(CREATE_OPTIONS_TABLE);
 
         //users
         String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "("
@@ -203,6 +211,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
 
@@ -219,6 +228,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public void DeleteDB(SQLiteDatabase db) {
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
 
@@ -241,6 +252,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         db.insert(TABLE_USERS, null, values);
         db.close();
+    }
+
+    public void addOptions(Options options) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_OPTIONS_ID, options.getID());
+        values.put(KEY_OPTIONS_ID_USER, options.getIdUser());
+        values.put(KEY_OPTIONS_RECOVERY, options.getDisplaySwitch());
+        values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
+        values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
+
+        // Inserting Row
+        db.insert(TABLE_OPTIONS, null, values);
+        db.close(); // Closing database connection
     }
 
     public void addArea(Area area) {
@@ -335,6 +361,70 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
             cursor.close();
             return user;
+        }
+    }
+
+    public boolean containsOptions(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID}, KEY_OPTIONS_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+
+        if (cursor.getCount() == 0) {
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
+
+    public Options getOptions(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY,
+                KEY_OPTIONS_DISPLAY_FOREGROUND,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        Options options = null;
+        if (cursor.getCount() == 0) {
+            throw new TableDoesNotContainElementException("There is no Options with id - " + id);
+        } else {
+            options = new Options.Builder(Integer.parseInt(cursor.getString(0)))
+                    .addRecoverySwitch(cursor.getInt(1))
+                    .addDisplaySwitch(cursor.getInt(2))
+                    .addSaveInterval(cursor.getInt(3))
+                    .addChronoIsWorking(cursor.getInt(4))
+                    .build();
+
+            cursor.close();
+            return options;
+        }
+    }
+
+    public Options getOptionsOfUser(int id_user) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY,
+                KEY_OPTIONS_DISPLAY_FOREGROUND,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
+                new String[]{String.valueOf(id_user)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        Options options = null;
+        if (cursor.getCount() == 0) {
+            return null;
+        } else {
+            options = new Options.Builder(Integer.parseInt(cursor.getString(0)))
+                    .addRecoverySwitch(cursor.getInt(1))
+                    .addDisplaySwitch(cursor.getInt(2))
+                    .addSaveInterval(cursor.getInt(3))
+                    .addChronoIsWorking(cursor.getInt(4))
+                    .build();
+
+            cursor.close();
+            return options;
         }
     }
 
@@ -519,6 +609,21 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_USERS, null, null);
+
+    }
+
+    public void deleteAllOptions() {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_OPTIONS, null, null);
+
+    }
+
+    public void deleteAllOptionsOfUser(int id_user) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.delete(TABLE_OPTIONS, KEY_OPTIONS_ID_USER + "=?", new String[]{String.valueOf(id_user)});
 
     }
 
@@ -1093,6 +1198,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     }
 
+    public int getOptionsMaxNumber() {
+        String countQuery = "SELECT  MAX(" + KEY_OPTIONS_ID + ") FROM " + TABLE_OPTIONS + "";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            return cursor.getInt(0);
+        } else {
+            cursor.close();
+            return 0;
+        }
+    }
+
     public int getProjectMaxNumber() {
         String countQuery = "SELECT  MAX(" + KEY_PROJECT_ID + ") FROM " + TABLE_PROJECTS + "";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1161,6 +1280,18 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 new String[]{String.valueOf(area.getID())});
     }
 
+    public int updateOptions(Options options) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_OPTIONS_RECOVERY, options.getRecoverySwitch());
+        values.put(KEY_OPTIONS_DISPLAY_FOREGROUND, options.getDisplaySwitch());
+        values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
+        values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
+        return db.update(TABLE_OPTIONS, values, KEY_OPTIONS_ID + " = ?",
+                new String[]{String.valueOf(options.getID())});
+    }
+
     public int updateProject(Project project) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -1211,6 +1342,13 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_AREAS, KEY_AREA_ID + " = ?",
                 new String[]{String.valueOf(area.getID())});
+        db.close();
+    }
+
+    public void deleteOptions(Options options) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_OPTIONS, KEY_OPTIONS_ID + " = ?",
+                new String[]{String.valueOf(options.getID())});
         db.close();
     }
 

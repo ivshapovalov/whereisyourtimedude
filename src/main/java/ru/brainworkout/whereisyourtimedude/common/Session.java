@@ -18,6 +18,9 @@ public class Session {
     public static BackgroundChronometer sessionBackgroundChronometer =new BackgroundChronometer();
     public static boolean sessionChronometerIsWorking;
     public static final int SESSION_NOTIFICATION_ID=1337;
+    public static Options sessionOptions;
+    public static int saveInterval;
+
 
 
 }

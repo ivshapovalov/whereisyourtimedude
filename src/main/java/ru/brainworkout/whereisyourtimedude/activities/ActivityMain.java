@@ -1,10 +1,8 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -22,8 +20,10 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
+import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
+import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
@@ -31,11 +31,6 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 
 public class ActivityMain extends AppCompatActivity {
-
-    private SharedPreferences mSettings;
-    public static final String APP_PREFERENCES = "mysettings";
-    public static final String APP_PREFERENCES_SAVE_INTERVAL = "save_interval";
-    public static final String APP_PREFERENCES_CHRONO_IS_WORKING = "chrono_is_working";
 
     private static final int MAX_VERTICAL_BUTTON_COUNT = 10;
     private final DatabaseManager DB = new DatabaseManager(this);
@@ -45,26 +40,28 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        getPreferencesFromFile();
-
+        defineCurrentUser();
+        getPreferencesFromDB();
         showElementsOnScreen();
 
-        defineCurrentUser();
+        resumeChronoIfWorking();
 
-        //resumeChronoIfWorking();
+    }
 
+    private void updateDB() {
+        DB.update(DB.getReadableDatabase());
     }
 
     private void resumeChronoIfWorking() {
         if (Session.sessionChronometerIsWorking) {
             if (Session.sessionBackgroundChronometer != null &&
-                    Session.sessionBackgroundChronometer.isAlive() ||
+                    Session.sessionBackgroundChronometer.isAlive() &&
                     Session.sessionBackgroundChronometer.isTicking()) {
             } else {
                 synchronized (Session.sessionBackgroundChronometer) {
-                    if (Session.sessionBackgroundChronometer == null) {
-                        resumeBackgroundChronometer();
-                    }
+                    //if (Session.sessionBackgroundChronometer == null) {
+                    resumeBackgroundChronometer();
+                    //}
                 }
             }
         }
@@ -135,6 +132,9 @@ public class ActivityMain extends AppCompatActivity {
             }
             Session.sessionBackgroundChronometer = new BackgroundChronometer();
             Session.sessionBackgroundChronometer.setCurrentPracticeHistory(resumedPracticeHistory);
+
+            Intent backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
+            startService(backgroundServiceIntent);
             Session.sessionBackgroundChronometer.setDB(DB);
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(duration);
             Session.sessionBackgroundChronometer.start();
@@ -142,22 +142,24 @@ public class ActivityMain extends AppCompatActivity {
         }
     }
 
-    private void getPreferencesFromFile() {
-        mSettings = getSharedPreferences(ActivityMain.APP_PREFERENCES, Context.MODE_PRIVATE);
-
-        if (mSettings.contains(ActivityMain.APP_PREFERENCES_SAVE_INTERVAL)) {
-            Common.SAVE_INTERVAL = mSettings.getInt(ActivityMain.APP_PREFERENCES_SAVE_INTERVAL, 10);
-        } else {
-            Common.SAVE_INTERVAL = 10;
+    private void getPreferencesFromDB() {
+        Options options = null;
+        if (Session.sessionCurrentUser != null) {
+            options = DB.getOptionsOfUser(Session.sessionCurrentUser.getID());
+            if (options == null) {
+                options = new Options.Builder(DB).addRecoverySwitch(0)
+                        .addDisplaySwitch(0)
+                        .addSaveInterval(10)
+                        .addChronoIsWorking(0)
+                        .build();
+                options.dbSave(DB);
+            }
+            Session.sessionOptions = options;
+            if (options.getRecoverySwitch() == 1) {
+                Session.sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
+            }
+            Session.saveInterval = options.getSaveInterval();
         }
-
-        //Session.sessionChronometerIsWorking=true;
-        if (mSettings.contains(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING)) {
-            Session.sessionChronometerIsWorking = mSettings.getBoolean(ActivityMain.APP_PREFERENCES_CHRONO_IS_WORKING, false);
-        } else {
-            Session.sessionChronometerIsWorking = false;
-        }
-
 
     }
 
@@ -172,7 +174,6 @@ public class ActivityMain extends AppCompatActivity {
                 btName.setHeight(mHeight);
             }
         }
-
     }
 
     private void defineCurrentUser() {

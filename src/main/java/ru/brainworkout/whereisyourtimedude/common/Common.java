@@ -18,6 +18,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
@@ -30,9 +31,6 @@ public class Common {
     public static final String SYMBOL_EDIT = "►";
     public static final String SYMBOL_PLAY = "►";
     public static final String SYMBOL_STOP = "■";
-
-    public static int SAVE_INTERVAL;
-
 
     public static final boolean isDebug = true;
 

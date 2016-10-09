@@ -28,13 +28,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "wiytd";
 
     // Tables names
+    private static final String TABLE_OPTIONS = "options";
     private static final String TABLE_USERS = "users";
     private static final String TABLE_PRACTICES = "practices";
     private static final String TABLE_PROJECTS = "projects";
     private static final String TABLE_AREAS = "areas";
     private static final String TABLE_PRACTICE_HISTORY = "practice_history";
 
-    // Exercise Columns names
+    //options
+    private static final String KEY_OPTIONS_ID = "options_id";
+    private static final String KEY_OPTIONS_RECOVERY_MODE = "options_recovery_mode";
+    private static final String KEY_OPTIONS_DISPLAY_MODE = "options_display_mode";
+
+    // Practice Columns names
     private static final String KEY_PRACTICE_ID = "practice_id";
     private static final String KEY_PRACTICE_ID_USER = "practice_id_user";
     private static final String KEY_PRACTICE_IS_ACTIVE = "practice_is_active";
@@ -72,12 +78,22 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     public void update(SQLiteDatabase db) {
         // some code
+//        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
+//                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+//                + KEY_OPTIONS_RECOVERY_MODE + " INTEGER," + KEY_OPTIONS_DISPLAY_MODE + " INTEGER)";
+//        db.execSQL(CREATE_OPTIONS_TABLE);
     }
 
     // Creating Tables
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        //options
+//        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
+//                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+//                + KEY_OPTIONS_RECOVERY_MODE + " INTEGER," + KEY_OPTIONS_DISPLAY_MODE + " INTEGER)";
+//        db.execSQL(CREATE_OPTIONS_TABLE);
 
         //users
         String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "("

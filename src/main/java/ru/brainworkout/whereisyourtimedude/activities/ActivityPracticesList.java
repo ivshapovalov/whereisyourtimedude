@@ -82,7 +82,7 @@ public class ActivityPracticesList extends AppCompatActivity {
     private void getIntentParams(Intent intent) {
 
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
-        if (!sessionOpenActivities.empty()) {
+        if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
 

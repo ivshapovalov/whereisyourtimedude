@@ -23,8 +23,8 @@ android {
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                //output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
-                output.outputFile = file("Q://Dropbox/android/timer_test.apk")
+                output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
+                //output.outputFile = file("Q://Dropbox/android/timer_test.apk")
             }
         }
     }
@@ -38,4 +38,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.0.3'
     compile 'org.apache.poi:poi:3.15-beta2'
     compile 'com.github.QuadFlask:colorpicker:0.0.11'
+    compile 'org.apache.logging.log4j:log4j:2.7'
+    compile 'de.mindpipe.android:android-logging-log4j:1.0.3'
+    compile 'log4j:log4j:1.2.17'
 }

@@ -82,7 +82,7 @@ public class ActivityProjectsList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_project = intent.getIntExtra("CurrentProjectID", 0);
-        if (!sessionOpenActivities.empty()) {
+        if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
     }

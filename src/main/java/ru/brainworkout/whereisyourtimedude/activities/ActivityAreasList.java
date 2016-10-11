@@ -80,7 +80,7 @@ public class ActivityAreasList extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
         id_area = intent.getIntExtra("CurrentAreaID", 0);
-        if (!sessionOpenActivities.empty()) {
+        if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
 

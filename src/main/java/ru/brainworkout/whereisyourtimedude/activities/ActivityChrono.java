@@ -13,10 +13,13 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.ALogger;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
@@ -38,6 +41,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentU
 public class ActivityChrono extends AppCompatActivity {
 
     private SharedPreferences mSettings;
+    private static Logger LOG = ALogger.getLogger(ActivityChrono.class);
     private final DatabaseManager DB = new DatabaseManager(this);
     private static PracticeHistory currentPracticeHistory;
     private static List<PracticeHistory> practices = new ArrayList<>();
@@ -56,7 +60,9 @@ public class ActivityChrono extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chrono);
+
         backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
+        LOG.debug("Before service start");
         startService(backgroundServiceIntent);
         int tableLayout = getResources().getIdentifier("tablePractices", "id", getPackageName());
         tableHistory = (TableLayout) findViewById(tableLayout);
@@ -143,6 +149,8 @@ public class ActivityChrono extends AppCompatActivity {
 
 
         } else {
+            LOG.debug("init:before create background chronometer");
+
             Session.sessionBackgroundChronometer = new BackgroundChronometer();
             Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
             Session.sessionBackgroundChronometer.setDB(DB);
@@ -284,7 +292,7 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     private void rowWork_onClick(TableRow view) {
-
+        LOG.debug("Timer start rowWork_onClick");
         blink(view, this);
         stopTimer();
 
@@ -299,6 +307,8 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory.dbSave(DB);
 
         localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+        LOG.debug("rowWork_onClick:before start service");
+
         startService(backgroundServiceIntent);
         Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
         Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
@@ -322,8 +332,10 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     public void rowCurrentWork_onClick(View view) {
+
         blink(view, this);
         if (!mChronometerIsWorking) {
+            LOG.debug("Timer start currentWork_onClick");
             //startService(backgroundServiceIntent);
             if (Session.sessionBackgroundChronometer.isAlive()) {
                 Session.sessionBackgroundChronometer.resumeTicking();
@@ -343,7 +355,7 @@ public class ActivityChrono extends AppCompatActivity {
 
             setAndSaveChronometerState(true);
         } else {
-
+            LOG.debug("Timer paused currentWork_onClick");
             Session.sessionBackgroundChronometer.pauseTicking();
             localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
             mChronometer.stop();
@@ -522,6 +534,7 @@ public class ActivityChrono extends AppCompatActivity {
             setAndSaveChronometerState(false);
 
         }
+        LOG.debug("Close ActivityChrono");
         //finish();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -534,4 +547,9 @@ public class ActivityChrono extends AppCompatActivity {
         Session.sessionOptions.dbSave(DB);
     }
 
+    @Override
+    protected void onDestroy() {
+        LOG.debug("ActivityChrono away from screen ");
+        super.onDestroy();
+    }
 }

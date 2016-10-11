@@ -66,7 +66,7 @@ public class ActivityArea extends AppCompatActivity {
 
     private void getIntentParams(Intent intent) {
 
-        if (!sessionOpenActivities.empty()) {
+        if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);

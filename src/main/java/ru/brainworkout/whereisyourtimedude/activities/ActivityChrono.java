@@ -60,10 +60,6 @@ public class ActivityChrono extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chrono);
-        BackgroundChronometer i=Session.sessionBackgroundChronometer;
-        backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
-        LOG.debug("Before service start");
-        startService(backgroundServiceIntent);
         int tableLayout = getResources().getIdentifier("tablePractices", "id", getPackageName());
         tableHistory = (TableLayout) findViewById(tableLayout);
 
@@ -108,7 +104,6 @@ public class ActivityChrono extends AppCompatActivity {
         currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
 
         if (currentDateInMillis == 0) {
-
             init();
         } else {
             defineNewDayPractice(currentDateInMillis);
@@ -150,7 +145,6 @@ public class ActivityChrono extends AppCompatActivity {
 
         } else {
             LOG.debug("init:before create background chronometer");
-
             Session.sessionBackgroundChronometer = new BackgroundChronometer();
             Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
             Session.sessionBackgroundChronometer.setDB(DB);
@@ -309,6 +303,8 @@ public class ActivityChrono extends AppCompatActivity {
         localChronometerCountInSeconds = currentPracticeHistory.getDuration();
         LOG.debug("rowWork_onClick:before start service");
 
+        backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
+        LOG.debug("Before service start");
         startService(backgroundServiceIntent);
         Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
         Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
@@ -337,32 +333,35 @@ public class ActivityChrono extends AppCompatActivity {
         if (!mChronometerIsWorking) {
             LOG.debug("Timer start currentWork_onClick");
             //startService(backgroundServiceIntent);
-            if (Session.sessionBackgroundChronometer.isAlive()) {
-                Session.sessionBackgroundChronometer.resumeTicking();
+            if (sessionBackgroundChronometer.isAlive()) {
+                backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
+                LOG.debug("Before service start");
+                startService(backgroundServiceIntent);
+                sessionBackgroundChronometer.resumeTicking();
             }
 
             if (localChronometerCountInSeconds == 0) {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
-                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(0L);
+                sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(0L);
             } else {
                 mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
-                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
 
             mChronometerIsWorking = true;
             mChronometer.start();
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-
             setAndSaveChronometerState(true);
+
         } else {
             LOG.debug("Timer paused currentWork_onClick");
-            Session.sessionBackgroundChronometer.pauseTicking();
+            sessionBackgroundChronometer.pauseTicking();
             localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
             mChronometer.stop();
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             currentPracticeHistory.dbSave(DB);
-            Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
+            sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
 
             setAndSaveChronometerState(false);
 
@@ -527,10 +526,12 @@ public class ActivityChrono extends AppCompatActivity {
     public void onBackPressed() {
 
         if (!mChronometerIsWorking) {
-            Session.sessionBackgroundChronometer.pauseTicking();
+            sessionBackgroundChronometer.pauseTicking();
             //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
-            Session.sessionBackgroundChronometer.interrupt();
-            //stopService(backgroundServiceIntent);
+            sessionBackgroundChronometer.interrupt();
+            if (sessionBackgroundChronometer.getService()!=null) {
+                stopService(backgroundServiceIntent);
+            }
             setAndSaveChronometerState(false);
 
         }

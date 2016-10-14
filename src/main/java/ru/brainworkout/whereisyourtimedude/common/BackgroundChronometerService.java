@@ -27,13 +27,8 @@ public class BackgroundChronometerService extends Service {
         LOG.debug("Background service begin create after super ");
         message=Common.convertStackTraceToString( Thread.currentThread().getStackTrace());
         LOG.debug(message);
-//        if (Session.sessionBackgroundChronometer == null) {
-//            LOG.debug("Background service create new chronometer");
-//            Session.sessionBackgroundChronometer=new BackgroundChronometer(this);
-//        }
         LOG.debug("Set service of backgroundChronometer ");
-        BackgroundChronometer backgroundChronometer=sessionBackgroundChronometer;
-        backgroundChronometer.setService(this);
+        sessionBackgroundChronometer.setService(this);
         LOG.debug("Get notification of "+sessionBackgroundChronometer.getName());
         Notification notification=sessionBackgroundChronometer.getCurrentNotification(Common.SYMBOL_STOP);
         LOG.debug("Start service foreground ");

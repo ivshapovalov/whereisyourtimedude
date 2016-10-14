@@ -22,7 +22,7 @@ public class Session {
     public static Practice sessionCurrentPractice;
     public static PracticeHistory sessionCurrentPracticeHistory;
     public static final Deque<ConnectionParameters> sessionOpenActivities = new ArrayDeque<>();
-    public static BackgroundChronometer sessionBackgroundChronometer = new BackgroundChronometer();
+    public static BackgroundChronometer sessionBackgroundChronometer;
     public static boolean sessionChronometerIsWorking;
     public static final int SESSION_NOTIFICATION_ID = 1337;
     public static Options sessionOptions;

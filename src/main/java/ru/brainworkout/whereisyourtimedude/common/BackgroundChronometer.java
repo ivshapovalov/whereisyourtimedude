@@ -117,7 +117,7 @@ public class BackgroundChronometer extends Thread {
             tick();
         }
         LOG.error(this.getName() + " stopped ");
-
+        sessionBackgroundChronometer=null;
     }
 
     @Override
@@ -158,8 +158,9 @@ public class BackgroundChronometer extends Thread {
                             }
                             if (ticking) {
                                 if (sessionOptions != null && sessionOptions.getDisplaySwitch() == 1) {
-                                    writeMemoryInLog();
+
                                     if (service != null) {
+                                        writeMemoryInLog();
                                         updateNotification(SYMBOL_PLAY);
                                     }
 
@@ -174,7 +175,6 @@ public class BackgroundChronometer extends Thread {
             }
         }
         LOG.debug(this.getName() + " out of tick");
-
 
     }
 

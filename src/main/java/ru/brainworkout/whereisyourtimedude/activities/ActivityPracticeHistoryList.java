@@ -14,9 +14,12 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.apache.log4j.Logger;
+
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.ALogger;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Session;
@@ -35,6 +38,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentU
 
 public class ActivityPracticeHistoryList extends AppCompatActivity {
 
+    private static Logger LOG = ALogger.getLogger(ActivityPracticeHistoryList.class);
+
+
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
     private final int NUMBER_OF_VIEWS = 40000;
@@ -49,6 +55,11 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
+        LOG.debug("ActivityPracticeHistoryList start");
+        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practices_history_list);
@@ -76,14 +87,17 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         }
 
         setTitleOfActivity(this);
+        LOG.debug("ActivityPracticeHistoryList end");
+         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
     }
 
 
     public void btPracticeHistoryAdd_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
-        ConnectionParameters paramsNew= new ConnectionParameters.Builder()
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistory")
                 .isTransmitterNew(true)
                 .isTransmitterForChoice(false)
@@ -167,10 +181,10 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String namePractice="";
+            String namePractice = "";
             try {
-                Practice practice=DB.getPractice(currentPracticeHistory.getIdPractice());
-                namePractice=practice.getName();
+                Practice practice = DB.getPractice(currentPracticeHistory.getIdPractice());
+                namePractice = practice.getName();
 
             } catch (TableDoesNotContainElementException e) {
 
@@ -208,10 +222,10 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     private void txtPracticeHistoryEdit_onClick(TextView view) {
 
-        blink(view,this);
-        int id = ((TableRow)view.getParent()).getId();
+        blink(view, this);
+        int id = ((TableRow) view.getParent()).getId();
         //int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
-        ConnectionParameters params= new ConnectionParameters.Builder()
+        ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
                 .isTransmitterNew(false)
                 .isTransmitterForChoice(false)
@@ -230,12 +244,12 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     private void rowPracticeHistory_onClick(final TableRow view) {
 
-        blink(view,this);
+        blink(view, this);
 
         int id = view.getId();
         //int id = view.getId() % NUMBER_OF_VIEWS;
 
-        ConnectionParameters params= new ConnectionParameters.Builder()
+        ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
                 .isTransmitterNew(false)
                 .isTransmitterForChoice(false)
@@ -254,7 +268,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void btEdit_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -263,7 +277,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -272,7 +286,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить всю историю занятий?")
@@ -294,6 +308,12 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        LOG.debug("ActivityPracticeHistoryList destroyd");
+        super.onDestroy();
     }
 }
 

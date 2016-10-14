@@ -7,7 +7,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Debug;
 import android.support.v4.app.NotificationCompat;
 
 import org.apache.log4j.Logger;
@@ -19,6 +18,9 @@ import ru.brainworkout.whereisyourtimedude.activities.ActivityChrono;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+import static  ru.brainworkout.whereisyourtimedude.common.Session.*;
+import static  ru.brainworkout.whereisyourtimedude.common.Common.*;
+
 
 public class BackgroundChronometer extends Thread {
 
@@ -32,14 +34,22 @@ public class BackgroundChronometer extends Thread {
 
     public BackgroundChronometer() {
         LOG.debug("Before new thread created");
-        LOG.debug(Thread.currentThread().getStackTrace());
+        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
         this.setName("ThreadChrono-" + Calendar.getInstance().getTimeInMillis());
         LOG.debug(this.getName() + " created");
-
     }
 
+
     public BackgroundChronometer(Service service) {
+
         this.service = service;
+    }
+
+    @Override
+    protected void finalize() throws Throwable {
+        LOG.debug(this.getName() + " finalizes " );
+        super.finalize();
     }
 
     public Service getService() {
@@ -106,13 +116,13 @@ public class BackgroundChronometer extends Thread {
         while (!isInterrupted()) {
             tick();
         }
-        LOG.error(this.getName()+" stopped ");
+        LOG.error(this.getName() + " stopped ");
 
     }
 
     @Override
     public void interrupt() {
-        LOG.error(this.getName()+" interrupted ");
+        LOG.error(this.getName() + " interrupted ");
         super.interrupt();
     }
 
@@ -126,6 +136,7 @@ public class BackgroundChronometer extends Thread {
                 }
             }
             while (ticking) {
+
                 try {
                     this.sleep(1000);
                 } catch (InterruptedException e) {
@@ -136,7 +147,7 @@ public class BackgroundChronometer extends Thread {
                 }
                 // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
                 checkAndChangeDateIfNeeded();
-                if (globalChronometerCountInSeconds % Session.saveInterval == 0) {
+                if (globalChronometerCountInSeconds % saveInterval == 0) {
                     if (ticking) {
                         if (DB != null && currentPracticeHistory != null) {
                             synchronized (currentPracticeHistory) {
@@ -146,12 +157,14 @@ public class BackgroundChronometer extends Thread {
                                 // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
                             }
                             if (ticking) {
-                                if (Session.sessionOptions != null && Session.sessionOptions.getDisplaySwitch() == 1) {
+                                if (sessionOptions != null && sessionOptions.getDisplaySwitch() == 1) {
                                     writeMemoryInLog();
-                                    updateNotification(Common.SYMBOL_PLAY);
+                                    if (service != null) {
+                                        updateNotification(SYMBOL_PLAY);
+                                    }
 
                                 } else {
-                                    LOG.error(this.getName()+" session==null");
+                                    LOG.error(this.getName() + " sessionOptions==null");
                                     //service.stopForeground(true);
                                 }
                             }
@@ -159,9 +172,8 @@ public class BackgroundChronometer extends Thread {
                     }
                 }
             }
-            LOG.error(this.getName()+" not ticking");
         }
-        LOG.error(this.getName()+" out of tick");
+        LOG.debug(this.getName() + " out of tick");
 
 
     }
@@ -172,8 +184,8 @@ public class BackgroundChronometer extends Thread {
         long usedSize = -1L;
         try {
             Runtime info = Runtime.getRuntime();
-            freeSize = info.freeMemory()/1024;
-            totalSize = info.totalMemory()/1024;
+            freeSize = info.freeMemory() / 1024;
+            totalSize = info.totalMemory() / 1024;
             usedSize = totalSize - freeSize;
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,15 +196,15 @@ public class BackgroundChronometer extends Thread {
         activityManager.getMemoryInfo(mi);
         long availableKbs = mi.availMem / 1024;
 
-        LOG.info(this.getName()+"-Tick. Total free "+availableKbs+"Kb. Free app memory in heap "+freeSize+"Kb. Used memory in heap "+usedSize+"Kb");
+        LOG.info(this.getName() + "-Tick. Total free " + availableKbs + "Kb. Free app memory in heap " + freeSize + "Kb. Used memory in heap " + usedSize + "Kb");
 
     }
 
     public void updateNotification(String symbol) {
-        if (Session.sessionOptions != null && Session.sessionOptions.getDisplaySwitch() == 1) {
+        if (sessionOptions != null && sessionOptions.getDisplaySwitch() == 1) {
             Notification notification = getCurrentNotification(symbol);
             NotificationManager mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(Session.SESSION_NOTIFICATION_ID, notification);
+            mNotificationManager.notify(SESSION_NOTIFICATION_ID, notification);
         }
     }
 
@@ -203,12 +215,15 @@ public class BackgroundChronometer extends Thread {
 
             PendingIntent pendingIntent = PendingIntent.getActivity(service, 0,
                     notificationIntent, 0);
-            int currentPracticeHistoryID = this.getCurrentPracticeHistory().getIdPractice();
-            Practice practice = DB.getPractice(currentPracticeHistoryID);
             String practiceName = "WIYTD";
-            if (practice != null) {
-                practiceName = practice.getName().trim();
+            if (currentPracticeHistory != null) {
+                int currentPracticeHistoryID = this.getCurrentPracticeHistory().getIdPractice();
+                Practice practice = DB.getPractice(currentPracticeHistoryID);
+                if (practice != null) {
+                    practiceName = practice.getName().trim();
+                }
             }
+
             String currentDuration = Common.ConvertMillisToStringWithAllTime(this.getGlobalChronometerCountInSeconds() * 1000);
             Notification notification = new NotificationCompat.Builder(service)
                     .setSmallIcon(R.drawable.sand_clock)
@@ -217,7 +232,7 @@ public class BackgroundChronometer extends Thread {
                     .setContentIntent(pendingIntent).build();
             return notification;
         } catch (NullPointerException e) {
-            LOG.error(this.getName()+"-"+e.getMessage(),e);
+            LOG.error(this.getName() + "-" + e.getMessage(), e);
             throw e;
         }
     }

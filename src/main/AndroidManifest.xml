@@ -10,7 +10,7 @@
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <service android:name=".common.BackgroundChronometerService" />
+        <service android:name=".common.BackgroundChronometerService"/>
         <activity
             android:name=".activities.ActivityChrono"
             android:label="@string/chrono_name"

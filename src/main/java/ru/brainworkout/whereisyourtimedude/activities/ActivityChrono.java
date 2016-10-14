@@ -60,7 +60,7 @@ public class ActivityChrono extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chrono);
-
+        BackgroundChronometer i=Session.sessionBackgroundChronometer;
         backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
         LOG.debug("Before service start");
         startService(backgroundServiceIntent);
@@ -137,7 +137,7 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory = practices.get(0);
 
 
-        if (Session.sessionBackgroundChronometer.isAlive()) {
+        if (Session.sessionBackgroundChronometer!=null) {
 
             if (Session.sessionBackgroundChronometer.isTicking()) {
                 localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
@@ -154,8 +154,8 @@ public class ActivityChrono extends AppCompatActivity {
             Session.sessionBackgroundChronometer = new BackgroundChronometer();
             Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
             Session.sessionBackgroundChronometer.setDB(DB);
-            Session.sessionBackgroundChronometer.start();
             Session.sessionBackgroundChronometer.pauseTicking();
+            Session.sessionBackgroundChronometer.start();
             setAndSaveChronometerState(true);
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
@@ -530,7 +530,7 @@ public class ActivityChrono extends AppCompatActivity {
             Session.sessionBackgroundChronometer.pauseTicking();
             //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
             Session.sessionBackgroundChronometer.interrupt();
-            stopService(backgroundServiceIntent);
+            //stopService(backgroundServiceIntent);
             setAndSaveChronometerState(false);
 
         }

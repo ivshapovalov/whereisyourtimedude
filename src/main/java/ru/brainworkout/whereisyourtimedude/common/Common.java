@@ -34,6 +34,16 @@ public class Common {
 
     public static final boolean isDebug = true;
 
+    public static String convertStackTraceToString(StackTraceElement[] stackTraceElements) {
+        StringBuilder message = new StringBuilder();
+        int min=Math.min(stackTraceElements.length,4);
+        for (int i = 2; i < min; i++) {
+            StackTraceElement element = stackTraceElements[i];
+            message.append(element.getClassName()).append(": ").append(element.getMethodName()).append("\n");
+        }
+        return message.toString();
+    }
+
     public static Date ConvertStringToDate(final String date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
         Date d = null;

@@ -88,10 +88,11 @@ public class ActivityChrono extends AppCompatActivity {
 
                 if (elapsedMillis > 1000) {
 
+                    if (currentPracticeHistory != null && sessionBackgroundChronometer != null && sessionBackgroundChronometer.getCurrentPracticeHistory() != null) {
+                        if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
 
-                    if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
-
-                        autoChangeDay(sessionBackgroundChronometer.getCurrentPracticeHistory().getDate());
+                            autoChangeDay(sessionBackgroundChronometer.getCurrentPracticeHistory().getDate());
+                        }
                     }
 
                 }
@@ -132,7 +133,7 @@ public class ActivityChrono extends AppCompatActivity {
         currentPracticeHistory = practices.get(0);
 
 
-        if (Session.sessionBackgroundChronometer!=null) {
+        if (Session.sessionBackgroundChronometer != null) {
 
             if (Session.sessionBackgroundChronometer.isTicking()) {
                 localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
@@ -303,7 +304,7 @@ public class ActivityChrono extends AppCompatActivity {
         localChronometerCountInSeconds = currentPracticeHistory.getDuration();
         LOG.debug("rowWork_onClick:before start service");
 
-        backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
+        backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
         LOG.debug("Before service start");
         startService(backgroundServiceIntent);
         Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
@@ -334,9 +335,10 @@ public class ActivityChrono extends AppCompatActivity {
             LOG.debug("Timer start currentWork_onClick");
             //startService(backgroundServiceIntent);
             if (sessionBackgroundChronometer.isAlive()) {
-                backgroundServiceIntent= new Intent(this, BackgroundChronometerService.class);
+                backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
                 LOG.debug("Before service start");
                 startService(backgroundServiceIntent);
+                sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
                 sessionBackgroundChronometer.resumeTicking();
             }
 
@@ -430,7 +432,7 @@ public class ActivityChrono extends AppCompatActivity {
         }
     }
 
-      @NonNull
+    @NonNull
     private TableRow CreateTableRow(int i) {
         PracticeHistory practiceHistory = practices.get(i);
 
@@ -529,7 +531,7 @@ public class ActivityChrono extends AppCompatActivity {
             sessionBackgroundChronometer.pauseTicking();
             //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
             sessionBackgroundChronometer.interrupt();
-            if (sessionBackgroundChronometer.getService()!=null) {
+            if (sessionBackgroundChronometer.getService() != null) {
                 stopService(backgroundServiceIntent);
             }
             setAndSaveChronometerState(false);
@@ -544,7 +546,7 @@ public class ActivityChrono extends AppCompatActivity {
     }
 
     private void setAndSaveChronometerState(boolean state) {
-        Session.sessionOptions.setChronoIsWorking(state?1:0);
+        Session.sessionOptions.setChronoIsWorking(state ? 1 : 0);
         Session.sessionOptions.dbSave(DB);
     }
 

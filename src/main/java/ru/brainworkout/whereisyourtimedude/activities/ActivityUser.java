@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityUser extends AppCompatActivity {
@@ -132,7 +132,7 @@ public class ActivityUser extends AppCompatActivity {
         getPropertiesFromScreen();
 
         if (mCurrentUser.isCurrentUser() == 1) {
-            if (Session.sessionBackgroundChronometer.isTicking()) {
+            if (sessionBackgroundChronometer!=null && sessionBackgroundChronometer.isTicking()) {
                 Toast toast = Toast.makeText(ActivityUser.this,
                         "Вернитесь в хронометраж и остановите счетчик прежде чем поменять активного" +
                                 "пользователя", Toast.LENGTH_SHORT);

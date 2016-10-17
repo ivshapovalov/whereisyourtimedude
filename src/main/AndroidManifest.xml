@@ -8,6 +8,7 @@
         android:icon="@drawable/sand_clock"
         android:label="@string/app_name"
         android:persistent="true"
+        android:debuggable="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service android:name=".common.BackgroundChronometerService"/>

@@ -16,6 +16,7 @@ import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 
 public class ActivityTools extends AppCompatActivity {
@@ -80,7 +81,7 @@ public class ActivityTools extends AppCompatActivity {
 
     public void btClearBD_onClick(final View view) {
 
-        if (Session.sessionBackgroundChronometer.isTicking()) {
+        if (sessionBackgroundChronometer!=null && sessionBackgroundChronometer.isTicking()) {
             Toast toast = Toast.makeText(ActivityTools.this,
                     "Остановите хронометраж. Нельзя очистить базу данных при работающем хронометраже!", Toast.LENGTH_SHORT);
             toast.show();

@@ -70,7 +70,16 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
             HideEditorButton(btEditor);
         }
 
+        LOG.debug("ActivityPracticeHistoryList before show pr history");
+        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
+
         showPracticeHistory();
+
+        LOG.debug("ActivityPracticeHistoryList after show pr history");
+        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
+
 
         Intent intent = getIntent();
         int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
@@ -115,6 +124,11 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     private void showPracticeHistory() {
 
+
+        LOG.debug("ActivityPracticeHistoryList before in show pr history + sessionCurrentUser="+sessionCurrentUser);
+        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
+
         List<PracticeHistory> practiceHistoryList;
         if (sessionCurrentUser != null) {
 
@@ -122,6 +136,10 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
         } else {
             practiceHistoryList = DB.getAllPracticeHistory();
         }
+
+        LOG.debug("after get histories from db");
+        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        LOG.debug(message);
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTablePracticeHistory);
         try {

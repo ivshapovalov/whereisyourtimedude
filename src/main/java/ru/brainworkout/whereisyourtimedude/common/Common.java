@@ -203,6 +203,10 @@ public class Common {
         currentUser.dbSave(DB);
         Session.sessionCurrentUser =currentUser;
 
+
+        Options options=new Options.Builder(DB).addSaveInterval(1).addDisplaySwitch(1).addChronoIsWorking(0).build();
+        options.dbSave(DB);
+
         //Areas
         for (int i = 1; i <= AREAS_COUNT; i++) {
             Area a=new Area.Builder(DB).addName("Область  "+ i).addColor(AlphabetColors().get(i)).build();

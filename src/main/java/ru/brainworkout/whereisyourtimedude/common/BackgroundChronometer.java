@@ -18,8 +18,9 @@ import ru.brainworkout.whereisyourtimedude.activities.ActivityChrono;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
-import static  ru.brainworkout.whereisyourtimedude.common.Session.*;
-import static  ru.brainworkout.whereisyourtimedude.common.Common.*;
+
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 
 
 public class BackgroundChronometer extends Thread {
@@ -48,7 +49,7 @@ public class BackgroundChronometer extends Thread {
 
     @Override
     protected void finalize() throws Throwable {
-        LOG.debug(this.getName() + " finalizes " );
+        LOG.debug(this.getName() + " finalizes ");
         super.finalize();
     }
 
@@ -117,7 +118,7 @@ public class BackgroundChronometer extends Thread {
             tick();
         }
         LOG.error(this.getName() + " stopped ");
-        sessionBackgroundChronometer=null;
+        sessionBackgroundChronometer = null;
     }
 
     @Override
@@ -250,16 +251,19 @@ public class BackgroundChronometer extends Thread {
         long todayInMillis = today.getTimeInMillis();
 
         if (currentPracticeHistory.getDate() < todayInMillis) {
+
             synchronized (currentPracticeHistory) {
-                currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTimeInMillis(currentPracticeHistory.getDate());
-                calendar.set(Calendar.HOUR_OF_DAY, 23);
-                calendar.set(Calendar.MINUTE, 59);
-                calendar.set(Calendar.SECOND, 59);
-                calendar.set(Calendar.MILLISECOND, 59);
-                currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
-                currentPracticeHistory.dbSave(DB);
+                if (isTicking()) {
+                    currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(currentPracticeHistory.getDate());
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    calendar.set(Calendar.SECOND, 59);
+                    calendar.set(Calendar.MILLISECOND, 59);
+                    currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
+                    currentPracticeHistory.dbSave(DB);
+                }
                 //change practice history
                 currentPracticeHistory = new PracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
@@ -267,9 +271,19 @@ public class BackgroundChronometer extends Thread {
                         .addLastTime(todayInMillis)
                         .addDuration(0)
                         .build();
+
+                setGlobalChronometerCountInSeconds(0L);
+                if (service != null) {
+                    if (isTicking()) {
+                        updateNotification(SYMBOL_PLAY);
+                    } else {
+                        updateNotification(SYMBOL_STOP);
+                    }
+                }
             }
-            setGlobalChronometerCountInSeconds(0L);
         }
+
     }
+
 }
 

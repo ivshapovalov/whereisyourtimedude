@@ -22,6 +22,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentU
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
@@ -40,7 +41,7 @@ public class ActivityMain extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        defineCurrentUser();
+        defineCurrentUser(DB,this);
         getPreferencesFromDB();
         showElementsOnScreen();
 
@@ -176,28 +177,7 @@ public class ActivityMain extends AppCompatActivity {
         }
     }
 
-    private void defineCurrentUser() {
 
-        if (sessionCurrentUser == null) {
-            List<User> userList = DB.getAllUsers();
-            if (userList.size() == 1) {
-                User currentUser = userList.get(0);
-                sessionCurrentUser = currentUser;
-                currentUser.setIsCurrentUser(1);
-                currentUser.dbSave(DB);
-            } else {
-                //ищем активного
-                for (User user : userList
-                        ) {
-                    if (user.isCurrentUser() == 1) {
-                        sessionCurrentUser = user;
-                        break;
-                    }
-                }
-                isUserDefined();
-            }
-        }
-    }
 
     public void btUsers_onClick(final View view) {
 
@@ -215,7 +195,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btAreas_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isDBNotEmpty() && isUserDefined(this)) {
             Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
             startActivity(intent);
         }
@@ -223,7 +203,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     public void btProjects_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isDBNotEmpty() && isUserDefined(this)) {
             Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
             startActivity(intent);
         }
@@ -232,7 +212,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btPractices_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isDBNotEmpty() && isUserDefined(this)) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
             startActivity(intent);
         }
@@ -241,7 +221,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btPracticeHistory_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isDBNotEmpty() && isUserDefined(this)) {
             //DB.update(DB.getReadableDatabase());
             Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
             startActivity(intent);
@@ -255,16 +235,6 @@ public class ActivityMain extends AppCompatActivity {
 
     }
 
-
-    private boolean isUserDefined() {
-        if (sessionCurrentUser == null) {
-            Toast toast = Toast.makeText(ActivityMain.this,
-                    "Не выбран пользатель. Создайте пользователя и сделайте его активным!", Toast.LENGTH_SHORT);
-            toast.show();
-            return false;
-        }
-        return true;
-    }
 
     private boolean isDBNotEmpty() {
 

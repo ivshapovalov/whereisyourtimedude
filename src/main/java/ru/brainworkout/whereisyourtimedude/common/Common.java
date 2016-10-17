@@ -9,20 +9,26 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+import ru.brainworkout.whereisyourtimedude.activities.ActivityChrono;
+import ru.brainworkout.whereisyourtimedude.activities.ActivityMain;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public class Common {
 
@@ -33,6 +39,41 @@ public class Common {
     public static final String SYMBOL_STOP = "■";
 
     public static final boolean isDebug = true;
+
+    public static void defineCurrentUser(DatabaseManager DB, Activity activity) {
+
+        if (sessionCurrentUser == null) {
+            List<User> userList = DB.getAllUsers();
+            if (userList.size() == 1) {
+                User currentUser = userList.get(0);
+                sessionCurrentUser = currentUser;
+                currentUser.setIsCurrentUser(1);
+                currentUser.dbSave(DB);
+            } else {
+                //ищем активного
+                for (User user : userList
+                        ) {
+                    if (user.isCurrentUser() == 1) {
+                        sessionCurrentUser = user;
+                        break;
+                    }
+                }
+                isUserDefined(activity);
+            }
+        }
+    }
+
+
+
+    public static boolean isUserDefined(Activity activity) {
+        if (sessionCurrentUser == null) {
+            Toast toast = Toast.makeText(activity,
+                    "Не выбран пользатель. Создайте пользователя и сделайте его активным!", Toast.LENGTH_SHORT);
+            toast.show();
+            return false;
+        }
+        return true;
+    }
 
     public static String convertStackTraceToString(StackTraceElement[] stackTraceElements) {
         StringBuilder message = new StringBuilder();

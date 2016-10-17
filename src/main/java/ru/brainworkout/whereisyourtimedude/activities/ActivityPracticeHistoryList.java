@@ -56,6 +56,7 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        defineCurrentUser(DB,this);
 
         LOG.debug("ActivityPracticeHistoryList start");
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());

@@ -11,10 +11,14 @@ import java.util.concurrent.TimeUnit;
 
 import ru.brainworkout.whereisyourtimedude.R;
 
+import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
+
 public class ActivityDateTimePickerDialog extends AbstractActivity {
 
     //private static long oldTime;
     private static long newTime;
+    private static boolean mCallerIsNew;
+    private static String mCallerActivity;
 
     private static long days;
     private static long hours;
@@ -30,6 +34,9 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
 
         Intent intent = getIntent();
         newTime = intent.getLongExtra("millis", 0);
+        mCallerIsNew= intent.getBooleanExtra("isNew", false);
+        mCallerActivity= intent.getStringExtra("CurrentActivity");
+
         parseTime();
         updateScreen();
     }
@@ -175,13 +182,30 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
     }
 
     public void btClose_onClick(View view) {
-        Intent intent = new Intent(ActivityDateTimePickerDialog.this, ActivityPracticeHistory.class);
+        blink(view,this);
+        Class<?> myClass = null;
+        try {
+            myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(ActivityDateTimePickerDialog.this, myClass);
+        intent.putExtra("isNew", mCallerIsNew);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
     public void btSave_onClick(View view) {
-        Intent intent = new Intent(ActivityDateTimePickerDialog.this, ActivityPracticeHistory.class);
+
+        blink(view,this);
+        Class<?> myClass = null;
+        try {
+            myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(ActivityDateTimePickerDialog.this, myClass);
+        intent.putExtra("isNew", mCallerIsNew);
         intent.putExtra("millis", newTime);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

@@ -337,6 +337,8 @@ public class ActivityPracticeHistory extends AbstractActivity {
 
         Intent intent = new Intent(ActivityPracticeHistory.this, ActivityDateTimePickerDialog.class);
         intent.putExtra("millis", sessionCurrentPracticeHistory.getDuration());
+        intent.putExtra("CurrentActivity", "ActivityPracticeHistory");
+        intent.putExtra("isNew", false);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 

@@ -57,7 +57,8 @@
             android:textStyle="bold"
             android:onClick="etNewTime_onClick"
             android:inputType="number"
-            />
+            android:editable="true"
+            android:enabled="true"/>
     </TableRow>
 
     <TableRow

@@ -185,13 +185,6 @@ public class ActivityMain extends AbstractActivity {
 
     }
 
-    public void btTest_onClick(final View view) {
-
-        Intent intent = new Intent(ActivityMain.this, ActivityDateTimePickerDialog.class);
-        startActivity(intent);
-
-    }
-
     public void btAreas_onClick(final View view) {
 
         if (isDBNotEmpty() && isUserDefined()) {

@@ -156,12 +156,9 @@ public class ActivityMain extends AbstractActivity {
                 options.dbSave(DB);
             }
             Session.sessionOptions = options;
-            if (options.getRecoverySwitch() == 1) {
-                Session.sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
-            }
+            sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
             Session.saveInterval = options.getSaveInterval();
         }
-
     }
 
     private void showElementsOnScreen() {

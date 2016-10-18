@@ -17,12 +17,14 @@ import java.util.List;
 import ru.brainworkout.whereisyourtimedude.R;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
+
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
@@ -31,20 +33,16 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 
-public class ActivityMain extends AppCompatActivity {
+public class ActivityMain extends AbstractActivity {
 
     private static final int MAX_VERTICAL_BUTTON_COUNT = 10;
-    private final DatabaseManager DB = new DatabaseManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        defineCurrentUser(DB,this);
         getPreferencesFromDB();
         showElementsOnScreen();
-
         resumeChronoIfWorking();
 
     }
@@ -54,16 +52,18 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     private void resumeChronoIfWorking() {
-        if (Session.sessionChronometerIsWorking) {
-            if (Session.sessionBackgroundChronometer != null &&
-                    Session.sessionBackgroundChronometer.isAlive() &&
-                    Session.sessionBackgroundChronometer.isTicking()) {
+        if (sessionChronometerIsWorking) {
+            if (sessionBackgroundChronometer != null &&
+                    sessionBackgroundChronometer.isAlive() &&
+                    sessionBackgroundChronometer.isTicking()) {
             } else {
-                synchronized (Session.sessionBackgroundChronometer) {
-                    //if (Session.sessionBackgroundChronometer == null) {
-                    resumeBackgroundChronometer();
-                    //}
+                if (sessionBackgroundChronometer == null) {
+                    sessionBackgroundChronometer = new BackgroundChronometer();
                 }
+                synchronized (sessionBackgroundChronometer) {
+                    resumeBackgroundChronometer();
+                }
+
             }
         }
     }
@@ -178,7 +178,6 @@ public class ActivityMain extends AppCompatActivity {
     }
 
 
-
     public void btUsers_onClick(final View view) {
 
         Intent intent = new Intent(ActivityMain.this, ActivityUsersList.class);
@@ -195,7 +194,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btAreas_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined(this)) {
+        if (isDBNotEmpty() && isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
             startActivity(intent);
         }
@@ -203,7 +202,7 @@ public class ActivityMain extends AppCompatActivity {
     }
 
     public void btProjects_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined(this)) {
+        if (isDBNotEmpty() && isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
             startActivity(intent);
         }
@@ -212,7 +211,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btPractices_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined(this)) {
+        if (isDBNotEmpty() && isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
             startActivity(intent);
         }
@@ -221,7 +220,7 @@ public class ActivityMain extends AppCompatActivity {
 
     public void btPracticeHistory_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined(this)) {
+        if (isDBNotEmpty() && isUserDefined()) {
             //DB.update(DB.getReadableDatabase());
             Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
             startActivity(intent);

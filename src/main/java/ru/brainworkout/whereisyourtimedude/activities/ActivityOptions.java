@@ -20,11 +20,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 
-public class ActivityOptions extends AppCompatActivity {
+public class ActivityOptions extends AbstractActivity {
 
     private Options options;
-    private final DatabaseManager DB = new DatabaseManager(this);
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

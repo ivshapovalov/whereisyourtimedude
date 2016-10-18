@@ -12,7 +12,7 @@ import java.util.Calendar;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import ru.brainworkout.whereisyourtimedude.R;
 
-public class ActivityCalendarView extends AppCompatActivity {
+public class ActivityCalendarView extends AbstractActivity {
 
     private boolean mIsBeginDate;
 

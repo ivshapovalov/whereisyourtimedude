@@ -40,40 +40,7 @@ public class Common {
 
     public static final boolean isDebug = true;
 
-    public static void defineCurrentUser(DatabaseManager DB, Activity activity) {
 
-        if (sessionCurrentUser == null) {
-            List<User> userList = DB.getAllUsers();
-            if (userList.size() == 1) {
-                User currentUser = userList.get(0);
-                sessionCurrentUser = currentUser;
-                currentUser.setIsCurrentUser(1);
-                currentUser.dbSave(DB);
-            } else {
-                //ищем активного
-                for (User user : userList
-                        ) {
-                    if (user.isCurrentUser() == 1) {
-                        sessionCurrentUser = user;
-                        break;
-                    }
-                }
-                isUserDefined(activity);
-            }
-        }
-    }
-
-
-
-    public static boolean isUserDefined(Activity activity) {
-        if (sessionCurrentUser == null) {
-            Toast toast = Toast.makeText(activity,
-                    "Не выбран пользатель. Создайте пользователя и сделайте его активным!", Toast.LENGTH_SHORT);
-            toast.show();
-            return false;
-        }
-        return true;
-    }
 
     public static String convertStackTraceToString(StackTraceElement[] stackTraceElements) {
         StringBuilder message = new StringBuilder();

@@ -24,9 +24,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
-public class ActivityProject extends AppCompatActivity {
+public class ActivityProject extends AbstractActivity {
 
-    private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
 
     private ConnectionParameters params;

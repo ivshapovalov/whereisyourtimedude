@@ -34,13 +34,11 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActi
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPracticeHistory;
 
-public class ActivityPracticesList extends AppCompatActivity {
+public class ActivityPracticesList extends AbstractActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
     private final int NUMBER_OF_VIEWS = 40000;
-
-    private final DatabaseManager DB = new DatabaseManager(this);
 
     private int mHeight = 0;
     private int mWidth = 0;

@@ -128,16 +128,15 @@
                         android:textColor="@color/text_color"
                         android:gravity="left|center_vertical"/>
 
-                    <EditText
+                    <TextView
                         style="@android:style/TextAppearance.Small"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textMultiLine|numberDecimal"
-                        android:ems="10"
-                        android:id="@+id/etDuration"
+                        android:id="@+id/tvDuration"
                         android:layout_span="20"
                         android:textColor="@color/text_color"
-                        android:gravity="left|center_vertical"/>
+                        android:gravity="left|center_vertical"
+                        android:onClick="tvDuration_onClick"/>
 
                 </TableRow>
 

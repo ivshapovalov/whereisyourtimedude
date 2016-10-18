@@ -19,10 +19,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 
-public class ActivityTools extends AppCompatActivity {
+public class ActivityTools extends AbstractActivity {
 
     private static final int MAX_VERTICAL_BUTTON_COUNT = 10;
-    private final DatabaseManager DB = new DatabaseManager(this);
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,6 +68,7 @@ public class ActivityTools extends AppCompatActivity {
         Toast toast = Toast.makeText(ActivityTools.this,
                 "База данных заполнена тестовыми данными!", Toast.LENGTH_SHORT);
         toast.show();
+        setTitleOfActivity(this);
 
     }
 
@@ -101,6 +101,8 @@ public class ActivityTools extends AppCompatActivity {
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена!", Toast.LENGTH_SHORT);
                             toast.show();
+                            setTitleOfActivity(ActivityTools.this);
+
 
 
                         } catch (Exception e) {

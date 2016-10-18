@@ -25,9 +25,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentP
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 
-public class ActivityPractice extends AppCompatActivity {
+public class ActivityPractice extends AbstractActivity {
 
-    private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
     ConnectionParameters params;
 

@@ -9,7 +9,7 @@ import ru.brainworkout.whereisyourtimedude.R;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
-public class ActivityAbout extends AppCompatActivity {
+public class ActivityAbout extends AbstractActivity {
 
 
     @Override

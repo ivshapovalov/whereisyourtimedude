@@ -36,16 +36,12 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
-public class ActivityPracticeHistoryList extends AppCompatActivity {
-
-    private static Logger LOG = ALogger.getLogger(ActivityPracticeHistoryList.class);
-
+public class ActivityPracticeHistoryList extends AbstractActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
     private final int NUMBER_OF_VIEWS = 40000;
 
-    private final DatabaseManager DB = new DatabaseManager(this);
 
     private int mHeight = 0;
     private int mWidth = 0;
@@ -55,8 +51,6 @@ public class ActivityPracticeHistoryList extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        defineCurrentUser(DB,this);
 
         LOG.debug("ActivityPracticeHistoryList start");
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());

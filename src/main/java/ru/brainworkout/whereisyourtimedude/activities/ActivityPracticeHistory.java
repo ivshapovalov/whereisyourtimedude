@@ -31,21 +31,20 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 
-public class ActivityPracticeHistory extends AppCompatActivity {
+public class ActivityPracticeHistory extends AbstractActivity {
 
-    private final DatabaseManager DB = new DatabaseManager(this);
     private boolean isNew;
-    TextView tvID;
+    private TextView tvID;
 
-    TextView tvDate;
-    TextView tvDuration;
-    TextView tvLastDate;
-    TextView tvLastTime;
+    private TextView tvDate;
+    private TextView tvDuration;
+    private TextView tvLastDate;
+    private TextView tvLastTime;
 
-    TimePickerDialog.OnTimeSetListener mTimeSetListener;
-    DatePickerDialog.OnDateSetListener mDateSetListener;
+    private TimePickerDialog.OnTimeSetListener mTimeSetListener;
+    private DatePickerDialog.OnDateSetListener mDateSetListener;
 
-    ConnectionParameters params;
+    private ConnectionParameters params;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +53,6 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         setContentView(R.layout.activity_practice_history);
 
         Intent intent = getIntent();
-
         getIntentParams(intent);
 
         if (isNew) {
@@ -85,6 +83,13 @@ public class ActivityPracticeHistory extends AppCompatActivity {
             sessionCurrentPracticeHistory.setDate(currentDateInMillis);
         }
 
+        long millis = intent.getLongExtra("millis", -1);
+        if (millis!=-1) {
+            if (sessionCurrentPracticeHistory!=null) {
+                sessionCurrentPracticeHistory.setDuration(millis);
+            }
+        }
+
         showPracticeHistoryOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
@@ -92,10 +97,8 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     }
 
     private void getIntentParams(Intent intent) {
-
-       params = sessionOpenActivities.peek();
-       isNew=(params!=null?params.isTransmitterNew():false);
-
+        params = sessionOpenActivities.peek();
+        isNew = (params != null ? params.isTransmitterNew() : false);
     }
 
     private void showPracticeHistoryOnScreen() {
@@ -117,7 +120,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
         }
 
         //
-        int mDuration = getResources().getIdentifier("etDuration", "id", getPackageName());
+        int mDuration = getResources().getIdentifier("tvDuration", "id", getPackageName());
         tvDuration = (TextView) findViewById(mDuration);
         if (tvDuration != null) {
 
@@ -158,7 +161,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
         intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getID());
         sessionCurrentPracticeHistory = null;
@@ -171,10 +174,10 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     private void getPropertiesFromScreen() {
 
         //Имя
-        int mDurationID = getResources().getIdentifier("etDuration", "id", getPackageName());
-        EditText etDuration = (EditText) findViewById(mDurationID);
-        if (etDuration != null) {
-            String dur = String.valueOf(etDuration.getText());
+        int mDurationID = getResources().getIdentifier("tvDuration", "id", getPackageName());
+        TextView tvDuration = (TextView) findViewById(mDurationID);
+        if (tvDuration != null) {
+            String dur = String.valueOf(tvDuration.getText());
             if (!"".equals(dur)) {
                 sessionCurrentPracticeHistory.setDuration(Long.valueOf(dur));
             }
@@ -184,7 +187,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     }
 
     public void tvDate_onClick(View view) {
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
         //mCurrentPracticeHistory.dbSave(DB);
         Intent intent = new Intent(ActivityPracticeHistory.this, ActivityCalendarView.class);
@@ -197,14 +200,14 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void tvPractice_onClick(View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
 
         int id_practice = sessionCurrentPracticeHistory.getIdPractice();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         Boolean isNew = !DB.containsPracticeHistory(sessionCurrentPracticeHistory.getID());
-        ConnectionParameters params= new ConnectionParameters.Builder()
+        ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistory")
                 .isTransmitterNew(isNew)
                 .isTransmitterForChoice(false)
@@ -222,7 +225,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     public void tvLastDate_onClick(View view) {
 
 
-        blink(view,this);
+        blink(view, this);
 
         mDateSetListener =
                 new DatePickerDialog.OnDateSetListener() {
@@ -245,7 +248,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void tvLastTime_onClick(View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         // Register  TimePickerDialog listener
         mTimeSetListener =
@@ -286,7 +289,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
         sessionCurrentPracticeHistory.dbSave(DB);
 
@@ -309,7 +312,7 @@ public class ActivityPracticeHistory extends AppCompatActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
 
         new AlertDialog.Builder(this)
@@ -330,4 +333,12 @@ public class ActivityPracticeHistory extends AppCompatActivity {
     }
 
 
+    public void tvDuration_onClick(View view) {
+
+        Intent intent = new Intent(ActivityPracticeHistory.this, ActivityDateTimePickerDialog.class);
+        intent.putExtra("millis", sessionCurrentPracticeHistory.getDuration());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
 }

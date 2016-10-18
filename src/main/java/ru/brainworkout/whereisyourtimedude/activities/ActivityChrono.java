@@ -38,11 +38,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgrou
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 
-public class ActivityChrono extends AppCompatActivity {
+public class ActivityChrono extends AbstractActivity {
 
-    private SharedPreferences mSettings;
-    private static Logger LOG = ALogger.getLogger(ActivityChrono.class);
-    private final DatabaseManager DB = new DatabaseManager(this);
     private static PracticeHistory currentPracticeHistory;
     private static List<PracticeHistory> practices = new ArrayList<>();
     private static long currentDateInMillis;

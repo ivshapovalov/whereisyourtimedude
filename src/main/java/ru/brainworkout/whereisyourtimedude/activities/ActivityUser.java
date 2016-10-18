@@ -25,10 +25,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
-public class ActivityUser extends AppCompatActivity {
+public class ActivityUser extends AbstractActivity {
 
     private User mCurrentUser;
-    private final DatabaseManager DB = new DatabaseManager(this);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

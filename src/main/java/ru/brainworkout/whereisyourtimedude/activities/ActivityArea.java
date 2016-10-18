@@ -30,9 +30,8 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentArea;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
-public class ActivityArea extends AppCompatActivity {
+public class ActivityArea extends AbstractActivity {
 
-    private final DatabaseManager DB = new DatabaseManager(this);
     private ConnectionParameters params;
     private boolean isNew;
 

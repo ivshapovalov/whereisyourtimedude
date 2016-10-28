@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import org.apache.log4j.Logger;
 import static  ru.brainworkout.whereisyourtimedude.common.Session.*;
+import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 
 public class BackgroundChronometerService extends Service {
 
@@ -30,9 +31,11 @@ public class BackgroundChronometerService extends Service {
         LOG.debug("Set service of backgroundChronometer ");
         sessionBackgroundChronometer.setService(this);
         LOG.debug("Get notification of "+sessionBackgroundChronometer.getName());
-        Notification notification=sessionBackgroundChronometer.getCurrentNotification(Common.SYMBOL_STOP);
-        LOG.debug("Start service foreground ");
-        startForeground(SESSION_NOTIFICATION_ID, notification);
+        if (Session.sessionOptions.getDisplaySwitch() == 1) {
+            Notification notification = sessionBackgroundChronometer.getCurrentNotification(Common.SYMBOL_STOP);
+            LOG.debug("Start service foreground ");
+            startForeground(SESSION_NOTIFICATION_ID, notification);
+        }
 //        LOG.debug("Stop service foreground ");
 //        stopForeground(true);
         LOG.debug("Background service started successful ");
@@ -84,5 +87,7 @@ public class BackgroundChronometerService extends Service {
 
         return super.onUnbind(intent);
     }
+
+
 
 }

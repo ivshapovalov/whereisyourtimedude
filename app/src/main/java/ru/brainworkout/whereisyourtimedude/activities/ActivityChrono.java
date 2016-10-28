@@ -301,6 +301,7 @@ public class ActivityChrono extends AbstractActivity {
         backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
         LOG.debug("Before service start");
         startService(backgroundServiceIntent);
+
         Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
         Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
         Session.sessionBackgroundChronometer.setDB(DB);
@@ -524,10 +525,12 @@ public class ActivityChrono extends AbstractActivity {
         if (!mChronometerIsWorking) {
             sessionBackgroundChronometer.pauseTicking();
             //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
-            sessionBackgroundChronometer.interrupt();
             if (sessionBackgroundChronometer.getService() != null) {
+                sessionBackgroundChronometer.getService().stopForeground(true);
                 stopService(backgroundServiceIntent);
             }
+            sessionBackgroundChronometer.interrupt();
+
             setAndSaveChronometerState(false);
 
         }

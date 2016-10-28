@@ -124,6 +124,7 @@ public class BackgroundChronometer extends Thread {
     @Override
     public void interrupt() {
         LOG.error(this.getName() + " interrupted ");
+        pauseTicking();
         super.interrupt();
     }
 
@@ -158,11 +159,13 @@ public class BackgroundChronometer extends Thread {
                                 // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
                             }
                             if (ticking) {
-                                if (sessionOptions != null && sessionOptions.getDisplaySwitch() == 1) {
+                                if (sessionOptions != null) {
 
                                     if (service != null) {
-                                        writeMemoryInLog();
-                                        updateNotification(SYMBOL_PLAY);
+                                        if (sessionOptions.getDisplaySwitch() == 1) {
+                                            writeMemoryInLog();
+                                            updateNotification(SYMBOL_PLAY);
+                                        }
                                     }
 
                                 } else {
@@ -227,33 +230,34 @@ public class BackgroundChronometer extends Thread {
 
             String currentDuration = Common.ConvertMillisToStringWithAllTime(this.getGlobalChronometerCountInSeconds() * 1000);
 
-            //What happen when you will click on button
-            Intent playIntent = new Intent(service, ActivityChrono.class);
-            if (symbol.equals(Common.SYMBOL_PLAY)) {
-                playIntent.setAction("STOP");
-            } else         if (symbol.equals(Common.SYMBOL_STOP)) {
-                playIntent.setAction("PLAY");
-            }
-
-            PendingIntent pendingIntentAction = PendingIntent.getActivity(service, 0, playIntent, PendingIntent.FLAG_ONE_SHOT);
-
-            //Button
-            NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_play, symbol + " " + currentDuration, pendingIntentAction).build();
-
+//            //What happen when you will click on button
+//            Intent playIntent = new Intent(service, ActivityChrono.class);
+//            if (symbol.equals(Common.SYMBOL_PLAY)) {
+//                playIntent.setAction("STOP");
+//            } else         if (symbol.equals(Common.SYMBOL_STOP)) {
+//                playIntent.setAction("PLAY");
+//            }
+//
+//            PendingIntent pendingIntentAction = PendingIntent.getActivity(service, 0, playIntent, PendingIntent.FLAG_ONE_SHOT);
+//
+//            //Button
+//            NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_play, symbol + " " + currentDuration, pendingIntentAction).build();
+//
+//            Notification notification = new NotificationCompat.Builder(service)
+//                    .setSmallIcon(R.drawable.sand_clock)
+//                    .addAction(action)
+//                    .setContentTitle("WIYTD")
+//                    .setContentText(practiceName)
+//                    .setContentIntent(pendingIntent)
+//                    .build();
+//            return notification;
             Notification notification = new NotificationCompat.Builder(service)
                     .setSmallIcon(R.drawable.sand_clock)
-                    .addAction(action)
-                    .setContentTitle("WIYTD")
-                    .setContentText(practiceName)
+                    .setContentTitle(practiceName)
+                    .setContentText(symbol + " " + currentDuration)
                     .setContentIntent(pendingIntent)
                     .build();
             return notification;
-//            Notification notification = new NotificationCompat.Builder(service)
-//                    .setSmallIcon(R.drawable.sand_clock)
-//                    .setContentTitle(practiceName)
-//                    .setContentText(symbol + " " + currentDuration)
-//                    .setContentIntent(pendingIntent).build();
-//            return notification;
         } catch (NullPointerException e) {
             LOG.error(this.getName() + "-" + e.getMessage(), e);
             throw e;

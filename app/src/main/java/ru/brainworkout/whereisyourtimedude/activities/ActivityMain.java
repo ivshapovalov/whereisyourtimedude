@@ -1,6 +1,8 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -261,6 +263,12 @@ public class ActivityMain extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finish();
+                        if (sessionBackgroundChronometer!=null
+                                && sessionBackgroundChronometer.getService()!=null ) {
+
+                            sessionBackgroundChronometer.getService().stopForeground(true);
+                            sessionBackgroundChronometer.interrupt();
+                        }
                     }
                 }).setNegativeButton("Нет", null).show();
 

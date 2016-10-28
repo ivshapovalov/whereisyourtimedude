@@ -50,8 +50,21 @@ public class ActivityOptions extends AbstractActivity {
         Session.sessionOptions = options;
         Session.saveInterval = options.getSaveInterval();
         if (options.getDisplaySwitch() == 0) {
-            NotificationManager mNotificationManager = (NotificationManager) Session.sessionBackgroundChronometer.getService().getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.cancel(Session.SESSION_NOTIFICATION_ID);
+            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+//                NotificationManager mNotificationManager = (NotificationManager) Session.sessionBackgroundChronometer.getService().getSystemService(Context.NOTIFICATION_SERVICE);
+//                mNotificationManager.cancel(Session.SESSION_NOTIFICATION_ID);
+                Session.sessionBackgroundChronometer.getService()
+                        .stopForeground(true);
+
+
+            }
+        } else {
+            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+                if (Session.sessionBackgroundChronometer.isTicking()) {
+                    Session.sessionBackgroundChronometer.getService()
+                            .startForeground(Session.SESSION_NOTIFICATION_ID, Session.sessionBackgroundChronometer.getCurrentNotification(Common.SYMBOL_PLAY));
+                }
+            }
         }
 
         this.finish();

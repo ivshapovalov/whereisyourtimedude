@@ -1,0 +1,47 @@
+apply plugin: 'com.android.application'
+
+android {
+    signingConfigs {
+    }
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
+    defaultConfig {
+        applicationId "ru.brainworkout.whereisyourtimedude"
+        minSdkVersion 14
+        targetSdkVersion 23
+        versionCode 1
+        versionName "1.0"
+    }
+//    buildTypes {
+//        time_release {
+//        }
+//    }
+    buildTypes {
+        debug {
+            debuggable true
+        }
+
+        applicationVariants.all { variant ->
+            variant.outputs.each { output ->
+                //output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
+                output.outputFile = file("Q://Dropbox/android/timer_test.apk")
+                //output.outputFile = file("Q://ya_disk/timer_test.apk")
+
+            }
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    testCompile 'junit:junit:4.12'
+    compile 'com.android.support:appcompat-v7:23.0.3'
+    compile 'org.apache.poi:poi:3.15-beta2'
+    compile 'com.github.QuadFlask:colorpicker:0.0.11'
+    compile 'org.apache.logging.log4j:log4j:2.7'
+    compile 'de.mindpipe.android:android-logging-log4j:1.0.3'
+    compile 'log4j:log4j:1.2.17'
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+}

@@ -8,6 +8,10 @@
         "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_play.png"
     },
     {
+        "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi-v4\\sand_clock.png",
+        "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\mipmap-xxxhdpi\\sand_clock.png"
+    },
+    {
         "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-xxxhdpi-v4\\ic_launcher.png",
         "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\mipmap-xxxhdpi\\ic_launcher.png"
     }

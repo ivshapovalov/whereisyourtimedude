@@ -158,7 +158,9 @@ public class ActivityMain extends AbstractActivity {
                 options.dbSave(DB);
             }
             Session.sessionOptions = options;
-            sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
+            if (options.getRecoverySwitch()==1) {
+                sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
+            }
             Session.saveInterval = options.getSaveInterval();
         }
     }

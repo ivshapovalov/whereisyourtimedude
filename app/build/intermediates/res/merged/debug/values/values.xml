@@ -20,8 +20,10 @@
     <color name="accent_material_light">@color/material_deep_teal_500</color>
     <color name="background_floating_material_dark">@color/material_grey_800</color>
     <color name="background_floating_material_light">@android:color/white</color>
+    <color name="background_grey">#ffdedede</color>
     <color name="background_material_dark">@color/material_grey_850</color>
     <color name="background_material_light">@color/material_grey_50</color>
+    <color name="black">#ff000000</color>
     <color name="bright_foreground_disabled_material_dark">#80ffffff</color>
     <color name="bright_foreground_disabled_material_light">#80000000</color>
     <color name="bright_foreground_inverse_material_dark">@color/bright_foreground_material_light</color>
@@ -79,11 +81,17 @@
     <color name="secondary_text_default_material_light">#8a000000</color>
     <color name="secondary_text_disabled_material_dark">#36ffffff</color>
     <color name="secondary_text_disabled_material_light">#24000000</color>
+    <color name="selected_tabtext">#bb000000</color>
+    <color name="shuffle_grey">#ffdedede</color>
     <color name="switch_thumb_disabled_material_dark">#ff616161</color>
     <color name="switch_thumb_disabled_material_light">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_dark">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_light">#fff1f1f1</color>
     <color name="text_color">#406cca</color>
+    <color name="transparent">#00000000</color>
+    <color name="transparent_black">#aa000000</color>
+    <color name="unselected_tabtext">#77000000</color>
+    <color name="white">#ffffffff</color>
     <declare-styleable name="ActionBar"><attr name="navigationMode"><enum name="normal" value="0"/><enum name="listMode" value="1"/><enum name="tabMode" value="2"/></attr><attr name="displayOptions"><flag name="none" value="0"/><flag name="useLogo" value="0x1"/><flag name="showHome" value="0x2"/><flag name="homeAsUp" value="0x4"/><flag name="showTitle" value="0x8"/><flag name="showCustom" value="0x10"/><flag name="disableHome" value="0x20"/></attr><attr name="title"/><attr format="string" name="subtitle"/><attr format="reference" name="titleTextStyle"/><attr format="reference" name="subtitleTextStyle"/><attr format="reference" name="icon"/><attr format="reference" name="logo"/><attr format="reference" name="divider"/><attr format="reference" name="background"/><attr format="reference|color" name="backgroundStacked"/><attr format="reference|color" name="backgroundSplit"/><attr format="reference" name="customNavigationLayout"/><attr name="height"/><attr format="reference" name="homeLayout"/><attr format="reference" name="progressBarStyle"/><attr format="reference" name="indeterminateProgressStyle"/><attr format="dimension" name="progressBarPadding"/><attr name="homeAsUpIndicator"/><attr format="dimension" name="itemPadding"/><attr format="boolean" name="hideOnContentScroll"/><attr format="dimension" name="contentInsetStart"/><attr format="dimension" name="contentInsetEnd"/><attr format="dimension" name="contentInsetLeft"/><attr format="dimension" name="contentInsetRight"/><attr format="dimension" name="elevation"/><attr format="reference" name="popupTheme"/></declare-styleable>
     <declare-styleable name="ActionBarLayout"><attr name="android:layout_gravity"/></declare-styleable>
     <declare-styleable name="ActionMenuItemView"><attr name="android:minWidth"/></declare-styleable>
@@ -237,6 +245,7 @@
     <string name="about_name">ABOUT</string>
     <string name="about_text">2016. This program will help you to chrono your activities</string>
     <string name="app_name">WHERE IS YOUR TIME DUDE</string>
+    <string name="app_version_number">1.0</string>
     <string name="area_name">AREA</string>
     <string name="areas_list_name">AREAS</string>
     <string name="auth_google_play_services_client_facebook_display_name">Facebook</string>
@@ -274,7 +283,9 @@
     <string name="common_google_play_services_updating_title">Google Play services are updating</string>
     <string name="common_open_on_phone">Open on phone</string>
     <string name="date_time_picker_name">CHOOSE THE DATE</string>
+    <string name="menu_settings">Settings</string>
     <string name="options_name">OPTIONS</string>
+    <string name="play_pause">Play/Pause</string>
     <string name="practice_history_list_name">HISTORIES</string>
     <string name="practice_history_name">HISTORY</string>
     <string name="practice_name">PRACTICE</string>
@@ -282,6 +293,7 @@
     <string name="project_name">PROJECT</string>
     <string name="projects_list_name">PROJECTS</string>
     <string name="status_bar_notification_info_overflow">999+</string>
+    <string name="stop_foreground">Hide</string>
     <string name="tools_name">TOOLS"</string>
     <string name="user_name">USER</string>
     <string name="users_list_name">USERS</string>

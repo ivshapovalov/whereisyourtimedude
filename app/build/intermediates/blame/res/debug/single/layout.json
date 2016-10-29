@@ -28,12 +28,12 @@
         "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\layout\\activity_users_list.xml"
     },
     {
-        "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_practices_history_list.xml",
-        "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\layout\\activity_practices_history_list.xml"
-    },
-    {
         "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\notification_template_lines.xml",
         "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.0\\res\\layout\\notification_template_lines.xml"
+    },
+    {
+        "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_practices_history_list.xml",
+        "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\layout\\activity_practices_history_list.xml"
     },
     {
         "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple_overlay_action_mode.xml",
@@ -170,6 +170,10 @@
     {
         "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\abc_screen_simple.xml",
         "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\exploded-aar\\com.android.support\\appcompat-v7\\23.1.0\\res\\layout\\abc_screen_simple.xml"
+    },
+    {
+        "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\status_bar.xml",
+        "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\layout\\status_bar.xml"
     },
     {
         "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\layout\\activity_practice_history.xml",

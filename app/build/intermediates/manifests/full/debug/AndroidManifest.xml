@@ -13,8 +13,7 @@
 
     <application
         android:allowBackup="true"
-        android:debuggable="true"
-        android:icon="@drawable/sand_clock"
+        android:icon="@mipmap/sand_clock"
         android:label="@string/app_name"
         android:persistent="true"
         android:supportsRtl="true"

@@ -10,5 +10,9 @@
     {
         "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\ic_stop.png",
         "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\mipmap-hdpi\\ic_stop.png"
+    },
+    {
+        "merged": "C:\\AndroidStudy\\whereisyourtimedude\\app\\build\\intermediates\\res\\merged\\debug\\mipmap-hdpi-v4\\sand_clock.png",
+        "source": "C:\\AndroidStudy\\whereisyourtimedude\\app\\src\\main\\res\\mipmap-hdpi\\sand_clock.png"
     }
 ]

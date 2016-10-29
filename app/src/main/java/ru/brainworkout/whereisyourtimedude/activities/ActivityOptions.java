@@ -2,6 +2,7 @@ package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.NotificationManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,7 +12,9 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Constants;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
@@ -59,10 +62,16 @@ public class ActivityOptions extends AbstractActivity {
 
             }
         } else {
-            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+            if (Session.sessionBackgroundChronometer != null) {
                 if (Session.sessionBackgroundChronometer.isTicking()) {
-                    Session.sessionBackgroundChronometer.getService()
-                            .startForeground(Session.SESSION_NOTIFICATION_ID, Session.sessionBackgroundChronometer.getCurrentNotification(Common.SYMBOL_PLAY));
+                    if (Session.sessionBackgroundChronometer.getService() != null) {
+                        Session.sessionBackgroundChronometer.getService()
+                                .startForeground(Session.SESSION_NOTIFICATION_ID, Session.sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PLAY_ACTION));
+                    } else {
+                        Intent backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
+                        backgroundServiceIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                        startService(backgroundServiceIntent);
+                    }
                 }
             }
         }

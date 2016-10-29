@@ -35,8 +35,8 @@ public class Common {
     public static final String SYMBOL_DATE_FORMAT = "yyyy-MM-dd";
     public static final String SYMBOL_TIME_FORMAT = "HH:mm:ss";
     public static final String SYMBOL_EDIT = "►";
-    public static final String SYMBOL_PLAY = "►";
-    public static final String SYMBOL_STOP = "■";
+   // public static final String SYMBOL_PLAY = "►";
+  //  public static final String SYMBOL_STOP = "■";
 
     public static final boolean isDebug = true;
 

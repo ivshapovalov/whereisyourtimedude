@@ -110,10 +110,10 @@
             android:layout_height="match_parent">
 
             <Button
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="TOOLS"
-                android:id="@+id/button8"
+                android:id="@+id/btMain8"
                 android:onClick="btTools_onClick"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color"

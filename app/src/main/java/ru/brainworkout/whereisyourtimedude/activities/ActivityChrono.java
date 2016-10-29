@@ -21,6 +21,7 @@ import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Constants;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
@@ -89,6 +90,15 @@ public class ActivityChrono extends AbstractActivity {
                         }
                     }
 
+                    if (!mChronometerIsWorking && sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
+                        mChronometerIsWorking = true;
+                        mChronometer.start();
+                   }
+                    else if (mChronometerIsWorking && sessionBackgroundChronometer != null && !sessionBackgroundChronometer.isTicking()) {
+                        mChronometerIsWorking = false;
+                        mChronometer.stop();
+                    }
+
                 }
             }
         });
@@ -145,7 +155,6 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.setDB(DB);
             Session.sessionBackgroundChronometer.pauseTicking();
             Session.sessionBackgroundChronometer.start();
-            setAndSaveChronometerState(true);
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
@@ -217,6 +226,7 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
 
         } else {
+            backgroundServiceIntent.setAction("START");
             startService(backgroundServiceIntent);
             Session.sessionBackgroundChronometer.start();
             Session.sessionBackgroundChronometer.pauseTicking();
@@ -225,7 +235,6 @@ public class ActivityChrono extends AbstractActivity {
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
-            setAndSaveChronometerState(false);
 
         }
         updateAllRows();
@@ -241,7 +250,6 @@ public class ActivityChrono extends AbstractActivity {
             mChronometer.stop();
             Session.sessionBackgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
-            setAndSaveChronometerState(false);
         } else {
         }
         currentPracticeHistory.dbSave(DB);
@@ -299,6 +307,7 @@ public class ActivityChrono extends AbstractActivity {
         LOG.debug("rowWork_onClick:before start service");
 
         backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
+        backgroundServiceIntent.setAction("START");
         LOG.debug("Before service start");
         startService(backgroundServiceIntent);
 
@@ -310,8 +319,6 @@ public class ActivityChrono extends AbstractActivity {
         mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
         mChronometerIsWorking = true;
         mChronometer.start();
-
-        setAndSaveChronometerState(true);
 
         updatePractices(currentDateInMillis);
         updateAllRows();
@@ -331,6 +338,7 @@ public class ActivityChrono extends AbstractActivity {
             //startService(backgroundServiceIntent);
             if (sessionBackgroundChronometer.isAlive()) {
                 backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
+                backgroundServiceIntent.setAction("START");
                 LOG.debug("Before service start");
                 startService(backgroundServiceIntent);
                 sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
@@ -348,7 +356,6 @@ public class ActivityChrono extends AbstractActivity {
             mChronometerIsWorking = true;
             mChronometer.start();
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-            setAndSaveChronometerState(true);
 
         } else {
             LOG.debug("Timer paused currentWork_onClick");
@@ -358,9 +365,7 @@ public class ActivityChrono extends AbstractActivity {
             mChronometerIsWorking = false;
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             currentPracticeHistory.dbSave(DB);
-            sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
-
-            setAndSaveChronometerState(false);
+            sessionBackgroundChronometer.updateNotification(Constants.ACTION.PAUSE_ACTION);
 
         }
         updateAllRows();
@@ -527,11 +532,11 @@ public class ActivityChrono extends AbstractActivity {
             //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
             if (sessionBackgroundChronometer.getService() != null) {
                 sessionBackgroundChronometer.getService().stopForeground(true);
-                stopService(backgroundServiceIntent);
+                if (backgroundServiceIntent != null) {
+                    stopService(backgroundServiceIntent);
+                }
             }
             sessionBackgroundChronometer.interrupt();
-
-            setAndSaveChronometerState(false);
 
         }
         LOG.debug("Close ActivityChrono");
@@ -542,10 +547,6 @@ public class ActivityChrono extends AbstractActivity {
 
     }
 
-    private void setAndSaveChronometerState(boolean state) {
-        Session.sessionOptions.setChronoIsWorking(state ? 1 : 0);
-        Session.sessionOptions.dbSave(DB);
-    }
 
     @Override
     protected void onDestroy() {

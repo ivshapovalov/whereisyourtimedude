@@ -18,7 +18,6 @@ import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.activities.ActivityChrono;
-import ru.brainworkout.whereisyourtimedude.activities.ActivityMain;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
@@ -26,7 +25,6 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
-import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 
 
 public class BackgroundChronometer extends Thread {
@@ -325,31 +323,58 @@ public class BackgroundChronometer extends Thread {
             Intent intentPlayPause = new Intent(service, BackgroundChronometerService.class);
 
             int iconPlayPause = 0;
+
+            //TODO не работает
             if (symbol.equals(Constants.ACTION.PLAY_ACTION)) {
                 intentPlayPause.setAction(Constants.ACTION.PAUSE_ACTION);
-                iconPlayPause =  android.R.drawable.ic_media_pause;;
+                iconPlayPause = android.R.drawable.ic_media_pause;
             } else if (symbol.equals(Constants.ACTION.PAUSE_ACTION)) {
                 currentDuration = currentDuration.concat(" (paused)");
                 intentPlayPause.setAction(Constants.ACTION.PLAY_ACTION);
                 iconPlayPause = android.R.drawable.ic_media_play;
+            } else {
+                if (sessionBackgroundChronometer != null) {
+                    if (sessionBackgroundChronometer.isTicking()) {
+                        intentPlayPause.setAction(Constants.ACTION.PAUSE_ACTION);
+                        iconPlayPause = android.R.drawable.ic_media_pause;
+                    } else {
+                        currentDuration = currentDuration.concat(" (paused)");
+                        intentPlayPause.setAction(Constants.ACTION.PLAY_ACTION);
+                        iconPlayPause = android.R.drawable.ic_media_play;
+                    }
+                }
             }
 
             PendingIntent pPlayPauseIntent = PendingIntent.getService(service, 0,
                     intentPlayPause, 0);
 
+            int iconShowHide = 0;
 
-            Intent stopIntent = new Intent(service, BackgroundChronometerService.class);
-            stopIntent.setAction(Constants.ACTION.STOPFOREGROUND_ACTION);
-            PendingIntent pstopIntent = PendingIntent.getService(service, 0,
-                    stopIntent, 0);
+            Intent intentShowHideNotification = new Intent(service, BackgroundChronometerService.class);
+            if (Session.sessionOptions.getDisplaySwitch() == 1) {
+                intentShowHideNotification.setAction(Constants.ACTION.HIDE_NOTIFICATION_ACTION);
+                iconShowHide = android.R.drawable.ic_menu_close_clear_cancel;
+            } else {
+                intentShowHideNotification.setAction(Constants.ACTION.SHOW_NOTIFICATION_ACTION);
+                iconShowHide = android.R.drawable.ic_menu_recent_history;
+
+            }
+            PendingIntent pShowHideIntent = PendingIntent.getService(service, 0,
+                    intentShowHideNotification, 0);
 
             views.setOnClickPendingIntent(R.id.status_bar_play_pause, pPlayPauseIntent);
-            views.setOnClickPendingIntent(R.id.status_bar_stop, pstopIntent);
+            views.setOnClickPendingIntent(R.id.status_bar_show_hide, pShowHideIntent);
 
             views.setImageViewResource(R.id.status_bar_play_pause,
                     iconPlayPause);
+            views.setImageViewResource(R.id.status_bar_show_hide,
+                    iconShowHide);
             views.setTextViewText(R.id.status_bar_practice_name, practiceName);
-            views.setTextViewText(R.id.status_bar_duration, currentDuration);
+            String message = currentDuration;
+            if (symbol.equals(Constants.ACTION.FREEZE_ACTION)) {
+                message = projectName + " - " + areaName;
+            }
+            views.setTextViewText(R.id.status_bar_duration, message);
 
             notification = new NotificationCompat.Builder(service).build();
             notification.contentView = views;
@@ -418,5 +443,12 @@ public class BackgroundChronometer extends Thread {
 
     }
 
+    public void freezeNotification() {
+        if (sessionOptions != null) {
+            Notification notification = getCurrentNotification(Constants.ACTION.FREEZE_ACTION);
+            NotificationManager mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.notify(SESSION_NOTIFICATION_ID, notification);
+        }
+    }
 }
 

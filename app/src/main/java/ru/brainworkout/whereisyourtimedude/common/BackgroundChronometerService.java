@@ -11,7 +11,6 @@ import org.apache.log4j.Logger;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
-import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 
 public class BackgroundChronometerService extends Service {
 
@@ -50,18 +49,19 @@ public class BackgroundChronometerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
-            if (intent.getAction().equals(Constants.ACTION.STARTFOREGROUND_ACTION)) {
+            if (intent.getAction().equals(Constants.ACTION.SHOW_NOTIFICATION_ACTION)) {
                 sessionBackgroundChronometer.setService(this);
-                if (Session.sessionOptions.getDisplaySwitch() == 1) {
+                if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+                    Session.sessionOptions.setDisplaySwitch(1);
+                    Session.sessionOptions.dbSave(DB);
                     Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PAUSE_ACTION);
                     startForeground(SESSION_NOTIFICATION_ID, notification);
                 }
-            } else if (intent.getAction().equals(Constants.ACTION.STOPFOREGROUND_ACTION)) {
+            } else if (intent.getAction().equals(Constants.ACTION.HIDE_NOTIFICATION_ACTION)) {
                 if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
                     Session.sessionOptions.setDisplaySwitch(0);
                     Session.sessionOptions.dbSave(DB);
-                    Session.sessionBackgroundChronometer.getService()
-                           .stopForeground(true);
+                    Session.sessionBackgroundChronometer.freezeNotification();
                 }
             } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
                 if (sessionBackgroundChronometer != null) {

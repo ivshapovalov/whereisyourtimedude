@@ -1,11 +1,7 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioButton;
@@ -13,11 +9,9 @@ import android.widget.RadioGroup;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
-import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Constants;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -56,8 +50,9 @@ public class ActivityOptions extends AbstractActivity {
             if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
 //                NotificationManager mNotificationManager = (NotificationManager) Session.sessionBackgroundChronometer.getService().getSystemService(Context.NOTIFICATION_SERVICE);
 //                mNotificationManager.cancel(Session.SESSION_NOTIFICATION_ID);
-                Session.sessionBackgroundChronometer.getService()
-                        .stopForeground(true);
+//                Session.sessionBackgroundChronometer.getService()
+//                        .stopForeground(true);
+                Session.sessionBackgroundChronometer.freezeNotification();
 
 
             }
@@ -69,7 +64,7 @@ public class ActivityOptions extends AbstractActivity {
                                 .startForeground(Session.SESSION_NOTIFICATION_ID, Session.sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PLAY_ACTION));
                     } else {
                         Intent backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
-                        backgroundServiceIntent.setAction(Constants.ACTION.STARTFOREGROUND_ACTION);
+                        backgroundServiceIntent.setAction(Constants.ACTION.PLAY_ACTION);
                         startService(backgroundServiceIntent);
                     }
                 }

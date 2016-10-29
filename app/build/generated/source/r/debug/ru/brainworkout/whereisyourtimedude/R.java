@@ -1907,7 +1907,7 @@ containing a value of this type.
         public static final int status_bar_latest_event_content=0x7f0c00cb;
         public static final int status_bar_play_pause=0x7f0c00d9;
         public static final int status_bar_practice_name=0x7f0c00d7;
-        public static final int status_bar_stop=0x7f0c00da;
+        public static final int status_bar_show_hide=0x7f0c00da;
         public static final int submit_area=0x7f0c0050;
         public static final int svTableAreas=0x7f0c0063;
         public static final int svTablePracticeHistory=0x7f0c00ba;

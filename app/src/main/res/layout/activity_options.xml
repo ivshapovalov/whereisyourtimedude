@@ -58,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="50"
-            android:text="RECOVERY"
+            android:text="RECOVERY ON NEXT RUN"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="@color/text_color"/>
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="50"
-            android:text="DISPLAY"
+            android:text="DISPLAY TIMER"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="@color/text_color"/>

@@ -665,7 +665,7 @@ int id status_bar_icon 0x7f0c00d6
 int id status_bar_latest_event_content 0x7f0c00cb
 int id status_bar_play_pause 0x7f0c00d9
 int id status_bar_practice_name 0x7f0c00d7
-int id status_bar_stop 0x7f0c00da
+int id status_bar_show_hide 0x7f0c00da
 int id submit_area 0x7f0c0050
 int id svTableAreas 0x7f0c0063
 int id svTablePracticeHistory 0x7f0c00ba

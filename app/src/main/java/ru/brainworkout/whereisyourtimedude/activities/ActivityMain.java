@@ -54,20 +54,20 @@ public class ActivityMain extends AbstractActivity {
     }
 
     private void resumeChronoIfWorking() {
-        if (sessionChronometerIsWorking) {
-            if (sessionBackgroundChronometer != null &&
-                    sessionBackgroundChronometer.isAlive() &&
-                    sessionBackgroundChronometer.isTicking()) {
-            } else {
-                if (sessionBackgroundChronometer == null) {
-                    sessionBackgroundChronometer = new BackgroundChronometer();
-                }
-                synchronized (sessionBackgroundChronometer) {
-                    resumeBackgroundChronometer();
-                }
-
+        //if (sessionChronometerIsWorking) {
+        if (sessionBackgroundChronometer != null &&
+                sessionBackgroundChronometer.isAlive() &&
+                sessionBackgroundChronometer.isTicking()) {
+        } else {
+            if (sessionBackgroundChronometer == null) {
+                sessionBackgroundChronometer = new BackgroundChronometer();
             }
+            synchronized (sessionBackgroundChronometer) {
+                resumeBackgroundChronometer();
+            }
+
         }
+        //}
     }
 
     private void resumeBackgroundChronometer() {
@@ -141,7 +141,9 @@ public class ActivityMain extends AbstractActivity {
             Session.sessionBackgroundChronometer.setDB(DB);
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(duration);
             Session.sessionBackgroundChronometer.start();
-            Session.sessionBackgroundChronometer.resumeTicking();
+            if (sessionChronometerIsWorking) {
+                Session.sessionBackgroundChronometer.resumeTicking();
+            }
         }
     }
 
@@ -158,7 +160,7 @@ public class ActivityMain extends AbstractActivity {
                 options.dbSave(DB);
             }
             Session.sessionOptions = options;
-            if (options.getRecoverySwitch()==1) {
+            if (options.getRecoverySwitch() == 1) {
                 sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
             }
             Session.saveInterval = options.getSaveInterval();
@@ -265,8 +267,8 @@ public class ActivityMain extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finish();
-                        if (sessionBackgroundChronometer!=null
-                                && sessionBackgroundChronometer.getService()!=null ) {
+                        if (sessionBackgroundChronometer != null
+                                && sessionBackgroundChronometer.getService() != null) {
 
                             sessionBackgroundChronometer.getService().stopForeground(true);
                             sessionBackgroundChronometer.interrupt();

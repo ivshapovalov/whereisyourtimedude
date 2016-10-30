@@ -527,18 +527,18 @@ public class ActivityChrono extends AbstractActivity {
 
     public void onBackPressed() {
 
-        if (!mChronometerIsWorking) {
-            sessionBackgroundChronometer.pauseTicking();
-            //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
-            if (sessionBackgroundChronometer.getService() != null) {
-                sessionBackgroundChronometer.getService().stopForeground(true);
-                if (backgroundServiceIntent != null) {
-                    stopService(backgroundServiceIntent);
-                }
-            }
-            sessionBackgroundChronometer.interrupt();
-
-        }
+//        if (!mChronometerIsWorking) {
+//            sessionBackgroundChronometer.pauseTicking();
+//            //Session.sessionBackgroundChronometer.updateNotification(Common.SYMBOL_STOP);
+//            if (sessionBackgroundChronometer.getService() != null) {
+//                sessionBackgroundChronometer.getService().stopForeground(true);
+//                if (backgroundServiceIntent != null) {
+//                    stopService(backgroundServiceIntent);
+//                }
+//            }
+//            sessionBackgroundChronometer.interrupt();
+//
+//        }
         LOG.debug("Close ActivityChrono");
         //finish();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);

@@ -34,13 +34,12 @@ public class BackgroundChronometerService extends Service {
         LOG.debug(message);
         LOG.debug("Set service of backgroundChronometer ");
         sessionBackgroundChronometer.setService(this);
-        DB=sessionBackgroundChronometer.getDB();
+        DB = sessionBackgroundChronometer.getDB();
         LOG.debug("Get notification of " + sessionBackgroundChronometer.getName());
-        if (Session.sessionOptions.getDisplaySwitch() == 1) {
-            Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PAUSE_ACTION);
-            LOG.debug("Start service foreground ");
-            startForeground(SESSION_NOTIFICATION_ID, notification);
-        }
+        Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PAUSE_ACTION);
+        LOG.debug("Start service foreground ");
+        startForeground(SESSION_NOTIFICATION_ID, notification);
+
 //        LOG.debug("Stop service foreground ");
 //        stopForeground(true);
         LOG.debug("Background service started successful ");
@@ -54,7 +53,7 @@ public class BackgroundChronometerService extends Service {
                 if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
                     Session.sessionOptions.setDisplaySwitch(1);
                     Session.sessionOptions.dbSave(DB);
-                    Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PAUSE_ACTION);
+                    Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.SHOW_NOTIFICATION_ACTION);
                     startForeground(SESSION_NOTIFICATION_ID, notification);
                 }
             } else if (intent.getAction().equals(Constants.ACTION.HIDE_NOTIFICATION_ACTION)) {

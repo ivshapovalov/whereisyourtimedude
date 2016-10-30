@@ -36,6 +36,7 @@ public class BackgroundChronometer extends Thread {
     private volatile PracticeHistory currentPracticeHistory;
     private volatile DatabaseManager DB;
     private volatile Service service;
+    private volatile boolean notificationStatusIsPlay;
 
     public BackgroundChronometer() {
         LOG.debug("Before new thread created");
@@ -174,10 +175,10 @@ public class BackgroundChronometer extends Thread {
                                 if (sessionOptions != null) {
 
                                     if (service != null) {
-                                        if (sessionOptions.getDisplaySwitch() == 1) {
+                                        //if (sessionOptions.getDisplaySwitch() == 1) {
                                             writeMemoryInLog();
                                             updateNotification(Constants.ACTION.PLAY_ACTION);
-                                        }
+                                       // }
                                     }
 
                                 } else {
@@ -217,7 +218,7 @@ public class BackgroundChronometer extends Thread {
     }
 
     public void updateNotification(String symbol) {
-        if (sessionOptions != null && sessionOptions.getDisplaySwitch() == 1) {
+        if (sessionOptions != null) {
             Notification notification = getCurrentNotification(symbol);
             NotificationManager mNotificationManager = (NotificationManager) service.getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(SESSION_NOTIFICATION_ID, notification);
@@ -325,24 +326,22 @@ public class BackgroundChronometer extends Thread {
             int iconPlayPause = 0;
 
             //TODO не работает
-            if (symbol.equals(Constants.ACTION.PLAY_ACTION)) {
-                intentPlayPause.setAction(Constants.ACTION.PAUSE_ACTION);
-                iconPlayPause = android.R.drawable.ic_media_pause;
-            } else if (symbol.equals(Constants.ACTION.PAUSE_ACTION)) {
+
+            if (symbol.equals(Constants.ACTION.PAUSE_ACTION)) {
+                notificationStatusIsPlay = false;
+            } else if (symbol.equals(Constants.ACTION.PLAY_ACTION)) {
+                notificationStatusIsPlay = true;
+            }
+
+            if (!notificationStatusIsPlay) {
                 currentDuration = currentDuration.concat(" (paused)");
                 intentPlayPause.setAction(Constants.ACTION.PLAY_ACTION);
                 iconPlayPause = android.R.drawable.ic_media_play;
+                practiceName=Common.SYMBOL_STOP+" " + practiceName;
             } else {
-                if (sessionBackgroundChronometer != null) {
-                    if (sessionBackgroundChronometer.isTicking()) {
-                        intentPlayPause.setAction(Constants.ACTION.PAUSE_ACTION);
-                        iconPlayPause = android.R.drawable.ic_media_pause;
-                    } else {
-                        currentDuration = currentDuration.concat(" (paused)");
-                        intentPlayPause.setAction(Constants.ACTION.PLAY_ACTION);
-                        iconPlayPause = android.R.drawable.ic_media_play;
-                    }
-                }
+                intentPlayPause.setAction(Constants.ACTION.PAUSE_ACTION);
+                iconPlayPause = android.R.drawable.ic_media_pause;
+                practiceName=Common.SYMBOL_PLAY+" " + practiceName;
             }
 
             PendingIntent pPlayPauseIntent = PendingIntent.getService(service, 0,
@@ -351,12 +350,15 @@ public class BackgroundChronometer extends Thread {
             int iconShowHide = 0;
 
             Intent intentShowHideNotification = new Intent(service, BackgroundChronometerService.class);
+
+            String message = currentDuration;
             if (Session.sessionOptions.getDisplaySwitch() == 1) {
                 intentShowHideNotification.setAction(Constants.ACTION.HIDE_NOTIFICATION_ACTION);
                 iconShowHide = android.R.drawable.ic_menu_close_clear_cancel;
             } else {
                 intentShowHideNotification.setAction(Constants.ACTION.SHOW_NOTIFICATION_ACTION);
                 iconShowHide = android.R.drawable.ic_menu_recent_history;
+                message = projectName + " - " + areaName;
 
             }
             PendingIntent pShowHideIntent = PendingIntent.getService(service, 0,
@@ -370,10 +372,7 @@ public class BackgroundChronometer extends Thread {
             views.setImageViewResource(R.id.status_bar_show_hide,
                     iconShowHide);
             views.setTextViewText(R.id.status_bar_practice_name, practiceName);
-            String message = currentDuration;
-            if (symbol.equals(Constants.ACTION.FREEZE_ACTION)) {
-                message = projectName + " - " + areaName;
-            }
+
             views.setTextViewText(R.id.status_bar_duration, message);
 
             notification = new NotificationCompat.Builder(service).build();
@@ -383,13 +382,7 @@ public class BackgroundChronometer extends Thread {
             notification.contentIntent = statusBarPendingIntent;
 
             return notification;
-//            Notification notification = new NotificationCompat.Builder(service)
-//                    .setSmallIcon(R.drawable.sand_clock)
-//                    .setContentTitle(practiceName)
-//                    .setContentText(symbol + " " + currentDuration)
-//                    .setContentIntent(pendingIntent)
-//                    .build();
-//            return notification;
+
         } catch (NullPointerException e) {
             LOG.error(this.getName() + "-" + e.getMessage(), e);
             throw e;

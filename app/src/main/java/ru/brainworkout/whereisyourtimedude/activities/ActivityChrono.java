@@ -4,15 +4,12 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Chronometer;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import org.apache.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,6 +18,7 @@ import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Constants;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
@@ -34,12 +32,13 @@ import java.util.List;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgroundChronometer;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 
 public class ActivityChrono extends AbstractActivity {
 
     private static PracticeHistory currentPracticeHistory;
-    private static List<PracticeHistory> practices = new ArrayList<>();
+    private static List<PracticeHistory> practiceHistories = new ArrayList<>();
     private static long currentDateInMillis;
 
     private Chronometer mChronometer;
@@ -50,6 +49,8 @@ public class ActivityChrono extends AbstractActivity {
 
     private Intent backgroundServiceIntent;
     private TableLayout tableHistory;
+    private ConnectionParameters params;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,8 +94,7 @@ public class ActivityChrono extends AbstractActivity {
                     if (!mChronometerIsWorking && sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
                         mChronometerIsWorking = true;
                         mChronometer.start();
-                   }
-                    else if (mChronometerIsWorking && sessionBackgroundChronometer != null && !sessionBackgroundChronometer.isTicking()) {
+                    } else if (mChronometerIsWorking && sessionBackgroundChronometer != null && !sessionBackgroundChronometer.isTicking()) {
                         mChronometerIsWorking = false;
                         mChronometer.stop();
                     }
@@ -107,12 +107,31 @@ public class ActivityChrono extends AbstractActivity {
         Intent intent = getIntent();
 
         currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
+        int id_practice = intent.getIntExtra("CurrentPracticeID", -1);
+
 
         if (currentDateInMillis == 0) {
             init();
         } else {
             defineNewDayPractice(currentDateInMillis);
         }
+
+        if (id_practice != -1) {
+            if (DB.containsPractice(id_practice)) {
+                Practice practice = DB.getPractice(id_practice);
+
+                if (practice.getIsActive() == 1) {
+                    for (PracticeHistory practiceHistory:practiceHistories
+                         ) {
+                        if ( practiceHistory.getIdPractice()==id_practice) {
+                            startPracticeHistoryTimerOnEvent(practiceHistory.getId());
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        updateAllRows();
 
     }
 
@@ -128,13 +147,13 @@ public class ActivityChrono extends AbstractActivity {
 //        calendar.add(Calendar.DAY_OF_YEAR,1);
 //        long endOfDayInMillis=calendar.getTimeInMillis();
         updatePractices(currentDateInMillis);
-        //Collections.sort(practices, new PracticeHistoryComparatorByLastTime());
+        //Collections.sort(practiceHistories, new PracticeHistoryComparatorByLastTime());
 
-        if (practices.isEmpty()) {
+        if (practiceHistories.isEmpty()) {
             return;
         }
 
-        currentPracticeHistory = practices.get(0);
+        currentPracticeHistory = practiceHistories.get(0);
 
 
         if (Session.sessionBackgroundChronometer != null) {
@@ -159,23 +178,7 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
         }
-
         updateAllRows();
-
-
-    }
-
-    public void tvDate_onClick(View view) {
-
-//        blink(view, this);
-//        stopTimer();
-//
-//        Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
-//        intent.putExtra("CurrentActivity", "ActivityChrono");
-//        intent.putExtra("CurrentDateInMillis", currentDateInMillis);
-//        currentDateInMillis = 0;
-//        startActivity(intent);
-
     }
 
     private void autoChangeDay(Long newDateInMillis) {
@@ -183,10 +186,10 @@ public class ActivityChrono extends AbstractActivity {
 
         updatePractices(newDateInMillis);
 
-        if (practices.isEmpty()) {
+        if (practiceHistories.isEmpty()) {
             return;
         }
-        currentPracticeHistory = practices.get(0);
+        currentPracticeHistory = practiceHistories.get(0);
         currentDateInMillis = newDateInMillis;
 
         if (Session.sessionBackgroundChronometer.isAlive()) {
@@ -208,10 +211,10 @@ public class ActivityChrono extends AbstractActivity {
         }
         updatePractices(date);
 
-        if (practices.isEmpty()) {
+        if (practiceHistories.isEmpty()) {
             return;
         }
-        currentPracticeHistory = practices.get(0);
+        currentPracticeHistory = practiceHistories.get(0);
         currentDateInMillis = date;
 
         if (Session.sessionBackgroundChronometer.isAlive()) {
@@ -237,8 +240,6 @@ public class ActivityChrono extends AbstractActivity {
 
 
         }
-        updateAllRows();
-
     }
 
     //
@@ -257,10 +258,7 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     private void changeTimer() {
-
-
         if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
-
 
         } else {
 
@@ -269,36 +267,31 @@ public class ActivityChrono extends AbstractActivity {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
 
-
-        int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
-        TextView tvTimer = (TextView) findViewById(tvTimerID);
-
-        String strTime = ConvertMillisToStringWithAllTime(localChronometerCountInSeconds * 1000);
-        String txt = String.valueOf(strTime);
-        tvTimer.setText(txt);
-
-
+        setTimerText(Common.SYMBOL_PLAY, localChronometerCountInSeconds * 1000);
     }
 
-
-    private String addingZeros(String s, int length) {
-        for (int i = s.length(); i < length; i++) {
-            s = "0" + s;
-        }
-        return s;
+    private void setTimerText(String symbol, long millis) {
+        int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
+        TextView tvTimer = (TextView) findViewById(tvTimerID);
+        String strTime = ConvertMillisToStringWithAllTime(millis);
+        String txt = symbol.concat(" ").concat(String.valueOf(strTime));
+        tvTimer.setText(txt);
     }
 
     private void rowWork_onClick(TableRow view) {
         LOG.debug("Timer start rowWork_onClick");
         blink(view, this);
-        stopTimer();
-
         int id_practice_history = view.getId();
+        startPracticeHistoryTimerOnEvent(id_practice_history);
+    }
+
+    private void startPracticeHistoryTimerOnEvent(int id_practice_history) {
+        stopTimer();
         if (DB.containsPracticeHistory(id_practice_history)) {
             currentPracticeHistory = DB.getPracticeHistory(id_practice_history);
         } else {
-            int index = practices.indexOf(new PracticeHistory.Builder(id_practice_history).build());
-            currentPracticeHistory = practices.get(index);
+            int index = practiceHistories.indexOf(new PracticeHistory.Builder(id_practice_history).build());
+            currentPracticeHistory = practiceHistories.get(index);
         }
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
@@ -326,7 +319,7 @@ public class ActivityChrono extends AbstractActivity {
 
     private void updatePractices(long date) {
 
-        practices = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getID(), date, date);
+        practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getID(), date, date);
 
     }
 
@@ -363,6 +356,7 @@ public class ActivityChrono extends AbstractActivity {
             localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
             mChronometer.stop();
             mChronometerIsWorking = false;
+            setTimerText(Common.SYMBOL_STOP, localChronometerCountInSeconds * 1000);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             currentPracticeHistory.dbSave(DB);
             sessionBackgroundChronometer.updateNotification(Constants.ACTION.PAUSE_ACTION);
@@ -398,11 +392,17 @@ public class ActivityChrono extends AbstractActivity {
         if (tvCurrentName != null) {
             tvCurrentName.setText(DB.getPractice(currentPracticeHistory.getIdPractice()).getName());
         }
-        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
-        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
-        if (tvCurrentTime != null) {
-            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
+//        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
+//        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
+//        if (tvCurrentTime != null) {
+        if (mChronometerIsWorking) {
+            setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration() * 1000);
+        } else {
+            setTimerText(Common.SYMBOL_STOP, currentPracticeHistory.getDuration() * 1000);
+
         }
+//            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
+//        }
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
         if (tvCurrentArea != null) {
@@ -425,7 +425,7 @@ public class ActivityChrono extends AbstractActivity {
         }
 
         tableHistory.removeAllViews();
-        for (int i = 1; i < practices.size(); i++
+        for (int i = 1; i < practiceHistories.size(); i++
                 ) {
             TableRow mRow = CreateTableRow(i);
             tableHistory.addView(mRow);
@@ -434,7 +434,7 @@ public class ActivityChrono extends AbstractActivity {
 
     @NonNull
     private TableRow CreateTableRow(int i) {
-        PracticeHistory practiceHistory = practices.get(i);
+        PracticeHistory practiceHistory = practiceHistories.get(i);
 
         String practiceName = "";
         String areaName = "";
@@ -552,5 +552,23 @@ public class ActivityChrono extends AbstractActivity {
     protected void onDestroy() {
         LOG.debug("ActivityChrono away from screen ");
         super.onDestroy();
+    }
+
+    public void tv_AddNewPractice_onClick(View view) {
+
+        blink(view, this);
+
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityChrono")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityPractice")
+                .isReceiverNew(true)
+                .isReceiverForChoice(false)
+                .build();
+        sessionOpenActivities.push(paramsNew);
+        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

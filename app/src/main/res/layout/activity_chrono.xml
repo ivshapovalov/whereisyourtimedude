@@ -21,9 +21,11 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvGlobalChronometer"
+                android:id="@+id/tvAddNewPractice"
                 android:gravity="center"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:text="ADD NEW PRACTICE"
+                android:onClick="tv_AddNewPractice_onClick"/>
         </TableRow>
 
         <TableRow

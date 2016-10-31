@@ -42,7 +42,7 @@ public class ActivityMain extends AbstractActivity {
     }
 
     private void updateDB() {
-        DB.update(DB.getReadableDatabase());
+        //DB.update(DB.getReadableDatabase());
     }
 
     private void resumeChronoIfWorking() {
@@ -186,7 +186,6 @@ public class ActivityMain extends AbstractActivity {
             Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
             startActivity(intent);
         }
-
     }
 
     public void btProjects_onClick(final View view) {
@@ -194,26 +193,21 @@ public class ActivityMain extends AbstractActivity {
             Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
             startActivity(intent);
         }
-
     }
 
     public void btPractices_onClick(final View view) {
-
         if (isDBNotEmpty() && isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
             startActivity(intent);
         }
-
     }
 
     public void btPracticeHistory_onClick(final View view) {
-
         if (isDBNotEmpty() && isUserDefined()) {
             //DB.update(DB.getReadableDatabase());
             Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
             startActivity(intent);
         }
-
     }
 
     public void btChronometer_onClick(final View view) {
@@ -223,7 +217,6 @@ public class ActivityMain extends AbstractActivity {
         }
 
     }
-
 
     private boolean isDBNotEmpty() {
 

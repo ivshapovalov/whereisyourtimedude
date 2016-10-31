@@ -45,7 +45,7 @@ public class ActivityPracticesList extends AbstractActivity {
     private int mTextSize = 0;
 
     private int id_practice;
-    ConnectionParameters params;
+    private ConnectionParameters params;
 
 
     @Override

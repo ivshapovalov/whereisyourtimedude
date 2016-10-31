@@ -128,15 +128,22 @@ public class ActivityPractice extends AbstractActivity {
     }
 
     public void btClose_onClick(final View view) {
+        blink(view, this);
+        closeActivity();
+    }
 
-        blink(view,this);
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+    private void closeActivity() {
+        Class<?> myClass = null;
+        try {
+            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(getApplicationContext(), myClass);
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
-        sessionOpenActivities.pop();
         sessionCurrentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
 
@@ -155,13 +162,13 @@ public class ActivityPractice extends AbstractActivity {
 
     public void tvProject_onClick(View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
         int id_project = sessionCurrentPractice.getIdProject();
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        Boolean isNew = params!=null?params.isReceiverNew():false;
-        ConnectionParameters paramsNew= new ConnectionParameters.Builder()
+        Boolean isNew = params != null ? params.isReceiverNew() : false;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPractice")
                 .isTransmitterNew(isNew)
                 .isTransmitterForChoice(false)
@@ -177,18 +184,12 @@ public class ActivityPractice extends AbstractActivity {
     }
 
     public void btSave_onClick(final View view) {
+        blink(view, this);
 
-        blink(view,this);
         getPropertiesFromScreen();
-
         sessionCurrentPractice.dbSave(DB);
+        closeActivity();
 
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
-        sessionOpenActivities.pop();
-        sessionCurrentPractice = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
     }
 
     public void onBackPressed() {
@@ -196,9 +197,9 @@ public class ActivityPractice extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
 
         if (params != null) {
-                intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                sessionOpenActivities.pop();
-                intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
+            intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+            sessionOpenActivities.pop();
+            intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -206,7 +207,7 @@ public class ActivityPractice extends AbstractActivity {
     }
 
     public void btDelete_onClick(final View view) {
-        blink(view,this);
+        blink(view, this);
 
 
         new AlertDialog.Builder(this)

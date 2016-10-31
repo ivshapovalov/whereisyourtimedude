@@ -4,30 +4,27 @@
     api-level="16"
     density="hdpi"
     format="7"
-    timestamp="5823755406479"
+    timestamp="10433201683494"
     token="8221529481268834806" >
 
     <task
         name="javac"
-        duration="441" />
+        duration="0" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="8" />
+        duration="0" />
     <task
         name="verifier"
-        duration="1" />
+        duration="0" />
 
-    <artifact
-        location="Q:\Dropbox\android\timer_test_1.10.apk"
-        type="MAIN" />
-
-    <build timestamp="5823755406479" >
+    <build timestamp="10314907569818" >
         <artifact
-            location="Q:\Dropbox\android\timer_test_1.10.apk"
+            location="Q:\Dropbox\android\timer_test_1_10.apk"
             type="MAIN" />
     </build>
+    <build timestamp="10433201683494" />
 
 </instant-run>

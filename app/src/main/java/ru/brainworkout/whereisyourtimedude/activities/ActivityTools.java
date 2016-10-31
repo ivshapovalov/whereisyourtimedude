@@ -15,6 +15,7 @@ import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
@@ -43,7 +44,7 @@ public class ActivityTools extends AbstractActivity {
             if (btName != null) {
                 btName.setHeight(mHeight);
             }
-    }
+        }
 
     }
 
@@ -74,14 +75,16 @@ public class ActivityTools extends AbstractActivity {
 
     public void btOptions_onClick(final View view) {
 
-        Intent intent = new Intent(ActivityTools.this, ActivityOptions.class);
-        startActivity(intent);
+        if (isUserDefined()) {
+            Intent intent = new Intent(ActivityTools.this, ActivityOptions.class);
+            startActivity(intent);
+        }
 
     }
 
     public void btClearBD_onClick(final View view) {
 
-        if (sessionBackgroundChronometer!=null && sessionBackgroundChronometer.isTicking()) {
+        if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
             Toast toast = Toast.makeText(ActivityTools.this,
                     "Остановите хронометраж. Нельзя очистить базу данных при работающем хронометраже!", Toast.LENGTH_SHORT);
             toast.show();
@@ -102,7 +105,6 @@ public class ActivityTools extends AbstractActivity {
                                     "База данных очищена!", Toast.LENGTH_SHORT);
                             toast.show();
                             setTitleOfActivity(ActivityTools.this);
-
 
 
                         } catch (Exception e) {

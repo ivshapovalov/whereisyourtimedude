@@ -1,2 +1,3 @@
-CHANGED,C:\AndroidStudy\whereisyourtimedude\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\ru\brainworkout\whereisyourtimedude\BuildConfig$override.class
+CHANGED,C:\AndroidStudy\whereisyourtimedude\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\ru\brainworkout\whereisyourtimedude\activities\ActivityTools$override.class
+CHANGED,C:\AndroidStudy\whereisyourtimedude\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\ru\brainworkout\whereisyourtimedude\activities\ActivityTools$1$override.class
 CHANGED,C:\AndroidStudy\whereisyourtimedude\app\build\intermediates\transforms\instantRun\debug\folders\4000\5\enhanced\com\android\tools\fd\runtime\AppPatchesLoaderImpl.class

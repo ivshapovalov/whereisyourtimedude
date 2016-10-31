@@ -6,25 +6,25 @@ import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 public class Options extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
 
-    private int recoverySwitch;
-    private int displaySwitch;
+    private int recoveryOnRunSwitch;
+    private int displayNotificationTimerSwitch;
     private int saveInterval;
     private int chronoIsWorking;
 
-    public int getRecoverySwitch() {
-        return recoverySwitch;
+    public int getRecoveryOnRunSwitch() {
+        return recoveryOnRunSwitch;
     }
 
-    public void setRecoverySwitch(int recoverySwitch) {
-        this.recoverySwitch = recoverySwitch;
+    public void setRecoveryOnRunSwitch(int recoveryOnRunSwitch) {
+        this.recoveryOnRunSwitch = recoveryOnRunSwitch;
     }
 
-    public int getDisplaySwitch() {
-        return displaySwitch;
+    public int getDisplayNotificationTimerSwitch() {
+        return displayNotificationTimerSwitch;
     }
 
-    public void setDisplaySwitch(int displaySwitch) {
-        this.displaySwitch = displaySwitch;
+    public void setDisplayNotificationTimerSwitch(int displayNotificationTimerSwitch) {
+        this.displayNotificationTimerSwitch = displayNotificationTimerSwitch;
     }
 
     public int getSaveInterval() {
@@ -46,8 +46,8 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
     private Options(Builder builder) {
 
         this.id = builder.id;
-        this.recoverySwitch=builder.recoverySwitch;
-        this.displaySwitch=builder.displaySwitch;
+        this.recoveryOnRunSwitch =builder.recoveryOnRunSwitch;
+        this.displayNotificationTimerSwitch =builder.displayNotificationTimerSwitch;
         this.saveInterval=builder.saveInterval;
         this.chronoIsWorking=builder.chronoIsWorking;
 
@@ -78,8 +78,8 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
     public static class Builder extends AbstractEntity {
 
-        private int recoverySwitch;
-        private int displaySwitch;
+        private int recoveryOnRunSwitch;
+        private int displayNotificationTimerSwitch;
         private int saveInterval;
         private int chronoIsWorking;
 
@@ -93,11 +93,11 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
 
         public Builder addRecoverySwitch(int recoverySwitch) {
-            this.recoverySwitch = recoverySwitch;
+            this.recoveryOnRunSwitch = recoverySwitch;
             return this;
         }
         public Builder addDisplaySwitch(int displaySwitch) {
-            this.displaySwitch = displaySwitch;
+            this.displayNotificationTimerSwitch = displaySwitch;
             return this;
         }
         public Builder addSaveInterval(int saveInterval) {

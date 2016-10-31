@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 
 android {
+
     signingConfigs {
     }
     compileSdkVersion 23
@@ -9,13 +10,15 @@ android {
         applicationId "ru.brainworkout.whereisyourtimedude"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 1
-        versionName "1.0"
+        versionCode 10
+        versionName "1_10"
     }
 //    buildTypes {
 //        time_release {
 //        }
 //    }
+
+
     buildTypes {
         debug {
             debuggable true
@@ -24,8 +27,12 @@ android {
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
                 //output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
-                output.outputFile = file("Q://Dropbox/android/timer_test.apk")
+                //output.outputFile = file("Q://Dropbox/android/timer_test-$version"+".apk")
                 //output.outputFile = file("Q://ya_disk/timer_test.apk")
+
+                def file = new File("Q://Dropbox/android/timer_test.apk");
+                //                def manifestParser = new com.android.builder.core.DefaultManifestParser()
+                output.outputFile = new File(file.parent, file.name.replace(".apk", "_${variant.versionName}.apk"))
 
             }
         }

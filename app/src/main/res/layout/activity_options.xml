@@ -44,7 +44,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/lineRecoverySwitch"
+        android:id="@+id/lineRecoveryOnRunSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
@@ -68,31 +68,31 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:orientation="horizontal"
-            android:id="@+id/rgRecoverySwitch">
+            android:id="@+id/rgRecoveryOnRunSwitch">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ON"
-                android:id="@+id/rbRecoverySwitchOn"/>
+                android:id="@+id/rbRecoveryOnRunSwitchOn"/>
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="OFF"
-                android:id="@+id/rbRecoverySwitchOff"
+                android:id="@+id/rbRecoveryOnRunSwitchOff"
                 android:checked="true"/>
         </RadioGroup>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/lineDisplayForeground"
+        android:id="@+id/lineDisplayNotificationTimer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
-        android:layout_below="@+id/lineRecoverySwitch"
+        android:layout_below="@+id/lineRecoveryOnRunSwitch"
         android:longClickable="true">
 
         <TextView
@@ -101,7 +101,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="50"
-            android:text="DISPLAY TIMER"
+            android:text="DISPLAY NOTIFICATION TIMER"
             android:textSize="12sp"
             android:textStyle="bold"
             android:textColor="@color/text_color"/>
@@ -111,19 +111,19 @@
             android:layout_height="match_parent"
             android:layout_weight="50"
             android:orientation="horizontal"
-            android:id="@+id/rgDisplayForeground">
+            android:id="@+id/rgDisplayNotificationTimer">
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ON"
-                android:id="@+id/rbDisplayForegroundOn"/>
+                android:id="@+id/rbDisplayNotificationTimerOn"/>
 
             <RadioButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="OFF"
-                android:id="@+id/rbDisplayForegroundOff"
+                android:id="@+id/rbDisplayNotificationTimerOff"
                 android:checked="true"/>
         </RadioGroup>
     </LinearLayout>
@@ -134,7 +134,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
-        android:layout_below="@+id/lineDisplayForeground">
+        android:layout_below="@+id/lineDisplayNotificationTimer">
 
         <TextView
             android:id="@+id/textView9"

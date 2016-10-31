@@ -175,7 +175,7 @@ public class BackgroundChronometer extends Thread {
                                 if (sessionOptions != null) {
 
                                     if (service != null) {
-                                        //if (sessionOptions.getDisplaySwitch() == 1) {
+                                        //if (sessionOptions.getDisplayNotificationTimerSwitch() == 1) {
                                             writeMemoryInLog();
                                             updateNotification(Constants.ACTION.PLAY_ACTION);
                                        // }
@@ -325,8 +325,6 @@ public class BackgroundChronometer extends Thread {
 
             int iconPlayPause = 0;
 
-            //TODO не работает
-
             if (symbol.equals(Constants.ACTION.PAUSE_ACTION)) {
                 notificationStatusIsPlay = false;
             } else if (symbol.equals(Constants.ACTION.PLAY_ACTION)) {
@@ -347,30 +345,30 @@ public class BackgroundChronometer extends Thread {
             PendingIntent pPlayPauseIntent = PendingIntent.getService(service, 0,
                     intentPlayPause, 0);
 
-            int iconShowHide = 0;
+            int iconTimerInfo = 0;
 
-            Intent intentShowHideNotification = new Intent(service, BackgroundChronometerService.class);
+            Intent intentTimerInfoNotification = new Intent(service, BackgroundChronometerService.class);
 
             String message = currentDuration;
-            if (Session.sessionOptions.getDisplaySwitch() == 1) {
-                intentShowHideNotification.setAction(Constants.ACTION.HIDE_NOTIFICATION_ACTION);
-                iconShowHide = android.R.drawable.ic_menu_close_clear_cancel;
+            if (Session.sessionOptions.getDisplayNotificationTimerSwitch() == 1) {
+                intentTimerInfoNotification.setAction(Constants.ACTION.SHOW_NOTIFICATION_INFO);
+                iconTimerInfo = android.R.drawable.ic_dialog_info;
             } else {
-                intentShowHideNotification.setAction(Constants.ACTION.SHOW_NOTIFICATION_ACTION);
-                iconShowHide = android.R.drawable.ic_menu_recent_history;
+                intentTimerInfoNotification.setAction(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
+                iconTimerInfo = android.R.drawable.ic_menu_recent_history;
                 message = projectName + " - " + areaName;
 
             }
             PendingIntent pShowHideIntent = PendingIntent.getService(service, 0,
-                    intentShowHideNotification, 0);
+                    intentTimerInfoNotification, 0);
 
             views.setOnClickPendingIntent(R.id.status_bar_play_pause, pPlayPauseIntent);
-            views.setOnClickPendingIntent(R.id.status_bar_show_hide, pShowHideIntent);
+            views.setOnClickPendingIntent(R.id.status_bar_timer_info, pShowHideIntent);
 
             views.setImageViewResource(R.id.status_bar_play_pause,
                     iconPlayPause);
-            views.setImageViewResource(R.id.status_bar_show_hide,
-                    iconShowHide);
+            views.setImageViewResource(R.id.status_bar_timer_info,
+                    iconTimerInfo);
             views.setTextViewText(R.id.status_bar_practice_name, practiceName);
 
             views.setTextViewText(R.id.status_bar_duration, message);

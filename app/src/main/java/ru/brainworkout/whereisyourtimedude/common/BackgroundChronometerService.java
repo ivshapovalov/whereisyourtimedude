@@ -48,17 +48,17 @@ public class BackgroundChronometerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
-            if (intent.getAction().equals(Constants.ACTION.SHOW_NOTIFICATION_ACTION)) {
+            if (intent.getAction().equals(Constants.ACTION.SHOW_NOTIFICATION_TIMER)) {
                 sessionBackgroundChronometer.setService(this);
                 if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
-                    Session.sessionOptions.setDisplaySwitch(1);
+                    Session.sessionOptions.setDisplayNotificationTimerSwitch(1);
                     Session.sessionOptions.dbSave(DB);
-                    Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.SHOW_NOTIFICATION_ACTION);
+                    Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
                     startForeground(SESSION_NOTIFICATION_ID, notification);
                 }
-            } else if (intent.getAction().equals(Constants.ACTION.HIDE_NOTIFICATION_ACTION)) {
+            } else if (intent.getAction().equals(Constants.ACTION.SHOW_NOTIFICATION_INFO)) {
                 if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
-                    Session.sessionOptions.setDisplaySwitch(0);
+                    Session.sessionOptions.setDisplayNotificationTimerSwitch(0);
                     Session.sessionOptions.dbSave(DB);
                     Session.sessionBackgroundChronometer.freezeNotification();
                 }

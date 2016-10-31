@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +38,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     //options
     private static final String KEY_OPTIONS_ID = "options_id";
     private static final String KEY_OPTIONS_ID_USER = "options_id_user";
-    private static final String KEY_OPTIONS_RECOVERY = "options_recovery_mode";
-    private static final String KEY_OPTIONS_DISPLAY_FOREGROUND = "options_display_foreground";
+    private static final String KEY_OPTIONS_RECOVERY_ON_RUN = "options_recovery_on_run";
+    private static final String KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER = "options_display_notification_timer";
     private static final String KEY_OPTIONS_SAVE_INTERVAL= "options_save_interval";
     private static final String KEY_OPTIONS_CHRONO_IS_WORKING= "options_chrono_is_working";
 
@@ -85,7 +84,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
                 + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_OPTIONS_ID_USER + " INTEGER, "
-                + KEY_OPTIONS_RECOVERY + " INTEGER," + KEY_OPTIONS_DISPLAY_FOREGROUND + " INTEGER,"
+                + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
                 + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
         db.execSQL(CREATE_OPTIONS_TABLE);
     }
@@ -99,7 +98,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
                 + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_OPTIONS_ID_USER + " INTEGER, "
-                + KEY_OPTIONS_RECOVERY + " INTEGER," + KEY_OPTIONS_DISPLAY_FOREGROUND + " INTEGER,"
+                + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
                 + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
         db.execSQL(CREATE_OPTIONS_TABLE);
 
@@ -260,7 +259,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_OPTIONS_ID, options.getID());
         values.put(KEY_OPTIONS_ID_USER, options.getIdUser());
-        values.put(KEY_OPTIONS_RECOVERY, options.getDisplaySwitch());
+        values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
 
@@ -383,8 +382,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public Options getOptions(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY,
-                KEY_OPTIONS_DISPLAY_FOREGROUND,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
+                KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -407,8 +406,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public Options getOptionsOfUser(int id_user) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY,
-                KEY_OPTIONS_DISPLAY_FOREGROUND,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
+        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
+                KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
                 new String[]{String.valueOf(id_user)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -1284,8 +1283,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_OPTIONS_RECOVERY, options.getRecoverySwitch());
-        values.put(KEY_OPTIONS_DISPLAY_FOREGROUND, options.getDisplaySwitch());
+        values.put(KEY_OPTIONS_RECOVERY_ON_RUN, options.getRecoveryOnRunSwitch());
+        values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
         return db.update(TABLE_OPTIONS, values, KEY_OPTIONS_ID + " = ?",

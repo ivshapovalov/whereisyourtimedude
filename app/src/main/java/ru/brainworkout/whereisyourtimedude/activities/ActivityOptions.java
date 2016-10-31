@@ -46,7 +46,7 @@ public class ActivityOptions extends AbstractActivity {
         options.dbSave(DB);
         Session.sessionOptions = options;
         Session.saveInterval = options.getSaveInterval();
-        if (options.getDisplaySwitch() == 0) {
+        if (options.getDisplayNotificationTimerSwitch() == 0) {
             if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
 //                NotificationManager mNotificationManager = (NotificationManager) Session.sessionBackgroundChronometer.getService().getSystemService(Context.NOTIFICATION_SERVICE);
 //                mNotificationManager.cancel(Session.SESSION_NOTIFICATION_ID);
@@ -88,12 +88,12 @@ public class ActivityOptions extends AbstractActivity {
 
     private void setPreferencesOnScreen() {
 
-        int mRecoveryID = getResources().getIdentifier("rbRecoverySwitch" + (options.getRecoverySwitch() == 1 ? "On" : "Off"), "id", getPackageName());
+        int mRecoveryID = getResources().getIdentifier("rbRecoveryOnRunSwitch" + (options.getRecoveryOnRunSwitch() == 1 ? "On" : "Off"), "id", getPackageName());
         RadioButton but = (RadioButton) findViewById(mRecoveryID);
         if (but != null) {
             but.setChecked(true);
         }
-        RadioGroup radiogroup = (RadioGroup) findViewById(R.id.rgRecoverySwitch);
+        RadioGroup radiogroup = (RadioGroup) findViewById(R.id.rgRecoveryOnRunSwitch);
 
         if (radiogroup != null) {
             radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -103,26 +103,27 @@ public class ActivityOptions extends AbstractActivity {
                     switch (checkedId) {
                         case -1:
                             break;
-                        case R.id.rbRecoverySwitchOn:
-                            options.setRecoverySwitch(1);
+                        case R.id.rbRecoveryOnRunSwitchOn:
+                            options.setRecoveryOnRunSwitch(1);
                             break;
-                        case R.id.rbRecoverySwitchOff:
-                            options.setRecoverySwitch(0);
+                        case R.id.rbRecoveryOnRunSwitchOff:
+                            options.setRecoveryOnRunSwitch(0);
                             break;
                         default:
-                            options.setRecoverySwitch(0);
+                            options.setRecoveryOnRunSwitch(0);
                             break;
                     }
                 }
             });
         }
 
-        int mDisplayForegroundID = getResources().getIdentifier("rbDisplayForeground" + (options.getDisplaySwitch() == 1 ? "On" : "Off"), "id", getPackageName());
+        int mDisplayForegroundID = getResources().getIdentifier("rbDisplayNotificationTimer"
+                + (options.getDisplayNotificationTimerSwitch() == 1 ? "On" : "Off"), "id", getPackageName());
         but = (RadioButton) findViewById(mDisplayForegroundID);
         if (but != null) {
             but.setChecked(true);
         }
-        radiogroup = (RadioGroup) findViewById(R.id.rgDisplayForeground);
+        radiogroup = (RadioGroup) findViewById(R.id.rgDisplayNotificationTimer);
 
         if (radiogroup != null) {
             radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
@@ -132,14 +133,14 @@ public class ActivityOptions extends AbstractActivity {
                     switch (checkedId) {
                         case -1:
                             break;
-                        case R.id.rbDisplayForegroundOn:
-                            options.setDisplaySwitch(1);
+                        case R.id.rbDisplayNotificationTimerOn:
+                            options.setDisplayNotificationTimerSwitch(1);
                             break;
-                        case R.id.rbDisplayForegroundOff:
-                            options.setDisplaySwitch(0);
+                        case R.id.rbDisplayNotificationTimerOff:
+                            options.setDisplayNotificationTimerSwitch(0);
                             break;
                         default:
-                            options.setDisplaySwitch(0);
+                            options.setDisplayNotificationTimerSwitch(0);
                             break;
                     }
                 }

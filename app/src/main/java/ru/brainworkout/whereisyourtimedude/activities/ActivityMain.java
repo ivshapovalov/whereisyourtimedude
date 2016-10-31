@@ -1,11 +1,8 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.AlertDialog;
-import android.app.NotificationManager;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -23,16 +20,11 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
-import ru.brainworkout.whereisyourtimedude.common.Common;
-
-import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
-import ru.brainworkout.whereisyourtimedude.database.entities.User;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
 
 
 public class ActivityMain extends AbstractActivity {
@@ -54,20 +46,20 @@ public class ActivityMain extends AbstractActivity {
     }
 
     private void resumeChronoIfWorking() {
-        //if (sessionChronometerIsWorking) {
-        if (sessionBackgroundChronometer != null &&
-                sessionBackgroundChronometer.isAlive() &&
-                sessionBackgroundChronometer.isTicking()) {
-        } else {
-            if (sessionBackgroundChronometer == null) {
-                sessionBackgroundChronometer = new BackgroundChronometer();
-            }
-            synchronized (sessionBackgroundChronometer) {
-                resumeBackgroundChronometer();
-            }
+        if (sessionOptions != null && sessionOptions.getRecoveryOnRunSwitch() == 1) {
+            if (sessionBackgroundChronometer != null &&
+                    sessionBackgroundChronometer.isAlive() &&
+                    sessionBackgroundChronometer.isTicking()) {
+            } else {
+                if (sessionBackgroundChronometer == null) {
+                    sessionBackgroundChronometer = new BackgroundChronometer();
+                }
 
+                synchronized (sessionBackgroundChronometer) {
+                    resumeBackgroundChronometer();
+                }
+            }
         }
-        //}
     }
 
     private void resumeBackgroundChronometer() {
@@ -160,7 +152,7 @@ public class ActivityMain extends AbstractActivity {
                 options.dbSave(DB);
             }
             Session.sessionOptions = options;
-            if (options.getRecoverySwitch() == 1) {
+            if (options.getRecoveryOnRunSwitch() == 1) {
                 sessionChronometerIsWorking = options.getChronoIsWorking() == 1 ? true : false;
             }
             Session.saveInterval = options.getSaveInterval();
@@ -225,8 +217,10 @@ public class ActivityMain extends AbstractActivity {
     }
 
     public void btChronometer_onClick(final View view) {
-        Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
-        startActivity(intent);
+        if (isDBNotEmpty() && isUserDefined()) {
+            Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
+            startActivity(intent);
+        }
 
     }
 

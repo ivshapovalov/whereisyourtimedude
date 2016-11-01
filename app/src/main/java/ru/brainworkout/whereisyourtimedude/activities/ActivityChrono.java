@@ -1,15 +1,20 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Chronometer;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -46,7 +51,7 @@ public class ActivityChrono extends AbstractActivity {
     private boolean mChronometerIsWorking = false;
     private long localChronometerCountInSeconds = 0;
     private long elapsedMillis;
-    private boolean isToday=true;
+    private boolean isToday = true;
 
     private Intent backgroundServiceIntent;
     private TableLayout tableHistory;
@@ -141,6 +146,10 @@ public class ActivityChrono extends AbstractActivity {
         }
         updateAllRows();
 
+        SwipeDetectorActivity swipeDetectorActivity = new SwipeDetectorActivity(ActivityChrono.this);
+        ScrollView sv = (ScrollView) this.findViewById(R.id.scrollView);
+        sv.setOnTouchListener(swipeDetectorActivity);
+
     }
 
     private void init() {
@@ -176,7 +185,6 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
         }
-        updateAllRows();
     }
 
     @NonNull
@@ -216,9 +224,9 @@ public class ActivityChrono extends AbstractActivity {
 
     private void defineNewDayPractice(Long date) {
 
-        if (mChronometerIsWorking) {
-            stopTimer();
-        }
+//        if (mChronometerIsWorking) {
+//            stopTimer();
+//        }
         updatePractices(date);
 
         if (practiceHistories.isEmpty()) {
@@ -595,6 +603,108 @@ public class ActivityChrono extends AbstractActivity {
         intent.putExtra("CurrentDateInMillis", currentDateInMillis);
         currentDateInMillis = 0;
         startActivity(intent);
+
+    }
+
+    private class SwipeDetectorActivity extends AppCompatActivity implements View.OnTouchListener {
+
+        private Activity activity;
+        static final int MIN_DISTANCE = 200;
+        private float downX, downY, upX, upY;
+
+        public SwipeDetectorActivity(final Activity activity) {
+            this.activity = activity;
+        }
+
+        public final void onRightToLeftSwipe() {
+            // System.out.println("Right to Left swipe [Previous]");
+            Toast.makeText(ActivityChrono.this, "[Следующий день]", Toast.LENGTH_SHORT).show();
+            long nextDateInMillis = currentDateInMillis + 3600 * 24 * 1000;
+            isToday = nextDateInMillis == getCurrentDateInMillis();
+            defineNewDayPractice(nextDateInMillis);
+            updateAllRows();
+
+        }
+
+        public void onLeftToRightSwipe() {
+            // System.out.println("Left to Right swipe [Next]");
+            Toast.makeText(ActivityChrono.this, "[Предыдущий день]", Toast.LENGTH_SHORT).show();
+            long previousDateInMillis = currentDateInMillis - 3600 * 24 * 1000;
+            isToday = previousDateInMillis == getCurrentDateInMillis();
+            defineNewDayPractice(previousDateInMillis);
+            updateAllRows();
+        }
+
+        public void onTopToBottomSwipe() {
+
+            //Toast.makeText(ActivityTraining.this, "Top to Bottom swipe [Down]", Toast.LENGTH_SHORT).show();
+
+        }
+
+        public void onBottomToTopSwipe() {
+
+            //Toast.makeText(ActivityTraining.this, "Bottom to Top swipe [Up]", Toast.LENGTH_SHORT).show ();
+
+        }
+
+
+        public boolean onTouch(View v, MotionEvent event) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN: {
+                    downX = event.getX();
+                    downY = event.getY();
+                    return true;
+                    //break;
+                }
+                case MotionEvent.ACTION_UP: {
+                    upX = event.getX();
+                    upY = event.getY();
+
+                    float deltaX = downX - upX;
+                    float deltaY = downY - upY;
+
+                    // swipe horizontal?
+                    if (Math.abs(deltaX) > MIN_DISTANCE) {
+                        // left or right
+                        //Toast.makeText(ActivityTraining.this, "DeltaX="+String.valueOf(deltaX), Toast.LENGTH_SHORT).show();
+                        if (deltaX < 0) {
+                            this.onLeftToRightSwipe();
+                            return true;
+                        }
+                        if (deltaX > 0) {
+                            this.onRightToLeftSwipe();
+                            return true;
+                        }
+                    } else {
+
+                    }
+
+                    // swipe vertical?
+                    if (Math.abs(deltaY) > MIN_DISTANCE) {
+                        // top or down
+                        //Toast.makeText(ActivityTraining.this, "DeltaY="+String.valueOf(deltaY), Toast.LENGTH_SHORT).show();
+                        if (deltaY < 0) {
+                            this.onTopToBottomSwipe();
+                            //break;
+                            return true;
+                        }
+                        if (deltaY > 0) {
+                            this.onBottomToTopSwipe();
+                            //break;
+
+                            return true;
+
+                        }
+                    } else {
+
+                    }
+                    //break;
+                    return true;
+                }
+            }
+            //Toast.makeText(ActivityTraining.this, "ЖОПА", Toast.LENGTH_SHORT).show();
+            return false;
+        }
 
     }
 }

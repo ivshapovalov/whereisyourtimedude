@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
@@ -40,8 +41,8 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_OPTIONS_ID_USER = "options_id_user";
     private static final String KEY_OPTIONS_RECOVERY_ON_RUN = "options_recovery_on_run";
     private static final String KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER = "options_display_notification_timer";
-    private static final String KEY_OPTIONS_SAVE_INTERVAL= "options_save_interval";
-    private static final String KEY_OPTIONS_CHRONO_IS_WORKING= "options_chrono_is_working";
+    private static final String KEY_OPTIONS_SAVE_INTERVAL = "options_save_interval";
+    private static final String KEY_OPTIONS_CHRONO_IS_WORKING = "options_chrono_is_working";
 
     // Practice
     private static final String KEY_PRACTICE_ID = "practice_id";
@@ -106,7 +107,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_OPTIONS_ID_USER + " INTEGER, "
                 + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
-                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
+                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER," + KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER" + ")";
         db.execSQL(CREATE_OPTIONS_TABLE);
 
         //users
@@ -255,7 +256,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
+
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
@@ -270,7 +271,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
 
-        // Create tables again
         onCreate(db);
     }
 
@@ -313,9 +313,8 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
 
-        // Inserting Row
         db.insert(TABLE_OPTIONS, null, values);
-        db.close(); // Closing database connection
+        db.close();
     }
 
     public void addArea(Area area) {
@@ -327,9 +326,9 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_AREA_NAME, area.getName());
         values.put(KEY_AREA_COLOR, area.getColor());
 
-        // Inserting Row
+
         db.insert(TABLE_AREAS, null, values);
-        db.close(); // Closing database connection
+        db.close();
     }
 
     public void addProject(Project project) {
@@ -341,9 +340,8 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PROJECT_NAME, project.getName());
         values.put(KEY_PROJECT_ID_AREA, project.getIdArea());
 
-        // Inserting Row
         db.insert(TABLE_PROJECTS, null, values);
-        db.close(); // Closing database connection
+        db.close();
     }
 
     public void addPractice(Practice practice) {
@@ -355,9 +353,9 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_NAME, practice.getName());
         values.put(KEY_PRACTICE_ID_PROJECT, practice.getIdProject());
         values.put(KEY_PRACTICE_IS_ACTIVE, practice.getIsActive());
-        // Inserting Row
+
         db.insert(TABLE_PRACTICES, null, values);
-        db.close(); // Closing database connection
+        db.close();
     }
 
     public void addPracticeHistory(PracticeHistory practiceHistory) {
@@ -371,9 +369,23 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
         values.put(KEY_PRACTICE_HISTORY_LAST_TIME, practiceHistory.getLastTime());
 
-        // Inserting Row
         db.insert(TABLE_PRACTICE_HISTORY, null, values);
-        db.close(); // Closing database connection
+        db.close();
+    }
+
+    public void addDetailedPracticeHistory(DetailedPracticeHistory detailedPracticeHistory) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID, detailedPracticeHistory.getID());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getIdUser());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getIdPractice());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_DATE, detailedPracticeHistory.getDate());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());
+
+        db.insert(TABLE_DETAILED_PRACTICE_HISTORY, null, values);
+        db.close();
     }
 
     public boolean containsUser(int id) {
@@ -433,7 +445,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
-                KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -457,7 +469,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
-                KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER,KEY_OPTIONS_SAVE_INTERVAL,KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
                 new String[]{String.valueOf(id_user)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -628,6 +640,48 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    public Boolean containsDetailedPracticeHistory(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_DETAILED_PRACTICE_HISTORY, new String[]{KEY_DETAILED_PRACTICE_HISTORY_ID},
+                KEY_DETAILED_PRACTICE_HISTORY_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        if (cursor.getCount() == 0) {
+            return false;
+        } else {
+            cursor.close();
+            return true;
+        }
+    }
+
+    public DetailedPracticeHistory getDetailedPracticeHistory(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_DETAILED_PRACTICE_HISTORY, new String[]{KEY_DETAILED_PRACTICE_HISTORY_ID, KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE,
+                        KEY_DETAILED_PRACTICE_HISTORY_DATE, KEY_DETAILED_PRACTICE_HISTORY_TIME, KEY_DETAILED_PRACTICE_HISTORY_DURATION},
+                KEY_DETAILED_PRACTICE_HISTORY_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        if (cursor.getCount() == 0) {
+            throw new TableDoesNotContainElementException("There is no Detailed practice history with id - " + id);
+        } else {
+            DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
+                    .addIdPractice(Integer.parseInt(cursor.getString(1)))
+                    .addDate(cursor.getLong(2))
+                    .addTime(cursor.getLong(3))
+                    .addDuration(cursor.getLong(4))
+                    .build();
+
+            cursor.close();
+            return detailedPracticeHistory;
+        }
+    }
+
     public PracticeHistory getPracticeHistory(int id_practice, long date) {
         SQLiteDatabase db = this.getReadableDatabase();
 
@@ -738,26 +792,39 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public void deleteAllPracticeHistory() {
-
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_PRACTICE_HISTORY, null, null);
-
     }
 
     public void deleteAllPracticeHistoryOfPractice(int id_practice) {
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.delete(TABLE_PRACTICE_HISTORY, KEY_PRACTICE_HISTORY_ID_PRACTICE + "=?", new String[]{String.valueOf(id_practice)});
-
     }
 
     public void deleteAllPracticeHistoryOfUser(int id_user) {
-
         SQLiteDatabase db = this.getWritableDatabase();
-
         db.delete(TABLE_PRACTICE_HISTORY, KEY_PRACTICE_HISTORY_ID_USER + "=?", new String[]{String.valueOf(id_user)});
+    }
 
+    public void deleteAllDetailedPracticeHistory() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, null, null);
+    }
+
+    public void deleteAllDetailedPracticeHistoryOfPractice(int id_practice) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + "=?", new String[]{String.valueOf(id_practice)});
+    }
+
+    public void deleteAllDetailedPracticeHistoryOfPracticeAndDate(int id_practice, long date) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + "=?"
+                +KEY_DETAILED_PRACTICE_HISTORY_DATE + "=?", new String[]{String.valueOf(id_practice),String.valueOf(date)});
+    }
+
+    public void deleteAllDetailedPracticeHistoryOfUser(int id_user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID_USER + "=?", new String[]{String.valueOf(id_user)});
     }
 
     public List<User> getAllUsers() {
@@ -826,7 +893,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public List<Project> getAllProjects() {
         List<Project> projects = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PROJECT_ID + "," + KEY_PROJECT_NAME + "," + KEY_PROJECT_ID_AREA + " FROM " + TABLE_PROJECTS;
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -848,7 +914,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public List<Project> getAllProjectsOfUser(int id_user) {
         List<Project> projects = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PROJECT_ID + "," + KEY_PROJECT_NAME + "," + KEY_PROJECT_ID_AREA + " FROM " + TABLE_PROJECTS
                 + " WHERE " + KEY_PROJECT_ID_USER + "=" + id_user + " ORDER BY " + KEY_PROJECT_ID;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -870,7 +935,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public List<Project> getAllProjectsOfArea(int id_area) {
         List<Project> projects = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PROJECT_ID + "," + KEY_PROJECT_NAME + "," + KEY_PROJECT_ID_AREA + " FROM " + TABLE_PROJECTS
                 + " WHERE " + KEY_PROJECT_ID_AREA + "=" + id_area + " ORDER BY " + KEY_PROJECT_ID;
         SQLiteDatabase db = this.getWritableDatabase();
@@ -892,7 +956,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public List<Practice> getAllPractices() {
         List<Practice> practices = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES;
 
@@ -916,14 +979,11 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public List<Practice> getAllActivePractices() {
         List<Practice> practices = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES
                 + " WHERE " + KEY_PRACTICE_IS_ACTIVE + "=1 ORDER BY " + KEY_PRACTICE_ID;
-
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = new Practice.Builder(cursor.getInt(0))
@@ -934,19 +994,16 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 practices.add(practice);
             } while (cursor.moveToNext());
         }
-
         cursor.close();
         return practices;
     }
 
     public List<Practice> getAllActivePracticesOfUser(int id_user) {
         List<Practice> practices = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES
                 + " WHERE " + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + KEY_PRACTICE_ID_USER + "=" + id_user +
                 " ORDER BY " + KEY_PRACTICE_ID;
-
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -960,19 +1017,16 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 practices.add(practice);
             } while (cursor.moveToNext());
         }
-
         cursor.close();
         return practices;
     }
 
     public List<Practice> getAllActivePracticesOfProject(int id_project) {
         List<Practice> practices = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES
                 + " WHERE " + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + KEY_PRACTICE_ID_PROJECT + "=" + id_project +
                 " ORDER BY " + KEY_PRACTICE_ID;
-
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -991,17 +1045,13 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         return practices;
     }
 
-
     public List<PracticeHistory> getAllPracticeHistory() {
         List<PracticeHistory> practiceHistoryList = new ArrayList<>();
-        // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
-                + " FROM " + TABLE_PRACTICE_HISTORY +" ORDER BY "+KEY_PRACTICE_HISTORY_LAST_TIME+ " DESC";
-
+                + " FROM " + TABLE_PRACTICE_HISTORY + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME + " DESC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
         if (cursor.moveToFirst()) {
             do {
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
@@ -1013,7 +1063,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 practiceHistoryList.add(practiceHistory);
             } while (cursor.moveToNext());
         }
-
         cursor.close();
         return practiceHistoryList;
     }
@@ -1053,7 +1102,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
                 + " WHERE " + KEY_PRACTICE_HISTORY_ID_USER + "=" + id_user +
-                " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME +" DESC";
+                " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1134,21 +1183,21 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
                 + " WHERE " + TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_ID_USER + "=" + id_user
-                + " AND "+KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo
-                + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME +" DESC LIMIT 1";
+                + " AND " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo
+                + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME + " DESC LIMIT 1";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
-        PracticeHistory practiceHistory=null;
+        PracticeHistory practiceHistory = null;
         if (cursor.moveToFirst()) {
 
-                practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
-                        .addDate(cursor.getLong(2))
-                        .addLastTime(cursor.getLong(3))
-                        .addDuration(cursor.getLong(4))
-                        .build();
+            practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
+                    .addIdPractice(cursor.getInt(1))
+                    .addDate(cursor.getLong(2))
+                    .addLastTime(cursor.getLong(3))
+                    .addDuration(cursor.getLong(4))
+                    .build();
 
         }
 
@@ -1217,11 +1266,142 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
+    public List<DetailedPracticeHistory> getAllDetailedPracticeHistory() {
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
+        String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
+                + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY + " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME + " DESC";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor.moveToFirst()) {
+            do {
+                DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
+                        .addIdPractice(cursor.getInt(1))
+                        .addDate(cursor.getLong(2))
+                        .addTime(cursor.getLong(3))
+                        .addDuration(cursor.getLong(4))
+                        .build();
+                detailedPracticeHistories.add(detailedPracticeHistory);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return detailedPracticeHistories;
+    }
+
+    public List<DetailedPracticeHistory> getAllDetailedPracticeHistoryOfPractice(int id_practice) {
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
+        String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
+                + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
+                + " WHERE " + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + "=" + id_practice +
+                " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
+                        .addIdPractice(cursor.getInt(1))
+                        .addDate(cursor.getLong(2))
+                        .addTime(cursor.getLong(3))
+                        .addDuration(cursor.getLong(4))
+                        .build();
+                detailedPracticeHistories.add(detailedPracticeHistory);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return detailedPracticeHistories;
+    }
+
+
+    public List<DetailedPracticeHistory> getAllDetailedPracticeHistoryOfUser(int id_user) {
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
+        String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
+                + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
+                + " WHERE " + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + "=" + id_user +
+                " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME + " DESC";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
+                        .addIdPractice(cursor.getInt(1))
+                        .addDate(cursor.getLong(2))
+                        .addTime(cursor.getLong(3))
+                        .addDuration(cursor.getLong(4))
+                        .build();
+                detailedPracticeHistories.add(detailedPracticeHistory);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return detailedPracticeHistories;
+    }
+
+    public List<DetailedPracticeHistory> getAllDetailedPracticeHistoryByDates(long dateFrom, long dateTo) {
+        dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
+        dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
+        String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
+                + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
+                + " WHERE " + KEY_DETAILED_PRACTICE_HISTORY_DATE + ">= " + dateFrom + "\" AND " + KEY_DETAILED_PRACTICE_HISTORY_DATE + " <=" + dateTo
+                + " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
+                        .addIdPractice(cursor.getInt(1))
+                        .addDate(cursor.getLong(2))
+                        .addTime(cursor.getLong(3))
+                        .addDuration(cursor.getLong(4))
+                        .build();
+                detailedPracticeHistories.add(detailedPracticeHistory);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return detailedPracticeHistories;
+    }
+
+    public List<DetailedPracticeHistory> getAllDetailedPracticeHistoryOfPracticeByDates(int id_practice, long dateFrom, long dateTo) {
+        dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
+        dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
+        String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
+                + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
+                + " WHERE " + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + "=" + id_practice
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_DETAILED_PRACTICE_HISTORY_DATE + "<=" + dateTo
+                + " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
+                        .addIdPractice(cursor.getInt(1))
+                        .addDate(cursor.getLong(2))
+                        .addTime(cursor.getLong(3))
+                        .addDuration(cursor.getLong(4))
+                        .build();
+                detailedPracticeHistories.add(detailedPracticeHistory);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return detailedPracticeHistories;
+    }
+
     public int getUserMaxNumber() {
         String countQuery = "SELECT  MAX(" + KEY_USER_ID + ") FROM " + TABLE_USERS + "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
-
         cursor.moveToFirst();
         if (cursor.getCount() != 0) {
             return cursor.getInt(0);
@@ -1229,14 +1409,12 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
             cursor.close();
             return 0;
         }
-
     }
 
     public int getAreaMaxNumber() {
         String countQuery = "SELECT  MAX(" + KEY_AREA_ID + ") FROM " + TABLE_AREAS + "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
-
         cursor.moveToFirst();
         if (cursor.getCount() != 0) {
             return cursor.getInt(0);
@@ -1244,7 +1422,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
             cursor.close();
             return 0;
         }
-
     }
 
     public int getOptionsMaxNumber() {
@@ -1303,13 +1480,24 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
             cursor.close();
             return 0;
         }
-
     }
 
+    public int getDetailedPracticeHistoryMaxNumber() {
+        String countQuery = "SELECT  MAX(" + KEY_DETAILED_PRACTICE_HISTORY_ID + ") FROM " + TABLE_DETAILED_PRACTICE_HISTORY + "";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+
+        cursor.moveToFirst();
+        if (cursor.getCount() != 0) {
+            return cursor.getInt(0);
+        } else {
+            cursor.close();
+            return 0;
+        }
+    }
 
     public int updateUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_USER_NAME, user.getName());
         values.put(KEY_USER_IS_CURRENT, user.isCurrentUser());
@@ -1317,10 +1505,8 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
                 new String[]{String.valueOf(user.getID())});
     }
 
-
     public int updateArea(Area area) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_AREA_NAME, area.getName());
         values.put(KEY_AREA_ID_USER, area.getIdUser());
@@ -1331,7 +1517,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public int updateOptions(Options options) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_OPTIONS_RECOVERY_ON_RUN, options.getRecoveryOnRunSwitch());
         values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
@@ -1343,7 +1528,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public int updateProject(Project project) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         ContentValues values = new ContentValues();
         values.put(KEY_PROJECT_NAME, project.getName());
         values.put(KEY_PROJECT_ID_USER, project.getIdUser());
@@ -1376,6 +1560,20 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
         return db.update(TABLE_PRACTICE_HISTORY, values, KEY_PRACTICE_HISTORY_ID + " = ?",
                 new String[]{String.valueOf(practiceHistory.getID())});
+    }
+
+    public int updateDetailedPracticeHistory(DetailedPracticeHistory detailedPracticeHistory) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_DATE, detailedPracticeHistory.getDate());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getIdUser());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getIdPractice());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());
+
+        return db.update(TABLE_DETAILED_PRACTICE_HISTORY, values, KEY_DETAILED_PRACTICE_HISTORY_ID + " = ?",
+                new String[]{String.valueOf(detailedPracticeHistory.getID())});
     }
 
 
@@ -1422,6 +1620,12 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteDetailedPracticeHistory(DetailedPracticeHistory detailedPracticeHistory) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID+ " = ?",
+                new String[]{String.valueOf(detailedPracticeHistory.getID())});
+        db.close();
+    }
 
     public ArrayList<Cursor> getData(String Query) {
         //get writable database

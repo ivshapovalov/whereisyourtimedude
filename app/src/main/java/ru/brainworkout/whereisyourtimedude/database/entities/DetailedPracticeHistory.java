@@ -80,9 +80,9 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
         synchronized (this) {
 
             if (db.containsPracticeHistory(this.getID())) {
-                db.updatePracticeHistory((DetailedPracticeHistory) this);
+                db.updateDetailedPracticeHistory((DetailedPracticeHistory) this);
             } else {
-                db.addPracticeHistory((DetailedPracticeHistory) this);
+                db.addDetailedPracticeHistory((DetailedPracticeHistory) this);
             }
         }
     }
@@ -91,7 +91,7 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
     public void dbDelete(SqlLiteDatabaseManager db) {
 
         if (db.containsPracticeHistory(this.getID())) {
-            db.deletePracticeHistory((DetailedPracticeHistory) this);
+            db.deleteDetailedPracticeHistory((DetailedPracticeHistory) this);
         }
 
     }
@@ -126,8 +126,8 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
             return this;
         }
 
-        public Builder addLastTime(long lastTime) {
-            this.time = lastTime;
+        public Builder addTime(long time) {
+            this.time = time;
             return this;
         }
 

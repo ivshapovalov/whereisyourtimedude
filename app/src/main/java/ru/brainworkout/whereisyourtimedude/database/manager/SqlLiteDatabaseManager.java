@@ -33,6 +33,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String TABLE_PROJECTS = "projects";
     private static final String TABLE_AREAS = "areas";
     private static final String TABLE_PRACTICE_HISTORY = "practice_history";
+    private static final String TABLE_DETAILED_PRACTICE_HISTORY = "detailed_practice_history";
 
     //options
     private static final String KEY_OPTIONS_ID = "options_id";
@@ -42,26 +43,26 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_OPTIONS_SAVE_INTERVAL= "options_save_interval";
     private static final String KEY_OPTIONS_CHRONO_IS_WORKING= "options_chrono_is_working";
 
-    // Practice Columns names
+    // Practice
     private static final String KEY_PRACTICE_ID = "practice_id";
     private static final String KEY_PRACTICE_ID_USER = "practice_id_user";
     private static final String KEY_PRACTICE_IS_ACTIVE = "practice_is_active";
     private static final String KEY_PRACTICE_NAME = "practice_name";
     private static final String KEY_PRACTICE_ID_PROJECT = "practice_id_project";
 
-    //  Area Columns names
+    //  Area
     private static final String KEY_AREA_ID = "area_id";
     private static final String KEY_AREA_ID_USER = "area_id_user";
     private static final String KEY_AREA_NAME = "area_name";
     private static final String KEY_AREA_COLOR = "area_color";
 
-    //  Project Columns names
+    //  Project
     private static final String KEY_PROJECT_ID = "project_id";
     private static final String KEY_PROJECT_ID_USER = "project_id_user";
     private static final String KEY_PROJECT_ID_AREA = "project_id_area";
     private static final String KEY_PROJECT_NAME = "project_name";
 
-    //  Practice timer
+    //  Practice history
     private static final String KEY_PRACTICE_HISTORY_ID = "practice_history_id";
     private static final String KEY_PRACTICE_HISTORY_ID_USER = "practice_history_id_user";
     private static final String KEY_PRACTICE_HISTORY_ID_PRACTICE = "practice_history_id_practice";
@@ -69,7 +70,16 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_PRACTICE_HISTORY_DURATION = "practice_history_duration";
     private static final String KEY_PRACTICE_HISTORY_LAST_TIME = "practice_history_last_time";
 
-    //  Users AbstractEntity Columns names
+    //  Detailed practice history
+    private static final String KEY_DETAILED_PRACTICE_HISTORY_ID = "detailed_practice_history_id";
+    private static final String KEY_DETAILED_PRACTICE_HISTORY_ID_USER = "detailed_practice_history_id_user";
+    private static final String KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE = "detailed_practice_history_id_practice";
+    private static final String KEY_DETAILED_PRACTICE_HISTORY_DATE = "detailed_practice_history_date";
+    private static final String KEY_DETAILED_PRACTICE_HISTORY_DURATION = "detailed_practice_history_duration";
+    private static final String KEY_DETAILED_PRACTICE_HISTORY_TIME = "detailed_practice_history_last_time";
+
+
+    //  Users AbstractEntity
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_IS_CURRENT = "user_is_current";
@@ -80,15 +90,13 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public void update(SQLiteDatabase db) {
         // some code
-        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
-                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
-                + KEY_OPTIONS_ID_USER + " INTEGER, "
-                + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
-                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
-        db.execSQL(CREATE_OPTIONS_TABLE);
+//        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
+//                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+//                + KEY_OPTIONS_ID_USER + " INTEGER, "
+//                + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
+//                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
+//        db.execSQL(CREATE_OPTIONS_TABLE);
     }
-
-    // Creating Tables
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -165,7 +173,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         String CREATE_PRACTICES_INDEX_PROJECT_DESC = "CREATE INDEX PRACTICES_PROJECT_IDX_DESC ON " + TABLE_PRACTICES + " (" + KEY_PRACTICE_ID_PROJECT + " DESC)";
         db.execSQL(CREATE_PRACTICES_INDEX_PROJECT_DESC);
 
-        //practice_timer
+        //practice history
         String CREATE_PRACTICE_HISTORY_TABLE = "CREATE TABLE " + TABLE_PRACTICE_HISTORY + "("
                 + KEY_PRACTICE_HISTORY_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_PRACTICE_HISTORY_ID_USER + " INTEGER, "
@@ -203,6 +211,45 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         String CREATE_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_DESC = "CREATE INDEX PRACTICE_HISTORY_USER_AND_PRACTICE_IDX_DESC ON " + TABLE_PRACTICE_HISTORY + " (" + KEY_PRACTICE_HISTORY_ID_USER + " DESC, " + KEY_PRACTICE_HISTORY_ID_PRACTICE + " DESC)";
         db.execSQL(CREATE_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_DESC);
 
+        //detailed practice history
+        String CREATE_DETAILED_PRACTICE_HISTORY_TABLE = "CREATE TABLE " + TABLE_DETAILED_PRACTICE_HISTORY + "("
+                + KEY_DETAILED_PRACTICE_HISTORY_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+                + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " INTEGER, "
+                + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " INTEGER,"
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + " INTEGER,"
+                + KEY_DETAILED_PRACTICE_HISTORY_DURATION + " INTEGER,"
+                + KEY_DETAILED_PRACTICE_HISTORY_TIME + " INTEGER, "
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES " + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + "),"
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")"
+                + ")";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_TABLE);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_PRACTICE_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_PRACTICE_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_DATE_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_DATE + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_DATE_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_DATE + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_LAST_TIME_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_TIME + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_LAST_TIME_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_TIME + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_AND_PRACTICE_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " ASC, " + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_AND_PRACTICE_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " DESC, " + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_DESC);
+
+
     }
 
     // Upgrading database
@@ -221,6 +268,8 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
 
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
+
         // Create tables again
         onCreate(db);
     }
@@ -238,6 +287,8 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICES);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
     }
 
     public void addUser(User user) {

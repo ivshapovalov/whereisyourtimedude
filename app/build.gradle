@@ -11,7 +11,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 10
-        versionName "1_10release"
+        versionName "1_11"
     }
 //    buildTypes {
 //        time_release {

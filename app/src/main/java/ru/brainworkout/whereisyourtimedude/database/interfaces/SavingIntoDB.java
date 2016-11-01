@@ -1,10 +1,10 @@
 package ru.brainworkout.whereisyourtimedude.database.interfaces;
 
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
 public interface SavingIntoDB {
 
-    void dbSave(DatabaseManager db);
+    void dbSave(SqlLiteDatabaseManager db);
 
 
 }

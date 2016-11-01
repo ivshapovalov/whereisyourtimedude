@@ -2,8 +2,7 @@ package ru.brainworkout.whereisyourtimedude.database.entities;
 
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
+import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
 public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
 
@@ -45,7 +44,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
     }
 
     @Override
-    public void dbSave(DatabaseManager db) {
+    public void dbSave(SqlLiteDatabaseManager db) {
         if (db.containsPractice(this.getID())) {
             db.updatePractice(this);
         } else {
@@ -54,7 +53,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
     }
 
     @Override
-    public void dbDelete(DatabaseManager db) {
+    public void dbDelete(SqlLiteDatabaseManager db) {
         if (db.containsPractice(this.getID())) {
             db.deletePractice(this);
         } else {
@@ -63,7 +62,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
     }
 
-    public static Practice getPracticeFromDB(DatabaseManager DB, int id) {
+    public static Practice getPracticeFromDB(SqlLiteDatabaseManager DB, int id) {
         return DB.getPractice(id);
     }
 
@@ -73,7 +72,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
         private int id_project;
         private int is_active;
 
-        public Builder(DatabaseManager DB) {
+        public Builder(SqlLiteDatabaseManager DB) {
             this.id = DB.getPracticeMaxNumber() + 1;
         }
         public Builder(int id) {

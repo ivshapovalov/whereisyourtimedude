@@ -18,8 +18,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
-public class DatabaseManager extends SQLiteOpenHelper {
-    // All Static variables
+public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     // Database Version
     private static final int DATABASE_VERSION = 1;
@@ -75,7 +74,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_IS_CURRENT = "user_is_current";
 
-    public DatabaseManager(Context context) {
+    public SqlLiteDatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 

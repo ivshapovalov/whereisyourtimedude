@@ -2,7 +2,7 @@ package ru.brainworkout.whereisyourtimedude.database.entities;
 
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
 public class Options extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
 
@@ -54,7 +54,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
     }
 
     @Override
-    public void dbSave(DatabaseManager db) {
+    public void dbSave(SqlLiteDatabaseManager db) {
         if (db.containsOptions(this.getID())) {
             db.updateOptions(this);
         } else {
@@ -63,7 +63,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
     }
 
     @Override
-    public void dbDelete(DatabaseManager db) {
+    public void dbDelete(SqlLiteDatabaseManager db) {
         if (db.containsOptions(this.getID())) {
             db.deleteOptions(this);
         } else {
@@ -72,7 +72,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
     }
 
-    public static Options getOptionsFromDB(DatabaseManager DB, int id) {
+    public static Options getOptionsFromDB(SqlLiteDatabaseManager DB, int id) {
         return DB.getOptions(id);
     }
 
@@ -84,7 +84,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
         private int chronoIsWorking;
 
 
-        public Builder(DatabaseManager DB) {
+        public Builder(SqlLiteDatabaseManager DB) {
             this.id = DB.getOptionsMaxNumber() + 1;
         }
         public Builder(int id) {

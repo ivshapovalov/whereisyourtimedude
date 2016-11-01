@@ -1,11 +1,8 @@
 package ru.brainworkout.whereisyourtimedude.database.entities;
 
-import java.util.Calendar;
-
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
+import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
 /**
  * Created by Ivan on 05.09.2016.
@@ -82,7 +79,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     }
 
     @Override
-    public void dbSave(DatabaseManager db) {
+    public void dbSave(SqlLiteDatabaseManager db) {
         synchronized (this) {
 
             if (db.containsPracticeHistory(this.getID())) {
@@ -94,7 +91,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     }
 
     @Override
-    public void dbDelete(DatabaseManager db) {
+    public void dbDelete(SqlLiteDatabaseManager db) {
 
         if (db.containsPracticeHistory(this.getID())) {
             db.deletePracticeHistory((PracticeHistory) this);
@@ -109,7 +106,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
         private long lastTime;
         private long date;
 
-        public Builder(DatabaseManager DB) {
+        public Builder(SqlLiteDatabaseManager DB) {
             this.id = DB.getPracticeHistoryMaxNumber() + 1;
         }
 

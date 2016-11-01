@@ -31,8 +31,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
-import ru.brainworkout.whereisyourtimedude.R;
-
 public class AndroidDatabaseManager extends Activity implements OnItemClickListener {
 
 //a static class to save cursor,table values etc which is used by functions to share data in the program.
@@ -55,7 +53,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 	
 	//in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name.
 	//Do not change the variable name dbm
-	DatabaseManager dbm;
+	SqlLiteDatabaseManager dbm;
 	TableLayout tableLayout;
 	TableRow.LayoutParams tableRowParams;
 	HorizontalScrollView hsv;
@@ -74,7 +72,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 
 
 		//in the below line Change the text 'yourCustomSqlHelper' with your custom sqlitehelper class name
-		dbm = new DatabaseManager(AndroidDatabaseManager.this);
+		dbm = new SqlLiteDatabaseManager(AndroidDatabaseManager.this);
 
 		mainscrollview = new ScrollView(AndroidDatabaseManager.this);
 
@@ -228,14 +226,14 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 
 					tvmessage.setBackgroundColor(Color.parseColor("#2ecc71"));
 					if(c4!=null){
-						tvmessage.setText("Queru Executed successfully.Number of rows returned :"+c4.getCount());
+						tvmessage.setText("Query Executed successfully.Number of rows returned :"+c4.getCount());
 						if(c4.getCount()>0)
 						{
 						indexInfo.maincursor=c4;
 						refreshTable(1);
 						}
 					}else{
-				 	  	tvmessage.setText("Queru Executed successfully");
+				 	  	tvmessage.setText("Query Executed successfully");
 					  	refreshTable(1);
 					}
 

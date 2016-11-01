@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
@@ -34,7 +34,7 @@ public class BackgroundChronometer extends Thread {
     private volatile Long beginTimeinMillis = 0L;
     private volatile boolean ticking;
     private volatile PracticeHistory currentPracticeHistory;
-    private volatile DatabaseManager DB;
+    private volatile SqlLiteDatabaseManager DB;
     private volatile Service service;
     private volatile boolean notificationStatusIsPlay;
 
@@ -99,11 +99,11 @@ public class BackgroundChronometer extends Thread {
         Session.sessionOptions.dbSave(DB);
     }
 
-    public DatabaseManager getDB() {
+    public SqlLiteDatabaseManager getDB() {
         return DB;
     }
 
-    public void setDB(DatabaseManager DB) {
+    public void setDB(SqlLiteDatabaseManager DB) {
         this.DB = DB;
     }
 

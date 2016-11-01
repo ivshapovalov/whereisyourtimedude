@@ -11,13 +11,13 @@ import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.common.Alogger;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
-import ru.brainworkout.whereisyourtimedude.database.manager.DatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public abstract class AbstractActivity extends AppCompatActivity {
 
-    protected final DatabaseManager DB = new DatabaseManager(this);
+    protected final SqlLiteDatabaseManager DB = new SqlLiteDatabaseManager(this);
     protected Logger LOG = Alogger.getLogger(this.getClass());
 
     @Override

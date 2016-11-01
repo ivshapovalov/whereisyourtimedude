@@ -204,8 +204,14 @@ public class ActivityMain extends AbstractActivity {
 
     public void btPracticeHistory_onClick(final View view) {
         if (isDBNotEmpty() && isUserDefined()) {
-            //DB.update(DB.getReadableDatabase());
             Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
+            startActivity(intent);
+        }
+    }
+
+    public void btDetailedPracticeHistory_onClick(final View view) {
+        if (isDBNotEmpty() && isUserDefined()) {
+            Intent intent = new Intent(ActivityMain.this, ActivityDetailedPracticeHistoryList.class);
             startActivity(intent);
         }
     }

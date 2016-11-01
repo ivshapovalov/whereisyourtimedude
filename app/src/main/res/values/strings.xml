@@ -11,13 +11,14 @@
     <string name="practice_name">PRACTICE</string>
     <string name="practice_history_list_name">HISTORIES</string>
     <string name="practice_history_name">HISTORY</string>
+    <string name="detailed_practice_history_list_name">DETAILED HISTORIES</string>
+    <string name="detailed_practice_history_name">DETAILED HISTORY</string>
     <string name="calendar_view_name">DATE CHOICE</string>
     <string name="about_name">ABOUT</string>
     <string name="options_name">OPTIONS</string>
     <string name="chrono_name">TIME SIEVE</string>
     <string name="date_time_picker_name">CHOOSE THE DATE</string>
     <string name="about_text">2016. This program will help you to chrono your activities</string>
-
 
     <!-- App name -->
     <string name="app_version_number">1.0</string>

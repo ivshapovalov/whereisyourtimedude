@@ -21,6 +21,8 @@ public class Session {
     public static Area sessionCurrentArea;
     public static Practice sessionCurrentPractice;
     public static PracticeHistory sessionCurrentPracticeHistory;
+    public static DetailedPracticeHistory sessionCurrentDetailedPracticeHistory;
+
     public static final Deque<ConnectionParameters> sessionOpenActivities = new ArrayDeque<>();
     public static BackgroundChronometer sessionBackgroundChronometer;
     public static boolean sessionChronometerIsWorking;

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ru.brainworkout.whereisyourtimedude">
+
     <uses-permission android:name="android.permission.VIBRATE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
@@ -12,10 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:versionCode="10"
-        android:versionName="1.10"
-
-  >
+        android:versionName="1.11">
         <service android:name=".common.BackgroundChronometerService"/>
+
         <activity
             android:name=".activities.ActivityChrono"
             android:label="@string/chrono_name"
@@ -23,7 +23,7 @@
         </activity>
         <activity
             android:name=".database.manager.AndroidDatabaseManager"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/Theme.AppCompat.Light"/>
         <activity
             android:name=".activities.ActivityUsersList"
             android:label="@string/users_list_name"
@@ -39,11 +39,11 @@
         <activity
             android:name=".activities.ActivityTools"
             android:label="@string/tools_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ActivityAbout"
             android:label="@string/about_name"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ActivityAreasList"
             android:label="@string/areas_list_name"
@@ -79,6 +79,14 @@
         <activity
             android:name=".activities.ActivityPracticeHistory"
             android:label="@string/practice_history_name"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.ActivityDetailedPracticeHistoryList"
+            android:label="@string/detailed_practice_history_list_name"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.ActivityDetailedPracticeHistory"
+            android:label="@string/detailed_practice_history_name"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.ActivityMain"

@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ActivityDetailedPracticeHistory">
+
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*">
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="CLOSE"
+                android:id="@+id/button4"
+                android:onClick="btClose_onClick"
+                android:layout_span="10"
+                style="@android:style/TextAppearance.Small"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="SAVE"
+                android:id="@+id/button3"
+                android:onClick="btSave_onClick"
+                android:layout_span="10"
+                style="@android:style/TextAppearance.Small"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="DELETE"
+                android:id="@+id/button5"
+                android:onClick="btDelete_onClick"
+                android:layout_span="10"
+                style="@android:style/TextAppearance.Small"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+        </TableRow>
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollView"
+            android:layout_weight="30">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="*">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID"
+                        android:id="@+id/textView"
+                        android:layout_span="10"
+                        style="@android:style/TextAppearance.Small"
+                        android:textColor="@color/text_color"
+                        android:gravity="left|center_vertical"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvID"
+                        android:layout_span="5"
+                        style="@android:style/TextAppearance.Small"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="DATE"
+                        android:id="@+id/textView3"
+                        android:layout_span="10"
+                        android:textColor="@color/text_color"
+                        android:gravity="left|center_vertical"/>
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:id="@+id/tvDate"
+                        android:layout_span="20"
+                        android:textColor="@color/text_color"
+                        android:gravity="left|center_vertical"
+                        android:inputType="date"
+                        android:onClick="tvDate_onClick"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="DURATION"
+                        android:id="@+id/textView5"
+                        android:layout_span="10"
+                        android:textColor="@color/text_color"
+                        android:gravity="left|center_vertical"/>
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvDuration"
+                        android:layout_span="20"
+                        android:textColor="@color/text_color"
+                        android:gravity="left|center_vertical"
+                        android:onClick="tvDuration_onClick"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="TIME"
+                        android:id="@+id/textView6"
+                        android:layout_span="10"
+                        android:textColor="@color/text_color"
+                        android:gravity="left|center_vertical"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTimeDate"
+                        android:onClick="tvTimeDate_onClick"
+                        android:layout_span="10"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvTimeTime"
+                        android:onClick="tvTimeTime_onClick"
+                        android:layout_span="10"/>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    >
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="PRACTICE"
+                        android:id="@+id/textView4"
+                        android:layout_span="10"
+                        android:textColor="@color/text_color"
+                        />
+
+                    <TextView
+                        style="@android:style/TextAppearance.Small"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/tvPractice"
+                        android:layout_span="20"
+                        android:onClick="tvPractice_onClick"
+                        android:text="CHOOSE PRACTICE"
+                        android:gravity="left|center_vertical|center"
+                        android:textStyle="bold"
+                        android:textColor="@color/text_color"/>
+
+                </TableRow>
+
+            </TableLayout>
+        </ScrollView>
+
+
+
+    </TableLayout>
+
+</RelativeLayout>
+

@@ -17,7 +17,6 @@ public class ConnectionParameters {
         this.isReceiverNew = builder.isReceiverNew;
         this.isTransmitterForChoice = builder.isTransmitterForChoice;
         this.isReceiverForChoice = builder.isReceiverForChoice;
-
     }
 
     public String getTransmitterActivityName() {

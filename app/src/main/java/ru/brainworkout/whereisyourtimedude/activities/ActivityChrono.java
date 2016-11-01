@@ -588,7 +588,7 @@ public class ActivityChrono extends AbstractActivity {
     public void tvDate_onClick(View view) {
 
         blink(view, this);
-        stopTimer();
+        //stopTimer();
 
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
         intent.putExtra("CurrentActivity", "ActivityChrono");

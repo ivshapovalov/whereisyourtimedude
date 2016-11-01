@@ -15,7 +15,6 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 public class ActivityDateTimePickerDialog extends AbstractActivity {
 
-    //private static long oldTime;
     private static long newTime;
     private static boolean mCallerIsNew;
     private static String mCallerActivity;

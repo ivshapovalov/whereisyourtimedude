@@ -26,11 +26,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManag
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPracticeHistory;
+import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 public class ActivityPracticesList extends AbstractActivity {
 
@@ -194,7 +190,7 @@ public class ActivityPracticesList extends AbstractActivity {
 
     public void btPracticeAdd_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticesList")
@@ -212,9 +208,9 @@ public class ActivityPracticesList extends AbstractActivity {
     }
 
     private void txtPracticeEdit_onClick(TextView view) {
-        blink(view,this);
+        blink(view, this);
 
-        int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
+        int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticesList")
                 .isTransmitterNew(false)
@@ -234,16 +230,28 @@ public class ActivityPracticesList extends AbstractActivity {
 
     private void rowPractice_onClick(final TableRow view) {
 
-        blink(view,this);
+        blink(view, this);
 
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("CurrentPracticeID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                sessionCurrentPracticeHistory.setIdPractice(id);
+                Class<?> transmitterClass = null;
+                try {
+                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                if (transmitterClass == ActivityPracticeHistory.class
+                        ) {
+                    sessionCurrentPracticeHistory.setIdPractice(id);
+                } else if (transmitterClass == ActivityDetailedPracticeHistory.class
+                        ) {
+                    sessionCurrentDetailedPracticeHistory.setIdPractice(id);
+                }
 
-                intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+                intent = new Intent(getApplicationContext(), transmitterClass);
                 sessionOpenActivities.pop();
                 intent.putExtra("CurrentPracticeID", id);
             }
@@ -265,7 +273,7 @@ public class ActivityPracticesList extends AbstractActivity {
 
     public void btEdit_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
@@ -274,7 +282,7 @@ public class ActivityPracticesList extends AbstractActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -284,7 +292,7 @@ public class ActivityPracticesList extends AbstractActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить занятия и их историю?")
@@ -292,12 +300,12 @@ public class ActivityPracticesList extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                                List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getID());
-                                for (Practice practice : practices
-                                        ) {
-                                    DB.deleteAllPracticeHistoryOfPractice(practice.getID());
-                                }
-                                DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getID());
+                            List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getID());
+                            for (Practice practice : practices
+                                    ) {
+                                DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                            }
+                            DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getID());
                             showPractices();
                         }
                     }
@@ -311,7 +319,14 @@ public class ActivityPracticesList extends AbstractActivity {
 
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
+                Class<?> transmitterClass = null;
+                try {
+                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                intent = new Intent(getApplicationContext(), transmitterClass);
                 sessionOpenActivities.pop();
                 intent.putExtra("CurrentPracticeID", id_practice);
             }

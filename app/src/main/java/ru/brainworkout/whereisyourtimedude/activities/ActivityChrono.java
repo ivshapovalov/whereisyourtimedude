@@ -46,11 +46,11 @@ public class ActivityChrono extends AbstractActivity {
     private boolean mChronometerIsWorking = false;
     private long localChronometerCountInSeconds = 0;
     private long elapsedMillis;
+    private boolean isToday=true;
 
     private Intent backgroundServiceIntent;
     private TableLayout tableHistory;
     private ConnectionParameters params;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +84,9 @@ public class ActivityChrono extends AbstractActivity {
 
                 if (elapsedMillis > 1000) {
 
+                    if (!isToday) {
+                        return;
+                    }
                     if (currentPracticeHistory != null && sessionBackgroundChronometer != null && sessionBackgroundChronometer.getCurrentPracticeHistory() != null) {
                         if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
 
@@ -94,9 +97,11 @@ public class ActivityChrono extends AbstractActivity {
                     if (!mChronometerIsWorking && sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
                         mChronometerIsWorking = true;
                         mChronometer.start();
+                        updateAllRows();
                     } else if (mChronometerIsWorking && sessionBackgroundChronometer != null && !sessionBackgroundChronometer.isTicking()) {
                         mChronometerIsWorking = false;
                         mChronometer.stop();
+                        updateAllRows();
                     }
 
                 }
@@ -109,10 +114,13 @@ public class ActivityChrono extends AbstractActivity {
         currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
         int id_practice = intent.getIntExtra("CurrentPracticeID", -1);
 
-
         if (currentDateInMillis == 0) {
             init();
         } else {
+
+            if (currentDateInMillis != getCurrentDateInMillis()) {
+                isToday = false;
+            }
             defineNewDayPractice(currentDateInMillis);
         }
 
@@ -121,9 +129,9 @@ public class ActivityChrono extends AbstractActivity {
                 Practice practice = DB.getPractice(id_practice);
 
                 if (practice.getIsActive() == 1) {
-                    for (PracticeHistory practiceHistory:practiceHistories
-                         ) {
-                        if ( practiceHistory.getIdPractice()==id_practice) {
+                    for (PracticeHistory practiceHistory : practiceHistories
+                            ) {
+                        if (practiceHistory.getIdPractice() == id_practice) {
                             startPracticeHistoryTimerOnEvent(practiceHistory.getId());
                             break;
                         }
@@ -137,24 +145,14 @@ public class ActivityChrono extends AbstractActivity {
 
     private void init() {
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear(Calendar.HOUR);
-        calendar.clear(Calendar.HOUR_OF_DAY);
-        calendar.clear(Calendar.MINUTE);
-        calendar.clear(Calendar.SECOND);
-        calendar.clear(Calendar.MILLISECOND);
-        currentDateInMillis = calendar.getTimeInMillis();
-//        calendar.add(Calendar.DAY_OF_YEAR,1);
-//        long endOfDayInMillis=calendar.getTimeInMillis();
+        currentDateInMillis = getCurrentDateInMillis();
         updatePractices(currentDateInMillis);
-        //Collections.sort(practiceHistories, new PracticeHistoryComparatorByLastTime());
 
         if (practiceHistories.isEmpty()) {
             return;
         }
 
         currentPracticeHistory = practiceHistories.get(0);
-
 
         if (Session.sessionBackgroundChronometer != null) {
 
@@ -179,6 +177,17 @@ public class ActivityChrono extends AbstractActivity {
 
         }
         updateAllRows();
+    }
+
+    @NonNull
+    private long getCurrentDateInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear(Calendar.HOUR);
+        calendar.clear(Calendar.HOUR_OF_DAY);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+        return calendar.getTimeInMillis();
     }
 
     private void autoChangeDay(Long newDateInMillis) {
@@ -206,6 +215,7 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     private void defineNewDayPractice(Long date) {
+
         if (mChronometerIsWorking) {
             stopTimer();
         }
@@ -217,28 +227,28 @@ public class ActivityChrono extends AbstractActivity {
         currentPracticeHistory = practiceHistories.get(0);
         currentDateInMillis = date;
 
-        if (Session.sessionBackgroundChronometer.isAlive()) {
+        if (isToday) {
+            if (Session.sessionBackgroundChronometer.isAlive()) {
 
-            if (Session.sessionBackgroundChronometer.isTicking()) {
-                localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
-                rowCurrentWork_onClick(new TextView(this));
+                if (Session.sessionBackgroundChronometer.isTicking()) {
+                    localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
+                    rowCurrentWork_onClick(new TextView(this));
+                } else {
+                    localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+                    Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                }
+                Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+
             } else {
+                backgroundServiceIntent.setAction("START");
+                startService(backgroundServiceIntent);
+                Session.sessionBackgroundChronometer.start();
+                Session.sessionBackgroundChronometer.pauseTicking();
+                Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
+                Session.sessionBackgroundChronometer.setDB(DB);
                 localChronometerCountInSeconds = currentPracticeHistory.getDuration();
                 Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
             }
-            Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-
-        } else {
-            backgroundServiceIntent.setAction("START");
-            startService(backgroundServiceIntent);
-            Session.sessionBackgroundChronometer.start();
-            Session.sessionBackgroundChronometer.pauseTicking();
-            Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-            Session.sessionBackgroundChronometer.setDB(DB);
-            localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-            Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
-
-
         }
     }
 
@@ -249,8 +259,12 @@ public class ActivityChrono extends AbstractActivity {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
             currentPracticeHistory.setDuration(sessionBackgroundChronometer.getGlobalChronometerCountInSeconds());
             mChronometer.stop();
+            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
+            setTimerText(Common.SYMBOL_STOP, localChronometerCountInSeconds * 1000);
             Session.sessionBackgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
+            sessionBackgroundChronometer.updateNotification(Constants.ACTION.PAUSE_ACTION);
+
         } else {
         }
         currentPracticeHistory.dbSave(DB);
@@ -279,6 +293,10 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     private void rowWork_onClick(TableRow view) {
+        if (!isToday) {
+            return;
+        }
+
         LOG.debug("Timer start rowWork_onClick");
         blink(view, this);
         int id_practice_history = view.getId();
@@ -325,6 +343,9 @@ public class ActivityChrono extends AbstractActivity {
 
     public void rowCurrentWork_onClick(View view) {
 
+        if (!isToday) {
+            return;
+        }
         blink(view, this);
         if (!mChronometerIsWorking) {
             LOG.debug("Timer start currentWork_onClick");
@@ -351,15 +372,7 @@ public class ActivityChrono extends AbstractActivity {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
 
         } else {
-            LOG.debug("Timer paused currentWork_onClick");
-            sessionBackgroundChronometer.pauseTicking();
-            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
-            mChronometer.stop();
-            mChronometerIsWorking = false;
-            setTimerText(Common.SYMBOL_STOP, localChronometerCountInSeconds * 1000);
-            currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-            currentPracticeHistory.dbSave(DB);
-            sessionBackgroundChronometer.updateNotification(Constants.ACTION.PAUSE_ACTION);
+            stopTimer();
 
         }
         updateAllRows();
@@ -570,5 +583,18 @@ public class ActivityChrono extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void tvDate_onClick(View view) {
+
+        blink(view, this);
+        stopTimer();
+
+        Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
+        intent.putExtra("CurrentActivity", "ActivityChrono");
+        intent.putExtra("CurrentDateInMillis", currentDateInMillis);
+        currentDateInMillis = 0;
+        startActivity(intent);
+
     }
 }

@@ -95,8 +95,8 @@ public class ActivityTools extends AbstractActivity {
                         try {
 
                             SQLiteDatabase dbSQL = DB.getWritableDatabase();
-                            //DB.DeleteDB(dbSQL);
-                            DB.onUpgrade(dbSQL, 1, 2);
+                            DB.ClearDB(dbSQL);
+                            //DB.onUpgrade(dbSQL, 1, 1);
 
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена!", Toast.LENGTH_SHORT);

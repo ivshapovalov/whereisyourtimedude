@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "wiytd";
@@ -79,7 +79,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_DETAILED_PRACTICE_HISTORY_DURATION = "detailed_practice_history_duration";
     private static final String KEY_DETAILED_PRACTICE_HISTORY_TIME = "detailed_practice_history_last_time";
 
-
     //  Users AbstractEntity
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_NAME = "user_name";
@@ -89,14 +88,88 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public void update(SQLiteDatabase db) {
-        // some code
-//        String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
-//                + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
-//                + KEY_OPTIONS_ID_USER + " INTEGER, "
-//                + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
-//                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER,"+ KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER"+")";
-//        db.execSQL(CREATE_OPTIONS_TABLE);
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion == 1 && newVersion == 2) {
+            //TODO
+            //update1To2(db);
+
+        } else {
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_AREAS);
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICES);
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
+
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
+
+            onCreate(db);
+        }
+
+    }
+
+    public void update1To2(SQLiteDatabase db) {
+        //detailed practice history
+        String CREATE_DETAILED_PRACTICE_HISTORY_TABLE = "CREATE TABLE " + TABLE_DETAILED_PRACTICE_HISTORY + "("
+                + KEY_DETAILED_PRACTICE_HISTORY_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+                + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " INTEGER, "
+                + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " INTEGER,"
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + " INTEGER,"
+                + KEY_DETAILED_PRACTICE_HISTORY_DURATION + " INTEGER,"
+                + KEY_DETAILED_PRACTICE_HISTORY_TIME + " INTEGER, "
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES " + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + "),"
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")"
+                + ")";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_TABLE);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_PRACTICE_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_PRACTICE_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_PRACTICE_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_DATE_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_DATE + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_DATE_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_DATE + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_DATE_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_LAST_TIME_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_TIME + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_LAST_TIME_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_TIME + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_LAST_TIME_DESC);
+
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_ASC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_AND_PRACTICE_IDX_ASC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " ASC, " + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " ASC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_ASC);
+        String CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_DESC = "CREATE INDEX DETAILED_PRACTICE_HISTORY_USER_AND_PRACTICE_IDX_DESC ON " + TABLE_DETAILED_PRACTICE_HISTORY + " (" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + " DESC, " + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + " DESC)";
+        db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_INDEX_USER_AND_PRACTICE_DESC);
+
+        String INSERT = "insert into " + TABLE_DETAILED_PRACTICE_HISTORY + "("
+                + KEY_DETAILED_PRACTICE_HISTORY_ID + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_DURATION + ","
+                + KEY_DETAILED_PRACTICE_HISTORY_TIME + ""
+                + ") select "
+                + KEY_PRACTICE_HISTORY_ID + ","
+                + KEY_PRACTICE_HISTORY_ID_USER + ","
+                + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
+                + KEY_PRACTICE_HISTORY_DATE + ","
+                + KEY_PRACTICE_HISTORY_DURATION + ","
+                + KEY_PRACTICE_HISTORY_LAST_TIME + " AS " + KEY_DETAILED_PRACTICE_HISTORY_TIME + ""
+                + " from " + TABLE_PRACTICE_HISTORY;
+        db.execSQL(INSERT);
     }
 
     @Override
@@ -253,9 +326,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     }
 
-    // Upgrading database
-    @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+    public void DropDB(SQLiteDatabase db) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
 
@@ -270,25 +341,17 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
-
-        onCreate(db);
     }
 
-    public void DeleteDB(SQLiteDatabase db) {
+    public void ClearDB(SQLiteDatabase db) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_AREAS);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICES);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
-
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
+        db.execSQL("Delete from " + TABLE_OPTIONS);
+        db.execSQL("Delete from " + TABLE_AREAS);
+        db.execSQL("Delete from " + TABLE_PROJECTS);
+        db.execSQL("Delete from " + TABLE_PRACTICES);
+        db.execSQL("Delete from " + TABLE_PRACTICE_HISTORY);
+        db.execSQL("Delete from " + TABLE_DETAILED_PRACTICE_HISTORY);
+        db.execSQL("Delete from  " + TABLE_USERS);
     }
 
     public void addUser(User user) {
@@ -819,7 +882,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     public void deleteAllDetailedPracticeHistoryOfPracticeAndDate(int id_practice, long date) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + "=?"
-                +KEY_DETAILED_PRACTICE_HISTORY_DATE + "=?", new String[]{String.valueOf(id_practice),String.valueOf(date)});
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + "=?", new String[]{String.valueOf(id_practice), String.valueOf(date)});
     }
 
     public void deleteAllDetailedPracticeHistoryOfUser(int id_user) {
@@ -831,7 +894,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         List<User> users = new ArrayList<>();
         String selectQuery = "SELECT  " + KEY_USER_ID + "," + KEY_USER_NAME + "," + KEY_USER_IS_CURRENT + " FROM " + TABLE_USERS;
 
-        SQLiteDatabase db = this.getWritableDatabase();
+        SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
 
         if (cursor.moveToFirst()) {
@@ -1622,7 +1685,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
     public void deleteDetailedPracticeHistory(DetailedPracticeHistory detailedPracticeHistory) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID+ " = ?",
+        db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID + " = ?",
                 new String[]{String.valueOf(detailedPracticeHistory.getID())});
         db.close();
     }
@@ -1669,4 +1732,5 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
 
 
     }
+
 }

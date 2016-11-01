@@ -39,9 +39,6 @@ public class BackgroundChronometerService extends Service {
         Notification notification = sessionBackgroundChronometer.getCurrentNotification(Constants.ACTION.PAUSE_ACTION);
         LOG.debug("Start service foreground ");
         startForeground(SESSION_NOTIFICATION_ID, notification);
-
-//        LOG.debug("Stop service foreground ");
-//        stopForeground(true);
         LOG.debug("Background service started successful ");
     }
 

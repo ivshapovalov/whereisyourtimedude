@@ -19,6 +19,7 @@ import java.util.Calendar;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.activities.ActivityChrono;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -34,6 +35,7 @@ public class BackgroundChronometer extends Thread {
     private volatile Long beginTimeinMillis = 0L;
     private volatile boolean ticking;
     private volatile PracticeHistory currentPracticeHistory;
+    private volatile DetailedPracticeHistory currentDetailedPracticeHistory;
     private volatile SqlLiteDatabaseManager DB;
     private volatile Service service;
     private volatile boolean notificationStatusIsPlay;
@@ -81,6 +83,11 @@ public class BackgroundChronometer extends Thread {
     }
 
     public void pauseTicking() {
+        if (currentDetailedPracticeHistory != null) {
+            synchronized (currentDetailedPracticeHistory) {
+                currentDetailedPracticeHistory.dbSave(DB);
+            }
+        }
         this.ticking = false;
         setAndSaveChronometerState(false);
         LOG.debug(this.getName() + " paused");
@@ -88,9 +95,24 @@ public class BackgroundChronometer extends Thread {
 
     public void resumeTicking() {
 
+        createNewDetailedPracticeHistory();
         this.ticking = true;
         setAndSaveChronometerState(true);
         LOG.debug(this.getName() + " resumed");
+
+    }
+
+    private void createNewDetailedPracticeHistory() {
+        if (currentPracticeHistory != null) {
+            synchronized (this) {
+                currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB.getDetailedPracticeHistoryMaxNumber() + 1)
+                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addDate(currentPracticeHistory.getDate())
+                        .addTime(Calendar.getInstance().getTimeInMillis())
+                        .build();
+            }
+
+        }
 
     }
 
@@ -116,6 +138,18 @@ public class BackgroundChronometer extends Thread {
     public void setCurrentPracticeHistory(PracticeHistory currentPracticeHistory) {
         synchronized (currentPracticeHistory) {
             this.currentPracticeHistory = currentPracticeHistory;
+        }
+    }
+
+    public DetailedPracticeHistory getCurrentDetailedPracticeHistory() {
+        synchronized (currentDetailedPracticeHistory) {
+            return currentDetailedPracticeHistory;
+        }
+    }
+
+    public void setCurrentDetailedPracticeHistory(DetailedPracticeHistory currentDetailedPracticeHistory) {
+        synchronized (currentDetailedPracticeHistory) {
+            this.currentDetailedPracticeHistory = currentDetailedPracticeHistory;
         }
     }
 
@@ -169,16 +203,25 @@ public class BackgroundChronometer extends Thread {
                                 currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
                                 currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
                                 currentPracticeHistory.dbSave(DB);
-                                // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds+ " :save");
+                            }
+                            synchronized (currentDetailedPracticeHistory) {
+                                if (currentDetailedPracticeHistory.getTime() == 0L) {
+                                    currentDetailedPracticeHistory.setTime(Calendar.getInstance().getTimeInMillis());
+                                    currentDetailedPracticeHistory.setDuration(0);
+                                } else {
+                                    currentDetailedPracticeHistory.setDuration(Calendar.getInstance().getTimeInMillis()
+                                    - currentDetailedPracticeHistory.getTime());
+                                }
+                                currentDetailedPracticeHistory.dbSave(DB);
                             }
                             if (ticking) {
                                 if (sessionOptions != null) {
 
                                     if (service != null) {
                                         //if (sessionOptions.getDisplayNotificationTimerSwitch() == 1) {
-                                            writeMemoryInLog();
-                                            updateNotification(Constants.ACTION.PLAY_ACTION);
-                                       // }
+                                        writeMemoryInLog();
+                                        updateNotification(Constants.ACTION.PLAY_ACTION);
+                                        // }
                                     }
 
                                 } else {
@@ -335,11 +378,11 @@ public class BackgroundChronometer extends Thread {
                 currentDuration = currentDuration.concat(" (paused)");
                 intentPlayPause.setAction(Constants.ACTION.PLAY_ACTION);
                 iconPlayPause = android.R.drawable.ic_media_play;
-                practiceName=Common.SYMBOL_STOP+" " + practiceName;
+                practiceName = Common.SYMBOL_STOP + " " + practiceName;
             } else {
                 intentPlayPause.setAction(Constants.ACTION.PAUSE_ACTION);
                 iconPlayPause = android.R.drawable.ic_media_pause;
-                practiceName=Common.SYMBOL_PLAY+" " + practiceName;
+                practiceName = Common.SYMBOL_PLAY + " " + practiceName;
             }
 
             PendingIntent pPlayPauseIntent = PendingIntent.getService(service, 0,
@@ -387,9 +430,7 @@ public class BackgroundChronometer extends Thread {
         }
     }
 
-
     private void checkAndChangeDateIfNeeded() {
-        //current date
 
         Calendar today = Calendar.getInstance();
         today.clear(Calendar.HOUR);
@@ -420,14 +461,33 @@ public class BackgroundChronometer extends Thread {
                         .addLastTime(todayInMillis)
                         .addDuration(0)
                         .build();
+            }
+            synchronized (currentDetailedPracticeHistory) {
+                if (isTicking()) {
+                    currentDetailedPracticeHistory.setDuration(globalChronometerCountInSeconds);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTimeInMillis(currentDetailedPracticeHistory.getDate());
+                    calendar.set(Calendar.HOUR_OF_DAY, 23);
+                    calendar.set(Calendar.MINUTE, 59);
+                    calendar.set(Calendar.SECOND, 59);
+                    calendar.set(Calendar.MILLISECOND, 59);
+                    currentDetailedPracticeHistory.dbSave(DB);
+                }
+                //change practice history
+                currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB)
+                        .addDate(todayInMillis)
+                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addTime(todayInMillis)
+                        .addDuration(0)
+                        .build();
 
-                setGlobalChronometerCountInSeconds(0L);
-                if (service != null) {
-                    if (isTicking()) {
-                        updateNotification(Constants.ACTION.PLAY_ACTION);
-                    } else {
-                        updateNotification(Constants.ACTION.PAUSE_ACTION);
-                    }
+            }
+            setGlobalChronometerCountInSeconds(0L);
+            if (service != null) {
+                if (isTicking()) {
+                    updateNotification(Constants.ACTION.PLAY_ACTION);
+                } else {
+                    updateNotification(Constants.ACTION.PAUSE_ACTION);
                 }
             }
         }

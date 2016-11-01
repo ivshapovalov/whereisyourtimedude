@@ -4,4 +4,4 @@ g2h)  edit practices in activity chrono
 r8d) sort in new day ( last time current day activities, duration last not null day activities, othe by alphabet)
 q1l) reports (choose day, diagram gr oupduration by activities, duration in day bu time)
 d2v) backup to xls file
-t8i) add history table with all history
+t8i) * add history table with all history

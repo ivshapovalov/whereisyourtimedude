@@ -214,7 +214,7 @@ public class Common {
         final int PROJECTS_COUNT = 20;
         final int PRACTICES_COUNT = 50;
         final int DETAILED_PRACTICE_HISTORY_COUNT = 100;
-        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=3;
+        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=5;
         final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 400;
 
         int maxUser = DB.getUserMaxNumber();

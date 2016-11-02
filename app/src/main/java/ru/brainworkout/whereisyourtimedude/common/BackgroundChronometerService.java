@@ -45,7 +45,9 @@ public class BackgroundChronometerService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent.getAction() != null) {
+            LOG.debug("Before start command "+intent.getAction() );
             if (intent.getAction().equals(Constants.ACTION.SHOW_NOTIFICATION_TIMER)) {
+                LOG.debug("Before start command "+intent.getAction() );
                 sessionBackgroundChronometer.setService(this);
                 if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
                     Session.sessionOptions.setDisplayNotificationTimerSwitch(1);
@@ -70,6 +72,8 @@ public class BackgroundChronometerService extends Service {
                     sessionBackgroundChronometer.pauseTicking();
                 }
             }
+            LOG.debug("After start command "+intent.getAction() );
+
         }
         return START_STICKY;
     }
@@ -96,16 +100,13 @@ public class BackgroundChronometerService extends Service {
     @Override
     public void onTaskRemoved(Intent rootIntent) {
         LOG.error("onTaskRemoved");
-
         super.onTaskRemoved(rootIntent);
     }
 
     @Override
     public boolean onUnbind(Intent intent) {
         LOG.error("onUnbind");
-
         return super.onUnbind(intent);
     }
-
 
 }

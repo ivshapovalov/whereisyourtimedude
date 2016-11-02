@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import org.apache.log4j.Logger;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -19,6 +21,7 @@ import ru.brainworkout.whereisyourtimedude.R;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
+import ru.brainworkout.whereisyourtimedude.common.Alogger;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 
@@ -31,6 +34,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 public class ActivityMain extends AbstractActivity {
 
     private static final int MAX_VERTICAL_BUTTON_COUNT = 10;
+    private static Logger LOG = Alogger.getLogger(ActivityMain.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -245,12 +249,9 @@ public class ActivityMain extends AbstractActivity {
         blink(view, this);
         Intent intent = new Intent(ActivityMain.this, ActivityTools.class);
         startActivity(intent);
-
-
     }
 
     public void onBackPressed() {
-
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите покинуть программу?")
                 .setCancelable(false)
@@ -259,12 +260,13 @@ public class ActivityMain extends AbstractActivity {
                         finish();
                         if (sessionBackgroundChronometer != null
                                 && sessionBackgroundChronometer.getService() != null) {
-
+                            LOG.debug("Before close app");
                             sessionBackgroundChronometer.getService().stopForeground(true);
                             sessionBackgroundChronometer.interrupt();
+                            LOG.debug("After close app");
+                            LOG.debug("Close MainActivity");
                         }
                     }
                 }).setNegativeButton("Нет", null).show();
-
     }
 }

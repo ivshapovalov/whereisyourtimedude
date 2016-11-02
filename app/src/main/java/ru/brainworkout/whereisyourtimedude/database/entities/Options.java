@@ -4,7 +4,7 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
-public class Options extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
+public class Options extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private int recoveryOnRunSwitch;
     private int displayNotificationTimerSwitch;
@@ -46,20 +46,23 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
     private Options(Builder builder) {
 
         this.id = builder.id;
-        this.recoveryOnRunSwitch =builder.recoveryOnRunSwitch;
-        this.displayNotificationTimerSwitch =builder.displayNotificationTimerSwitch;
-        this.saveInterval=builder.saveInterval;
-        this.chronoIsWorking=builder.chronoIsWorking;
+        this.recoveryOnRunSwitch = builder.recoveryOnRunSwitch;
+        this.displayNotificationTimerSwitch = builder.displayNotificationTimerSwitch;
+        this.saveInterval = builder.saveInterval;
+        this.chronoIsWorking = builder.chronoIsWorking;
 
     }
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsOptions(this.getId())) {
-            db.updateOptions(this);
-        } else {
-            db.addOptions(this);
-        }
+            synchronized (this) {
+                if (db.containsOptions(this.getId())) {
+                    db.updateOptions(this);
+                } else {
+                    db.addOptions(this);
+                }
+            }
+
     }
 
     @Override
@@ -87,6 +90,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
         public Builder(SqlLiteDatabaseManager DB) {
             this.id = DB.getOptionsMaxNumber() + 1;
         }
+
         public Builder(int id) {
             this.id = id;
         }
@@ -96,14 +100,17 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
             this.recoveryOnRunSwitch = recoverySwitch;
             return this;
         }
+
         public Builder addDisplaySwitch(int displaySwitch) {
             this.displayNotificationTimerSwitch = displaySwitch;
             return this;
         }
+
         public Builder addSaveInterval(int saveInterval) {
             this.saveInterval = saveInterval;
             return this;
         }
+
         public Builder addChronoIsWorking(int chronoIsWorking) {
             this.chronoIsWorking = chronoIsWorking;
             return this;

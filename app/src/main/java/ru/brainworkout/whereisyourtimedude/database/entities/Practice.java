@@ -4,7 +4,7 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
-public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb{
+public class Practice extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private String name;
     private int id_project;
@@ -14,8 +14,8 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
         this.id = builder.id;
         this.name = builder.name;
-        this.id_project=builder.id_project;
-        this.is_active=builder.is_active;
+        this.id_project = builder.id_project;
+        this.is_active = builder.is_active;
 
     }
 
@@ -45,11 +45,13 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsPractice(this.getId())) {
-            db.updatePractice(this);
-        } else {
-            db.addPractice(this);
-        }
+            synchronized (this) {
+                if (db.containsPractice(this.getId())) {
+                    db.updatePractice(this);
+                } else {
+                    db.addPractice(this);
+                }
+            }
     }
 
     @Override
@@ -75,6 +77,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
         public Builder(SqlLiteDatabaseManager DB) {
             this.id = DB.getPracticeMaxNumber() + 1;
         }
+
         public Builder(int id) {
             this.id = id;
         }

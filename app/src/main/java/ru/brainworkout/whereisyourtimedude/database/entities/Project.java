@@ -39,13 +39,13 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-
-        if (db.containsProject(this.getId())) {
-            db.updateProject(this);
-        } else {
-            db.addProject(this);
-        }
-
+            synchronized (this) {
+                if (db.containsProject(this.getId())) {
+                    db.updateProject(this);
+                } else {
+                    db.addProject(this);
+                }
+            }
     }
 
     @Override

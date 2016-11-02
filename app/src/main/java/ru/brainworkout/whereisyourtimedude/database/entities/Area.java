@@ -4,7 +4,7 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
 
-public class Area extends AbstractEntityMultiUser implements SavingIntoDB,DeletingFromDb {
+public class Area extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private String name;
     private int color;
@@ -37,16 +37,19 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
         this.id = builder.id;
         this.name = builder.name;
-        this.color=builder.color;
+        this.color = builder.color;
     }
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsArea(this.getId())) {
-            db.updateArea(this);
-        } else {
-            db.addArea(this);
+        synchronized (this) {
+            if (db.containsArea(this.getId())) {
+                db.updateArea(this);
+            } else {
+                db.addArea(this);
+            }
         }
+
     }
 
     @Override
@@ -71,6 +74,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
         public Builder(SqlLiteDatabaseManager DB) {
             this.id = DB.getAreaMaxNumber() + 1;
         }
+
         public Builder(int id) {
             this.id = id;
         }

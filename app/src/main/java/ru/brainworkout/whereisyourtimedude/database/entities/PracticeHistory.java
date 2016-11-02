@@ -70,20 +70,22 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
     public void setLastTime(long lastTime) {
         synchronized (this) {
-        this.lastTime = lastTime;}
+            this.lastTime = lastTime;
+        }
 
     }
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        synchronized (this) {
 
+        synchronized (this) {
             if (db.containsPracticeHistory(this.getId())) {
                 db.updatePracticeHistory((PracticeHistory) this);
             } else {
                 db.addPracticeHistory((PracticeHistory) this);
             }
         }
+
     }
 
     @Override

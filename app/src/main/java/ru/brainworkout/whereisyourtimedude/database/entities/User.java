@@ -44,20 +44,20 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsUser(this.getId())) {
-            db.updateUser(this);
-        } else
-       {
-            db.addUser(this);
-        }
+            synchronized (this) {
+                if (db.containsUser(this.getId())) {
+                    db.updateUser(this);
+                } else {
+                    db.addUser(this);
+                }
+            }
     }
 
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
         if (db.containsUser(this.getId())) {
             db.deleteUser(this);
-        } else
-        {
+        } else {
             db.addUser(this);
         }
     }

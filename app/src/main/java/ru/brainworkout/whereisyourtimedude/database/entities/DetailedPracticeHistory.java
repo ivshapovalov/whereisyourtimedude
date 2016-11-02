@@ -72,19 +72,20 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
 
     public void setTime(long time) {
         synchronized (this) {
-        this.time = time;}
+            this.time = time;
+        }
     }
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
         synchronized (this) {
-
             if (db.containsDetailedPracticeHistory(this.getId())) {
                 db.updateDetailedPracticeHistory((DetailedPracticeHistory) this);
             } else {
                 db.addDetailedPracticeHistory((DetailedPracticeHistory) this);
             }
         }
+
     }
 
     @Override

@@ -73,7 +73,7 @@ public class ActivityProject extends AbstractActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(sessionCurrentProject.getID()));
+            tvID.setText(String.valueOf(sessionCurrentProject.getId()));
         }
 
         //Имя
@@ -105,7 +105,7 @@ public class ActivityProject extends AbstractActivity {
 
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
+        intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         sessionOpenActivities.pop();
         sessionCurrentProject =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -158,7 +158,7 @@ public class ActivityProject extends AbstractActivity {
         sessionCurrentProject.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
+        intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         sessionOpenActivities.pop();
         sessionCurrentProject =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -172,7 +172,7 @@ public class ActivityProject extends AbstractActivity {
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
             sessionOpenActivities.pop();
-            intent.putExtra("CurrentProjectID", sessionCurrentProject.getID());
+            intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -189,14 +189,14 @@ public class ActivityProject extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        List<Practice> practices = DB.getAllActivePracticesOfProject(sessionCurrentProject.getID());
+                        List<Practice> practices = DB.getAllActivePracticesOfProject(sessionCurrentProject.getId());
 
                         for (Practice practice : practices
                                 ) {
-                            DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                            DB.deleteAllPracticeHistoryOfPractice(practice.getId());
 
                         }
-                        DB.deleteAllPracticesOfProject(sessionCurrentProject.getID());
+                        DB.deleteAllPracticesOfProject(sessionCurrentProject.getId());
 
                         sessionCurrentProject.dbDelete(DB);
                         sessionCurrentProject =null;

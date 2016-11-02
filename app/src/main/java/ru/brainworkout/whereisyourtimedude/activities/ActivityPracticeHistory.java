@@ -105,7 +105,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
         tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(sessionCurrentPracticeHistory.getID()));
+            tvID.setText(String.valueOf(sessionCurrentPracticeHistory.getId()));
         }
 
         //
@@ -113,7 +113,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
         tvDate = (TextView) findViewById(mDate);
         if (tvDate != null) {
 
-            tvDate.setText(ConvertMillisToStringDate(sessionCurrentPracticeHistory.getDate()));
+            tvDate.setText(convertMillisToStringDate(sessionCurrentPracticeHistory.getDate()));
         }
 
         //
@@ -128,14 +128,14 @@ public class ActivityPracticeHistory extends AbstractActivity {
         tvLastDate = (TextView) findViewById(mLastDate);
         if (tvLastDate != null) {
 
-            tvLastDate.setText(ConvertMillisToStringDate(sessionCurrentPracticeHistory.getLastTime()));
+            tvLastDate.setText(convertMillisToStringDate(sessionCurrentPracticeHistory.getLastTime()));
         }
 
         int mLastTime = getResources().getIdentifier("tvLastTime", "id", getPackageName());
         tvLastTime = (TextView) findViewById(mLastTime);
         if (tvLastTime != null) {
 
-            tvLastTime.setText(ConvertMillisToStringTime(sessionCurrentPracticeHistory.getLastTime()));
+            tvLastTime.setText(convertMillisToStringTime(sessionCurrentPracticeHistory.getLastTime()));
         }
 
         //ID
@@ -160,7 +160,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
 
         blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getID());
+        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getId());
         sessionCurrentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -178,9 +178,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
             if (!"".equals(dur)) {
                 sessionCurrentPracticeHistory.setDuration(Long.valueOf(dur));
             }
-
         }
-
     }
 
     public void tvDate_onClick(View view) {
@@ -192,7 +190,6 @@ public class ActivityPracticeHistory extends AbstractActivity {
         intent.putExtra("CurrentDateInMillis", sessionCurrentPracticeHistory.getDate());
         intent.putExtra("isNew", false);
         startActivity(intent);
-
     }
 
     public void tvPractice_onClick(View view) {
@@ -203,7 +200,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
         int id_practice = sessionCurrentPracticeHistory.getIdPractice();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        Boolean isNew = !DB.containsPracticeHistory(sessionCurrentPracticeHistory.getID());
+        Boolean isNew = !DB.containsPracticeHistory(sessionCurrentPracticeHistory.getId());
         ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistory")
                 .isTransmitterNew(isNew)
@@ -261,7 +258,6 @@ public class ActivityPracticeHistory extends AbstractActivity {
                     }
                 };
         showDialog(1);
-
     }
 
     @Override
@@ -291,7 +287,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
         sessionCurrentPracticeHistory.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getID());
+        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getId());
         sessionCurrentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -300,11 +296,10 @@ public class ActivityPracticeHistory extends AbstractActivity {
     public void onBackPressed() {
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getID());
+        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getId());
         sessionCurrentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btDelete_onClick(final View view) {

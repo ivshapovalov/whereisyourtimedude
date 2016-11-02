@@ -50,10 +50,6 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
         this.date = date;
     }
 
-    public int getId() {
-        return id;
-    }
-
     public long getDuration() {
         synchronized (this) {
             return duration;
@@ -82,7 +78,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     public void dbSave(SqlLiteDatabaseManager db) {
         synchronized (this) {
 
-            if (db.containsPracticeHistory(this.getID())) {
+            if (db.containsPracticeHistory(this.getId())) {
                 db.updatePracticeHistory((PracticeHistory) this);
             } else {
                 db.addPracticeHistory((PracticeHistory) this);
@@ -93,7 +89,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
 
-        if (db.containsPracticeHistory(this.getID())) {
+        if (db.containsPracticeHistory(this.getId())) {
             db.deletePracticeHistory((PracticeHistory) this);
         }
 
@@ -134,12 +130,9 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
             return this;
         }
 
-
         public PracticeHistory build() {
             PracticeHistory practiceHistory = new PracticeHistory(this);
             return practiceHistory;
         }
-
     }
-
 }

@@ -123,7 +123,7 @@ public class ActivityChrono extends AbstractActivity {
             init();
         } else {
 
-            if (currentDateInMillis != getCurrentDateInMillis()) {
+            if (currentDateInMillis != getBeginOfCurrentDateInMillis()) {
                 isToday = false;
             }
             defineNewDayPractice(currentDateInMillis);
@@ -146,15 +146,15 @@ public class ActivityChrono extends AbstractActivity {
         }
         updateAllRows();
 
-        SwipeDetectorActivity swipeDetectorActivity = new SwipeDetectorActivity(ActivityChrono.this);
-        ScrollView sv = (ScrollView) this.findViewById(R.id.scrollView);
-        sv.setOnTouchListener(swipeDetectorActivity);
-
+        //уберу до поры до времени.
+//        SwipeDetectorActivity swipeDetectorActivity = new SwipeDetectorActivity(ActivityChrono.this);
+//        ScrollView sv = (ScrollView) this.findViewById(R.id.scrollView);
+//        sv.setOnTouchListener(swipeDetectorActivity);
     }
 
     private void init() {
 
-        currentDateInMillis = getCurrentDateInMillis();
+        currentDateInMillis =  getBeginOfCurrentDateInMillis();
         updatePractices(currentDateInMillis);
 
         if (practiceHistories.isEmpty()) {
@@ -185,17 +185,6 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
 
         }
-    }
-
-    @NonNull
-    private long getCurrentDateInMillis() {
-        Calendar calendar = Calendar.getInstance();
-        calendar.clear(Calendar.HOUR);
-        calendar.clear(Calendar.HOUR_OF_DAY);
-        calendar.clear(Calendar.MINUTE);
-        calendar.clear(Calendar.SECOND);
-        calendar.clear(Calendar.MILLISECOND);
-        return calendar.getTimeInMillis();
     }
 
     private void autoChangeDay(Long newDateInMillis) {
@@ -281,21 +270,18 @@ public class ActivityChrono extends AbstractActivity {
 
     private void changeTimer() {
         if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
-
         } else {
-
             localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
             currentPracticeHistory.setDuration(localChronometerCountInSeconds);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
-
         setTimerText(Common.SYMBOL_PLAY, localChronometerCountInSeconds * 1000);
     }
 
     private void setTimerText(String symbol, long millis) {
         int tvTimerID = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
         TextView tvTimer = (TextView) findViewById(tvTimerID);
-        String strTime = ConvertMillisToStringWithAllTime(millis);
+        String strTime = convertMillisToStringWithAllTime(millis);
         String txt = symbol.concat(" ").concat(String.valueOf(strTime));
         tvTimer.setText(txt);
     }
@@ -345,7 +331,7 @@ public class ActivityChrono extends AbstractActivity {
 
     private void updatePractices(long date) {
 
-        practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getID(), date, date);
+        practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
 
     }
 
@@ -405,7 +391,7 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentDay = getResources().getIdentifier("tvCurrentDay", "id", getPackageName());
         TextView tvCurrentDay = (TextView) findViewById(tvIDCurrentDay);
         if (tvCurrentDay != null) {
-            tvCurrentDay.setText(ConvertMillisToStringDate(currentDateInMillis));
+            tvCurrentDay.setText(convertMillisToStringDate(currentDateInMillis));
         }
 
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
@@ -420,9 +406,8 @@ public class ActivityChrono extends AbstractActivity {
             setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration() * 1000);
         } else {
             setTimerText(Common.SYMBOL_STOP, currentPracticeHistory.getDuration() * 1000);
-
         }
-//            tvCurrentTime.setText(ConvertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
+//            tvCurrentTime.setText(convertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
 //        }
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
@@ -433,8 +418,7 @@ public class ActivityChrono extends AbstractActivity {
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
         if (tvCurrentDate != null) {
             if (currentPracticeHistory.getLastTime() != 0) {
-                tvCurrentDate.setText(ConvertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
-
+                tvCurrentDate.setText(convertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
             } else {
                 tvCurrentDate.setText("");
             }
@@ -501,7 +485,7 @@ public class ActivityChrono extends AbstractActivity {
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(areaColor);
         //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
-        txtTime.setText(ConvertMillisToStringWithAllTime(practiceHistory.getDuration() * 1000));
+        txtTime.setText(convertMillisToStringWithAllTime(practiceHistory.getDuration() * 1000));
         txtTime.setLayoutParams(paramsTextView);
         //txtTime.setMinimumHeight(mHeight);
         row1.addView(txtTime);
@@ -523,7 +507,7 @@ public class ActivityChrono extends AbstractActivity {
         txtDate.setBackgroundColor(areaColor);
 
         if (practiceHistory.getLastTime() != 0) {
-            String date = ConvertMillisToStringDateTime(practiceHistory.getLastTime());
+            String date = convertMillisToStringDateTime(practiceHistory.getLastTime());
             txtDate.setText(date);
         }
 
@@ -606,6 +590,7 @@ public class ActivityChrono extends AbstractActivity {
 
     }
 
+    //пока не использовать.
     private class SwipeDetectorActivity extends AppCompatActivity implements View.OnTouchListener {
 
         private Activity activity;
@@ -620,7 +605,7 @@ public class ActivityChrono extends AbstractActivity {
             // System.out.println("Right to Left swipe [Previous]");
             Toast.makeText(ActivityChrono.this, "[Следующий день]", Toast.LENGTH_SHORT).show();
             long nextDateInMillis = currentDateInMillis + 3600 * 24 * 1000;
-            isToday = nextDateInMillis == getCurrentDateInMillis();
+            isToday = nextDateInMillis ==  getBeginOfCurrentDateInMillis();
             defineNewDayPractice(nextDateInMillis);
             updateAllRows();
 
@@ -630,7 +615,7 @@ public class ActivityChrono extends AbstractActivity {
             // System.out.println("Left to Right swipe [Next]");
             Toast.makeText(ActivityChrono.this, "[Предыдущий день]", Toast.LENGTH_SHORT).show();
             long previousDateInMillis = currentDateInMillis - 3600 * 24 * 1000;
-            isToday = previousDateInMillis == getCurrentDateInMillis();
+            isToday = previousDateInMillis ==  getBeginOfCurrentDateInMillis();
             defineNewDayPractice(previousDateInMillis);
             updateAllRows();
         }
@@ -705,6 +690,5 @@ public class ActivityChrono extends AbstractActivity {
             //Toast.makeText(ActivityTraining.this, "ЖОПА", Toast.LENGTH_SHORT).show();
             return false;
         }
-
     }
 }

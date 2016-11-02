@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
@@ -13,8 +12,6 @@ import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-
-import org.apache.log4j.Logger;
 
 import java.util.List;
 
@@ -28,7 +25,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManag
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
+import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
@@ -60,7 +57,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btPracticeHistoryDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
-            HideEditorButton(btEditor);
+            hideEditorButton(btEditor);
         }
 
         LOG.debug("ActivityPracticeHistoryList before show pr history");
@@ -125,7 +122,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         List<PracticeHistory> practiceHistoryList;
         if (sessionCurrentUser != null) {
 
-            practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getID());
+            practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
         } else {
             practiceHistoryList = DB.getAllPracticeHistory();
         }
@@ -162,7 +159,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
             PracticeHistory currentPracticeHistory = practiceHistoryList.get(numPracticeHistory);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(currentPracticeHistory.getID());
+            mRow.setId(currentPracticeHistory.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -173,7 +170,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentPracticeHistory.getID()));
+            txt.setText(String.valueOf(currentPracticeHistory.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -182,7 +179,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = ConvertMillisToStringDate(currentPracticeHistory.getDate());
+            String name = convertMillisToStringDate(currentPracticeHistory.getDate());
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -305,7 +302,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            DB.deleteAllPracticeHistoryOfUser(Session.sessionCurrentUser.getID());
+                            DB.deleteAllPracticeHistoryOfUser(Session.sessionCurrentUser.getId());
                             showPracticeHistory();
                         }
                     }

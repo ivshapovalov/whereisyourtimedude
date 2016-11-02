@@ -26,8 +26,5 @@ public class ActivityAbout extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityTools.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
-
-
 }

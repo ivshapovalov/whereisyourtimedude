@@ -86,7 +86,7 @@ public class ActivityUser extends AbstractActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(mCurrentUser.getID()));
+            tvID.setText(String.valueOf(mCurrentUser.getId()));
         }
 
         //Имя
@@ -102,7 +102,7 @@ public class ActivityUser extends AbstractActivity {
 
         blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
-        intent.putExtra("id", mCurrentUser.getID());
+        intent.putExtra("id", mCurrentUser.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -115,9 +115,7 @@ public class ActivityUser extends AbstractActivity {
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-
             mCurrentUser.setName(String.valueOf(etName.getText()));
-
         }
 
     }
@@ -140,7 +138,7 @@ public class ActivityUser extends AbstractActivity {
             setDBCurrentUser();
 
             Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
-            intent.putExtra("id", mCurrentUser.getID());
+            intent.putExtra("id", mCurrentUser.getId());
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
 
@@ -155,7 +153,7 @@ public class ActivityUser extends AbstractActivity {
 
             for (User user : userList) {
 
-                if (user.getID() != mCurrentUser.getID()) {
+                if (user.getId() != mCurrentUser.getId()) {
                     user.setIsCurrentUser(0);
                     user.dbSave(DB);
                 }
@@ -165,8 +163,6 @@ public class ActivityUser extends AbstractActivity {
                 sessionCurrentUser = null;
             }
         }
-
-
     }
 
     public void btDelete_onClick(final View view) {
@@ -179,13 +175,13 @@ public class ActivityUser extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        DB.deleteAllPracticeHistoryOfUser(sessionCurrentUser.getID());
+                        DB.deleteAllPracticeHistoryOfUser(sessionCurrentUser.getId());
 
-                        DB.deleteAllPracticesOfUser(sessionCurrentUser.getID());
+                        DB.deleteAllPracticesOfUser(sessionCurrentUser.getId());
 
-                        DB.deleteAllProjectsOfUser(sessionCurrentUser.getID());
+                        DB.deleteAllProjectsOfUser(sessionCurrentUser.getId());
 
-                        DB.deleteAllAreasOfUser(sessionCurrentUser.getID());
+                        DB.deleteAllAreasOfUser(sessionCurrentUser.getId());
 
                         mCurrentUser.dbDelete(DB);
 

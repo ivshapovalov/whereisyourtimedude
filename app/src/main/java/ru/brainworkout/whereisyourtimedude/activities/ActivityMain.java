@@ -60,7 +60,7 @@ public class ActivityMain extends AbstractActivity {
     }
 
     private void resumeBackgroundChronometer() {
-        PracticeHistory resumedPracticeHistory = DB.getLastPracticeHistoryOfUserByDates(Session.sessionCurrentUser.getID(), 0, System.currentTimeMillis());
+        PracticeHistory resumedPracticeHistory = DB.getLastPracticeHistoryOfUserByDates(Session.sessionCurrentUser.getId(), 0, System.currentTimeMillis());
         if (resumedPracticeHistory != null) {
             Calendar today = Calendar.getInstance();
             today.clear(Calendar.HOUR);
@@ -139,11 +139,11 @@ public class ActivityMain extends AbstractActivity {
     private void getPreferencesFromDB() {
         Options options = null;
         if (Session.sessionCurrentUser != null) {
-            options = DB.getOptionsOfUser(Session.sessionCurrentUser.getID());
+            options = DB.getOptionsOfUser(Session.sessionCurrentUser.getId());
             if (options == null) {
                 options = new Options.Builder(DB).addRecoverySwitch(0)
                         .addDisplaySwitch(0)
-                        .addSaveInterval(10)
+                        .addSaveInterval(1)
                         .addChronoIsWorking(0)
                         .build();
                 options.dbSave(DB);
@@ -227,7 +227,7 @@ public class ActivityMain extends AbstractActivity {
         if (sessionCurrentUser == null) {
             //list = DB.getAllActiveExercises();
         } else {
-            list = DB.getAllActivePracticesOfUser(sessionCurrentUser.getID());
+            list = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
         }
         if (list.size() == 0) {
             Toast toast = Toast.makeText(ActivityMain.this,

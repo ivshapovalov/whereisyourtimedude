@@ -40,7 +40,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
 
-        if (db.containsProject(this.getID())) {
+        if (db.containsProject(this.getId())) {
             db.updateProject(this);
         } else {
             db.addProject(this);
@@ -51,7 +51,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
 
-        if (db.containsProject(this.getID())) {
+        if (db.containsProject(this.getId())) {
             db.deleteProject(this);
         } else {
             db.addProject(this);

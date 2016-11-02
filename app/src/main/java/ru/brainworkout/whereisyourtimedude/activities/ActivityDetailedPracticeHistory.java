@@ -100,13 +100,13 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
         tvID = (TextView) findViewById(mID);
         if (tvID != null) {
-            tvID.setText(String.valueOf(sessionCurrentDetailedPracticeHistory.getID()));
+            tvID.setText(String.valueOf(sessionCurrentDetailedPracticeHistory.getId()));
         }
 
         int mDate = getResources().getIdentifier("tvDate", "id", getPackageName());
         tvDate = (TextView) findViewById(mDate);
         if (tvDate != null) {
-            tvDate.setText(ConvertMillisToStringDate(sessionCurrentDetailedPracticeHistory.getDate()));
+            tvDate.setText(convertMillisToStringDate(sessionCurrentDetailedPracticeHistory.getDate()));
         }
 
         int mDuration = getResources().getIdentifier("tvDuration", "id", getPackageName());
@@ -118,13 +118,13 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         int mTimeDate = getResources().getIdentifier("tvTimeDate", "id", getPackageName());
         tvTimeDate = (TextView) findViewById(mTimeDate);
         if (tvTimeDate != null) {
-            tvTimeDate.setText(ConvertMillisToStringDate(sessionCurrentDetailedPracticeHistory.getTime()));
+            tvTimeDate.setText(convertMillisToStringDate(sessionCurrentDetailedPracticeHistory.getTime()));
         }
 
         int mTimeTime = getResources().getIdentifier("tvTimeTime", "id", getPackageName());
         tvTimeTime = (TextView) findViewById(mTimeTime);
         if (tvTimeTime != null) {
-            tvTimeTime.setText(ConvertMillisToStringTime(sessionCurrentDetailedPracticeHistory.getTime()));
+            tvTimeTime.setText(convertMillisToStringTime(sessionCurrentDetailedPracticeHistory.getTime()));
         }
 
         int mPractice = getResources().getIdentifier("tvPractice", "id", getPackageName());
@@ -148,7 +148,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
 
         blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
-        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getID());
+        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getId());
         sessionCurrentDetailedPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -184,7 +184,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         int id_practice = sessionCurrentDetailedPracticeHistory.getIdPractice();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        Boolean isNew = !DB.containsDetailedPracticeHistory(sessionCurrentDetailedPracticeHistory.getID());
+        Boolean isNew = !DB.containsDetailedPracticeHistory(sessionCurrentDetailedPracticeHistory.getId());
         ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityDetailedPracticeHistory")
                 .isTransmitterNew(isNew)
@@ -266,7 +266,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         sessionCurrentDetailedPracticeHistory.dbSave(DB);
 
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
-        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getID());
+        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getId());
         sessionCurrentDetailedPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -275,7 +275,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
     public void onBackPressed() {
 
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
-        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getID());
+        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getId());
         sessionCurrentDetailedPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -301,7 +301,6 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
                 }).setNegativeButton("Нет", null).show();
 
     }
-
 
     public void tvDuration_onClick(View view) {
 

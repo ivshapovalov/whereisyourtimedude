@@ -53,7 +53,7 @@ public class ActivityPracticesList extends AbstractActivity {
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btPracticesDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
-            HideEditorButton(btEditor);
+            hideEditorButton(btEditor);
         }
 
         showPractices();
@@ -85,7 +85,7 @@ public class ActivityPracticesList extends AbstractActivity {
         List<Practice> practices;
         if (sessionCurrentUser != null) {
 
-            practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getID());
+            practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
         } else {
             practices = DB.getAllActivePractices();
         }
@@ -118,7 +118,7 @@ public class ActivityPracticesList extends AbstractActivity {
             Practice currentPractice = practices.get(numPractice);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentPractice.getID());
+            mRow.setId(NUMBER_OF_VIEWS + currentPractice.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -129,7 +129,7 @@ public class ActivityPracticesList extends AbstractActivity {
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentPractice.getID()));
+            txt.setText(String.valueOf(currentPractice.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -300,12 +300,12 @@ public class ActivityPracticesList extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getID());
+                            List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getId());
                             for (Practice practice : practices
                                     ) {
-                                DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                                DB.deleteAllPracticeHistoryOfPractice(practice.getId());
                             }
-                            DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getID());
+                            DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getId());
                             showPractices();
                         }
                     }

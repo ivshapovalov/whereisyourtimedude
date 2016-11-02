@@ -18,7 +18,7 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
 
     }
 
-    public int getID() {
+    public int getId() {
         return id;
     }
 
@@ -44,7 +44,7 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsUser(this.getID())) {
+        if (db.containsUser(this.getId())) {
             db.updateUser(this);
         } else
        {
@@ -54,7 +54,7 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
 
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
-        if (db.containsUser(this.getID())) {
+        if (db.containsUser(this.getId())) {
             db.deleteUser(this);
         } else
         {
@@ -105,6 +105,5 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
             User user = new User(this);
             return user;
         }
-
     }
 }

@@ -54,7 +54,7 @@ public class ActivityAreasList extends AbstractActivity {
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btAreasDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
-            HideEditorButton(btEditor);
+            hideEditorButton(btEditor);
         }
 
         showAreas();
@@ -87,7 +87,7 @@ public class ActivityAreasList extends AbstractActivity {
         List<Area> areas;
         if (sessionCurrentUser != null) {
 
-            areas = DB.getAllAreasOfUser(sessionCurrentUser.getID());
+            areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
         } else {
             areas = DB.getAllAreas();
         }
@@ -120,7 +120,7 @@ public class ActivityAreasList extends AbstractActivity {
             Area currentArea = areas.get(numArea);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentArea.getID());
+            mRow.setId(NUMBER_OF_VIEWS + currentArea.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -131,7 +131,7 @@ public class ActivityAreasList extends AbstractActivity {
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentArea.getID()));
+            txt.setText(String.valueOf(currentArea.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -173,12 +173,9 @@ public class ActivityAreasList extends AbstractActivity {
 
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
-
         }
         sv.addView(layout);
-
     }
-
 
     public void btAreasAdd_onClick(final View view) {
 
@@ -276,23 +273,23 @@ public class ActivityAreasList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
 
                         if (Session.sessionCurrentUser !=null) {
-                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getID());
+                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getId());
                             for (Area area : areas
                                     ) {
-                                List<Project> projects=DB.getAllProjectsOfArea(area.getID());
+                                List<Project> projects=DB.getAllProjectsOfArea(area.getId());
                                 for (Project project:projects
                                      ) {
-                                    List<Practice> practices=DB.getAllActivePracticesOfProject(project.getID());
+                                    List<Practice> practices=DB.getAllActivePracticesOfProject(project.getId());
                                     for (Practice practice:practices
                                          ) {
-                                        DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                                        DB.deleteAllPracticeHistoryOfPractice(practice.getId());
                                     }
-                                    DB.deleteAllPracticesOfProject(project.getID());
+                                    DB.deleteAllPracticesOfProject(project.getId());
                                 }
-                                DB.deleteAllProjectsOfArea(area.getID());
+                                DB.deleteAllProjectsOfArea(area.getId());
                            }
 
-                            DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getID());
+                            DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getId());
                             showAreas();
                         }
                     }

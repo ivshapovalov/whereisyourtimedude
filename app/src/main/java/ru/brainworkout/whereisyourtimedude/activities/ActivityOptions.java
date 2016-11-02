@@ -83,7 +83,7 @@ public class ActivityOptions extends AbstractActivity {
     }
 
     private void getPreferencesFromDB() {
-        options = DB.getOptionsOfUser(Session.sessionCurrentUser.getID());
+        options = DB.getOptionsOfUser(Session.sessionCurrentUser.getId());
     }
 
     private void setPreferencesOnScreen() {

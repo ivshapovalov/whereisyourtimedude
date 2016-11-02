@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Vibrator;
+import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -13,13 +14,20 @@ import android.widget.TableRow;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
+import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
@@ -36,7 +44,7 @@ public class Common {
 
     public static String convertStackTraceToString(StackTraceElement[] stackTraceElements) {
         StringBuilder message = new StringBuilder();
-        int min=Math.min(stackTraceElements.length,4);
+        int min = Math.min(stackTraceElements.length, 4);
         for (int i = 2; i < min; i++) {
             StackTraceElement element = stackTraceElements[i];
             message.append(element.getClassName()).append(": ").append(element.getMethodName()).append("\n");
@@ -44,7 +52,7 @@ public class Common {
         return message.toString();
     }
 
-    public static Date ConvertStringToDate(final String date) {
+    public static Date convertStringToDate(final String date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
         Date d = null;
         try {
@@ -56,15 +64,15 @@ public class Common {
         return d;
     }
 
-    public static String ConvertMillisToStringDate(final long millis) {
-        return ConvertDateToStringDate(new Date(millis));
+    public static String convertMillisToStringDate(final long millis) {
+        return convertDateToStringDate(new Date(millis));
     }
 
-    public static String ConvertMillisToStringTime(final long millis) {
-        return ConvertDateToStringTime(new Date(millis));
+    public static String convertMillisToStringTime(final long millis) {
+        return convertDateToStringTime(new Date(millis));
     }
 
-    public static String ConvertMillisToStringWithAllTime(long millis) {
+    public static String convertMillisToStringWithAllTime(long millis) {
 
         long days = TimeUnit.MILLISECONDS.toDays(millis);
         long hours = TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(days);
@@ -77,11 +85,11 @@ public class Common {
         return timeString;
     }
 
-    public static String ConvertMillisToStringDateTime(final long millis) {
-        return ConvertDateToStringDateTime(new Date(millis));
+    public static String convertMillisToStringDateTime(final long millis) {
+        return convertDateToStringDateTime(new Date(millis));
     }
 
-    public static String ConvertDateToStringDateTime(final Date date) {
+    public static String convertDateToStringDateTime(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT + " " + SYMBOL_TIME_FORMAT);
         String sDate = "";
@@ -94,7 +102,7 @@ public class Common {
 
     }
 
-    public static String ConvertDateToStringTime(final Date date) {
+    public static String convertDateToStringTime(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_TIME_FORMAT);
         String sDate = "";
@@ -107,7 +115,7 @@ public class Common {
 
     }
 
-    public static String ConvertDateToStringDate(final Date date) {
+    public static String convertDateToStringDate(final Date date) {
 
         SimpleDateFormat dateformat = new SimpleDateFormat(SYMBOL_DATE_FORMAT);
         String sDate = "";
@@ -136,16 +144,32 @@ public class Common {
 
     public static void setTitleOfActivity(Activity currentActivity) {
         if (Session.sessionCurrentUser != null) {
-//            if (Session.sessionBackgroundChronometer.isTicking()) {
-//                currentActivity.setTitle(Session.sessionCurrentUser.getName() + ":" + currentActivity.getTitle() + " ("+Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds()+")");
-//            } else {
-                currentActivity.setTitle(currentActivity.getTitle()+"("+Session.sessionCurrentUser.getName() + ")");
-
-//            }
+            CharSequence title = currentActivity.getTitle();
+            if (title.toString().contains("(")) {
+                title = title.subSequence(0, title.toString().indexOf("("));
+            }
+            title = title + "(" + Session.sessionCurrentUser.getName() + ")";
+            currentActivity.setTitle(title);
+        } else {
+            CharSequence title = currentActivity.getTitle();
+            if (title.toString().contains("(")) {
+                title = title.subSequence(0, title.toString().indexOf("("));
+            }
+            currentActivity.setTitle(title);
         }
     }
 
-    public static void HideEditorButton(Button btEditor) {
+    public static long getBeginOfCurrentDateInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.clear(Calendar.HOUR);
+        calendar.clear(Calendar.HOUR_OF_DAY);
+        calendar.clear(Calendar.MINUTE);
+        calendar.clear(Calendar.SECOND);
+        calendar.clear(Calendar.MILLISECOND);
+        return calendar.getTimeInMillis();
+    }
+
+    public static void hideEditorButton(Button btEditor) {
 
         if (btEditor != null) {
             TableRow.LayoutParams params = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
@@ -182,57 +206,105 @@ public class Common {
         return AlphabetColors;
     }
 
-    public static void DefaultTestFilling(SqlLiteDatabaseManager DB) {
+    public static void defaultTestFilling(SqlLiteDatabaseManager DB) {
 
-        Random random= new Random();
-        final int USERS_COUNT=5;
-        final int AREAS_COUNT=10;
-        final int PROJECTS_COUNT=20;
-        final int PRACTICES_COUNT=50;
+        Random random = new Random();
+        final int USERS_COUNT = 5;
+        final int AREAS_COUNT = 10;
+        final int PROJECTS_COUNT = 20;
+        final int PRACTICES_COUNT = 50;
+        final int DETAILED_PRACTICE_HISTORY_COUNT = 100;
+        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=3;
+        final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 400;
 
-        int maxUser=DB.getUserMaxNumber();
+        int maxUser = DB.getUserMaxNumber();
         //Users
         for (int i = 1; i <= USERS_COUNT; i++) {
-            User a=new User.Builder(maxUser+i).addName("User "+ i).build();
+            User a = new User.Builder(maxUser + i).addName("User " + i).build();
             a.dbSave(DB);
         }
-        int currentUserIndex=random.nextInt(USERS_COUNT)+maxUser+1;
+        int currentUserIndex = random.nextInt(USERS_COUNT) + maxUser + 1;
 
-        User currentUser=DB.getUser(currentUserIndex);
+        User currentUser = DB.getUser(currentUserIndex);
         currentUser.setIsCurrentUser(1);
         currentUser.dbSave(DB);
-        Session.sessionCurrentUser =currentUser;
+        Session.sessionCurrentUser = currentUser;
 
 
-        Options options=new Options.Builder(DB).addSaveInterval(1).addDisplaySwitch(1).addChronoIsWorking(0).build();
+        Options options = new Options.Builder(DB).addSaveInterval(1).addDisplaySwitch(1).addChronoIsWorking(0).build();
         options.dbSave(DB);
 
         //Areas
         for (int i = 1; i <= AREAS_COUNT; i++) {
-            Area a=new Area.Builder(DB).addName("Область  "+ i).addColor(AlphabetColors().get(i)).build();
-            //Area a=new Area.Builder(DB).addName("Область  "+ i).build();
-            //a.setIdUser(currentUserIndex);
+            Area a = new Area.Builder(DB).addName("Область  " + i).addColor(AlphabetColors().get(i)).build();
             a.dbSave(DB);
         }
 
         //Projects
         for (int i = 1; i <= PROJECTS_COUNT; i++) {
-            int idArea=random.nextInt(AREAS_COUNT)+1;
-            //System.out.println("idArea="+idArea);
-            Project a=new Project.Builder(DB).addName("Проект "+ i).addIdArea(idArea).build();
-            //a.setIdUser(currentUserIndex);
+            int idArea = random.nextInt(AREAS_COUNT) + 1;
+            Project a = new Project.Builder(DB).addName("Проект " + i).addIdArea(idArea).build();
             a.dbSave(DB);
         }
 
         //Practices
         for (int i = 1; i <= PRACTICES_COUNT; i++) {
-            int idProject=random.nextInt(PROJECTS_COUNT)+1;
-            //System.out.println("idProject="+idProject);
-            Practice a=new Practice.Builder(DB).addName("Занятие "+ i).addIDProject(idProject).addIsActive(1).build();
-            //a.setIdUser(currentUserIndex);
+            int idProject = random.nextInt(PROJECTS_COUNT) + 1;
+            Practice a = new Practice.Builder(DB).addName("Занятие " + i).addIDProject(idProject).addIsActive(1).build();
             a.dbSave(DB);
         }
 
+        //Detailed practice history count
+        int practice_history_number=1;
+        int detailed_practice_history_number=1;
+        List<DetailedPracticeHistory> detailedPracticeHistoryList=new ArrayList<>();
+        long currentDaysInMillis=  getBeginOfCurrentDateInMillis();
+        for (int day = 1; day <= DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY; day++) {
+            long practiceDay=currentDaysInMillis-day*3600*24*1000;
+            long nextDay=practiceDay+3600*24*1000;
 
+            Map<Integer,PracticeHistory> practiceHistories=new HashMap<>();
+
+            long time=practiceDay;
+            while (true) {
+                int idPractice = random.nextInt(PRACTICES_COUNT) + 1;
+                long  durationInSeconds=random.nextInt(DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS);
+
+                if (time+durationInSeconds*1000>=nextDay) {
+                    break;
+                }
+                DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(detailed_practice_history_number++)
+                        .addIdPractice(idPractice)
+                        .addDate(practiceDay)
+                        .addTime(time)
+                        .addDuration(durationInSeconds)
+                        .build();
+                detailedPracticeHistoryList.add(detailedPracticeHistory);
+                PracticeHistory practiceHistory = new PracticeHistory.Builder(practice_history_number++)
+                        .addIdPractice(idPractice)
+                        .addDate(practiceDay)
+                        .addLastTime(time)
+                        .addDuration(durationInSeconds)
+                        .build();
+                //search in map
+                time+=durationInSeconds*1000;
+                if (practiceHistories.containsKey(idPractice)) {
+                    PracticeHistory existingPracticeHistory=practiceHistories.get(idPractice);
+                    existingPracticeHistory.setLastTime(time);
+                    existingPracticeHistory.setDuration(existingPracticeHistory.getDuration()+durationInSeconds);
+
+                } else {
+                    practiceHistories.put(idPractice,practiceHistory);
+                }
+                }
+            for (Map.Entry<Integer,PracticeHistory> entry :practiceHistories.entrySet()
+                    ) {
+                entry.getValue().dbSave(DB);
+            }
+        }
+        for (DetailedPracticeHistory currentDetailedPracticeHistory:detailedPracticeHistoryList
+             ) {
+            currentDetailedPracticeHistory.dbSave(DB);
+        }
     }
 }

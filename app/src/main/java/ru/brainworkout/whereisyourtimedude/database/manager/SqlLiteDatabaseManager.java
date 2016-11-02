@@ -358,7 +358,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_USER_ID, user.getID());
+        values.put(KEY_USER_ID, user.getId());
         values.put(KEY_USER_NAME, user.getName());
         values.put(KEY_USER_IS_CURRENT, user.isCurrentUser());
 
@@ -370,7 +370,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_OPTIONS_ID, options.getID());
+        values.put(KEY_OPTIONS_ID, options.getId());
         values.put(KEY_OPTIONS_ID_USER, options.getIdUser());
         values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
@@ -384,7 +384,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_AREA_ID, area.getID());
+        values.put(KEY_AREA_ID, area.getId());
         values.put(KEY_AREA_ID_USER, area.getIdUser());
         values.put(KEY_AREA_NAME, area.getName());
         values.put(KEY_AREA_COLOR, area.getColor());
@@ -398,7 +398,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_PROJECT_ID, project.getID());
+        values.put(KEY_PROJECT_ID, project.getId());
         values.put(KEY_PROJECT_ID_USER, project.getIdUser());
         values.put(KEY_PROJECT_NAME, project.getName());
         values.put(KEY_PROJECT_ID_AREA, project.getIdArea());
@@ -411,7 +411,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_PRACTICE_ID, practice.getID());
+        values.put(KEY_PRACTICE_ID, practice.getId());
         values.put(KEY_PRACTICE_ID_USER, practice.getIdUser());
         values.put(KEY_PRACTICE_NAME, practice.getName());
         values.put(KEY_PRACTICE_ID_PROJECT, practice.getIdProject());
@@ -425,7 +425,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_PRACTICE_HISTORY_ID, practiceHistory.getID());
+        values.put(KEY_PRACTICE_HISTORY_ID, practiceHistory.getId());
         values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getIdUser());
         values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getIdPractice());
         values.put(KEY_PRACTICE_HISTORY_DATE, practiceHistory.getDate());
@@ -440,7 +440,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID, detailedPracticeHistory.getID());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID, detailedPracticeHistory.getId());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getIdUser());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getIdPractice());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DATE, detailedPracticeHistory.getDate());
@@ -1565,7 +1565,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_USER_NAME, user.getName());
         values.put(KEY_USER_IS_CURRENT, user.isCurrentUser());
         return db.update(TABLE_USERS, values, KEY_USER_ID + " = ?",
-                new String[]{String.valueOf(user.getID())});
+                new String[]{String.valueOf(user.getId())});
     }
 
     public int updateArea(Area area) {
@@ -1575,7 +1575,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_AREA_ID_USER, area.getIdUser());
         values.put(KEY_AREA_COLOR, area.getColor());
         return db.update(TABLE_AREAS, values, KEY_AREA_ID + " = ?",
-                new String[]{String.valueOf(area.getID())});
+                new String[]{String.valueOf(area.getId())});
     }
 
     public int updateOptions(Options options) {
@@ -1586,7 +1586,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
         return db.update(TABLE_OPTIONS, values, KEY_OPTIONS_ID + " = ?",
-                new String[]{String.valueOf(options.getID())});
+                new String[]{String.valueOf(options.getId())});
     }
 
     public int updateProject(Project project) {
@@ -1596,7 +1596,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PROJECT_ID_USER, project.getIdUser());
         values.put(KEY_PROJECT_ID_AREA, project.getIdArea());
         return db.update(TABLE_PROJECTS, values, KEY_PROJECT_ID + " = ?",
-                new String[]{String.valueOf(project.getID())});
+                new String[]{String.valueOf(project.getId())});
     }
 
     public int updatePractice(Practice practice) {
@@ -1608,7 +1608,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_ID_PROJECT, practice.getIdProject());
         values.put(KEY_PRACTICE_IS_ACTIVE, practice.getIsActive());
         return db.update(TABLE_PRACTICES, values, KEY_PRACTICE_ID + " = ?",
-                new String[]{String.valueOf(practice.getID())});
+                new String[]{String.valueOf(practice.getId())});
     }
 
     public int updatePracticeHistory(PracticeHistory practiceHistory) {
@@ -1622,7 +1622,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_HISTORY_LAST_TIME, practiceHistory.getLastTime());
 
         return db.update(TABLE_PRACTICE_HISTORY, values, KEY_PRACTICE_HISTORY_ID + " = ?",
-                new String[]{String.valueOf(practiceHistory.getID())});
+                new String[]{String.valueOf(practiceHistory.getId())});
     }
 
     public int updateDetailedPracticeHistory(DetailedPracticeHistory detailedPracticeHistory) {
@@ -1636,14 +1636,14 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());
 
         return db.update(TABLE_DETAILED_PRACTICE_HISTORY, values, KEY_DETAILED_PRACTICE_HISTORY_ID + " = ?",
-                new String[]{String.valueOf(detailedPracticeHistory.getID())});
+                new String[]{String.valueOf(detailedPracticeHistory.getId())});
     }
 
 
     public void deleteUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_USERS, KEY_USER_ID + " = ?",
-                new String[]{String.valueOf(user.getID())});
+                new String[]{String.valueOf(user.getId())});
         db.close();
     }
 
@@ -1651,42 +1651,42 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     public void deleteArea(Area area) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_AREAS, KEY_AREA_ID + " = ?",
-                new String[]{String.valueOf(area.getID())});
+                new String[]{String.valueOf(area.getId())});
         db.close();
     }
 
     public void deleteOptions(Options options) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_OPTIONS, KEY_OPTIONS_ID + " = ?",
-                new String[]{String.valueOf(options.getID())});
+                new String[]{String.valueOf(options.getId())});
         db.close();
     }
 
     public void deleteProject(Project project) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_PROJECTS, KEY_PROJECT_ID + " = ?",
-                new String[]{String.valueOf(project.getID())});
+                new String[]{String.valueOf(project.getId())});
         db.close();
     }
 
     public void deletePractice(Practice practice) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_PRACTICES, KEY_PRACTICE_ID + " = ?",
-                new String[]{String.valueOf(practice.getID())});
+                new String[]{String.valueOf(practice.getId())});
         db.close();
     }
 
     public void deletePracticeHistory(PracticeHistory practiceHistory) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_PRACTICE_HISTORY, KEY_PRACTICE_HISTORY_ID + " = ?",
-                new String[]{String.valueOf(practiceHistory.getID())});
+                new String[]{String.valueOf(practiceHistory.getId())});
         db.close();
     }
 
     public void deleteDetailedPracticeHistory(DetailedPracticeHistory detailedPracticeHistory) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID + " = ?",
-                new String[]{String.valueOf(detailedPracticeHistory.getID())});
+                new String[]{String.valueOf(detailedPracticeHistory.getId())});
         db.close();
     }
 

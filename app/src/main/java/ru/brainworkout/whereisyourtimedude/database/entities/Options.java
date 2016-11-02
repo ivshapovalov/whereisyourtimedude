@@ -55,7 +55,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsOptions(this.getID())) {
+        if (db.containsOptions(this.getId())) {
             db.updateOptions(this);
         } else {
             db.addOptions(this);
@@ -64,7 +64,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB,Del
 
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
-        if (db.containsOptions(this.getID())) {
+        if (db.containsOptions(this.getId())) {
             db.deleteOptions(this);
         } else {
             db.addOptions(this);

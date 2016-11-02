@@ -194,7 +194,7 @@ public class BackgroundChronometer extends Thread {
                 synchronized (globalChronometerCountInSeconds) {
                     globalChronometerCountInSeconds = (System.currentTimeMillis() - beginTimeinMillis) / 1_000;
                 }
-                // System.out.println(Common.ConvertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
+                // System.out.println(Common.convertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCountInSeconds);
                 checkAndChangeDateIfNeeded();
                 if (globalChronometerCountInSeconds % saveInterval == 0) {
                     if (ticking) {
@@ -302,7 +302,7 @@ public class BackgroundChronometer extends Thread {
                 }
             }
 
-            String currentDuration = Common.ConvertMillisToStringWithAllTime(this.getGlobalChronometerCountInSeconds() * 1000);
+            String currentDuration = Common.convertMillisToStringWithAllTime(this.getGlobalChronometerCountInSeconds() * 1000);
 
 
 //            int iconPause = 0;

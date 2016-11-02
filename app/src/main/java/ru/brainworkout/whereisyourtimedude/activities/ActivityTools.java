@@ -61,13 +61,31 @@ public class ActivityTools extends AbstractActivity {
 
     public void btTestFill_onClick(final View view) {
 
-        Common.DefaultTestFilling(DB);
+        new AlertDialog.Builder(this)
+                .setMessage("Вы действительно хотите очистить базу данных и заполнить ее тестовыми данными?")
+                .setCancelable(false)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
 
-        Toast toast = Toast.makeText(ActivityTools.this,
-                "База данных заполнена тестовыми данными!", Toast.LENGTH_SHORT);
-        toast.show();
-        setTitleOfActivity(this);
+                            SQLiteDatabase dbSQL = DB.getWritableDatabase();
+                            DB.ClearDB(dbSQL);
+                            sessionCurrentUser=null;
 
+                            Common.defaultTestFilling(DB);
+
+                            Toast toast = Toast.makeText(ActivityTools.this,
+                                    "База данных очищена и заполнена тестовыми данными!", Toast.LENGTH_SHORT);
+                            toast.show();
+                            setTitleOfActivity(ActivityTools.this);
+
+                        } catch (Exception e) {
+                            Toast toast = Toast.makeText(ActivityTools.this,
+                                    "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                }).setNegativeButton("Нет", null).show();
     }
 
     public void btOptions_onClick(final View view) {
@@ -96,12 +114,15 @@ public class ActivityTools extends AbstractActivity {
 
                             SQLiteDatabase dbSQL = DB.getWritableDatabase();
                             DB.ClearDB(dbSQL);
+                            sessionCurrentUser=null;
                             //DB.onUpgrade(dbSQL, 1, 1);
 
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена!", Toast.LENGTH_SHORT);
                             toast.show();
                             setTitleOfActivity(ActivityTools.this);
+
+
 
 
                         } catch (Exception e) {
@@ -113,6 +134,10 @@ public class ActivityTools extends AbstractActivity {
                 }).setNegativeButton("Нет", null).show();
 
     }
+
+
+
+
 
     public void onBackPressed() {
 

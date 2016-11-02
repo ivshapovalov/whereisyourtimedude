@@ -97,7 +97,7 @@ public class ActivityPractice extends AbstractActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(sessionCurrentPractice.getID()));
+            tvID.setText(String.valueOf(sessionCurrentPractice.getId()));
         }
 
         //Имя
@@ -138,7 +138,7 @@ public class ActivityPractice extends AbstractActivity {
             e.printStackTrace();
         }
         Intent intent = new Intent(getApplicationContext(), myClass);
-        intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
+        intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         sessionCurrentPractice = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -197,7 +197,7 @@ public class ActivityPractice extends AbstractActivity {
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
             sessionOpenActivities.pop();
-            intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getID());
+            intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -213,7 +213,7 @@ public class ActivityPractice extends AbstractActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DB.deleteAllPracticeHistoryOfPractice(sessionCurrentPractice.getID());
+                        DB.deleteAllPracticeHistoryOfPractice(sessionCurrentPractice.getId());
 
                         sessionCurrentPractice.dbDelete(DB);
                         sessionCurrentPractice = null;

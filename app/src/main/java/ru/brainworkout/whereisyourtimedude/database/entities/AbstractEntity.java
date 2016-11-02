@@ -9,7 +9,7 @@ public abstract class AbstractEntity {
     }
 
 
-    public int getID() {
+    public int getId() {
         return this.id;
     }
 

@@ -21,7 +21,7 @@ import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
+import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
@@ -45,7 +45,7 @@ public class ActivityUsersList extends AbstractActivity {
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btUsersDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
-            HideEditorButton(btEditor);
+            hideEditorButton(btEditor);
         }
 
         showUsers();
@@ -104,7 +104,7 @@ public class ActivityUsersList extends AbstractActivity {
 
         for (int numUser = 0; numUser < users.size(); numUser++) {
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + users.get(numUser).getID());
+            mRow.setId(NUMBER_OF_VIEWS + users.get(numUser).getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,7 +115,7 @@ public class ActivityUsersList extends AbstractActivity {
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(users.get(numUser).getID()));
+            txt.setText(String.valueOf(users.get(numUser).getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -185,10 +185,10 @@ public class ActivityUsersList extends AbstractActivity {
                         List<User> users = DB.getAllUsers();
                         for (User user : users
                                 ) {
-                            DB.deleteAllPracticeHistoryOfUser(user.getID());
-                            DB.deleteAllPracticesOfUser(user.getID());
-                            DB.deleteAllProjectsOfUser(user.getID());
-                            DB.deleteAllAreasOfUser(user.getID());
+                            DB.deleteAllPracticeHistoryOfUser(user.getId());
+                            DB.deleteAllPracticesOfUser(user.getId());
+                            DB.deleteAllProjectsOfUser(user.getId());
+                            DB.deleteAllAreasOfUser(user.getId());
 
                         }
                         ;

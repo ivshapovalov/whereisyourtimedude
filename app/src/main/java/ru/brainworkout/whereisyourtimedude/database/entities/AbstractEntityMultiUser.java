@@ -10,7 +10,7 @@ public abstract class AbstractEntityMultiUser extends AbstractEntity {
 
         User currentUser= Session.sessionCurrentUser;
         if (currentUser!=null) {
-            this.id_user = currentUser.getID();
+            this.id_user = currentUser.getId();
         } else {
             throw new NullPointerException("Current user is not defined!");
         }

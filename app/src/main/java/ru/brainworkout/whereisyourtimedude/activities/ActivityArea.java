@@ -77,7 +77,7 @@ public class ActivityArea extends AbstractActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(sessionCurrentArea.getID()));
+            tvID.setText(String.valueOf(sessionCurrentArea.getId()));
         }
 
         //Имя
@@ -101,7 +101,7 @@ public class ActivityArea extends AbstractActivity {
 
         blink(view,this);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        intent.putExtra("CurrentAreaID", sessionCurrentArea.getID());
+        intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
         sessionOpenActivities.pop();
         sessionCurrentArea =null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -111,16 +111,12 @@ public class ActivityArea extends AbstractActivity {
 
 
     private void getPropertiesFromScreen() {
-
-        //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
             sessionCurrentArea.setName(String.valueOf(etName.getText()));
-
         }
-
     }
 
     public void tvColor_onClick(View view) {
@@ -169,7 +165,7 @@ public class ActivityArea extends AbstractActivity {
 
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        intent.putExtra("CurrentAreaID", sessionCurrentArea.getID());
+        intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
         sessionCurrentArea = null;
         sessionOpenActivities.pop();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -184,7 +180,7 @@ public class ActivityArea extends AbstractActivity {
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityAreasList.class);
             sessionOpenActivities.pop();
-            intent.putExtra("CurrentAreaID", sessionCurrentArea.getID());
+            intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -202,18 +198,18 @@ public class ActivityArea extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        List<Project> projects = DB.getAllProjectsOfArea(sessionCurrentArea.getID());
+                        List<Project> projects = DB.getAllProjectsOfArea(sessionCurrentArea.getId());
 
                         for (Project project : projects
                                 ) {
-                            List<Practice> practices = DB.getAllActivePracticesOfProject(project.getID());
+                            List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
                             for (Practice practice : practices
                                     ) {
-                                DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                                DB.deleteAllPracticeHistoryOfPractice(practice.getId());
                             }
-                            DB.deleteAllPracticesOfProject(project.getID());
+                            DB.deleteAllPracticesOfProject(project.getId());
                         }
-                        DB.deleteAllProjectsOfArea(sessionCurrentArea.getID());
+                        DB.deleteAllProjectsOfArea(sessionCurrentArea.getId());
 
                         sessionCurrentArea.dbDelete(DB);
                         sessionCurrentArea = null;
@@ -225,6 +221,5 @@ public class ActivityArea extends AbstractActivity {
 
                     }
                 }).setNegativeButton("Нет", null).show();
-
     }
 }

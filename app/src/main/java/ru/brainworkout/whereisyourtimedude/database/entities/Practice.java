@@ -45,7 +45,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsPractice(this.getID())) {
+        if (db.containsPractice(this.getId())) {
             db.updatePractice(this);
         } else {
             db.addPractice(this);
@@ -54,7 +54,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
 
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
-        if (db.containsPractice(this.getID())) {
+        if (db.containsPractice(this.getId())) {
             db.deletePractice(this);
         } else {
             db.addPractice(this);
@@ -98,9 +98,6 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB,De
             Practice practice = new Practice(this);
             return practice;
         }
-
     }
-
-
 }
 

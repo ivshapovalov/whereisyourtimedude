@@ -25,7 +25,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
+import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
@@ -59,7 +59,7 @@ public class ActivityProjectsList extends AbstractActivity {
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btProjectsDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
-            HideEditorButton(btEditor);
+            hideEditorButton(btEditor);
         }
 
         showProjects();
@@ -89,7 +89,7 @@ public class ActivityProjectsList extends AbstractActivity {
         List<Project> projects;
         if (sessionCurrentUser != null) {
 
-            projects = DB.getAllProjectsOfUser(sessionCurrentUser.getID());
+            projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
         } else {
             projects = DB.getAllProjects();
         }
@@ -122,7 +122,7 @@ public class ActivityProjectsList extends AbstractActivity {
             Project currentProject = projects.get(numProject);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentProject.getID());
+            mRow.setId(NUMBER_OF_VIEWS + currentProject.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -133,7 +133,7 @@ public class ActivityProjectsList extends AbstractActivity {
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentProject.getID()));
+            txt.setText(String.valueOf(currentProject.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -289,17 +289,17 @@ public class ActivityProjectsList extends AbstractActivity {
 
                         if (Session.sessionCurrentUser != null) {
 
-                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionCurrentUser.getID());
+                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionCurrentUser.getId());
                             for (Project project : projects
                                     ) {
-                                List<Practice> practices = DB.getAllActivePracticesOfProject(project.getID());
+                                List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
                                 for (Practice practice : practices
                                         ) {
-                                    DB.deleteAllPracticeHistoryOfPractice(practice.getID());
+                                    DB.deleteAllPracticeHistoryOfPractice(practice.getId());
                                 }
-                                DB.deleteAllPracticesOfProject(project.getID());
+                                DB.deleteAllPracticesOfProject(project.getId());
                             }
-                            DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getID());
+                            DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getId());
 
                             showProjects();
                         }

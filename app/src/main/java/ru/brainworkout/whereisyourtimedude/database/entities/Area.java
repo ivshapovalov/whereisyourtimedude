@@ -42,7 +42,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
     @Override
     public void dbSave(SqlLiteDatabaseManager db) {
-        if (db.containsArea(this.getID())) {
+        if (db.containsArea(this.getId())) {
             db.updateArea(this);
         } else {
             db.addArea(this);
@@ -51,7 +51,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB,Deleti
 
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
-        if (db.containsArea(this.getID())) {
+        if (db.containsArea(this.getId())) {
             db.deleteArea(this);
         } else {
             db.addArea(this);

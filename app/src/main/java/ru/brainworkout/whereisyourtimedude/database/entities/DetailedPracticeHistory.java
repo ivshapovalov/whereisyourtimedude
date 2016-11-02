@@ -79,7 +79,7 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
     public void dbSave(SqlLiteDatabaseManager db) {
         synchronized (this) {
 
-            if (db.containsDetailedPracticeHistory(this.getID())) {
+            if (db.containsDetailedPracticeHistory(this.getId())) {
                 db.updateDetailedPracticeHistory((DetailedPracticeHistory) this);
             } else {
                 db.addDetailedPracticeHistory((DetailedPracticeHistory) this);
@@ -90,7 +90,7 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
     @Override
     public void dbDelete(SqlLiteDatabaseManager db) {
 
-        if (db.containsDetailedPracticeHistory(this.getID())) {
+        if (db.containsDetailedPracticeHistory(this.getId())) {
             db.deleteDetailedPracticeHistory((DetailedPracticeHistory) this);
         }
 

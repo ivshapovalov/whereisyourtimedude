@@ -24,8 +24,8 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
-import static ru.brainworkout.whereisyourtimedude.common.Common.ConvertMillisToStringDate;
-import static ru.brainworkout.whereisyourtimedude.common.Common.HideEditorButton;
+import static ru.brainworkout.whereisyourtimedude.common.Common.convertMillisToStringDate;
+import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.SYMBOL_EDIT;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -57,7 +57,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btDetailedPracticeHistoryDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
-            HideEditorButton(btEditor);
+            hideEditorButton(btEditor);
         }
 
         LOG.debug("ActivityDetailedPracticeHistoryList before show pr history");
@@ -120,7 +120,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         List<DetailedPracticeHistory> detailedPracticeHistories;
         if (sessionCurrentUser != null) {
 
-            detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getID());
+            detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
         } else {
             detailedPracticeHistories = DB.getAllDetailedPracticeHistory();
         }
@@ -155,7 +155,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             DetailedPracticeHistory currentDetailedPracticeHistory = detailedPracticeHistories.get(numDetailedPracticeHistory);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(currentDetailedPracticeHistory.getID());
+            mRow.setId(currentDetailedPracticeHistory.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -166,7 +166,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             mRow.setBackgroundResource(R.drawable.bt_border);
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentDetailedPracticeHistory.getID()));
+            txt.setText(String.valueOf(currentDetailedPracticeHistory.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setHeight(mHeight);
@@ -175,7 +175,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = ConvertMillisToStringDate(currentDetailedPracticeHistory.getDate());
+            String name = convertMillisToStringDate(currentDetailedPracticeHistory.getDate());
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -290,7 +290,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            DB.deleteAllDetailedPracticeHistoryOfUser(Session.sessionCurrentUser.getID());
+                            DB.deleteAllDetailedPracticeHistoryOfUser(Session.sessionCurrentUser.getId());
                             showDetailedPracticeHistory();
                         }
                     }

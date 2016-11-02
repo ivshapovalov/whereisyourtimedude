@@ -48,7 +48,6 @@ public class BackgroundChronometer extends Thread {
         LOG.debug(this.getName() + " created");
     }
 
-
     public BackgroundChronometer(Service service) {
 
         this.service = service;
@@ -111,9 +110,7 @@ public class BackgroundChronometer extends Thread {
                         .addTime(Calendar.getInstance().getTimeInMillis())
                         .build();
             }
-
         }
-
     }
 
     private void setAndSaveChronometerState(boolean state) {

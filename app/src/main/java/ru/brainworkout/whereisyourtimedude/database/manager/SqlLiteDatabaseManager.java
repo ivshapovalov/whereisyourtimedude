@@ -674,8 +674,10 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
             return false;
         } else {
             cursor.close();
+            db.close();
             return true;
         }
+
     }
 
     public PracticeHistory getPracticeHistory(int id) {

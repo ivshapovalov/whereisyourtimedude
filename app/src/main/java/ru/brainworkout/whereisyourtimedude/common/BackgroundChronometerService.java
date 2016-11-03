@@ -8,14 +8,14 @@ import android.os.IBinder;
 
 import org.apache.log4j.Logger;
 
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 public class BackgroundChronometerService extends Service {
 
     private static Logger LOG = Alogger.getLogger(BackgroundChronometerService.class);
-    private volatile SqlLiteDatabaseManager DB;
+    private volatile SQLiteDatabaseManager DB;
 
     @Override
     public IBinder onBind(Intent intent) {

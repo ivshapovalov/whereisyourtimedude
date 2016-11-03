@@ -3,7 +3,7 @@ package ru.brainworkout.whereisyourtimedude.database.entities;
 
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb {
     private int id;
@@ -43,7 +43,7 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
     }
 
     @Override
-    public void dbSave(SqlLiteDatabaseManager db) {
+    public void dbSave(SQLiteDatabaseManager db) {
             synchronized (this) {
                 if (db.containsUser(this.getId())) {
                     db.updateUser(this);
@@ -54,7 +54,7 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
     }
 
     @Override
-    public void dbDelete(SqlLiteDatabaseManager db) {
+    public void dbDelete(SQLiteDatabaseManager db) {
         if (db.containsUser(this.getId())) {
             db.deleteUser(this);
         } else {
@@ -83,7 +83,7 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
         private String name;
         private int isCurrentUser;
 
-        public Builder(SqlLiteDatabaseManager DB) {
+        public Builder(SQLiteDatabaseManager DB) {
             this.id = DB.getAreaMaxNumber() + 1;
         }
 

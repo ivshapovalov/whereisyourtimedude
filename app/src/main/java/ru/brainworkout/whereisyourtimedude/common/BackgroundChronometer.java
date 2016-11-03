@@ -23,7 +23,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHis
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
@@ -36,7 +36,7 @@ public class BackgroundChronometer extends Thread {
     private volatile boolean ticking;
     private volatile PracticeHistory currentPracticeHistory;
     private volatile DetailedPracticeHistory currentDetailedPracticeHistory;
-    private volatile SqlLiteDatabaseManager DB;
+    private volatile SQLiteDatabaseManager DB;
     private volatile Service service;
     private volatile boolean notificationStatusIsPlay;
 
@@ -65,7 +65,7 @@ public class BackgroundChronometer extends Thread {
 
     public void setService(Service service) {
         this.service = service;
-        LOG.debug(this.getName() + " set service + " + service.toString());
+        //LOG.debug(this.getName() + " set service + " + service.toString());
     }
 
     public long getGlobalChronometerCountInSeconds() {
@@ -118,11 +118,11 @@ public class BackgroundChronometer extends Thread {
         Session.sessionOptions.dbSave(DB);
     }
 
-    public SqlLiteDatabaseManager getDB() {
+    public SQLiteDatabaseManager getDB() {
         return DB;
     }
 
-    public void setDB(SqlLiteDatabaseManager DB) {
+    public void setDB(SQLiteDatabaseManager DB) {
         this.DB = DB;
     }
 

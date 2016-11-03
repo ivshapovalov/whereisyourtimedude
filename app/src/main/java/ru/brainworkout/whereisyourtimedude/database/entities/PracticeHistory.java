@@ -2,7 +2,7 @@ package ru.brainworkout.whereisyourtimedude.database.entities;
 
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 /**
  * Created by Ivan on 05.09.2016.
@@ -76,7 +76,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     }
 
     @Override
-    public void dbSave(SqlLiteDatabaseManager db) {
+    public void dbSave(SQLiteDatabaseManager db) {
 
         synchronized (this) {
             if (db.containsPracticeHistory(this.getId())) {
@@ -89,7 +89,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     }
 
     @Override
-    public void dbDelete(SqlLiteDatabaseManager db) {
+    public void dbDelete(SQLiteDatabaseManager db) {
 
         if (db.containsPracticeHistory(this.getId())) {
             db.deletePracticeHistory((PracticeHistory) this);
@@ -104,7 +104,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
         private long lastTime;
         private long date;
 
-        public Builder(SqlLiteDatabaseManager DB) {
+        public Builder(SQLiteDatabaseManager DB) {
             this.id = DB.getPracticeHistoryMaxNumber() + 1;
         }
 

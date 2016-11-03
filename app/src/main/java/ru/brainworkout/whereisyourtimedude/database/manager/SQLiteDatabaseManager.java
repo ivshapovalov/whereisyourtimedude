@@ -19,7 +19,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 
-public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
+public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     // Database Version
     private static final int DATABASE_VERSION = 2;
@@ -84,7 +84,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_IS_CURRENT = "user_is_current";
 
-    public SqlLiteDatabaseManager(Context context) {
+    public SQLiteDatabaseManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -352,6 +352,7 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         db.execSQL("Delete from " + TABLE_PRACTICE_HISTORY);
         db.execSQL("Delete from " + TABLE_DETAILED_PRACTICE_HISTORY);
         db.execSQL("Delete from  " + TABLE_USERS);
+
     }
 
     public synchronized void addUser(User user) {
@@ -1628,7 +1629,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         String countQuery = "SELECT  MAX(" + KEY_DETAILED_PRACTICE_HISTORY_ID + ") FROM " + TABLE_DETAILED_PRACTICE_HISTORY + "";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
-
         cursor.moveToFirst();
         int count = 0;
         if (cursor.getCount() != 0) {
@@ -1645,7 +1645,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(KEY_USER_NAME, user.getName());
         values.put(KEY_USER_IS_CURRENT, user.isCurrentUser());
-        db.close();
         int rows = db.update(TABLE_USERS, values, KEY_USER_ID + " = ?",
                 new String[]{String.valueOf(user.getId())});
         db.close();
@@ -1713,7 +1712,6 @@ public class SqlLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getIdPractice());
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
         values.put(KEY_PRACTICE_HISTORY_LAST_TIME, practiceHistory.getLastTime());
-
         int rows = db.update(TABLE_PRACTICE_HISTORY, values, KEY_PRACTICE_HISTORY_ID + " = ?",
                 new String[]{String.valueOf(practiceHistory.getId())});
         db.close();

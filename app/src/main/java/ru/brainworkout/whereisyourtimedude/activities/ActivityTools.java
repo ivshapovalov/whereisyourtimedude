@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
+import ru.brainworkout.whereisyourtimedude.common.Constants;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
@@ -60,7 +62,7 @@ public class ActivityTools extends AbstractActivity {
     }
 
     public void btTestFill_onClick(final View view) {
-
+        if (backgroundChronometerIsWorking()) return;
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите очистить базу данных и заполнить ее тестовыми данными?")
                 .setCancelable(false)
@@ -70,10 +72,14 @@ public class ActivityTools extends AbstractActivity {
 
                             SQLiteDatabase dbSQL = DB.getWritableDatabase();
                             DB.ClearDB(dbSQL);
-                            sessionCurrentUser=null;
+                            sessionCurrentUser = null;
 
                             Common.defaultTestFilling(DB);
+                            dbSQL.close();
 
+                            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+                                sessionBackgroundChronometer.getService().stopForeground(true);
+                            }
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена и заполнена тестовыми данными!", Toast.LENGTH_SHORT);
                             toast.show();
@@ -99,12 +105,8 @@ public class ActivityTools extends AbstractActivity {
 
     public void btClearBD_onClick(final View view) {
 
-        if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
-            Toast toast = Toast.makeText(ActivityTools.this,
-                    "Остановите хронометраж. Нельзя очистить базу данных при работающем хронометраже!", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
+        if (backgroundChronometerIsWorking()) return;
+
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите очистить базу данных?")
                 .setCancelable(false)
@@ -114,17 +116,12 @@ public class ActivityTools extends AbstractActivity {
 
                             SQLiteDatabase dbSQL = DB.getWritableDatabase();
                             DB.ClearDB(dbSQL);
-                            sessionCurrentUser=null;
-                            //DB.onUpgrade(dbSQL, 1, 1);
+                            sessionCurrentUser = null;
 
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена!", Toast.LENGTH_SHORT);
                             toast.show();
                             setTitleOfActivity(ActivityTools.this);
-
-
-
-
                         } catch (Exception e) {
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
@@ -135,9 +132,15 @@ public class ActivityTools extends AbstractActivity {
 
     }
 
-
-
-
+    private boolean backgroundChronometerIsWorking() {
+        if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
+            Toast toast = Toast.makeText(ActivityTools.this,
+                    "Остановите хронометраж. Нельзя очистить базу данных при работающем хронометраже!", Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        }
+        return false;
+    }
 
     public void onBackPressed() {
 
@@ -146,6 +149,5 @@ public class ActivityTools extends AbstractActivity {
         startActivity(intent);
 
     }
-
 
 }

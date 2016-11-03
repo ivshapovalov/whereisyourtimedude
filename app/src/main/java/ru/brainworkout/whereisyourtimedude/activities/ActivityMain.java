@@ -46,6 +46,14 @@ public class ActivityMain extends AbstractActivity {
 
     }
 
+    public void btTest_onClick(View view) {
+        if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+            sessionBackgroundChronometer.getService().stopForeground(true);
+            sessionBackgroundChronometer.getService().stopSelf();
+            //sessionBackgroundChronometer.setService(null);
+        }
+    }
+
     private void resumeChronoIfWorking() {
         if (sessionOptions != null && sessionOptions.getRecoveryOnRunSwitch() == 1) {
             if (sessionBackgroundChronometer != null &&
@@ -262,6 +270,7 @@ public class ActivityMain extends AbstractActivity {
                                 && sessionBackgroundChronometer.getService() != null) {
                             LOG.debug("Before close app");
                             sessionBackgroundChronometer.getService().stopForeground(true);
+                            sessionBackgroundChronometer.getService().stopSelf();
                             sessionBackgroundChronometer.interrupt();
                             LOG.debug("After close app");
                             LOG.debug("Close MainActivity");
@@ -269,4 +278,6 @@ public class ActivityMain extends AbstractActivity {
                     }
                 }).setNegativeButton("Нет", null).show();
     }
+
+
 }

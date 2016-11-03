@@ -1,8 +1,8 @@
 package ru.brainworkout.whereisyourtimedude.database.interfaces;
 
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 public interface DeletingFromDb {
 
-    void dbDelete(SqlLiteDatabaseManager db);
+    void dbDelete(SQLiteDatabaseManager db);
 }

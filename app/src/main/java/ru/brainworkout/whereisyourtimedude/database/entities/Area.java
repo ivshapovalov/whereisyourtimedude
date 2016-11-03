@@ -2,7 +2,7 @@ package ru.brainworkout.whereisyourtimedude.database.entities;
 
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 public class Area extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
@@ -41,7 +41,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB, Delet
     }
 
     @Override
-    public void dbSave(SqlLiteDatabaseManager db) {
+    public void dbSave(SQLiteDatabaseManager db) {
         synchronized (this) {
             if (db.containsArea(this.getId())) {
                 db.updateArea(this);
@@ -49,11 +49,10 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB, Delet
                 db.addArea(this);
             }
         }
-
     }
 
     @Override
-    public void dbDelete(SqlLiteDatabaseManager db) {
+    public void dbDelete(SQLiteDatabaseManager db) {
         if (db.containsArea(this.getId())) {
             db.deleteArea(this);
         } else {
@@ -62,7 +61,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB, Delet
 
     }
 
-    public static Area getAreaFromDB(SqlLiteDatabaseManager DB, int id) {
+    public static Area getAreaFromDB(SQLiteDatabaseManager DB, int id) {
         return DB.getArea(id);
     }
 
@@ -71,7 +70,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB, Delet
         private String name;
         private int color;
 
-        public Builder(SqlLiteDatabaseManager DB) {
+        public Builder(SQLiteDatabaseManager DB) {
             this.id = DB.getAreaMaxNumber() + 1;
         }
 

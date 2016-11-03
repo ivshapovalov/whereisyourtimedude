@@ -2,7 +2,7 @@ package ru.brainworkout.whereisyourtimedude.database.entities;
 
 import ru.brainworkout.whereisyourtimedude.database.interfaces.DeletingFromDb;
 import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 public class Project extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
@@ -38,7 +38,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
     }
 
     @Override
-    public void dbSave(SqlLiteDatabaseManager db) {
+    public void dbSave(SQLiteDatabaseManager db) {
             synchronized (this) {
                 if (db.containsProject(this.getId())) {
                     db.updateProject(this);
@@ -49,7 +49,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
     }
 
     @Override
-    public void dbDelete(SqlLiteDatabaseManager db) {
+    public void dbDelete(SQLiteDatabaseManager db) {
 
         if (db.containsProject(this.getId())) {
             db.deleteProject(this);
@@ -59,7 +59,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
 
     }
 
-    public static Project getProjectFromDB(SqlLiteDatabaseManager DB, int id) {
+    public static Project getProjectFromDB(SQLiteDatabaseManager DB, int id) {
         return DB.getProject(id);
     }
 
@@ -69,7 +69,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
         private String name;
 
 
-        public Builder(SqlLiteDatabaseManager DB) {
+        public Builder(SQLiteDatabaseManager DB) {
             this.id = DB.getProjectMaxNumber() + 1;
         }
 

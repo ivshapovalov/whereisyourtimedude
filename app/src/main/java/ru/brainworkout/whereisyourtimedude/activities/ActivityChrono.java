@@ -237,7 +237,7 @@ public class ActivityChrono extends AbstractActivity {
                 Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
 
             } else {
-                backgroundServiceIntent.setAction("START");
+                backgroundServiceIntent.setAction(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
                 startService(backgroundServiceIntent);
                 Session.sessionBackgroundChronometer.start();
                 Session.sessionBackgroundChronometer.pauseTicking();
@@ -312,7 +312,7 @@ public class ActivityChrono extends AbstractActivity {
         LOG.debug("rowWork_onClick:before start service");
 
         backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
-        backgroundServiceIntent.setAction("START");
+        backgroundServiceIntent.setAction(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
         LOG.debug("Before service start");
         startService(backgroundServiceIntent);
 
@@ -346,7 +346,7 @@ public class ActivityChrono extends AbstractActivity {
             //startService(backgroundServiceIntent);
             if (sessionBackgroundChronometer.isAlive()) {
                 backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
-                backgroundServiceIntent.setAction("START");
+                backgroundServiceIntent.setAction(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
                 LOG.debug("Before service start");
                 startService(backgroundServiceIntent);
                 sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
@@ -370,7 +370,6 @@ public class ActivityChrono extends AbstractActivity {
 
         }
         updateAllRows();
-
     }
 
 

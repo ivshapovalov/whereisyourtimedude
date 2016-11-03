@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Vibrator;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
@@ -17,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -30,7 +28,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
-import ru.brainworkout.whereisyourtimedude.database.manager.SqlLiteDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 public class Common {
 
@@ -206,16 +204,14 @@ public class Common {
         return AlphabetColors;
     }
 
-    public static void defaultTestFilling(SqlLiteDatabaseManager DB) {
+    public static void defaultTestFilling(SQLiteDatabaseManager DB) {
 
         Random random = new Random();
         final int USERS_COUNT = 5;
         final int AREAS_COUNT = 10;
         final int PROJECTS_COUNT = 20;
         final int PRACTICES_COUNT = 50;
-        final int DETAILED_PRACTICE_HISTORY_COUNT = 100;
-        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=5;
-        final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 400;
+
 
         int maxUser = DB.getUserMaxNumber();
         //Users
@@ -229,32 +225,34 @@ public class Common {
         currentUser.setIsCurrentUser(1);
         currentUser.dbSave(DB);
         Session.sessionCurrentUser = currentUser;
-
-
         Options options = new Options.Builder(DB).addSaveInterval(1).addDisplaySwitch(1).addChronoIsWorking(0).build();
         options.dbSave(DB);
 
         //Areas
         for (int i = 1; i <= AREAS_COUNT; i++) {
-            Area a = new Area.Builder(DB).addName("Область  " + i).addColor(AlphabetColors().get(i)).build();
-            a.dbSave(DB);
+            Area area = new Area.Builder(DB).addName("Область  " + i).addColor(AlphabetColors().get(i)).build();
+            area.dbSave(DB);
         }
 
         //Projects
         for (int i = 1; i <= PROJECTS_COUNT; i++) {
             int idArea = random.nextInt(AREAS_COUNT) + 1;
-            Project a = new Project.Builder(DB).addName("Проект " + i).addIdArea(idArea).build();
-            a.dbSave(DB);
+            Project project = new Project.Builder(DB).addName("Проект " + i).addIdArea(idArea).build();
+            project.dbSave(DB);
         }
 
         //Practices
         for (int i = 1; i <= PRACTICES_COUNT; i++) {
             int idProject = random.nextInt(PROJECTS_COUNT) + 1;
-            Practice a = new Practice.Builder(DB).addName("Занятие " + i).addIDProject(idProject).addIsActive(1).build();
-            a.dbSave(DB);
+            Practice practice = new Practice.Builder(DB).addName("Занятие " + i).addIDProject(idProject).addIsActive(1).build();
+            practice.dbSave(DB);
         }
 
         //Detailed practice history count
+        final int DETAILED_PRACTICE_HISTORY_COUNT = 50;
+        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=5;
+        final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 400;
+
         int practice_history_number=1;
         int detailed_practice_history_number=1;
         List<DetailedPracticeHistory> detailedPracticeHistoryList=new ArrayList<>();

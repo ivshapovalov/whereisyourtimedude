@@ -372,7 +372,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_OPTIONS_ID, options.getId());
-        values.put(KEY_OPTIONS_ID_USER, options.getIdUser());
+        values.put(KEY_OPTIONS_ID_USER, options.getUser().getId());
         values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
@@ -386,7 +386,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_AREA_ID, area.getId());
-        values.put(KEY_AREA_ID_USER, area.getIdUser());
+        values.put(KEY_AREA_ID_USER, area.getUser().getId());
         values.put(KEY_AREA_NAME, area.getName());
         values.put(KEY_AREA_COLOR, area.getColor());
 
@@ -400,9 +400,9 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_PROJECT_ID, project.getId());
-        values.put(KEY_PROJECT_ID_USER, project.getIdUser());
+        values.put(KEY_PROJECT_ID_USER, project.getUser().getId());
         values.put(KEY_PROJECT_NAME, project.getName());
-        values.put(KEY_PROJECT_ID_AREA, project.getIdArea());
+        values.put(KEY_PROJECT_ID_AREA, project.getArea().getId());
 
         db.insert(TABLE_PROJECTS, null, values);
         db.close();
@@ -413,9 +413,9 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_PRACTICE_ID, practice.getId());
-        values.put(KEY_PRACTICE_ID_USER, practice.getIdUser());
+        values.put(KEY_PRACTICE_ID_USER, practice.getUser().getId());
         values.put(KEY_PRACTICE_NAME, practice.getName());
-        values.put(KEY_PRACTICE_ID_PROJECT, practice.getIdProject());
+        values.put(KEY_PRACTICE_ID_PROJECT, practice.getProject().getId());
         values.put(KEY_PRACTICE_IS_ACTIVE, practice.getIsActive());
 
         db.insert(TABLE_PRACTICES, null, values);
@@ -427,8 +427,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_PRACTICE_HISTORY_ID, practiceHistory.getId());
-        values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getIdUser());
-        values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getIdPractice());
+        values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getUser().getId());
+        values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getPractice().getId());
         values.put(KEY_PRACTICE_HISTORY_DATE, practiceHistory.getDate());
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
         values.put(KEY_PRACTICE_HISTORY_LAST_TIME, practiceHistory.getLastTime());
@@ -442,8 +442,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_DETAILED_PRACTICE_HISTORY_ID, detailedPracticeHistory.getId());
-        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getIdUser());
-        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getIdPractice());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getUser().getId());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getPractice().getId());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DATE, detailedPracticeHistory.getDate());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());
@@ -636,7 +636,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         } else {
             project = new Project.Builder(Integer.parseInt(cursor.getString(0)))
                     .addName(cursor.getString(2))
-                    .addIdArea(cursor.getInt(3)).build();
+                    .addArea(getArea(cursor.getInt(3))).build();
 
             cursor.close();
             db.close();
@@ -679,7 +679,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         } else {
             practice = new Practice.Builder(Integer.parseInt(cursor.getString(0)))
                     .addName(cursor.getString(1))
-                    .addIDProject(cursor.getInt(2))
+                    .addProject(getProject(cursor.getInt(2)))
                     .addIsActive(cursor.getInt(3)).build();
 
             cursor.close();
@@ -721,7 +721,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             throw new TableDoesNotContainElementException("There is no Practice history with id - " + id);
         } else {
             PracticeHistory practiceHistory = new PracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
-                    .addIdPractice(Integer.parseInt(cursor.getString(1)))
+                    .addPractice(getPractice(Integer.parseInt(cursor.getString(1))))
                     .addDate(cursor.getLong(2))
                     .addLastTime(cursor.getLong(3))
                     .addDuration(cursor.getLong(4))
@@ -767,7 +767,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             throw new TableDoesNotContainElementException("There is no Detailed practice history with id - " + id);
         } else {
             DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
-                    .addIdPractice(Integer.parseInt(cursor.getString(1)))
+                    .addPractice(getPractice(Integer.parseInt(cursor.getString(1))))
                     .addDate(cursor.getLong(2))
                     .addTime(cursor.getLong(3))
                     .addDuration(cursor.getLong(4))
@@ -795,7 +795,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                     + " and date=" + date);
         } else {
             PracticeHistory practiceHistory = new PracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
-                    .addIdPractice(Integer.parseInt(cursor.getString(1)))
+                    .addPractice(getPractice(Integer.parseInt(cursor.getString(1))))
                     .addDate(cursor.getLong(2))
                     .addLastTime(cursor.getLong(3))
                     .addDuration(cursor.getLong(4))
@@ -1017,7 +1017,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Project project = new Project.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIdArea(cursor.getInt(2))
+                        .addArea(getArea(cursor.getInt(2)))
                         .build();
                 projects.add(project);
             } while (cursor.moveToNext());
@@ -1039,7 +1039,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Project project = new Project.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIdArea(cursor.getInt(2))
+                        .addArea(getArea(cursor.getInt(2)))
                         .build();
                 projects.add(project);
             } while (cursor.moveToNext());
@@ -1061,7 +1061,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Project project = new Project.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIdArea(cursor.getInt(2))
+                        .addArea(getArea(cursor.getInt(2)))
                         .build();
                 projects.add(project);
             } while (cursor.moveToNext());
@@ -1084,7 +1084,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIDProject(cursor.getInt(2))
+                        .addProject(getProject(cursor.getInt(2)))
                         .addIsActive(cursor.getInt(3))
                         .build();
                 practices.add(practice);
@@ -1107,7 +1107,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIDProject(cursor.getInt(2))
+                        .addProject(getProject(cursor.getInt(2)))
                         .addIsActive(cursor.getInt(3))
                         .build();
                 practices.add(practice);
@@ -1131,7 +1131,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIDProject(cursor.getInt(2))
+                        .addProject(getProject(cursor.getInt(2)))
                         .addIsActive(cursor.getInt(3))
                         .build();
                 practices.add(practice);
@@ -1155,7 +1155,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             do {
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
-                        .addIDProject(cursor.getInt(2))
+                        .addProject(getProject(cursor.getInt(2)))
                         .addIsActive(cursor.getInt(3))
                         .build();
                 practices.add(practice);
@@ -1177,7 +1177,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1205,7 +1205,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1234,7 +1234,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1287,7 +1287,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                     practiceHistoryBuilder = new PracticeHistory.Builder(id_practice_history);
                     practiceHistoryBuilder.addDate(cursor.getLong(2));
                 }
-                practiceHistoryBuilder.addIdPractice(id_practice)
+                practiceHistoryBuilder.addPractice(getPractice(id_practice))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
                         .build();
@@ -1319,7 +1319,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
 
             practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                    .addIdPractice(cursor.getInt(1))
+                    .addPractice(getPractice(cursor.getInt(1)))
                     .addDate(cursor.getLong(2))
                     .addLastTime(cursor.getLong(3))
                     .addDuration(cursor.getLong(4))
@@ -1349,7 +1349,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1381,7 +1381,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addLastTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1405,7 +1405,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1432,7 +1432,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1460,7 +1460,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1489,7 +1489,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1519,7 +1519,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
-                        .addIdPractice(cursor.getInt(1))
+                        .addPractice(getPractice(cursor.getInt(1)))
                         .addDate(cursor.getLong(2))
                         .addTime(cursor.getLong(3))
                         .addDuration(cursor.getLong(4))
@@ -1656,7 +1656,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_AREA_NAME, area.getName());
-        values.put(KEY_AREA_ID_USER, area.getIdUser());
+        values.put(KEY_AREA_ID_USER, area.getUser().getId());
         values.put(KEY_AREA_COLOR, area.getColor());
         int rows = db.update(TABLE_AREAS, values, KEY_AREA_ID + " = ?",
                 new String[]{String.valueOf(area.getId())});
@@ -1681,8 +1681,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(KEY_PROJECT_NAME, project.getName());
-        values.put(KEY_PROJECT_ID_USER, project.getIdUser());
-        values.put(KEY_PROJECT_ID_AREA, project.getIdArea());
+        values.put(KEY_PROJECT_ID_USER, project.getUser().getId());
+        values.put(KEY_PROJECT_ID_AREA, project.getArea().getId());
         int rows = db.update(TABLE_PROJECTS, values, KEY_PROJECT_ID + " = ?",
                 new String[]{String.valueOf(project.getId())});
         db.close();
@@ -1694,8 +1694,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_PRACTICE_NAME, practice.getName());
-        values.put(KEY_PRACTICE_ID_USER, practice.getIdUser());
-        values.put(KEY_PRACTICE_ID_PROJECT, practice.getIdProject());
+        values.put(KEY_PRACTICE_ID_USER, practice.getUser().getId());
+        values.put(KEY_PRACTICE_ID_PROJECT, practice.getProject().getId());
         values.put(KEY_PRACTICE_IS_ACTIVE, practice.getIsActive());
         int rows = db.update(TABLE_PRACTICES, values, KEY_PRACTICE_ID + " = ?",
                 new String[]{String.valueOf(practice.getId())});
@@ -1708,8 +1708,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_PRACTICE_HISTORY_DATE, practiceHistory.getDate());
-        values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getIdUser());
-        values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getIdPractice());
+        values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getUser().getId());
+        values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getPractice().getId());
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
         values.put(KEY_PRACTICE_HISTORY_LAST_TIME, practiceHistory.getLastTime());
         int rows = db.update(TABLE_PRACTICE_HISTORY, values, KEY_PRACTICE_HISTORY_ID + " = ?",
@@ -1723,8 +1723,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DATE, detailedPracticeHistory.getDate());
-        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getIdUser());
-        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getIdPractice());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getUser().getId());
+        values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getPractice().getId());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());
 

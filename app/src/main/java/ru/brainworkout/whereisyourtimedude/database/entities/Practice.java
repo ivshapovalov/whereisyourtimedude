@@ -87,7 +87,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB, D
             return this;
         }
 
-        public Builder addIDProject(Project project) {
+        public Builder addProject(Project project) {
             this.project = project;
             return this;
         }

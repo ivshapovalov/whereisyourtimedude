@@ -105,7 +105,7 @@ public class BackgroundChronometer extends Thread {
         if (currentPracticeHistory != null) {
             synchronized (this) {
                 currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB.getDetailedPracticeHistoryMaxNumber() + 1)
-                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addPractice(currentPracticeHistory.getPractice())
                         .addDate(currentPracticeHistory.getDate())
                         .addTime(Calendar.getInstance().getTimeInMillis())
                         .build();

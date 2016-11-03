@@ -36,7 +36,7 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
         return practice;
     }
 
-    public void setPractice(int id_practice) {
+    public void setPractice(Practice practice) {
         this.practice = practice;
     }
 

@@ -114,7 +114,7 @@ public class ActivityPractice extends AbstractActivity {
 
             String nameProject = "";
             try {
-                Project project = DB.getProject(sessionCurrentPractice.getIdProject());
+                Project project = sessionCurrentPractice.getProject();
                 nameProject = project.getName();
 
             } catch (TableDoesNotContainElementException e) {
@@ -162,7 +162,7 @@ public class ActivityPractice extends AbstractActivity {
 
         blink(view, this);
         getPropertiesFromScreen();
-        int id_project = sessionCurrentPractice.getIdProject();
+        int id_project = sessionCurrentPractice.getProject().getId();
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         Boolean isNew = params != null ? params.isReceiverNew() : false;

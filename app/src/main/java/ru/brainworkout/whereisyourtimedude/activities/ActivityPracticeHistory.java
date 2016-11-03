@@ -145,7 +145,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
 
             String namePractice = "";
             try {
-                Practice practice = DB.getPractice(sessionCurrentPracticeHistory.getIdPractice());
+                Practice practice = sessionCurrentPracticeHistory.getPractice();
                 namePractice = practice.getName();
 
             } catch (TableDoesNotContainElementException e) {
@@ -197,7 +197,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
 
-        int id_practice = sessionCurrentPracticeHistory.getIdPractice();
+        int id_practice = sessionCurrentPracticeHistory.getPractice().getId();
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
         Boolean isNew = !DB.containsPracticeHistory(sessionCurrentPracticeHistory.getId());

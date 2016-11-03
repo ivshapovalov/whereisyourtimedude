@@ -90,7 +90,7 @@ public class ActivityProject extends AbstractActivity {
 
             String nameArea = "";
             try {
-                Area area = DB.getArea(sessionCurrentProject.getIdArea());
+                Area area = sessionCurrentProject.getArea();
                 nameArea = area.getName();
                 tvArea.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
@@ -131,7 +131,7 @@ public class ActivityProject extends AbstractActivity {
 
         blink(view,this);
         getPropertiesFromScreen();
-        int id_area = sessionCurrentProject.getIdArea();
+        int id_area = sessionCurrentProject.getArea().getId();
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         Boolean isNew = params!=null?params.isReceiverNew():false;

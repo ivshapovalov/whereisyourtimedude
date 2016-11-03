@@ -222,7 +222,7 @@ public class ActivityAreasList extends AbstractActivity {
         intent.putExtra("CurrentAreaID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                sessionCurrentProject.setIdArea(id);
+                sessionCurrentProject.setArea(DB.getArea(id));
 
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
                 sessionOpenActivities.pop();

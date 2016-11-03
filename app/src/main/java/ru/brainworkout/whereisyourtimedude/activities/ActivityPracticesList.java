@@ -150,7 +150,7 @@ public class ActivityPracticesList extends AbstractActivity {
             txt = new TextView(this);
             String nameProject = "";
             try {
-                Project project = DB.getProject(currentPractice.getIdProject());
+                Project project = currentPractice.getProject();
                 nameProject = project.getName();
 
             } catch (TableDoesNotContainElementException e) {
@@ -245,10 +245,10 @@ public class ActivityPracticesList extends AbstractActivity {
                 }
                 if (transmitterClass == ActivityPracticeHistory.class
                         ) {
-                    sessionCurrentPracticeHistory.setIdPractice(id);
+                    sessionCurrentPracticeHistory.setPractice(DB.getPractice(id));
                 } else if (transmitterClass == ActivityDetailedPracticeHistory.class
                         ) {
-                    sessionCurrentDetailedPracticeHistory.setIdPractice(id);
+                    sessionCurrentDetailedPracticeHistory.setPractice(DB.getPractice(id));
                 }
 
                 intent = new Intent(getApplicationContext(), transmitterClass);

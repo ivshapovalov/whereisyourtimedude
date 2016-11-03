@@ -109,7 +109,7 @@ public class ActivityMain extends AbstractActivity {
 
                     PracticeHistory newDayPracticeHistory = new PracticeHistory.Builder(DB)
                             .addDate(nextDayBeginInMillis)
-                            .addIdPractice(resumedPracticeHistory.getIdPractice())
+                            .addPractice(resumedPracticeHistory.getPractice())
                             .addLastTime(nextDayEndInMillis)
                             .addDuration(20 * 60 * 60)
                             .build();
@@ -123,7 +123,7 @@ public class ActivityMain extends AbstractActivity {
                 duration = (System.currentTimeMillis() - todayInMillis) / 1_000;
                 resumedPracticeHistory = new PracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
-                        .addIdPractice(resumedPracticeHistory.getIdPractice())
+                        .addPractice(resumedPracticeHistory.getPractice())
                         .addLastTime(System.currentTimeMillis())
                         .addDuration(duration)
                         .build();

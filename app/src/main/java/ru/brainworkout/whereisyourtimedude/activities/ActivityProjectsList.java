@@ -154,7 +154,7 @@ public class ActivityProjectsList extends AbstractActivity {
             txt = new TextView(this);
             String nameArea = "";
             try {
-                Area area = DB.getArea(currentProject.getIdArea());
+                Area area = currentProject.getArea();
                 nameArea = area.getName();
                 txt.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
@@ -235,7 +235,7 @@ public class ActivityProjectsList extends AbstractActivity {
         intent.putExtra("CurrentProjectID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                sessionCurrentPractice.setIdProject(id);
+                sessionCurrentPractice.setProject(DB.getProject(id));
 
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
                 sessionOpenActivities.pop();

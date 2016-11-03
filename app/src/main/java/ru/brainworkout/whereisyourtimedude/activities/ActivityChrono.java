@@ -136,7 +136,7 @@ public class ActivityChrono extends AbstractActivity {
                 if (practice.getIsActive() == 1) {
                     for (PracticeHistory practiceHistory : practiceHistories
                             ) {
-                        if (practiceHistory.getIdPractice() == id_practice) {
+                        if (practiceHistory.getPractice().getId() == id_practice) {
                             startPracticeHistoryTimerOnEvent(practiceHistory.getId());
                             break;
                         }
@@ -378,9 +378,9 @@ public class ActivityChrono extends AbstractActivity {
         String areaName = "";
         int areaColor = 0;
         try {
-            Practice practice = DB.getPractice(currentPracticeHistory.getIdPractice());
-            Project project = DB.getProject(practice.getIdProject());
-            Area area = DB.getArea(project.getIdArea());
+            Practice practice = currentPracticeHistory.getPractice();
+            Project project = practice.getProject();
+            Area area = project.getArea();
             areaName = area.getName();
             areaColor = area.getColor();
         } catch (TableDoesNotContainElementException e) {
@@ -396,7 +396,7 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
         TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
         if (tvCurrentName != null) {
-            tvCurrentName.setText(DB.getPractice(currentPracticeHistory.getIdPractice()).getName());
+            tvCurrentName.setText(currentPracticeHistory.getPractice().getName());
         }
 //        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
 //        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
@@ -444,10 +444,10 @@ public class ActivityChrono extends AbstractActivity {
         String areaName = "";
         int areaColor = Color.WHITE;
         try {
-            Practice practice = DB.getPractice(practiceHistory.getIdPractice());
+            Practice practice = practiceHistory.getPractice();
             practiceName = practice.getName();
-            Project project = DB.getProject(practice.getIdProject());
-            Area area = DB.getArea(project.getIdArea());
+            Project project = practice.getProject();
+            Area area = project.getArea();
             areaName = area.getName();
             areaColor = area.getColor();
         } catch (TableDoesNotContainElementException e) {

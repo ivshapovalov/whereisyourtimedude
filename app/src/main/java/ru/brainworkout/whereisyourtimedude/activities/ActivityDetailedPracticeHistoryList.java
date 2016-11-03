@@ -187,7 +187,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             txt = new TextView(this);
             String namePractice = "";
             try {
-                Practice practice = DB.getPractice(currentDetailedPracticeHistory.getIdPractice());
+                Practice practice = currentDetailedPracticeHistory.getPractice();
                 namePractice = practice.getName();
 
             } catch (TableDoesNotContainElementException e) {

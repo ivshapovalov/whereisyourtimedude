@@ -38,7 +38,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
         return practice;
     }
 
-    public void setPractice(int id_practice) {
+    public void setPractice(Practice practice) {
         this.practice = practice;
     }
 
@@ -112,7 +112,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
             this.id = id;
         }
 
-        public Builder addPractice(int id_practice) {
+        public Builder addPractice(Practice practice) {
             this.practice = practice;
             return this;
         }

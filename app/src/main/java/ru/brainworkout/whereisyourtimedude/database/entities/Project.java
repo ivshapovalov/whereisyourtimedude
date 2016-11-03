@@ -7,7 +7,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManage
 public class Project extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private String name;
-    private int id_area;
+    private Area area;
 
     public String getName() {
         return name;
@@ -22,19 +22,19 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
         this.name = name;
     }
 
-    public int getIdArea() {
-        return id_area;
+    public Area getArea() {
+        return area;
     }
 
-    public void setIdArea(int id_area) {
-        this.id_area = id_area;
+    public void setArea(int id_area) {
+        this.area = area;
     }
 
     private Project(Builder builder) {
 
         this.id = builder.id;
         this.name = builder.name;
-        this.id_area = builder.id_area;
+        this.area = builder.area;
     }
 
     @Override
@@ -65,9 +65,8 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
 
     public static class Builder extends AbstractEntity {
 
-        private int id_area;
+        private Area area;
         private String name;
-
 
         public Builder(SQLiteDatabaseManager DB) {
             this.id = DB.getProjectMaxNumber() + 1;
@@ -82,8 +81,8 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
             return this;
         }
 
-        public Builder addIdArea(int id_area) {
-            this.id_area = id_area;
+        public Builder addArea(Area area) {
+            this.area = area;
             return this;
         }
 

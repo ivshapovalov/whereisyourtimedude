@@ -10,8 +10,6 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 
 public class ActivityAbout extends AbstractActivity {
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
 

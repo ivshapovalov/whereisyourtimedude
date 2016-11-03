@@ -9,7 +9,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManage
  */
 public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
-    private volatile int id_practice;
+    private volatile Practice practice;
     private volatile long duration;//seconds
     private volatile long lastTime;//millis
     private volatile long date;//millis
@@ -31,15 +31,15 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
         this.duration = builder.duration;
         this.lastTime = builder.lastTime;
         this.date = builder.date;
-        this.id_practice = builder.id_practice;
+        this.practice = builder.practice;
     }
 
-    public int getIdPractice() {
-        return id_practice;
+    public Practice getPractice() {
+        return practice;
     }
 
-    public void setIdPractice(int id_practice) {
-        this.id_practice = id_practice;
+    public void setPractice(int id_practice) {
+        this.practice = practice;
     }
 
     public long getDate() {
@@ -99,7 +99,7 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
     public static class Builder extends AbstractEntity {
 
-        private int id_practice;
+        private Practice practice;
         private long duration;
         private long lastTime;
         private long date;
@@ -112,8 +112,8 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
             this.id = id;
         }
 
-        public Builder addIdPractice(int id_practice) {
-            this.id_practice = id_practice;
+        public Builder addPractice(int id_practice) {
+            this.practice = practice;
             return this;
         }
 

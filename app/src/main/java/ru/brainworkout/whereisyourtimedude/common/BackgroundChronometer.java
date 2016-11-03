@@ -207,7 +207,7 @@ public class BackgroundChronometer extends Thread {
                                     currentDetailedPracticeHistory.setDuration(0);
                                 } else {
                                     currentDetailedPracticeHistory.setDuration(Calendar.getInstance().getTimeInMillis()
-                                    - currentDetailedPracticeHistory.getTime());
+                                            - currentDetailedPracticeHistory.getTime());
                                 }
                                 currentDetailedPracticeHistory.dbSave(DB);
                             }
@@ -277,23 +277,15 @@ public class BackgroundChronometer extends Thread {
             String areaName = "";
             int areaColor = Color.WHITE;
             if (currentPracticeHistory != null) {
-                int currentPracticeID = this.getCurrentPracticeHistory().getIdPractice();
-                if (DB.containsPractice(currentPracticeID)) {
-                    Practice practice = DB.getPractice(currentPracticeID);
-                    if (practice != null) {
-                        practiceName = practice.getName().trim();
-                        if (DB.containsProject(practice.getIdProject())) {
-                            Project project = DB.getProject(practice.getIdProject());
-                            if (project != null) {
-                                projectName = project.getName();
-                                if (DB.containsArea(project.getIdArea())) {
-                                    Area area = DB.getArea(project.getIdArea());
-                                    if (area != null) {
-                                        areaName = area.getName();
-                                        areaColor = area.getColor();
-                                    }
-                                }
-                            }
+                Practice practice = this.getCurrentPracticeHistory().getPractice();
+                if (practice != null) {
+                    practiceName = practice.getName().trim();
+                    Project project = practice.getProject();
+                    if (project != null) {
+                        projectName = project.getName();
+                        Area area = project.getArea();
+                        if (area != null) {
+                            areaName = area.getName();
                         }
                     }
                 }
@@ -454,7 +446,7 @@ public class BackgroundChronometer extends Thread {
                 //change practice history
                 currentPracticeHistory = new PracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
-                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addPractice(currentPracticeHistory.getPractice())
                         .addLastTime(todayInMillis)
                         .addDuration(0)
                         .build();
@@ -473,7 +465,7 @@ public class BackgroundChronometer extends Thread {
                 //change practice history
                 currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
-                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addPractice(currentPracticeHistory.getPractice())
                         .addTime(todayInMillis)
                         .addDuration(0)
                         .build();

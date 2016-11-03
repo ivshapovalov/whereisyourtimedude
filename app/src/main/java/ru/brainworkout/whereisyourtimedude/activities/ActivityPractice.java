@@ -65,7 +65,6 @@ public class ActivityPractice extends AbstractActivity {
 
     private void showPracticeOnScreen() {
 
-
         int mIsActiveID = getResources().getIdentifier("cbIsActive", "id", getPackageName());
         CheckBox cbIsActive = (CheckBox) findViewById(mIsActiveID);
         if (cbIsActive != null) {
@@ -88,9 +87,7 @@ public class ActivityPractice extends AbstractActivity {
                     }
                 }
             });
-
         }
-
 
         //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());

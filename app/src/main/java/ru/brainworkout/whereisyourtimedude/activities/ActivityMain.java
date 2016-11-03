@@ -169,15 +169,15 @@ public class ActivityMain extends AbstractActivity {
 
     private void showElementsOnScreen() {
 
-        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
-        int mHeight = displaymetrics.heightPixels / MAX_VERTICAL_BUTTON_COUNT;
-        for (int i = 0; i <= MAX_VERTICAL_BUTTON_COUNT; i++) {
-            int btID = getResources().getIdentifier("btMain" + String.valueOf(i), "id", getPackageName());
-            Button btName = (Button) findViewById(btID);
-            if (btName != null) {
-                btName.setHeight(mHeight);
-            }
-        }
+//        DisplayMetrics displaymetrics = getResources().getDisplayMetrics();
+//        int mHeight = displaymetrics.heightPixels / MAX_VERTICAL_BUTTON_COUNT;
+//        for (int i = 1; i <= MAX_VERTICAL_BUTTON_COUNT; i++) {
+//            int btID = getResources().getIdentifier("btMain" + String.valueOf(i), "id", getPackageName());
+//            Button btName = (Button) findViewById(btID);
+//            if (btName != null) {
+//                btName.setHeight(mHeight);
+//            }
+//        }
     }
 
 
@@ -190,42 +190,42 @@ public class ActivityMain extends AbstractActivity {
 
     public void btAreas_onClick(final View view) {
 
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
             startActivity(intent);
         }
     }
 
     public void btProjects_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
             startActivity(intent);
         }
     }
 
     public void btPractices_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
             startActivity(intent);
         }
     }
 
     public void btPracticeHistory_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
             startActivity(intent);
         }
     }
 
     public void btDetailedPracticeHistory_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityDetailedPracticeHistoryList.class);
             startActivity(intent);
         }
     }
 
     public void btChronometer_onClick(final View view) {
-        if (isDBNotEmpty() && isUserDefined()) {
+        if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
             startActivity(intent);
         }

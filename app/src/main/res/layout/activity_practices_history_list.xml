@@ -18,7 +18,7 @@
             android:background="@drawable/bt_border">
 
             <Button
-                style="?android:attr/buttonStyleSmall"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/buttonHome"
@@ -29,7 +29,7 @@
                 android:textColor="@color/text_color" />
 
             <Button
-                style="?android:attr/buttonStyleSmall"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="ADD"
@@ -40,7 +40,7 @@
                 android:textColor="@color/text_color" />
 
             <Button
-                style="?android:attr/buttonStyleSmall"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/button2"
@@ -57,7 +57,7 @@
                 android:onClick="btEdit_onClick"
                 android:layout_span="10"
                 android:text="EDITOR"
-                style="?android:attr/buttonStyleSmall"
+                style="?android:attr/buttonBarButtonStyle"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color" />
 

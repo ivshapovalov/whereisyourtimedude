@@ -12,12 +12,10 @@ import android.widget.Toast;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
-import ru.brainworkout.whereisyourtimedude.common.Constants;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
-
 
 public class ActivityTools extends AbstractActivity {
 
@@ -44,21 +42,11 @@ public class ActivityTools extends AbstractActivity {
                 btName.setHeight(mHeight);
             }
         }
-
-    }
-
-    public void btExportImport_onClick(final View view) {
-
-//        Intent intent = new Intent(ActivityTools.this, ActivityFileExportImport.class);
-//        startActivity(intent);
-
     }
 
     public void btAbout_onClick(final View view) {
-
         Intent intent = new Intent(ActivityTools.this, ActivityAbout.class);
         startActivity(intent);
-
     }
 
     public void btTestFill_onClick(final View view) {
@@ -79,6 +67,7 @@ public class ActivityTools extends AbstractActivity {
 
                             if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
                                 sessionBackgroundChronometer.getService().stopForeground(true);
+                                sessionBackgroundChronometer.getService().stopSelf();
                             }
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена и заполнена тестовыми данными!", Toast.LENGTH_SHORT);
@@ -95,12 +84,10 @@ public class ActivityTools extends AbstractActivity {
     }
 
     public void btOptions_onClick(final View view) {
-
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityTools.this, ActivityOptions.class);
             startActivity(intent);
         }
-
     }
 
     public void btClearBD_onClick(final View view) {
@@ -117,6 +104,12 @@ public class ActivityTools extends AbstractActivity {
                             SQLiteDatabase dbSQL = DB.getWritableDatabase();
                             DB.ClearDB(dbSQL);
                             sessionCurrentUser = null;
+                            dbSQL.close();
+
+                            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+                                sessionBackgroundChronometer.getService().stopForeground(true);
+                                sessionBackgroundChronometer.getService().stopSelf();
+                            }
 
                             Toast toast = Toast.makeText(ActivityTools.this,
                                     "База данных очищена!", Toast.LENGTH_SHORT);
@@ -129,7 +122,6 @@ public class ActivityTools extends AbstractActivity {
                         }
                     }
                 }).setNegativeButton("Нет", null).show();
-
     }
 
     private boolean backgroundChronometerIsWorking() {
@@ -143,11 +135,8 @@ public class ActivityTools extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
-
 }

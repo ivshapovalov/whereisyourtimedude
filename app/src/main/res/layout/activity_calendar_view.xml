@@ -23,7 +23,8 @@
                 android:id="@+id/btClose"
                 android:onClick="btClose_onClick"
                 android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
+                android:textColor="@color/text_color"
+                style="?android:attr/buttonBarButtonStyle"/>
 
             <Button
                 android:layout_width="wrap_content"
@@ -32,7 +33,8 @@
                 android:id="@+id/btSave"
                 android:onClick="btSave_onClick"
                 android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
+                android:textColor="@color/text_color"
+                style="?android:attr/buttonBarButtonStyle"/>
 
         </TableRow>
     </TableLayout>

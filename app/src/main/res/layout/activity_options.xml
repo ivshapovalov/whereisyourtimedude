@@ -18,7 +18,7 @@
         <Button
 
             android:id="@+id/buttonCancel"
-            style="?android:attr/buttonStyleSmall"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="50"
@@ -31,7 +31,7 @@
         <Button
 
             android:id="@+id/buttonSave"
-            style="?android:attr/buttonStyleSmall"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="50"

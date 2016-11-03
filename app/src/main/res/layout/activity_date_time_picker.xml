@@ -13,7 +13,7 @@
 
         <Button
             android:id="@+id/button23"
-            style="@android:style/TextAppearance.Small"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="40"
@@ -24,7 +24,7 @@
 
         <Button
             android:id="@+id/button24"
-            style="@android:style/TextAppearance.Small"
+            style="?android:attr/buttonBarButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_span="40"

@@ -48,7 +48,7 @@
                 android:id="@+id/status_bar_timer_info"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:contentDescription="@string/stop_foreground"
+                android:contentDescription="@string/show_hide"
                 android:src="@android:drawable/ic_dialog_info"
                 android:focusable="true"/>
 

@@ -22,7 +22,7 @@
                 android:id="@+id/button4"
                 android:onClick="btClose_onClick"
                 android:layout_span="10"
-                style="@android:style/TextAppearance.Small"
+                style="?android:attr/buttonBarButtonStyle"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color" />
 
@@ -33,7 +33,7 @@
                 android:id="@+id/button3"
                 android:onClick="btSave_onClick"
                 android:layout_span="10"
-                style="@android:style/TextAppearance.Small"
+                style="?android:attr/buttonBarButtonStyle"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color" />
 
@@ -44,7 +44,7 @@
                 android:id="@+id/button5"
                 android:onClick="btDelete_onClick"
                 android:layout_span="10"
-                style="@android:style/TextAppearance.Small"
+                style="?android:attr/buttonBarButtonStyle"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color" />
 

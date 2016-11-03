@@ -50,7 +50,6 @@ public class ActivityMain extends AbstractActivity {
         if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
             sessionBackgroundChronometer.getService().stopForeground(true);
             sessionBackgroundChronometer.getService().stopSelf();
-            //sessionBackgroundChronometer.setService(null);
         }
     }
 

@@ -39,10 +39,10 @@ public class ActivityUser extends AbstractActivity {
             mCurrentUser = new User.Builder(DB.getUserMaxNumber() + 1).build();
         } else {
             int id = intent.getIntExtra("id", 0);
-            try {
+            if (DB.containsUser(id)) {
                 mCurrentUser = DB.getUser(id);
-            } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
-                tableDoesNotContainElementException.printStackTrace();
+            } else {
+                throw new TableDoesNotContainElementException(String.format("User with id ='%s' does not exists in database", id));
             }
         }
 
@@ -51,7 +51,6 @@ public class ActivityUser extends AbstractActivity {
 
         setTitleOfActivity(this);
     }
-
 
     private void showUserOnScreen() {
 
@@ -68,34 +67,28 @@ public class ActivityUser extends AbstractActivity {
         cbIsCurrent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
                 if (mCurrentUser != null) {
                     if (isChecked) {
                         mCurrentUser.setIsCurrentUser(1);
                     } else {
                         mCurrentUser.setIsCurrentUser(0);
                     }
-
                 }
             }
         });
-
 
         //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
-
             tvID.setText(String.valueOf(mCurrentUser.getId()));
         }
-
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
             etName.setText(mCurrentUser.getName());
         }
-
     }
 
     public void btClose_onClick(final View view) {
@@ -108,25 +101,20 @@ public class ActivityUser extends AbstractActivity {
 
     }
 
-
     private void getPropertiesFromScreen() {
-
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
             mCurrentUser.setName(String.valueOf(etName.getText()));
         }
-
     }
 
     public void btSave_onClick(final View view) {
-
         blink(view, this);
         getPropertiesFromScreen();
-
         if (mCurrentUser.isCurrentUser() == 1) {
-            if (sessionBackgroundChronometer!=null && sessionBackgroundChronometer.isTicking()) {
+            if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
                 Toast toast = Toast.makeText(ActivityUser.this,
                         "Вернитесь в хронометраж и остановите счетчик прежде чем поменять активного" +
                                 "пользователя", Toast.LENGTH_SHORT);
@@ -134,25 +122,20 @@ public class ActivityUser extends AbstractActivity {
                 return;
             }
         }
-            mCurrentUser.dbSave(DB);
-            setDBCurrentUser();
-
-            Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
-            intent.putExtra("id", mCurrentUser.getId());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-
-
+        mCurrentUser.dbSave(DB);
+        setDBCurrentUser();
+        Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
+        intent.putExtra("id", mCurrentUser.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void setDBCurrentUser() {
-
         if (mCurrentUser.isCurrentUser() == 1) {
             sessionCurrentUser = mCurrentUser;
             List<User> userList = DB.getAllUsers();
 
             for (User user : userList) {
-
                 if (user.getId() != mCurrentUser.getId()) {
                     user.setIsCurrentUser(0);
                     user.dbSave(DB);
@@ -166,23 +149,18 @@ public class ActivityUser extends AbstractActivity {
     }
 
     public void btDelete_onClick(final View view) {
-
         blink(view, this);
-
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущего пользователя, его занятия, проекты и области?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
+                        DB.deleteAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
                         DB.deleteAllPracticeHistoryOfUser(sessionCurrentUser.getId());
-
                         DB.deleteAllPracticesOfUser(sessionCurrentUser.getId());
-
                         DB.deleteAllProjectsOfUser(sessionCurrentUser.getId());
-
                         DB.deleteAllAreasOfUser(sessionCurrentUser.getId());
-
                         mCurrentUser.dbDelete(DB);
 
                         if (mCurrentUser.equals(sessionCurrentUser)) {
@@ -203,6 +181,4 @@ public class ActivityUser extends AbstractActivity {
                 }).setNegativeButton("Нет", null).show();
 
     }
-
-
 }

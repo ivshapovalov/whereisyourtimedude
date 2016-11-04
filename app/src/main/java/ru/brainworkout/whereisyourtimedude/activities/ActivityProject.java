@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
+
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.R;
@@ -91,7 +92,9 @@ public class ActivityProject extends AbstractActivity {
             String nameArea = "";
             try {
                 Area area = sessionCurrentProject.getArea();
-                nameArea = area.getName();
+                if (area != null) {
+                    nameArea = area.getName();
+                }
                 tvArea.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
 
@@ -103,11 +106,11 @@ public class ActivityProject extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         sessionOpenActivities.pop();
-        sessionCurrentProject =null;
+        sessionCurrentProject = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -129,13 +132,13 @@ public class ActivityProject extends AbstractActivity {
 
     public void tvArea_onClick(View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
         int id_area = sessionCurrentProject.getArea().getId();
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        Boolean isNew = params!=null?params.isReceiverNew():false;
-        ConnectionParameters paramsNew= new ConnectionParameters.Builder()
+        Boolean isNew = params != null ? params.isReceiverNew() : false;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProject")
                 .isTransmitterNew(isNew)
                 .isTransmitterForChoice(false)
@@ -152,7 +155,7 @@ public class ActivityProject extends AbstractActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
 
         sessionCurrentProject.dbSave(DB);
@@ -160,7 +163,7 @@ public class ActivityProject extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         sessionOpenActivities.pop();
-        sessionCurrentProject =null;
+        sessionCurrentProject = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -181,7 +184,7 @@ public class ActivityProject extends AbstractActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
 
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущий проект, его занятия и историю?")
@@ -199,7 +202,7 @@ public class ActivityProject extends AbstractActivity {
                         DB.deleteAllPracticesOfProject(sessionCurrentProject.getId());
 
                         sessionCurrentProject.dbDelete(DB);
-                        sessionCurrentProject =null;
+                        sessionCurrentProject = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
                         sessionOpenActivities.pop();

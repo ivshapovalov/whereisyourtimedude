@@ -58,11 +58,9 @@ public class ActivityUsersList extends AbstractActivity {
             int mScrID = getResources().getIdentifier("svTableUsers", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
-
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
-
         setTitleOfActivity(this);
     }
 
@@ -72,7 +70,6 @@ public class ActivityUsersList extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
         intent.putExtra("isNew", true);
         startActivity(intent);
-
     }
 
     private void showUsers() {
@@ -144,9 +141,7 @@ public class ActivityUsersList extends AbstractActivity {
     private void rowUser_onClick(final TableRow view) {
 
         blink(view,this);
-
         int id = view.getId() % NUMBER_OF_VIEWS;
-
         Intent intent = new Intent(getApplicationContext(), ActivityUser.class);
         intent.putExtra("id", id);
         intent.putExtra("isNew", false);
@@ -155,9 +150,7 @@ public class ActivityUsersList extends AbstractActivity {
     }
 
     public void btEdit_onClick(final View view) {
-
         blink(view,this);
-
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
@@ -169,7 +162,6 @@ public class ActivityUsersList extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btClear_onClick(final View view) {
@@ -185,13 +177,13 @@ public class ActivityUsersList extends AbstractActivity {
                         List<User> users = DB.getAllUsers();
                         for (User user : users
                                 ) {
+                            DB.deleteAllDetailedPracticeHistoryOfUser(user.getId());
                             DB.deleteAllPracticeHistoryOfUser(user.getId());
                             DB.deleteAllPracticesOfUser(user.getId());
                             DB.deleteAllProjectsOfUser(user.getId());
                             DB.deleteAllAreasOfUser(user.getId());
 
                         }
-                        ;
                         DB.deleteAllUsers();
                         Session.sessionCurrentUser = null;
 
@@ -202,7 +194,6 @@ public class ActivityUsersList extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

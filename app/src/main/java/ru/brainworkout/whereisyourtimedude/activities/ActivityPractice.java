@@ -112,7 +112,9 @@ public class ActivityPractice extends AbstractActivity {
             String nameProject = "";
             try {
                 Project project = sessionCurrentPractice.getProject();
-                nameProject = project.getName();
+                if (project != null) {
+                    nameProject = project.getName();
+                }
 
             } catch (TableDoesNotContainElementException e) {
 
@@ -150,16 +152,19 @@ public class ActivityPractice extends AbstractActivity {
         if (etName != null) {
 
             sessionCurrentPractice.setName(String.valueOf(etName.getText()));
-
         }
-
     }
 
     public void tvProject_onClick(View view) {
 
         blink(view, this);
         getPropertiesFromScreen();
-        int id_project = sessionCurrentPractice.getProject().getId();
+
+        Project project = sessionCurrentPractice.getProject();
+        int id_project = 0;
+        if (project != null) {
+            id_project = sessionCurrentPractice.getProject().getId();
+        }
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         Boolean isNew = params != null ? params.isReceiverNew() : false;

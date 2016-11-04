@@ -44,20 +44,18 @@ public class ActivityArea extends AbstractActivity {
 
         if (isNew) {
             if (sessionCurrentArea == null) {
-                sessionCurrentArea = new Area.Builder(DB.getAreaMaxNumber() + 1).build();
+                sessionCurrentArea = new Area.Builder(DB).build();
             }
         } else {
             int id = intent.getIntExtra("CurrentAreaID", 0);
-            try {
+            if (DB.containsArea(id)) {
                 sessionCurrentArea = DB.getArea(id);
-            } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
-                tableDoesNotContainElementException.printStackTrace();
+            } else {
+                throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database",id));
             }
         }
-
         showAreaOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         setTitleOfActivity(this);
     }
 
@@ -94,16 +92,15 @@ public class ActivityArea extends AbstractActivity {
 
             tvColor.setBackgroundColor(sessionCurrentArea.getColor());
         }
-
     }
 
     public void btClose_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
         sessionOpenActivities.pop();
-        sessionCurrentArea =null;
+        sessionCurrentArea = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -114,7 +111,6 @@ public class ActivityArea extends AbstractActivity {
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-
             sessionCurrentArea.setName(String.valueOf(etName.getText()));
         }
     }
@@ -158,12 +154,9 @@ public class ActivityArea extends AbstractActivity {
 
     public void btSave_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         getPropertiesFromScreen();
-
         sessionCurrentArea.dbSave(DB);
-
-
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
         sessionCurrentArea = null;
@@ -189,9 +182,7 @@ public class ActivityArea extends AbstractActivity {
 
     public void btDelete_onClick(final View view) {
 
-        blink(view,this);
-
-
+        blink(view, this);
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущую область, ее занятия, проекты и историю?")
                 .setCancelable(false)

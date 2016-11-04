@@ -36,8 +36,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
     private final int NUMBER_OF_VIEWS = 40000;
-
-
     private int mHeight = 0;
     private int mWidth = 0;
     private int mTextSize = 0;
@@ -70,7 +68,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
-
         Intent intent = getIntent();
         int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
 
@@ -80,14 +77,13 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
             int mScrID = getResources().getIdentifier("svTablePracticeHistory", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
-
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
 
         setTitleOfActivity(this);
         LOG.debug("ActivityPracticeHistoryList end");
-         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
     }
 
@@ -109,19 +105,16 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     private void showPracticeHistory() {
 
-
-        LOG.debug("ActivityPracticeHistoryList before in show pr history + sessionCurrentUser="+sessionCurrentUser);
+        LOG.debug("ActivityPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
         List<PracticeHistory> practiceHistoryList;
         if (sessionCurrentUser != null) {
-
             practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
         } else {
             practiceHistoryList = DB.getAllPracticeHistory();
@@ -133,9 +126,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTablePracticeHistory);
         try {
-
             sv.removeAllViews();
-
         } catch (NullPointerException e) {
         }
 
@@ -190,13 +181,12 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
             txt = new TextView(this);
             String namePractice = "";
-            try {
-                Practice practice =currentPracticeHistory.getPractice();
+
+            Practice practice = currentPracticeHistory.getPractice();
+            if (practice != null) {
                 namePractice = practice.getName();
-
-            } catch (TableDoesNotContainElementException e) {
-
             }
+
             txt.setText(namePractice);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -222,17 +212,13 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
-
         }
         sv.addView(layout);
-
     }
 
     private void txtPracticeHistoryEdit_onClick(TextView view) {
-
         blink(view, this);
         int id = ((TableRow) view.getParent()).getId();
-        //int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
                 .isTransmitterNew(false)
@@ -247,16 +233,12 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);
         startActivity(intent);
-
     }
 
     private void rowPracticeHistory_onClick(final TableRow view) {
 
         blink(view, this);
-
         int id = view.getId();
-        //int id = view.getId() % NUMBER_OF_VIEWS;
-
         ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistoryList")
                 .isTransmitterNew(false)
@@ -271,31 +253,25 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentPracticeHistoryID", id);
         startActivity(intent);
-
     }
 
     public void btEdit_onClick(final View view) {
-
         blink(view, this);
-
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
 
 
     public void buttonHome_onClick(final View view) {
-
         blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btClear_onClick(final View view) {
 
         blink(view, this);
-
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить всю историю занятий?")
                 .setCancelable(false)
@@ -311,11 +287,9 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     @Override

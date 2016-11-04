@@ -20,6 +20,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentArea;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
@@ -34,13 +35,12 @@ public class ActivityProject extends AbstractActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
-
         Intent intent = getIntent();
         getIntentParams(intent);
 
         if (isNew) {
             if (sessionCurrentProject == null) {
-                sessionCurrentProject = new Project.Builder(DB.getProjectMaxNumber() + 1).build();
+                sessionCurrentProject = new Project.Builder(DB).build();
             }
 
         } else {
@@ -50,21 +50,23 @@ public class ActivityProject extends AbstractActivity {
             } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
                 tableDoesNotContainElementException.printStackTrace();
             }
+            if (DB.containsProject(id)) {
+                sessionCurrentProject = DB.getProject(id);
+            } else {
+                throw new TableDoesNotContainElementException(String.format("Project with id ='%s' does not exists in database", id));
+            }
         }
 
         showProjectOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         setTitleOfActivity(this);
     }
 
     private void getIntentParams(Intent intent) {
-
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
         isNew = (params != null ? params.isReceiverNew() : false);
-
     }
 
     private void showProjectOnScreen() {
@@ -105,7 +107,6 @@ public class ActivityProject extends AbstractActivity {
     }
 
     public void btClose_onClick(final View view) {
-
         blink(view, this);
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
@@ -113,28 +114,28 @@ public class ActivityProject extends AbstractActivity {
         sessionCurrentProject = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
 
     private void getPropertiesFromScreen() {
-
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
             sessionCurrentProject.setName(String.valueOf(etName.getText()));
-
         }
-
     }
 
     public void tvArea_onClick(View view) {
-
         blink(view, this);
         getPropertiesFromScreen();
-        int id_area = sessionCurrentProject.getArea().getId();
+
+        int id_area = 0;
+        Area area = sessionCurrentProject.getArea();
+        if (area != null) {
+            id_area=area.getId();
+        }
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
         Boolean isNew = params != null ? params.isReceiverNew() : false;
@@ -150,16 +151,12 @@ public class ActivityProject extends AbstractActivity {
         intent.putExtra("CurrentAreaID", id_area);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btSave_onClick(final View view) {
-
         blink(view, this);
         getPropertiesFromScreen();
-
         sessionCurrentProject.dbSave(DB);
-
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         sessionOpenActivities.pop();
@@ -169,9 +166,7 @@ public class ActivityProject extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
             sessionOpenActivities.pop();
@@ -179,13 +174,10 @@ public class ActivityProject extends AbstractActivity {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btDelete_onClick(final View view) {
-
         blink(view, this);
-
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить текущий проект, его занятия и историю?")
                 .setCancelable(false)
@@ -211,8 +203,5 @@ public class ActivityProject extends AbstractActivity {
 
                     }
                 }).setNegativeButton("Нет", null).show();
-
     }
-
-
 }

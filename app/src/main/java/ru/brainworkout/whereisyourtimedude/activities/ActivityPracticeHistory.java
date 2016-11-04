@@ -45,7 +45,6 @@ public class ActivityPracticeHistory extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice_history);
 
@@ -86,10 +85,8 @@ public class ActivityPracticeHistory extends AbstractActivity {
                 sessionCurrentPracticeHistory.setDuration(millis);
             }
         }
-
         showPracticeHistoryOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
-
         setTitleOfActivity(this);
     }
 
@@ -100,15 +97,12 @@ public class ActivityPracticeHistory extends AbstractActivity {
 
     private void showPracticeHistoryOnScreen() {
 
-        //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
         tvID = (TextView) findViewById(mID);
         if (tvID != null) {
-
             tvID.setText(String.valueOf(sessionCurrentPracticeHistory.getId()));
         }
 
-        //
         int mDate = getResources().getIdentifier("tvDate", "id", getPackageName());
         tvDate = (TextView) findViewById(mDate);
         if (tvDate != null) {
@@ -116,7 +110,6 @@ public class ActivityPracticeHistory extends AbstractActivity {
             tvDate.setText(convertMillisToStringDate(sessionCurrentPracticeHistory.getDate()));
         }
 
-        //
         int mDuration = getResources().getIdentifier("tvDuration", "id", getPackageName());
         tvDuration = (TextView) findViewById(mDuration);
         if (tvDuration != null) {
@@ -138,20 +131,13 @@ public class ActivityPracticeHistory extends AbstractActivity {
             tvLastTime.setText(convertMillisToStringTime(sessionCurrentPracticeHistory.getLastTime()));
         }
 
-        //ID
         int mPractice = getResources().getIdentifier("tvPractice", "id", getPackageName());
         TextView tvPractice = (TextView) findViewById(mPractice);
         if (tvPractice != null) {
-
+            Practice practice = sessionCurrentPracticeHistory.getPractice();
             String namePractice = "";
-            try {
-                Practice practice = sessionCurrentPracticeHistory.getPractice();
-                if (practice != null) {
-                    namePractice = practice.getName();
-                }
-
-            } catch (TableDoesNotContainElementException e) {
-
+            if (practice != null) {
+                namePractice = practice.getName();
             }
             tvPractice.setText(namePractice);
         }
@@ -165,13 +151,11 @@ public class ActivityPracticeHistory extends AbstractActivity {
         sessionCurrentPracticeHistory = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
 
     private void getPropertiesFromScreen() {
 
-        //Имя
         int mDurationID = getResources().getIdentifier("tvDuration", "id", getPackageName());
         TextView tvDuration = (TextView) findViewById(mDurationID);
         if (tvDuration != null) {
@@ -197,10 +181,10 @@ public class ActivityPracticeHistory extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
 
+        Practice practice = sessionCurrentPracticeHistory.getPractice();
         int id_practice = 0;
-        Practice practice=sessionCurrentPracticeHistory.getPractice();
-        if (practice!=null) {
-            id_practice=practice.getId();
+        if (practice != null) {
+            id_practice = practice.getId();
         }
 
         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);

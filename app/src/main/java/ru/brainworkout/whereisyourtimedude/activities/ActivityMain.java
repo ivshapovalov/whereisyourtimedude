@@ -229,14 +229,12 @@ public class ActivityMain extends AbstractActivity {
             Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
             startActivity(intent);
         }
-
     }
 
     private boolean isDBNotEmpty() {
 
         List<Practice> list = new ArrayList<Practice>();
         if (sessionCurrentUser == null) {
-            //list = DB.getAllActiveExercises();
         } else {
             list = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
         }
@@ -247,12 +245,10 @@ public class ActivityMain extends AbstractActivity {
             return false;
         } else {
             return true;
-
         }
     }
 
     public void btTools_onClick(final View view) {
-
         blink(view, this);
         Intent intent = new Intent(ActivityMain.this, ActivityTools.class);
         startActivity(intent);
@@ -277,6 +273,4 @@ public class ActivityMain extends AbstractActivity {
                     }
                 }).setNegativeButton("Нет", null).show();
     }
-
-
 }

@@ -30,7 +30,6 @@ public class ActivityPractice extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
 
@@ -89,7 +88,6 @@ public class ActivityPractice extends AbstractActivity {
             });
         }
 
-        //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
@@ -97,27 +95,20 @@ public class ActivityPractice extends AbstractActivity {
             tvID.setText(String.valueOf(sessionCurrentPractice.getId()));
         }
 
-        //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
             etName.setText(sessionCurrentPractice.getName());
         }
 
-        //ID
         int mProject = getResources().getIdentifier("tvProject", "id", getPackageName());
         TextView tvProject = (TextView) findViewById(mProject);
         if (tvProject != null) {
 
+            Project project = sessionCurrentPractice.getProject();
             String nameProject = "";
-            try {
-                Project project = sessionCurrentPractice.getProject();
-                if (project != null) {
-                    nameProject = project.getName();
-                }
-
-            } catch (TableDoesNotContainElementException e) {
-
+            if (project != null) {
+                nameProject = project.getName();
             }
             tvProject.setText(nameProject);
         }
@@ -146,7 +137,6 @@ public class ActivityPractice extends AbstractActivity {
 
     private void getPropertiesFromScreen() {
 
-        //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
@@ -180,12 +170,10 @@ public class ActivityPractice extends AbstractActivity {
         intent.putExtra("CurrentProjectID", id_project);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btSave_onClick(final View view) {
         blink(view, this);
-
         getPropertiesFromScreen();
         sessionCurrentPractice.dbSave(DB);
         closeActivity();
@@ -193,9 +181,7 @@ public class ActivityPractice extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
             sessionOpenActivities.pop();
@@ -203,7 +189,6 @@ public class ActivityPractice extends AbstractActivity {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btDelete_onClick(final View view) {
@@ -229,6 +214,4 @@ public class ActivityPractice extends AbstractActivity {
                 }).setNegativeButton("Нет", null).show();
 
     }
-
-
 }

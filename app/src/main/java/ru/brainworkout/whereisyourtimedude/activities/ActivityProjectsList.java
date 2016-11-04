@@ -88,7 +88,6 @@ public class ActivityProjectsList extends AbstractActivity {
 
         List<Project> projects;
         if (sessionCurrentUser != null) {
-
             projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
         } else {
             projects = DB.getAllProjects();
@@ -96,9 +95,7 @@ public class ActivityProjectsList extends AbstractActivity {
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);
         try {
-
             sv.removeAllViews();
-
         } catch (NullPointerException e) {
         }
 
@@ -155,7 +152,9 @@ public class ActivityProjectsList extends AbstractActivity {
             String nameArea = "";
             try {
                 Area area = currentProject.getArea();
-                nameArea = area.getName();
+                if (area != null) {
+                    nameArea = area.getName();
+                }
                 txt.setBackgroundColor(area.getColor());
             } catch (TableDoesNotContainElementException e) {
                 txt.setBackgroundResource(R.drawable.bt_border);
@@ -192,7 +191,7 @@ public class ActivityProjectsList extends AbstractActivity {
     }
 
     public void btProjectAdd_onClick(final View view) {
-        blink(view,this);
+        blink(view, this);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProjectsList")
                 .isTransmitterNew(false)
@@ -208,9 +207,7 @@ public class ActivityProjectsList extends AbstractActivity {
     }
 
     private void txtProjectEdit_onClick(TextView view) {
-
-        blink(view,this);
-
+        blink(view, this);
         int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProjectsList")
@@ -228,18 +225,17 @@ public class ActivityProjectsList extends AbstractActivity {
     }
 
     private void rowProject_onClick(final TableRow view) {
-
-        blink(view,this);
+        blink(view, this);
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.putExtra("CurrentProjectID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                sessionCurrentPractice.setProject(DB.getProject(id));
-
+                if (DB.containsProject(id)) {
+                    sessionCurrentPractice.setProject(DB.getProject(id));
+                }
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
                 sessionOpenActivities.pop();
-
             }
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
@@ -251,36 +247,28 @@ public class ActivityProjectsList extends AbstractActivity {
                     .isReceiverForChoice(false)
                     .build();
             sessionOpenActivities.push(paramsNew);
-
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btEdit_onClick(final View view) {
-
-        blink(view,this);
-
+        blink(view, this);
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
 
 
     public void buttonHome_onClick(final View view) {
-
-        blink(view,this);
+        blink(view, this);
         sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btClear_onClick(final View view) {
-
-        blink(view,this);
-
+        blink(view, this);
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить все проекты и занятия?")
                 .setCancelable(false)
@@ -300,7 +288,6 @@ public class ActivityProjectsList extends AbstractActivity {
                                 DB.deleteAllPracticesOfProject(project.getId());
                             }
                             DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getId());
-
                             showProjects();
                         }
                     }
@@ -309,9 +296,7 @@ public class ActivityProjectsList extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);

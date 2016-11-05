@@ -112,7 +112,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     private void showDetailedPracticeHistory() {
 
-
         LOG.debug("ActivityDetailedPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);

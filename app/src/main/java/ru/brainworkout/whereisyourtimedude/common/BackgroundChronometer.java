@@ -206,24 +206,20 @@ public class BackgroundChronometer extends Thread {
                                     currentDetailedPracticeHistory.setTime(Calendar.getInstance().getTimeInMillis());
                                     currentDetailedPracticeHistory.setDuration(0);
                                 } else {
-                                    currentDetailedPracticeHistory.setDuration(Calendar.getInstance().getTimeInMillis()
-                                            - currentDetailedPracticeHistory.getTime());
+                                    currentDetailedPracticeHistory.setDuration((Calendar.getInstance().getTimeInMillis()
+                                            - currentDetailedPracticeHistory.getTime())/1000);
                                 }
                                 currentDetailedPracticeHistory.dbSave(DB);
                             }
                             if (ticking) {
                                 if (sessionOptions != null) {
-
                                     if (service != null) {
-                                        //if (sessionOptions.getDisplayNotificationTimerSwitch() == 1) {
                                         writeMemoryInLog();
                                         updateNotification(Constants.ACTION.PLAY_ACTION);
-                                        // }
                                     }
 
                                 } else {
                                     LOG.error(this.getName() + " sessionOptions==null");
-                                    //service.stopForeground(true);
                                 }
                             }
                         }
@@ -430,7 +426,6 @@ public class BackgroundChronometer extends Thread {
         long todayInMillis = today.getTimeInMillis();
 
         if (currentPracticeHistory.getDate() < todayInMillis) {
-
             synchronized (currentPracticeHistory) {
                 if (isTicking()) {
                     currentPracticeHistory.setDuration(globalChronometerCountInSeconds);
@@ -460,6 +455,8 @@ public class BackgroundChronometer extends Thread {
                     calendar.set(Calendar.MINUTE, 59);
                     calendar.set(Calendar.SECOND, 59);
                     calendar.set(Calendar.MILLISECOND, 59);
+                    currentDetailedPracticeHistory.setDuration((calendar.getTimeInMillis()
+                            - currentDetailedPracticeHistory.getTime())/1000);
                     currentDetailedPracticeHistory.dbSave(DB);
                 }
                 //change practice history

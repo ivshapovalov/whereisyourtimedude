@@ -249,8 +249,8 @@ public class Common {
         }
 
         //Detailed practice history count
-        final int DETAILED_PRACTICE_HISTORY_COUNT = 50;
-        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=5;
+        final int DETAILED_PRACTICE_HISTORY_COUNT = 20;
+        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=2;
         final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 400;
 
         int practice_history_number=1;

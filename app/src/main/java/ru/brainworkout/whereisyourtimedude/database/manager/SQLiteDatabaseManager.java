@@ -735,7 +735,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     public synchronized Boolean containsDetailedPracticeHistory(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
-
         Cursor cursor = db.query(TABLE_DETAILED_PRACTICE_HISTORY, new String[]{KEY_DETAILED_PRACTICE_HISTORY_ID},
                 KEY_DETAILED_PRACTICE_HISTORY_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);

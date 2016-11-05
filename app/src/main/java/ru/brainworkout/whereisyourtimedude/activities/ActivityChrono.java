@@ -70,12 +70,8 @@ public class ActivityChrono extends AbstractActivity {
             public void onChronometerTick(Chronometer chronometer) {
                 elapsedMillis = SystemClock.elapsedRealtime()
                         - mChronometer.getBase();
-
                 if (elapsedMillis > 1000) {
-
-
                     changeTimer();
-
                 }
             }
         });
@@ -113,9 +109,7 @@ public class ActivityChrono extends AbstractActivity {
             }
         });
         mChronometerEternity.start();
-
         Intent intent = getIntent();
-
         currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
         int id_practice = intent.getIntExtra("CurrentPracticeID", -1);
 

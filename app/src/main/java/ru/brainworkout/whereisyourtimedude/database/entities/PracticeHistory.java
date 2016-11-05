@@ -10,7 +10,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManage
 public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private volatile int id_practice;
-    private volatile long duration;//seconds
+    private volatile long duration;//millis
     private volatile long lastTime;//millis
     private volatile long date;//millis
 
@@ -85,7 +85,6 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
                 db.addPracticeHistory((PracticeHistory) this);
             }
         }
-
     }
 
     @Override

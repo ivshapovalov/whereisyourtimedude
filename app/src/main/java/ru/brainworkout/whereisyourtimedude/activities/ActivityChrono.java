@@ -10,7 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Chronometer;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -49,7 +48,7 @@ public class ActivityChrono extends AbstractActivity {
     private Chronometer mChronometer;
     private Chronometer mChronometerEternity;
     private boolean mChronometerIsWorking = false;
-    private long localChronometerCountInSeconds = 0;
+    private long localChronometerCount = 0;
     private long elapsedMillis;
     private boolean isToday = true;
 
@@ -72,10 +71,7 @@ public class ActivityChrono extends AbstractActivity {
                         - mChronometer.getBase();
 
                 if (elapsedMillis > 1000) {
-
-
                     changeTimer();
-
                 }
             }
         });
@@ -166,11 +162,11 @@ public class ActivityChrono extends AbstractActivity {
         if (Session.sessionBackgroundChronometer != null) {
 
             if (Session.sessionBackgroundChronometer.isTicking()) {
-                localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
+                localChronometerCount = Session.sessionBackgroundChronometer.getGlobalChronometerCount();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
-                localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                localChronometerCount = currentPracticeHistory.getDuration();
+                Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
 
 
@@ -181,8 +177,8 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.setDB(DB);
             Session.sessionBackgroundChronometer.pauseTicking();
             Session.sessionBackgroundChronometer.start();
-            localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-            Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+            localChronometerCount = currentPracticeHistory.getDuration();
+            Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
 
         }
     }
@@ -201,11 +197,11 @@ public class ActivityChrono extends AbstractActivity {
         if (Session.sessionBackgroundChronometer.isAlive()) {
 
             if (Session.sessionBackgroundChronometer.isTicking()) {
-                localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
+                localChronometerCount = Session.sessionBackgroundChronometer.getGlobalChronometerCount();
                 rowCurrentWork_onClick(new TextView(this));
             } else {
-                localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                localChronometerCount = currentPracticeHistory.getDuration();
+                Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
         }
         updateAllRows();
@@ -228,11 +224,11 @@ public class ActivityChrono extends AbstractActivity {
             if (Session.sessionBackgroundChronometer.isAlive()) {
 
                 if (Session.sessionBackgroundChronometer.isTicking()) {
-                    localChronometerCountInSeconds = Session.sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
+                    localChronometerCount = Session.sessionBackgroundChronometer.getGlobalChronometerCount();
                     rowCurrentWork_onClick(new TextView(this));
                 } else {
-                    localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                    Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                    localChronometerCount = currentPracticeHistory.getDuration();
+                    Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
                 }
                 Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
 
@@ -243,8 +239,8 @@ public class ActivityChrono extends AbstractActivity {
                 Session.sessionBackgroundChronometer.pauseTicking();
                 Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
                 Session.sessionBackgroundChronometer.setDB(DB);
-                localChronometerCountInSeconds = currentPracticeHistory.getDuration();
-                Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                localChronometerCount = currentPracticeHistory.getDuration();
+                Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
         }
     }
@@ -254,10 +250,10 @@ public class ActivityChrono extends AbstractActivity {
 
         if (mChronometerIsWorking) {
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
-            currentPracticeHistory.setDuration(sessionBackgroundChronometer.getGlobalChronometerCountInSeconds());
+            currentPracticeHistory.setDuration(sessionBackgroundChronometer.getGlobalChronometerCount());
             mChronometer.stop();
-            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
-            setTimerText(Common.SYMBOL_STOP, localChronometerCountInSeconds * 1000);
+            localChronometerCount = sessionBackgroundChronometer.getGlobalChronometerCount();
+            setTimerText(Common.SYMBOL_STOP, localChronometerCount);
             Session.sessionBackgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
             sessionBackgroundChronometer.updateNotification(Constants.ACTION.PAUSE_ACTION);
@@ -271,11 +267,11 @@ public class ActivityChrono extends AbstractActivity {
     private void changeTimer() {
         if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
         } else {
-            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
-            currentPracticeHistory.setDuration(localChronometerCountInSeconds);
+            localChronometerCount = sessionBackgroundChronometer.getGlobalChronometerCount();
+            currentPracticeHistory.setDuration(localChronometerCount);
             currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         }
-        setTimerText(Common.SYMBOL_PLAY, localChronometerCountInSeconds * 1000);
+        setTimerText(Common.SYMBOL_PLAY, localChronometerCount);
     }
 
     private void setTimerText(String symbol, long millis) {
@@ -308,7 +304,7 @@ public class ActivityChrono extends AbstractActivity {
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
 
-        localChronometerCountInSeconds = currentPracticeHistory.getDuration();
+        localChronometerCount = currentPracticeHistory.getDuration();
         LOG.debug("rowWork_onClick:before start service");
 
         backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
@@ -316,12 +312,12 @@ public class ActivityChrono extends AbstractActivity {
         LOG.debug("Before service start");
         startService(backgroundServiceIntent);
 
-        Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+        Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
         Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
         Session.sessionBackgroundChronometer.setDB(DB);
         Session.sessionBackgroundChronometer.resumeTicking();
 
-        mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
+        mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCount);
         mChronometerIsWorking = true;
         mChronometer.start();
 
@@ -353,12 +349,12 @@ public class ActivityChrono extends AbstractActivity {
                 sessionBackgroundChronometer.resumeTicking();
             }
 
-            if (localChronometerCountInSeconds == 0) {
+            if (localChronometerCount == 0) {
                 mChronometer.setBase(SystemClock.elapsedRealtime());
-                sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(0L);
+                sessionBackgroundChronometer.setGlobalChronometerCount(0L);
             } else {
-                mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCountInSeconds);
-                sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
+                mChronometer.setBase(SystemClock.elapsedRealtime() - localChronometerCount/1000);
+                sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
 
             mChronometerIsWorking = true;
@@ -402,9 +398,9 @@ public class ActivityChrono extends AbstractActivity {
 //        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
 //        if (tvCurrentTime != null) {
         if (mChronometerIsWorking) {
-            setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration() * 1000);
+            setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration());
         } else {
-            setTimerText(Common.SYMBOL_STOP, currentPracticeHistory.getDuration() * 1000);
+            setTimerText(Common.SYMBOL_STOP, currentPracticeHistory.getDuration() );
         }
 //            tvCurrentTime.setText(convertMillisToStringWithAllTime(currentPracticeHistory.getDuration() * 1000));
 //        }
@@ -484,7 +480,7 @@ public class ActivityChrono extends AbstractActivity {
         TextView txtTime = new TextView(this);
         txtTime.setBackgroundColor(areaColor);
         //txtTime.setText(String.valueOf(practiceHistory.getDuration()));
-        txtTime.setText(convertMillisToStringWithAllTime(practiceHistory.getDuration() * 1000));
+        txtTime.setText(convertMillisToStringWithAllTime(practiceHistory.getDuration()));
         txtTime.setLayoutParams(paramsTextView);
         //txtTime.setMinimumHeight(mHeight);
         row1.addView(txtTime);

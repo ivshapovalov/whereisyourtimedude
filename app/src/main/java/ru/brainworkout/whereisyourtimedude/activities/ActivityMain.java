@@ -3,11 +3,8 @@ package ru.brainworkout.whereisyourtimedude.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import org.apache.log4j.Logger;
@@ -139,7 +136,7 @@ public class ActivityMain extends AbstractActivity {
             Intent backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
             startService(backgroundServiceIntent);
             Session.sessionBackgroundChronometer.setDB(DB);
-            Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(duration);
+            Session.sessionBackgroundChronometer.setGlobalChronometerCount(duration);
             Session.sessionBackgroundChronometer.start();
             if (sessionChronometerIsWorking) {
                 Session.sessionBackgroundChronometer.resumeTicking();

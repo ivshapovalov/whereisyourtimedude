@@ -63,7 +63,7 @@ public class BackgroundChronometerService extends Service {
                 }
             } else if (intent.getAction().equals(Constants.ACTION.PLAY_ACTION)) {
                 if (sessionBackgroundChronometer != null) {
-                    sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(sessionBackgroundChronometer.getGlobalChronometerCountInSeconds());
+                    sessionBackgroundChronometer.setGlobalChronometerCount(sessionBackgroundChronometer.getGlobalChronometerCount());
                     sessionBackgroundChronometer.resumeTicking();
                 }
             } else if (intent.getAction().equals(Constants.ACTION.PAUSE_ACTION)) {

@@ -24,4 +24,12 @@ public abstract class AbstractEntityMultiUser extends AbstractEntity {
         this.user = user;
     }
 
+    public int getUserId(){
+        if (user!=null) {
+            return user.getId();
+        } else {
+            return -1;
+        }
+    }
+
 }

@@ -66,7 +66,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
             if (DB.containsDetailedPracticeHistory(id)) {
                 sessionCurrentDetailedPracticeHistory = DB.getDetailedPracticeHistory(id);
             } else {
-                throw new TableDoesNotContainElementException(String.format("Detailed practice history with id ='%s' does not exists in database", id));
+                throw new TableDoesNotContainElementException(String.format("Detailed practice history with id='%s' does not exists", id));
             }
         }
 
@@ -305,7 +305,8 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         Intent intent = new Intent(ActivityDetailedPracticeHistory.this, ActivityDateTimePickerDialog.class);
         intent.putExtra("millis", sessionCurrentDetailedPracticeHistory.getDuration());
         intent.putExtra("CurrentActivity", "ActivityDetailedPracticeHistory");
-        intent.putExtra("isNew", false);
+        intent.putExtra("ID", sessionCurrentDetailedPracticeHistory.getId());
+        intent.putExtra("isNew", DB.containsDetailedPracticeHistory(sessionCurrentDetailedPracticeHistory.getId()));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

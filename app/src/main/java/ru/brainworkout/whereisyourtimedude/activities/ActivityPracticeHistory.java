@@ -67,11 +67,10 @@ public class ActivityPracticeHistory extends AbstractActivity {
             }
         } else {
             int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
-            try {
+            if (DB.containsPracticeHistory(id)) {
                 sessionCurrentPracticeHistory = DB.getPracticeHistory(id);
-
-            } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
-                tableDoesNotContainElementException.printStackTrace();
+            } else {
+                throw new TableDoesNotContainElementException(String.format("Practice history with id='%s' does not exists", id));
             }
         }
         long currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
@@ -305,7 +304,8 @@ public class ActivityPracticeHistory extends AbstractActivity {
         Intent intent = new Intent(ActivityPracticeHistory.this, ActivityDateTimePickerDialog.class);
         intent.putExtra("millis", sessionCurrentPracticeHistory.getDuration());
         intent.putExtra("CurrentActivity", "ActivityPracticeHistory");
-        intent.putExtra("isNew", false);
+        intent.putExtra("ID", sessionCurrentPracticeHistory.getId());
+        intent.putExtra("isNew", DB.containsPracticeHistory(sessionCurrentPracticeHistory.getId()));
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

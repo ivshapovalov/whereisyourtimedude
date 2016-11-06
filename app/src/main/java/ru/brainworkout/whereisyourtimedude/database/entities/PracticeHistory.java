@@ -10,7 +10,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManage
 public class PracticeHistory extends AbstractEntityMultiUser implements SavingIntoDB, DeletingFromDb {
 
     private volatile Practice practice;
-    private volatile long duration;//seconds
+    private volatile long duration;//millis
     private volatile long lastTime;//millis
     private volatile long date;//millis
 

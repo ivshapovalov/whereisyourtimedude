@@ -78,7 +78,6 @@ public class ActivityPracticesList extends AbstractActivity {
 
         List<Practice> practices;
         if (sessionCurrentUser != null) {
-
             practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
         } else {
             practices = DB.getAllActivePractices();

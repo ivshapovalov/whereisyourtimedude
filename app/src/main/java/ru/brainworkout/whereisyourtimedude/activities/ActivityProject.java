@@ -90,16 +90,11 @@ public class ActivityProject extends AbstractActivity {
         int mArea = getResources().getIdentifier("tvArea", "id", getPackageName());
         TextView tvArea = (TextView) findViewById(mArea);
         if (tvArea != null) {
-
             String nameArea = "";
-            try {
-                Area area = sessionCurrentProject.getArea();
-                if (area != null) {
-                    nameArea = area.getName();
-                }
+            Area area = sessionCurrentProject.getArea();
+            if (area != null) {
+                nameArea = area.getName();
                 tvArea.setBackgroundColor(area.getColor());
-            } catch (TableDoesNotContainElementException e) {
-
             }
             tvArea.setText(nameArea);
         }
@@ -134,7 +129,7 @@ public class ActivityProject extends AbstractActivity {
         int id_area = 0;
         Area area = sessionCurrentProject.getArea();
         if (area != null) {
-            id_area=area.getId();
+            id_area = area.getId();
         }
 
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
@@ -166,10 +161,12 @@ public class ActivityProject extends AbstractActivity {
     }
 
     public void onBackPressed() {
+
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
             sessionOpenActivities.pop();
+            sessionCurrentProject = null;
             intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

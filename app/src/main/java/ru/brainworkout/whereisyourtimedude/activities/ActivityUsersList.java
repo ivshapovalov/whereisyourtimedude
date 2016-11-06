@@ -197,7 +197,6 @@ public class ActivityUsersList extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 }
 

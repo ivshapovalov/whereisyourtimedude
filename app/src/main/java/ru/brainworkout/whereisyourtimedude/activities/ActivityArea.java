@@ -94,19 +94,6 @@ public class ActivityArea extends AbstractActivity {
         }
     }
 
-    public void btClose_onClick(final View view) {
-
-        blink(view, this);
-        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
-        sessionOpenActivities.pop();
-        sessionCurrentArea = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-    }
-
-
     private void getPropertiesFromScreen() {
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
@@ -152,32 +139,40 @@ public class ActivityArea extends AbstractActivity {
         }
     }
 
+    public void btClose_onClick(final View view) {
+        blink(view, this);
+
+        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+
+        closeActivity(intent);
+
+    }
+
+    private void closeActivity(Intent intent) {
+        intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
+        sessionOpenActivities.pop();
+        sessionCurrentArea = null;
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+    }
+
     public void btSave_onClick(final View view) {
 
         blink(view, this);
         getPropertiesFromScreen();
         sessionCurrentArea.dbSave(DB);
+
         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
-        sessionCurrentArea = null;
-        sessionOpenActivities.pop();
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity(intent);
     }
 
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-            sessionOpenActivities.pop();
-            intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
+        closeActivity(intent);
     }
 
     public void btDelete_onClick(final View view) {

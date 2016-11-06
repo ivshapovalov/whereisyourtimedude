@@ -20,6 +20,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 
@@ -117,19 +118,19 @@ public class ActivityPractice extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
         blink(view, this);
-        closeActivity();
-    }
-
-    private void closeActivity() {
         Class<?> myClass = null;
         try {
             myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        Intent intent = new Intent(getApplicationContext(), myClass);
+        closeActivity(new Intent(getApplicationContext(), myClass));
+    }
+
+    private void closeActivity(Intent intent) {
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         sessionCurrentPractice = null;
+        sessionOpenActivities.pop();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -176,7 +177,14 @@ public class ActivityPractice extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
         sessionCurrentPractice.dbSave(DB);
-        closeActivity();
+        blink(view, this);
+        Class<?> myClass = null;
+        try {
+            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        closeActivity(new Intent(getApplicationContext(), myClass));
 
     }
 
@@ -184,11 +192,8 @@ public class ActivityPractice extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-            sessionOpenActivities.pop();
-            intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity(intent);
     }
 
     public void btDelete_onClick(final View view) {

@@ -148,7 +148,7 @@ public class ActivityChrono extends AbstractActivity {
 
     private void init() {
 
-        currentDateInMillis =  getBeginOfCurrentDateInMillis();
+        currentDateInMillis = getBeginOfCurrentDateInMillis();
         updatePractices(currentDateInMillis);
 
         if (practiceHistories.isEmpty()) {
@@ -177,7 +177,6 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.start();
             localChronometerCountInSeconds = currentPracticeHistory.getDuration();
             Session.sessionBackgroundChronometer.setGlobalChronometerCountInSeconds(localChronometerCountInSeconds);
-
         }
     }
 
@@ -263,13 +262,16 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     private void changeTimer() {
-        if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
-        } else {
-            localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
-            currentPracticeHistory.setDuration(localChronometerCountInSeconds);
-            currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
+        if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.getCurrentPracticeHistory() != null
+                ) {
+            if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
+            } else {
+                localChronometerCountInSeconds = sessionBackgroundChronometer.getGlobalChronometerCountInSeconds();
+                currentPracticeHistory.setDuration(localChronometerCountInSeconds);
+                currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
+            }
+            setTimerText(Common.SYMBOL_PLAY, localChronometerCountInSeconds * 1000);
         }
-        setTimerText(Common.SYMBOL_PLAY, localChronometerCountInSeconds * 1000);
     }
 
     private void setTimerText(String symbol, long millis) {
@@ -325,7 +327,9 @@ public class ActivityChrono extends AbstractActivity {
 
     private void updatePractices(long date) {
 
-        practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
+        if (sessionCurrentUser != null) {
+            practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
+        }
 
     }
 
@@ -344,7 +348,9 @@ public class ActivityChrono extends AbstractActivity {
                 LOG.debug("Before service start");
                 startService(backgroundServiceIntent);
                 sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
-                sessionBackgroundChronometer.resumeTicking();
+                if (!sessionBackgroundChronometer.isTicking()) {
+                    sessionBackgroundChronometer.resumeTicking();
+                }
             }
 
             if (localChronometerCountInSeconds == 0) {
@@ -373,10 +379,18 @@ public class ActivityChrono extends AbstractActivity {
         int areaColor = 0;
         try {
             Practice practice = currentPracticeHistory.getPractice();
-            Project project = practice.getProject();
-            Area area = project.getArea();
-            areaName = area.getName();
-            areaColor = area.getColor();
+            if (practice != null) {
+                Project project = practice.getProject();
+                if (project != null) {
+                    Area area = project.getArea();
+                    if (area != null) {
+                        areaName = area.getName();
+                        areaColor = area.getColor();
+                    }
+
+                }
+            }
+
         } catch (TableDoesNotContainElementException e) {
 
         }
@@ -390,7 +404,12 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
         TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
         if (tvCurrentName != null) {
-            tvCurrentName.setText(currentPracticeHistory.getPractice().getName());
+            if (currentPracticeHistory != null) {
+                Practice practice = currentPracticeHistory.getPractice();
+                if (practice != null) {
+                    tvCurrentName.setText(practice.getName());
+                }
+            }
         }
 //        int tvIDCurrentTime = getResources().getIdentifier("tvCurrentWorkTime", "id", getPackageName());
 //        TextView tvCurrentTime = (TextView) findViewById(tvIDCurrentTime);
@@ -504,7 +523,6 @@ public class ActivityChrono extends AbstractActivity {
             txtDate.setText(date);
         }
 
-
         txtDate.setLayoutParams(paramsTextView);
         // txtDate.setMinimumHeight(mHeight);
 
@@ -538,11 +556,9 @@ public class ActivityChrono extends AbstractActivity {
 //
 //        }
         LOG.debug("Close ActivityChrono");
-        //finish();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
 
@@ -572,8 +588,7 @@ public class ActivityChrono extends AbstractActivity {
 
     public void tvDate_onClick(View view) {
 
-        LOG.debug("TvDate on click " );
-
+        LOG.debug("TvDate on click ");
         blink(view, this);
 
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
@@ -599,7 +614,7 @@ public class ActivityChrono extends AbstractActivity {
             // System.out.println("Right to Left swipe [Previous]");
             Toast.makeText(ActivityChrono.this, "[Следующий день]", Toast.LENGTH_SHORT).show();
             long nextDateInMillis = currentDateInMillis + 3600 * 24 * 1000;
-            isToday = nextDateInMillis ==  getBeginOfCurrentDateInMillis();
+            isToday = nextDateInMillis == getBeginOfCurrentDateInMillis();
             defineNewDayPractice(nextDateInMillis);
             updateAllRows();
 
@@ -609,7 +624,7 @@ public class ActivityChrono extends AbstractActivity {
             // System.out.println("Left to Right swipe [Next]");
             Toast.makeText(ActivityChrono.this, "[Предыдущий день]", Toast.LENGTH_SHORT).show();
             long previousDateInMillis = currentDateInMillis - 3600 * 24 * 1000;
-            isToday = previousDateInMillis ==  getBeginOfCurrentDateInMillis();
+            isToday = previousDateInMillis == getBeginOfCurrentDateInMillis();
             defineNewDayPractice(previousDateInMillis);
             updateAllRows();
         }
@@ -672,7 +687,6 @@ public class ActivityChrono extends AbstractActivity {
                             //break;
 
                             return true;
-
                         }
                     } else {
 

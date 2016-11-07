@@ -85,7 +85,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
         setTitleOfActivity(this);
         LOG.debug("ActivityDetailedPracticeHistoryList end");
-         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
+        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
     }
 
@@ -112,14 +112,12 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     private void showDetailedPracticeHistory() {
 
-
-        LOG.debug("ActivityDetailedPracticeHistoryList before in show pr history + sessionCurrentUser="+sessionCurrentUser);
+        LOG.debug("ActivityDetailedPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
         List<DetailedPracticeHistory> detailedPracticeHistories;
         if (sessionCurrentUser != null) {
-
             detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
         } else {
             detailedPracticeHistories = DB.getAllDetailedPracticeHistory();
@@ -185,14 +183,12 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
+            Practice practice = currentDetailedPracticeHistory.getPractice();
             String namePractice = "";
-            try {
-                Practice practice = DB.getPractice(currentDetailedPracticeHistory.getIdPractice());
+            if (practice != null) {
                 namePractice = practice.getName();
-
-            } catch (TableDoesNotContainElementException e) {
-
             }
+
             txt.setText(namePractice);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -228,7 +224,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
         blink(view, this);
         int id = ((TableRow) view.getParent()).getId();
-        //int id = ((TableRow)view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityDetailedPracticeHistoryList")
                 .isTransmitterNew(false)
@@ -262,7 +257,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentDetailedPracticeHistoryID", id);
         startActivity(intent);
-
     }
 
     public void btEdit_onClick(final View view) {
@@ -281,9 +275,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     }
 
     public void btClear_onClick(final View view) {
-
         blink(view, this);
-
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить всю детальную историю занятий?")
                 .setCancelable(false)

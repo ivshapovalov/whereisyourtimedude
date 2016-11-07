@@ -23,6 +23,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
+import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
@@ -179,7 +180,7 @@ public class ActivityAreasList extends AbstractActivity {
 
     public void btAreasAdd_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityAreasList")
                 .isTransmitterNew(false)
@@ -196,7 +197,7 @@ public class ActivityAreasList extends AbstractActivity {
 
     private void txtAreaEdit_onClick(TextView view) {
 
-        blink(view,this);
+        blink(view, this);
         int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityAreasList")
@@ -216,14 +217,17 @@ public class ActivityAreasList extends AbstractActivity {
 
     private void rowArea_onClick(final TableRow view) {
 
-        blink(view,this);
+        blink(view, this);
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityArea.class);
         intent.putExtra("CurrentAreaID", id);
         if (params != null) {
             if (params.isReceiverForChoice()) {
-                sessionCurrentProject.setIdArea(id);
-
+                if (DB.containsArea(id)) {
+                    sessionCurrentProject.setArea(DB.getArea(id));
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
+                }
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
                 sessionOpenActivities.pop();
 
@@ -244,9 +248,7 @@ public class ActivityAreasList extends AbstractActivity {
     }
 
     public void btEdit_onClick(final View view) {
-
-        blink(view,this);
-
+        blink(view, this);
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
@@ -254,7 +256,7 @@ public class ActivityAreasList extends AbstractActivity {
 
     public void buttonHome_onClick(final View view) {
 
-        blink(view,this);
+        blink(view, this);
         sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -264,30 +266,28 @@ public class ActivityAreasList extends AbstractActivity {
 
     public void btClear_onClick(final View view) {
 
-        blink(view,this);
-
+        blink(view, this);
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить все области,их проекты и занятия?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        if (Session.sessionCurrentUser !=null) {
+                        if (Session.sessionCurrentUser != null) {
                             List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getId());
                             for (Area area : areas
                                     ) {
-                                List<Project> projects=DB.getAllProjectsOfArea(area.getId());
-                                for (Project project:projects
-                                     ) {
-                                    List<Practice> practices=DB.getAllActivePracticesOfProject(project.getId());
-                                    for (Practice practice:practices
-                                         ) {
+                                List<Project> projects = DB.getAllProjectsOfArea(area.getId());
+                                for (Project project : projects
+                                        ) {
+                                    List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
+                                    for (Practice practice : practices
+                                            ) {
                                         DB.deleteAllPracticeHistoryOfPractice(practice.getId());
                                     }
                                     DB.deleteAllPracticesOfProject(project.getId());
                                 }
                                 DB.deleteAllProjectsOfArea(area.getId());
-                           }
+                            }
 
                             DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getId());
                             showAreas();
@@ -300,7 +300,6 @@ public class ActivityAreasList extends AbstractActivity {
     public void onBackPressed() {
 
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityProject.class);

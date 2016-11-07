@@ -18,7 +18,6 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivi
 
 
 public class ActivityOptions extends AbstractActivity {
-
     private Options options;
 
     @Override
@@ -48,13 +47,7 @@ public class ActivityOptions extends AbstractActivity {
         Session.saveInterval = options.getSaveInterval();
         if (options.getDisplayNotificationTimerSwitch() == 0) {
             if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
-//                NotificationManager mNotificationManager = (NotificationManager) Session.sessionBackgroundChronometer.getService().getSystemService(Context.NOTIFICATION_SERVICE);
-//                mNotificationManager.cancel(Session.SESSION_NOTIFICATION_ID);
-//                Session.sessionBackgroundChronometer.getService()
-//                        .stopForeground(true);
                 Session.sessionBackgroundChronometer.freezeNotification();
-
-
             }
         } else {
             if (Session.sessionBackgroundChronometer != null) {
@@ -70,16 +63,12 @@ public class ActivityOptions extends AbstractActivity {
                 }
             }
         }
-
         this.finish();
-
     }
 
     public void buttonCancel_onClick(final View view) {
-
         blink(view, this);
         this.finish();
-
     }
 
     private void getPreferencesFromDB() {
@@ -146,7 +135,6 @@ public class ActivityOptions extends AbstractActivity {
                 }
             });
         }
-
         int idSaveInterval = getResources().getIdentifier("etSaveInterval", "id", getPackageName());
         EditText txt = (EditText) findViewById(idSaveInterval);
         if (txt != null) {

@@ -15,15 +15,16 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 public class ActivityDateTimePickerDialog extends AbstractActivity {
 
-    private static long newTime;
-    private static boolean mCallerIsNew;
-    private static String mCallerActivity;
+    private long newTime;
+    private boolean mCallerIsNew;
+    private String mCallerActivity;
+    private int mCallerID;
 
-    private static long days;
-    private static long hours;
-    private static long minutes;
-    private static long seconds;
-    private static long millis;
+    private long days;
+    private long hours;
+    private long minutes;
+    private long seconds;
+    private long millis;
 
 
     @Override
@@ -33,8 +34,9 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
 
         Intent intent = getIntent();
         newTime = intent.getLongExtra("millis", 0);
-        mCallerIsNew= intent.getBooleanExtra("isNew", false);
-        mCallerActivity= intent.getStringExtra("CurrentActivity");
+        mCallerIsNew = intent.getBooleanExtra("isNew", false);
+        mCallerID = intent.getIntExtra("ID", -1);
+        mCallerActivity = intent.getStringExtra("CurrentActivity");
 
         parseTime();
         updateScreen();
@@ -181,7 +183,7 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
     }
 
     public void btClose_onClick(View view) {
-        blink(view,this);
+        blink(view, this);
         Class<?> myClass = null;
         try {
             myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
@@ -190,13 +192,14 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
         }
         Intent intent = new Intent(ActivityDateTimePickerDialog.this, myClass);
         intent.putExtra("isNew", mCallerIsNew);
+        intent.putExtra("ID", mCallerID);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
     public void btSave_onClick(View view) {
 
-        blink(view,this);
+        blink(view, this);
         Class<?> myClass = null;
         try {
             myClass = Class.forName(getPackageName() + ".activities." + mCallerActivity);
@@ -204,6 +207,11 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
             e.printStackTrace();
         }
         Intent intent = new Intent(ActivityDateTimePickerDialog.this, myClass);
+        if (mCallerActivity.equals("ActivityPracticeHistory")) {
+            intent.putExtra("CurrentPracticeHistoryID", mCallerID);
+        } else if (mCallerActivity.equals("ActivityDetailedPracticeHistory")) {
+            intent.putExtra("CurrentDetailedPracticeHistoryID", mCallerID);
+        }
         intent.putExtra("isNew", mCallerIsNew);
         intent.putExtra("millis", newTime);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

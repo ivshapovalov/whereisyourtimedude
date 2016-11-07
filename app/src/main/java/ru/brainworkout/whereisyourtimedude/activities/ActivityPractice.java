@@ -20,6 +20,7 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 
@@ -30,7 +31,6 @@ public class ActivityPractice extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
 
@@ -65,7 +65,6 @@ public class ActivityPractice extends AbstractActivity {
 
     private void showPracticeOnScreen() {
 
-
         int mIsActiveID = getResources().getIdentifier("cbIsActive", "id", getPackageName());
         CheckBox cbIsActive = (CheckBox) findViewById(mIsActiveID);
         if (cbIsActive != null) {
@@ -88,11 +87,8 @@ public class ActivityPractice extends AbstractActivity {
                     }
                 }
             });
-
         }
 
-
-        //ID
         int mID = getResources().getIdentifier("tvID", "id", getPackageName());
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
@@ -100,25 +96,20 @@ public class ActivityPractice extends AbstractActivity {
             tvID.setText(String.valueOf(sessionCurrentPractice.getId()));
         }
 
-        //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
             etName.setText(sessionCurrentPractice.getName());
         }
 
-        //ID
         int mProject = getResources().getIdentifier("tvProject", "id", getPackageName());
         TextView tvProject = (TextView) findViewById(mProject);
         if (tvProject != null) {
 
+            Project project = sessionCurrentPractice.getProject();
             String nameProject = "";
-            try {
-                Project project = DB.getProject(sessionCurrentPractice.getIdProject());
+            if (project != null) {
                 nameProject = project.getName();
-
-            } catch (TableDoesNotContainElementException e) {
-
             }
             tvProject.setText(nameProject);
         }
@@ -127,19 +118,19 @@ public class ActivityPractice extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
         blink(view, this);
-        closeActivity();
-    }
-
-    private void closeActivity() {
         Class<?> myClass = null;
         try {
             myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
-        Intent intent = new Intent(getApplicationContext(), myClass);
+        closeActivity(new Intent(getApplicationContext(), myClass));
+    }
+
+    private void closeActivity(Intent intent) {
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         sessionCurrentPractice = null;
+        sessionOpenActivities.pop();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -147,22 +138,24 @@ public class ActivityPractice extends AbstractActivity {
 
     private void getPropertiesFromScreen() {
 
-        //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
 
             sessionCurrentPractice.setName(String.valueOf(etName.getText()));
-
         }
-
     }
 
     public void tvProject_onClick(View view) {
 
         blink(view, this);
         getPropertiesFromScreen();
-        int id_project = sessionCurrentPractice.getIdProject();
+
+        Project project = sessionCurrentPractice.getProject();
+        int id_project = 0;
+        if (project != null) {
+            id_project = sessionCurrentPractice.getProject().getId();
+        }
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         Boolean isNew = params != null ? params.isReceiverNew() : false;
@@ -178,30 +171,29 @@ public class ActivityPractice extends AbstractActivity {
         intent.putExtra("CurrentProjectID", id_project);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btSave_onClick(final View view) {
         blink(view, this);
-
         getPropertiesFromScreen();
         sessionCurrentPractice.dbSave(DB);
-        closeActivity();
+        blink(view, this);
+        Class<?> myClass = null;
+        try {
+            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        closeActivity(new Intent(getApplicationContext(), myClass));
 
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-            sessionOpenActivities.pop();
-            intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
+        closeActivity(intent);
     }
 
     public void btDelete_onClick(final View view) {
@@ -227,6 +219,4 @@ public class ActivityPractice extends AbstractActivity {
                 }).setNegativeButton("Нет", null).show();
 
     }
-
-
 }

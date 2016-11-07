@@ -1,8 +1,0 @@
-//TODO
-o2u)	releases update db version with create new tables
-g2h)	edit practices in activity chrono
-r8d)	sort in new day ( last time current day activities, duration last not null day activities, othe by alphabet)
-q1l)	reports (choose day, diagram gr oupduration by activities, duration in day bu time)
-d2v)	backup to xls file
-5g7) 	README.MD
-

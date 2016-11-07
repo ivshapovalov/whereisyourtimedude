@@ -58,12 +58,12 @@ public class ActivityTools extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
 
-                            SQLiteDatabase dbSQL = DB.getWritableDatabase();
-                            DB.ClearDB(dbSQL);
+                            SQLiteDatabase db = DB.getWritableDatabase();
+                            DB.ClearDB(db);
                             sessionCurrentUser = null;
 
                             Common.defaultTestFilling(DB);
-                            dbSQL.close();
+                            db.close();
 
                             if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
                                 sessionBackgroundChronometer.getService().stopForeground(true);
@@ -101,10 +101,10 @@ public class ActivityTools extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
 
-                            SQLiteDatabase dbSQL = DB.getWritableDatabase();
-                            DB.ClearDB(dbSQL);
+                            SQLiteDatabase db = DB.getWritableDatabase();
+                            DB.ClearDB(db);
                             sessionCurrentUser = null;
-                            dbSQL.close();
+                            db.close();
 
                             if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
                                 sessionBackgroundChronometer.getService().stopForeground(true);

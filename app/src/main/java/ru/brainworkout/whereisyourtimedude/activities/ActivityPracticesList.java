@@ -41,10 +41,8 @@ public class ActivityPracticesList extends AbstractActivity {
     private int id_practice;
     private ConnectionParameters params;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practices_list);
         Intent intent = getIntent();
@@ -63,28 +61,23 @@ public class ActivityPracticesList extends AbstractActivity {
             int mScrID = getResources().getIdentifier("svTablePractices", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
-
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
-
         setTitleOfActivity(this);
     }
 
     private void getIntentParams(Intent intent) {
-
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
-
     }
 
     private void showPractices() {
 
         List<Practice> practices;
         if (sessionCurrentUser != null) {
-
             practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
         } else {
             practices = DB.getAllActivePractices();
@@ -149,13 +142,11 @@ public class ActivityPracticesList extends AbstractActivity {
 
             txt = new TextView(this);
             String nameProject = "";
-            try {
-                Project project = DB.getProject(currentPractice.getIdProject());
+            Project project = currentPractice.getProject();
+            if (project != null) {
                 nameProject = project.getName();
-
-            } catch (TableDoesNotContainElementException e) {
-
             }
+
             txt.setText(nameProject);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -178,14 +169,10 @@ public class ActivityPracticesList extends AbstractActivity {
                 }
             });
             mRow.addView(txt);
-
-
             mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
-
         }
         sv.addView(layout);
-
     }
 
     public void btPracticeAdd_onClick(final View view) {
@@ -222,10 +209,8 @@ public class ActivityPracticesList extends AbstractActivity {
         sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("CurrentPracticeID", id);
-
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     private void rowPractice_onClick(final TableRow view) {
@@ -243,14 +228,17 @@ public class ActivityPracticesList extends AbstractActivity {
                 } catch (ClassNotFoundException e) {
                     e.printStackTrace();
                 }
-                if (transmitterClass == ActivityPracticeHistory.class
-                        ) {
-                    sessionCurrentPracticeHistory.setIdPractice(id);
-                } else if (transmitterClass == ActivityDetailedPracticeHistory.class
-                        ) {
-                    sessionCurrentDetailedPracticeHistory.setIdPractice(id);
+                if (DB.containsPractice(id)) {
+                    if (transmitterClass == ActivityPracticeHistory.class
+                            ) {
+                        sessionCurrentPracticeHistory.setPractice(DB.getPractice(id));
+                    } else if (transmitterClass == ActivityDetailedPracticeHistory.class
+                            ) {
+                        sessionCurrentDetailedPracticeHistory.setPractice(DB.getPractice(id));
+                    }
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
                 }
-
                 intent = new Intent(getApplicationContext(), transmitterClass);
                 sessionOpenActivities.pop();
                 intent.putExtra("CurrentPracticeID", id);
@@ -272,9 +260,7 @@ public class ActivityPracticesList extends AbstractActivity {
     }
 
     public void btEdit_onClick(final View view) {
-
         blink(view, this);
-
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
@@ -316,7 +302,6 @@ public class ActivityPracticesList extends AbstractActivity {
     public void onBackPressed() {
 
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 Class<?> transmitterClass = null;
@@ -333,7 +318,6 @@ public class ActivityPracticesList extends AbstractActivity {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 }
 

@@ -105,7 +105,7 @@ public class BackgroundChronometer extends Thread {
         if (currentPracticeHistory != null) {
             synchronized (this) {
                 currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB.getDetailedPracticeHistoryMaxNumber() + 1)
-                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addPractice(currentPracticeHistory.getPractice())
                         .addDate(currentPracticeHistory.getDate())
                         .addTime(Calendar.getInstance().getTimeInMillis())
                         .build();
@@ -193,7 +193,7 @@ public class BackgroundChronometer extends Thread {
                 }
                 // System.out.println(Common.convertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCount);
                 checkAndChangeDateIfNeeded();
-                if (globalChronometerCount % saveInterval == 0) {
+                if ((globalChronometerCount/1000) % saveInterval == 0) {
                     if (ticking) {
                         if (DB != null && currentPracticeHistory != null) {
                             synchronized (currentPracticeHistory) {
@@ -207,23 +207,19 @@ public class BackgroundChronometer extends Thread {
                                     currentDetailedPracticeHistory.setDuration(0);
                                 } else {
                                     currentDetailedPracticeHistory.setDuration(Calendar.getInstance().getTimeInMillis()
-                                    - currentDetailedPracticeHistory.getTime());
+                                            - currentDetailedPracticeHistory.getTime());
                                 }
                                 currentDetailedPracticeHistory.dbSave(DB);
                             }
                             if (ticking) {
                                 if (sessionOptions != null) {
-
                                     if (service != null) {
-                                        //if (sessionOptions.getDisplayNotificationTimerSwitch() == 1) {
                                         writeMemoryInLog();
                                         updateNotification(Constants.ACTION.PLAY_ACTION);
-                                        // }
                                     }
 
                                 } else {
                                     LOG.error(this.getName() + " sessionOptions==null");
-                                    //service.stopForeground(true);
                                 }
                             }
                         }
@@ -277,23 +273,15 @@ public class BackgroundChronometer extends Thread {
             String areaName = "";
             int areaColor = Color.WHITE;
             if (currentPracticeHistory != null) {
-                int currentPracticeID = this.getCurrentPracticeHistory().getIdPractice();
-                if (DB.containsPractice(currentPracticeID)) {
-                    Practice practice = DB.getPractice(currentPracticeID);
-                    if (practice != null) {
-                        practiceName = practice.getName().trim();
-                        if (DB.containsProject(practice.getIdProject())) {
-                            Project project = DB.getProject(practice.getIdProject());
-                            if (project != null) {
-                                projectName = project.getName();
-                                if (DB.containsArea(project.getIdArea())) {
-                                    Area area = DB.getArea(project.getIdArea());
-                                    if (area != null) {
-                                        areaName = area.getName();
-                                        areaColor = area.getColor();
-                                    }
-                                }
-                            }
+                Practice practice = this.getCurrentPracticeHistory().getPractice();
+                if (practice != null) {
+                    practiceName = practice.getName().trim();
+                    Project project = practice.getProject();
+                    if (project != null) {
+                        projectName = project.getName();
+                        Area area = project.getArea();
+                        if (area != null) {
+                            areaName = area.getName();
                         }
                     }
                 }
@@ -438,7 +426,6 @@ public class BackgroundChronometer extends Thread {
         long todayInMillis = today.getTimeInMillis();
 
         if (currentPracticeHistory.getDate() < todayInMillis) {
-
             synchronized (currentPracticeHistory) {
                 if (isTicking()) {
                     currentPracticeHistory.setDuration(globalChronometerCount);
@@ -454,7 +441,7 @@ public class BackgroundChronometer extends Thread {
                 //change practice history
                 currentPracticeHistory = new PracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
-                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addPractice(currentPracticeHistory.getPractice())
                         .addLastTime(todayInMillis)
                         .addDuration(0)
                         .build();
@@ -474,7 +461,7 @@ public class BackgroundChronometer extends Thread {
                 //change practice history
                 currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB)
                         .addDate(todayInMillis)
-                        .addIdPractice(currentPracticeHistory.getIdPractice())
+                        .addPractice(currentPracticeHistory.getPractice())
                         .addTime(todayInMillis)
                         .addDuration(0)
                         .build();

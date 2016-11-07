@@ -4,24 +4,32 @@ import ru.brainworkout.whereisyourtimedude.common.Session;
 
 public abstract class AbstractEntityMultiUser extends AbstractEntity {
 
-    protected int id_user;
+    protected User user;
 
     public AbstractEntityMultiUser() {
 
         User currentUser= Session.sessionCurrentUser;
         if (currentUser!=null) {
-            this.id_user = currentUser.getId();
+            this.user = currentUser;
         } else {
             throw new NullPointerException("Current user is not defined!");
         }
     }
 
-    public int getIdUser() {
-        return id_user;
+    public User getUser() {
+        return user;
     }
 
-    public void setIdUser(int id_user) {
-        this.id_user = id_user;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public int getUserId(){
+        if (user!=null) {
+            return user.getId();
+        } else {
+            return -1;
+        }
     }
 
 }

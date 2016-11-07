@@ -237,21 +237,21 @@ public class Common {
         //Projects
         for (int i = 1; i <= PROJECTS_COUNT; i++) {
             int idArea = random.nextInt(AREAS_COUNT) + 1;
-            Project project = new Project.Builder(DB).addName("Проект " + i).addIdArea(idArea).build();
+            Project project = new Project.Builder(DB).addName("Проект " + i).addArea(DB.getArea(idArea)).build();
             project.dbSave(DB);
         }
 
         //Practices
         for (int i = 1; i <= PRACTICES_COUNT; i++) {
             int idProject = random.nextInt(PROJECTS_COUNT) + 1;
-            Practice practice = new Practice.Builder(DB).addName("Занятие " + i).addIDProject(idProject).addIsActive(1).build();
+            Practice practice = new Practice.Builder(DB).addName("Занятие " + i).addProject(DB.getProject(idProject)).addIsActive(1).build();
             practice.dbSave(DB);
         }
 
         //Detailed practice history count
-        final int DETAILED_PRACTICE_HISTORY_COUNT = 50;
-        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=5;
-        final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 400;
+        final int DETAILED_PRACTICE_HISTORY_COUNT = 150;
+        final int DETAILED_PRACTICE_HISTORY_DAYS_BEFORE_TODAY=2;
+        final int DETAILED_PRACTICE_HISTORY_MAX_DURATION_IN_SECONDS = 300;
 
         int practice_history_number=1;
         int detailed_practice_history_number=1;
@@ -272,14 +272,14 @@ public class Common {
                     break;
                 }
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(detailed_practice_history_number++)
-                        .addIdPractice(idPractice)
+                        .addPractice(DB.getPractice(idPractice))
                         .addDate(practiceDay)
                         .addTime(time)
                         .addDuration(durationInSeconds)
                         .build();
                 detailedPracticeHistoryList.add(detailedPracticeHistory);
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(practice_history_number++)
-                        .addIdPractice(idPractice)
+                        .addPractice(DB.getPractice(idPractice))
                         .addDate(practiceDay)
                         .addLastTime(time)
                         .addDuration(durationInSeconds)

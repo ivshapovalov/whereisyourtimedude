@@ -401,7 +401,8 @@ public class BackgroundChronometer extends Thread {
 
             views.setTextViewText(R.id.status_bar_duration, message);
 
-            notification = new NotificationCompat.Builder(service).build();
+            notification = new NotificationCompat.Builder(service)
+                    .setVisibility(Notification.VISIBILITY_PRIVATE).build();
             notification.contentView = views;
             notification.flags = Notification.FLAG_ONGOING_EVENT;
             notification.icon = R.mipmap.sand_clock;

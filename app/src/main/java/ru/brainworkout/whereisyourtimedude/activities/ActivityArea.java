@@ -51,7 +51,7 @@ public class ActivityArea extends AbstractActivity {
             if (DB.containsArea(id)) {
                 sessionCurrentArea = DB.getArea(id);
             } else {
-                throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database",id));
+                throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
             }
         }
         showAreaOnScreen();
@@ -141,11 +141,7 @@ public class ActivityArea extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
         blink(view, this);
-
-        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-
-        closeActivity(intent);
-
+        closeActivity(new Intent(getApplicationContext(), ActivityAreasList.class));
     }
 
     private void closeActivity(Intent intent) {
@@ -161,11 +157,8 @@ public class ActivityArea extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
         sessionCurrentArea.dbSave(DB);
-
-        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        closeActivity(intent);
+        closeActivity(new Intent(getApplicationContext(), ActivityAreasList.class));
     }
-
 
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);

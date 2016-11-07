@@ -101,17 +101,6 @@ public class ActivityProject extends AbstractActivity {
 
     }
 
-    public void btClose_onClick(final View view) {
-        blink(view, this);
-        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-        intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
-        sessionOpenActivities.pop();
-        sessionCurrentProject = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
-
     private void getPropertiesFromScreen() {
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
@@ -148,11 +137,12 @@ public class ActivityProject extends AbstractActivity {
         startActivity(intent);
     }
 
-    public void btSave_onClick(final View view) {
+    public void btClose_onClick(final View view) {
         blink(view, this);
-        getPropertiesFromScreen();
-        sessionCurrentProject.dbSave(DB);
-        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+        closeActivity(new Intent(getApplicationContext(), ActivityProjectsList.class));
+    }
+
+    private void closeActivity(Intent intent) {
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         sessionOpenActivities.pop();
         sessionCurrentProject = null;
@@ -160,17 +150,20 @@ public class ActivityProject extends AbstractActivity {
         startActivity(intent);
     }
 
+    public void btSave_onClick(final View view) {
+        blink(view, this);
+        getPropertiesFromScreen();
+        sessionCurrentProject.dbSave(DB);
+        closeActivity(new Intent(getApplicationContext(), ActivityProjectsList.class));
+    }
+
     public void onBackPressed() {
 
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         if (params != null) {
             intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-            sessionOpenActivities.pop();
-            sessionCurrentProject = null;
-            intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
         }
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity(intent);
     }
 
     public void btDelete_onClick(final View view) {

@@ -33,7 +33,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentU
 
 public class ActivityPracticeHistoryList extends AbstractActivity {
 
-    private final int MAX_VERTICAL_BUTTON_COUNT = 17;
+    private final int MAX_VERTICAL_BUTTON_COUNT = 15;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
     private final int NUMBER_OF_VIEWS = 40000;
     private int mHeight = 0;
@@ -296,6 +296,12 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     protected void onDestroy() {
         LOG.debug("ActivityPracticeHistoryList destroyd");
         super.onDestroy();
+    }
+
+    public void btPreviousScreen_onClick(View view) {
+    }
+
+    public void btNextScreen_onClick(View view) {
     }
 }
 

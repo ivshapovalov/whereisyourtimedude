@@ -64,11 +64,50 @@
 
         </TableRow>
 
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="PREVIOUS"
+                android:id="@+id/btPrevious"
+                android:onClick="btPreviousScreen_onClick"
+                android:layout_span="12"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="12"
+                android:text=""
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"
+                android:clickable="false"
+                android:id="@+id/btCurrentScreen"/>
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btNext"
+                android:onClick="btNextScreen_onClick"
+                android:layout_span="12"
+                android:text="NEXT"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+
+
+        </TableRow>
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/svTablePracticeHistory"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_weight="100">
 
         </ScrollView>
 

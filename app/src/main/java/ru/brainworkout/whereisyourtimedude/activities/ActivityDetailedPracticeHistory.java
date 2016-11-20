@@ -66,7 +66,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
             if (DB.containsDetailedPracticeHistory(id)) {
                 sessionCurrentDetailedPracticeHistory = DB.getDetailedPracticeHistory(id);
             } else {
-                throw new TableDoesNotContainElementException(String.format("Detailed practice history with id='%s' does not exists", id));
+                throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
             }
         }
 
@@ -78,9 +78,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
 
             long millis = intent.getLongExtra("millis", -1);
             if (millis != -1) {
-
                 sessionCurrentDetailedPracticeHistory.setDuration(millis);
-
             }
         }
         showDetailedPracticeHistoryOnScreen();

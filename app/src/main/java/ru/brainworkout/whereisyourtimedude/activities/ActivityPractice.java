@@ -42,11 +42,14 @@ public class ActivityPractice extends AbstractActivity {
                 sessionCurrentPractice = new Practice.Builder(DB.getPracticeMaxNumber() + 1).build();
             }
         } else {
-            int id = intent.getIntExtra("CurrentPracticeID", 0);
-            try {
-                sessionCurrentPractice = DB.getPractice(id);
-            } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
-                tableDoesNotContainElementException.printStackTrace();
+
+            if (sessionCurrentPractice == null) {
+                int id = intent.getIntExtra("CurrentPracticeID", 0);
+                if (DB.containsPractice(id)) {
+                    sessionCurrentPractice = DB.getPractice(id);
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
+                }
             }
         }
 

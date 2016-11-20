@@ -746,7 +746,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         } else {
             Practice practice=null;
             int practiceId=cursor.getInt(1);
-            if (containsProject(practiceId)) {
+            if (containsPractice(practiceId)) {
                 practice=getPractice(practiceId);
             }
             PracticeHistory practiceHistory = new PracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
@@ -796,7 +796,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         } else {
             Practice practice=null;
             int practiceId=cursor.getInt(1);
-            if (containsProject(practiceId)) {
+            if (containsPractice(practiceId)) {
                 practice=getPractice(practiceId);
             }
             DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
@@ -829,7 +829,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         } else {
             Practice practice=null;
             int practiceId=cursor.getInt(1);
-            if (containsProject(practiceId)) {
+            if (containsPractice(practiceId)) {
                 practice=getPractice(practiceId);
             }
             PracticeHistory practiceHistory = new PracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))

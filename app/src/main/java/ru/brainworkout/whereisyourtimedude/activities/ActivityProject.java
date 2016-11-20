@@ -44,16 +44,13 @@ public class ActivityProject extends AbstractActivity {
             }
 
         } else {
-            int id = intent.getIntExtra("CurrentProjectID", 0);
-            try {
-                sessionCurrentProject = DB.getProject(id);
-            } catch (TableDoesNotContainElementException tableDoesNotContainElementException) {
-                tableDoesNotContainElementException.printStackTrace();
-            }
-            if (DB.containsProject(id)) {
-                sessionCurrentProject = DB.getProject(id);
-            } else {
-                throw new TableDoesNotContainElementException(String.format("Project with id ='%s' does not exists in database", id));
+            if (sessionCurrentProject == null) {
+                int id = intent.getIntExtra("CurrentProjectID", 0);
+                if (DB.containsProject(id)) {
+                    sessionCurrentProject = DB.getProject(id);
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Project with id ='%s' does not exists in database", id));
+                }
             }
         }
 

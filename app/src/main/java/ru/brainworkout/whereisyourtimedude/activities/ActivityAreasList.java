@@ -229,7 +229,7 @@ public class ActivityAreasList extends AbstractActivity {
                     throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
                 }
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
-                sessionOpenActivities.pop();
+                sessionOpenActivities.pollFirst();
 
             }
         } else {
@@ -303,7 +303,7 @@ public class ActivityAreasList extends AbstractActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
-                sessionOpenActivities.pop();
+                sessionOpenActivities.pollFirst();
                 intent.putExtra("CurrentAreaID", id_area);
             }
         }

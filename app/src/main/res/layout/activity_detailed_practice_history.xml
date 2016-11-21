@@ -185,7 +185,7 @@
                         android:id="@+id/textView4"
                         android:layout_span="10"
                         android:textColor="@color/text_color"
-                        />
+                        android:gravity="left|center_vertical"/>
 
                     <TextView
                         style="@android:style/TextAppearance.Small"
@@ -197,7 +197,8 @@
                         android:text="CHOOSE PRACTICE"
                         android:gravity="left|center_vertical|center"
                         android:textStyle="bold"
-                        android:textColor="@color/text_color"/>
+                        android:textColor="@color/text_color"
+                        android:background="@drawable/border"/>
 
                 </TableRow>
 

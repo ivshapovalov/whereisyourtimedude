@@ -240,7 +240,7 @@ public class ActivityPracticesList extends AbstractActivity {
                     throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
                 }
                 intent = new Intent(getApplicationContext(), transmitterClass);
-                sessionOpenActivities.pop();
+                sessionOpenActivities.pollFirst();
                 intent.putExtra("CurrentPracticeID", id);
             }
         } else {
@@ -312,7 +312,7 @@ public class ActivityPracticesList extends AbstractActivity {
                 }
 
                 intent = new Intent(getApplicationContext(), transmitterClass);
-                sessionOpenActivities.pop();
+                sessionOpenActivities.pollFirst();
                 intent.putExtra("CurrentPracticeID", id_practice);
             }
         }

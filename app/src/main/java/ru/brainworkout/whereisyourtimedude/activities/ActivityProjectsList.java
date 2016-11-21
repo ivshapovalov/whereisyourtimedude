@@ -150,14 +150,10 @@ public class ActivityProjectsList extends AbstractActivity {
 
             txt = new TextView(this);
             String nameArea = "";
-            try {
-                Area area = currentProject.getArea();
-                if (area != null) {
-                    nameArea = area.getName();
-                }
+            Area area = currentProject.getArea();
+            if (area != null) {
+                nameArea = area.getName();
                 txt.setBackgroundColor(area.getColor());
-            } catch (TableDoesNotContainElementException e) {
-                txt.setBackgroundResource(R.drawable.bt_border);
             }
             txt.setText(nameArea);
 
@@ -235,7 +231,7 @@ public class ActivityProjectsList extends AbstractActivity {
                     sessionCurrentPractice.setProject(DB.getProject(id));
                 }
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                sessionOpenActivities.pop();
+                sessionOpenActivities.pollFirst();
             }
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
@@ -300,7 +296,7 @@ public class ActivityProjectsList extends AbstractActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                sessionOpenActivities.pop();
+                sessionOpenActivities.pollFirst();
                 intent.putExtra("CurrentProjectID", id_project);
             }
         }

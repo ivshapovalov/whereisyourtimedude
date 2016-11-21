@@ -146,7 +146,7 @@ public class ActivityArea extends AbstractActivity {
 
     private void closeActivity(Intent intent) {
         intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
-        sessionOpenActivities.pop();
+        sessionOpenActivities.pollFirst();
         sessionCurrentArea = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -192,7 +192,7 @@ public class ActivityArea extends AbstractActivity {
 
                         sessionCurrentArea.dbDelete(DB);
                         sessionCurrentArea = null;
-                        sessionOpenActivities.pop();
+                        sessionOpenActivities.pollFirst();
 
                         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

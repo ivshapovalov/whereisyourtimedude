@@ -27,10 +27,8 @@ public class ActivityCalendarView extends AbstractActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
-
         getIntentParams();
         SetParametersOnScreen();
-
     }
 
 

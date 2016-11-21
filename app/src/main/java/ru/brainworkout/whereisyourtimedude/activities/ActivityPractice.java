@@ -1,5 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -123,8 +124,8 @@ public class ActivityPractice extends AbstractActivity {
         blink(view, this);
         Class<?> myClass = null;
         try {
-            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
-        } catch (ClassNotFoundException e) {
+            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pollFirst().getTransmitterActivityName());
+        } catch (ClassNotFoundException|NullPointerException e) {
             e.printStackTrace();
         }
         closeActivity(new Intent(getApplicationContext(), myClass));
@@ -133,7 +134,7 @@ public class ActivityPractice extends AbstractActivity {
     private void closeActivity(Intent intent) {
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         sessionCurrentPractice = null;
-        sessionOpenActivities.pop();
+        sessionOpenActivities.pollFirst();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -183,7 +184,7 @@ public class ActivityPractice extends AbstractActivity {
         blink(view, this);
         Class<?> myClass = null;
         try {
-            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pop().getTransmitterActivityName());
+            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pollFirst().getTransmitterActivityName());
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
@@ -214,7 +215,7 @@ public class ActivityPractice extends AbstractActivity {
                         sessionCurrentPractice = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-                        sessionOpenActivities.pop();
+                        sessionOpenActivities.pollFirst();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

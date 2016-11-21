@@ -141,7 +141,7 @@ public class ActivityProject extends AbstractActivity {
 
     private void closeActivity(Intent intent) {
         intent.putExtra("CurrentProjectID", sessionCurrentProject.getId());
-        sessionOpenActivities.pop();
+        sessionOpenActivities.pollFirst();
         sessionCurrentProject = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -184,7 +184,7 @@ public class ActivityProject extends AbstractActivity {
                         sessionCurrentProject = null;
 
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
-                        sessionOpenActivities.pop();
+                        sessionOpenActivities.pollFirst();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
 

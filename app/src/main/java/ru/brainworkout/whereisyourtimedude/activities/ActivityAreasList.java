@@ -115,6 +115,7 @@ public class ActivityAreasList extends AbstractActivity {
 
         TableLayout layout = new TableLayout(this);
         layout.setStretchAllColumns(true);
+        layout.setShrinkAllColumns(true);
 
         for (int numArea = 0; numArea < areas.size(); numArea++) {
 
@@ -130,14 +131,15 @@ public class ActivityAreasList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentArea.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setLayoutParams(paramsTextViewWithSpanInList(5));
             mRow.addView(txt);
 
             txt = new TextView(this);
@@ -145,23 +147,22 @@ public class ActivityAreasList extends AbstractActivity {
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setLayoutParams(paramsTextViewWithSpanInList(10));
             mRow.addView(txt);
 
             txt = new TextView(this);
             txt.setBackgroundColor(currentArea.getColor());
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
+            txt.setLayoutParams(paramsTextViewWithSpanInList(10));
             mRow.addView(txt);
 
             txt = new TextView(this);
             txt.setText(SYMBOL_EDIT);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
             txt.setOnClickListener(new View.OnClickListener() {
@@ -170,6 +171,7 @@ public class ActivityAreasList extends AbstractActivity {
                     txtAreaEdit_onClick((TextView) v);
                 }
             });
+            txt.setLayoutParams(paramsTextViewWithSpanInList(3));
             mRow.addView(txt);
 
             mRow.setBackgroundResource(R.drawable.bt_border);

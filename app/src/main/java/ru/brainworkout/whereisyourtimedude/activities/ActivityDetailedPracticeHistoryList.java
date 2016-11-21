@@ -28,6 +28,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.convertMillisToS
 import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.SYMBOL_EDIT;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
+import static ru.brainworkout.whereisyourtimedude.common.Common.paramsTextViewWithSpanInList;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
@@ -147,6 +148,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
         TableLayout layout = new TableLayout(this);
         layout.setStretchAllColumns(true);
+        layout.setShrinkAllColumns(true);
 
         for (int numDetailedPracticeHistory = 0; numDetailedPracticeHistory < detailedPracticeHistories.size(); numDetailedPracticeHistory++) {
 
@@ -162,14 +164,15 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentDetailedPracticeHistory.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setLayoutParams(paramsTextViewWithSpanInList(5));
             mRow.addView(txt);
 
             txt = new TextView(this);
@@ -177,9 +180,9 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setLayoutParams(paramsTextViewWithSpanInList(10));
             mRow.addView(txt);
 
             txt = new TextView(this);
@@ -188,20 +191,18 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             if (practice != null) {
                 namePractice = practice.getName();
             }
-
             txt.setText(namePractice);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
+            txt.setLayoutParams(paramsTextViewWithSpanInList(10));
             mRow.addView(txt);
 
             txt = new TextView(this);
             txt.setText(SYMBOL_EDIT);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
-            txt.setHeight(mHeight);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
             txt.setOnClickListener(new View.OnClickListener() {
@@ -210,6 +211,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                     txtDetailedPracticeHistoryEdit_onClick((TextView) v);
                 }
             });
+            txt.setLayoutParams(paramsTextViewWithSpanInList(3));
             mRow.addView(txt);
 
             mRow.setBackgroundResource(R.drawable.bt_border);

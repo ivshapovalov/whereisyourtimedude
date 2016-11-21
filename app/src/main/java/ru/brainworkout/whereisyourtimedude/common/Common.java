@@ -305,4 +305,10 @@ public class Common {
             currentDetailedPracticeHistory.dbSave(DB);
         }
     }
+
+    public static TableRow.LayoutParams paramsTextViewWithSpanInList(int i) {
+        TableRow.LayoutParams paramsTextView = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT);
+        paramsTextView.span=i;
+        return paramsTextView;
+    }
 }

@@ -649,10 +649,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             db.close();
             throw new TableDoesNotContainElementException("There is no Project with id - " + id);
         } else {
-            Area area=null;
-            int areaId=cursor.getInt(3);
+            Area area = null;
+            int areaId = cursor.getInt(3);
             if (containsArea(areaId)) {
-                area=getArea(areaId);
+                area = getArea(areaId);
             }
             project = new Project.Builder(Integer.parseInt(cursor.getString(0)))
                     .addName(cursor.getString(2))
@@ -696,10 +696,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             db.close();
             throw new TableDoesNotContainElementException("There is no Practice with id - " + id);
         } else {
-            Project project=null;
-            int projectId=cursor.getInt(2);
+            Project project = null;
+            int projectId = cursor.getInt(2);
             if (containsProject(projectId)) {
-                project=getProject(projectId);
+                project = getProject(projectId);
             }
             practice = new Practice.Builder(Integer.parseInt(cursor.getString(0)))
                     .addName(cursor.getString(1))
@@ -744,10 +744,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             db.close();
             throw new TableDoesNotContainElementException("There is no Practice history with id - " + id);
         } else {
-            Practice practice=null;
-            int practiceId=cursor.getInt(1);
+            Practice practice = null;
+            int practiceId = cursor.getInt(1);
             if (containsPractice(practiceId)) {
-                practice=getPractice(practiceId);
+                practice = getPractice(practiceId);
             }
             PracticeHistory practiceHistory = new PracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
                     .addPractice(practice)
@@ -794,10 +794,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             db.close();
             throw new TableDoesNotContainElementException("There is no Detailed practice history with id - " + id);
         } else {
-            Practice practice=null;
-            int practiceId=cursor.getInt(1);
+            Practice practice = null;
+            int practiceId = cursor.getInt(1);
             if (containsPractice(practiceId)) {
-                practice=getPractice(practiceId);
+                practice = getPractice(practiceId);
             }
             DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
                     .addPractice(practice)
@@ -827,10 +827,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             throw new TableDoesNotContainElementException("There is no Practice history with practice_id - " + id_practice
                     + " and date=" + date);
         } else {
-            Practice practice=null;
-            int practiceId=cursor.getInt(1);
+            Practice practice = null;
+            int practiceId = cursor.getInt(1);
             if (containsPractice(practiceId)) {
-                practice=getPractice(practiceId);
+                practice = getPractice(practiceId);
             }
             PracticeHistory practiceHistory = new PracticeHistory.Builder(Integer.parseInt(cursor.getString(0)))
                     .addPractice(practice)
@@ -1053,10 +1053,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Area area=null;
-                int areaId=cursor.getInt(2);
+                Area area = null;
+                int areaId = cursor.getInt(2);
                 if (containsArea(areaId)) {
-                    area=getArea(areaId);
+                    area = getArea(areaId);
                 }
                 Project project = new Project.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1080,10 +1080,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Area area=null;
-                int areaId=cursor.getInt(2);
+                Area area = null;
+                int areaId = cursor.getInt(2);
                 if (containsArea(areaId)) {
-                    area=getArea(areaId);
+                    area = getArea(areaId);
                 }
                 Project project = new Project.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1107,10 +1107,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Area area=null;
-                int areaId=cursor.getInt(2);
+                Area area = null;
+                int areaId = cursor.getInt(2);
                 if (containsArea(areaId)) {
-                    area=getArea(areaId);
+                    area = getArea(areaId);
                 }
                 Project project = new Project.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1135,10 +1135,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Project project=null;
-                int projectId=cursor.getInt(2);
+                Project project = null;
+                int projectId = cursor.getInt(2);
                 if (containsProject(projectId)) {
-                    project=getProject(projectId);
+                    project = getProject(projectId);
                 }
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1163,10 +1163,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
-                Project project=null;
-                int projectId=cursor.getInt(2);
+                Project project = null;
+                int projectId = cursor.getInt(2);
                 if (containsProject(projectId)) {
-                    project=getProject(projectId);
+                    project = getProject(projectId);
                 }
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1192,10 +1192,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Project project=null;
-                int projectId=cursor.getInt(2);
+                Project project = null;
+                int projectId = cursor.getInt(2);
                 if (containsProject(projectId)) {
-                    project=getProject(projectId);
+                    project = getProject(projectId);
                 }
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1221,10 +1221,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Project project=null;
-                int projectId=cursor.getInt(2);
+                Project project = null;
+                int projectId = cursor.getInt(2);
                 if (containsProject(projectId)) {
-                    project=getProject(projectId);
+                    project = getProject(projectId);
                 }
                 Practice practice = new Practice.Builder(cursor.getInt(0))
                         .addName(cursor.getString(1))
@@ -1249,10 +1249,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1282,10 +1282,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1316,10 +1316,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1342,45 +1342,143 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         List<PracticeHistory> practiceHistoryList = new ArrayList<>();
 
         // Select All Query
-        String selectQuery = "select active_practices." + KEY_PRACTICE_ID + ",ifnull(history." + KEY_PRACTICE_HISTORY_ID + ",0),"
-                + "ifnull(history." + KEY_PRACTICE_HISTORY_DATE + ",0),ifnull(history." + KEY_PRACTICE_HISTORY_LAST_TIME + ",0),ifnull(history."
-                + KEY_PRACTICE_HISTORY_DURATION + ",0)"
-                + " FROM (select " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID + " from " + TABLE_PRACTICES
-                + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + id_user
-                + ") as active_practices "
-                + " left join ( select " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE
-                + "," + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
-                + " from " + TABLE_PRACTICE_HISTORY
-                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo + ") as history"
-                + " on active_practices." + KEY_PRACTICE_ID + "=history." + KEY_PRACTICE_HISTORY_ID_PRACTICE
-                + " order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc";
-
+//        String selectQuery = "select active_practices." + KEY_PRACTICE_ID + ",ifnull(history." + KEY_PRACTICE_HISTORY_ID + ",0),"
+//                + "ifnull(history." + KEY_PRACTICE_HISTORY_DATE + ",0),ifnull(history." + KEY_PRACTICE_HISTORY_LAST_TIME + ",0),ifnull(history."
+//                + KEY_PRACTICE_HISTORY_DURATION + ",0)"
+//                + " FROM (select " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID + " from " + TABLE_PRACTICES
+//                + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + id_user
+//                + ") as active_practices "
+//                + " left join ( select " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE
+//                + "," + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
+//                + " from " + TABLE_PRACTICE_HISTORY
+//                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo + ") as history"
+//                + " on active_practices." + KEY_PRACTICE_ID + "=history." + KEY_PRACTICE_HISTORY_ID_PRACTICE
+//                + " order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc";
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
 
+        String tempTableActivePractices="active_practices";
+        String tempTableCurrentDatePractices="current_date_practices";
+        String tempTablePreviousDatePractices="previous_date_practices";
+        String tempTableOtherPractices="other_practices";
+
+        String tempTablesQuery = "create temporary table "+tempTableActivePractices+" as select " +
+                TABLE_PRACTICES+"."+KEY_PRACTICE_ID+", " +
+                TABLE_PRACTICES+"."+KEY_PRACTICE_NAME + " "+
+                "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "."+KEY_PRACTICE_IS_ACTIVE+"=1 " +
+                "AND "+TABLE_PRACTICES+"."+KEY_PRACTICE_ID_USER+"=1;";
+        db.execSQL(tempTablesQuery);
+        tempTablesQuery =
+                " create temporary table "+tempTableCurrentDatePractices+" as select " +
+                        KEY_PRACTICE_HISTORY_ID+", " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        KEY_PRACTICE_HISTORY_DATE+", " +
+                        KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        KEY_PRACTICE_HISTORY_DURATION+" " +
+                " from "+TABLE_PRACTICE_HISTORY+" WHERE "+KEY_PRACTICE_HISTORY_ID_PRACTICE+" in " +
+                " (select " +
+                        tempTableActivePractices+"."+KEY_PRACTICE_ID+" from "+tempTableActivePractices+" " +
+                        "as "+tempTableActivePractices+") " +
+                " AND "
+                        +KEY_PRACTICE_HISTORY_DATE+" >= " + dateFrom + " AND " +
+                        KEY_PRACTICE_HISTORY_DATE + " <= " + dateTo +" " +
+                "order by "+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
+        db.execSQL(tempTablesQuery);
+
+        tempTablesQuery =
+                "create temporary table "+tempTablePreviousDatePractices+" as select " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID+", " +
+                        "practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DURATION+" " +
+                "from (select " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        "max("+KEY_PRACTICE_HISTORY_LAST_TIME+") as "+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
+                        "from "+TABLE_PRACTICE_HISTORY+" WHERE " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+" in " +
+                        "(select "+tempTableActivePractices+".practice_id from " +
+                        ""+tempTableActivePractices+" as "+tempTableActivePractices+") AND " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+" not in " +
+                        "(select "+tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
+                        tempTableCurrentDatePractices+" as "+tempTableCurrentDatePractices+") AND " +
+                        KEY_PRACTICE_HISTORY_DATE+"< "+dateFrom+" " +
+                        "group by "+KEY_PRACTICE_HISTORY_ID_PRACTICE+") as practices_max_time " +
+                "left join " +
+                "(select " +
+                        KEY_PRACTICE_HISTORY_ID+", " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        KEY_PRACTICE_HISTORY_DATE+", " +
+                        KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        KEY_PRACTICE_HISTORY_DURATION+" " +
+                "from "+TABLE_PRACTICE_HISTORY+" ) as "+TABLE_PRACTICE_HISTORY+" " +
+                "on practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+"="
+                        +TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" " +
+                "and " +
+                "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+"=" +
+                        ""+TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
+                "order by practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
+        db.execSQL(tempTablesQuery);
+
+        tempTablesQuery =         "create temporary table "+tempTableOtherPractices+" as " +
+                "select " +
+                tempTableActivePractices+"."+KEY_PRACTICE_ID+", " +
+                tempTableActivePractices+"."+KEY_PRACTICE_NAME+" " +
+                "from "+tempTableActivePractices+" WHERE "+tempTableActivePractices+"."+KEY_PRACTICE_ID+" not in " +
+                "(select "+tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
+                tempTableCurrentDatePractices+" as " +tempTableCurrentDatePractices+" " +
+                "union " +
+                "select "+tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
+                tempTablePreviousDatePractices+" as "+tempTablePreviousDatePractices+") " +
+                "order by "+KEY_PRACTICE_NAME+"; ";
+        db.execSQL(tempTablesQuery);
+                String selectQuery="select " +
+                "1 as filter, " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_DURATION+" from " +
+                        "temp."+tempTableCurrentDatePractices +" "+
+                "union all " +
+                "select " +
+                "2 as filter, " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_DURATION+" from " +
+                        " temp."+tempTablePreviousDatePractices+" "+
+                "union all " +
+                "select " +
+                "3 as filter, " +
+                        tempTableOtherPractices+"."+KEY_PRACTICE_ID+", " +
+                        "0,0,0,0 " +
+                "from temp."+tempTableOtherPractices +" "+
+                "ORDER BY filter; ";
+        Cursor cursor = db.rawQuery(selectQuery, null);
         int id_practice_count = 0;
         if (cursor.getCount() == 0) {
             return practiceHistoryList;
         }
         if (cursor.moveToFirst()) {
             do {
-                int id_practice = cursor.getInt(0);
-                int id_practice_history = cursor.getInt(1);
+                int id_practice = cursor.getInt(1);
+                int id_practice_history = cursor.getInt(2);
                 PracticeHistory.Builder practiceHistoryBuilder;
                 if (id_practice_history == 0) {
                     practiceHistoryBuilder = new PracticeHistory.Builder(getPracticeHistoryMaxNumber() + id_practice_count++ + 1);
                     practiceHistoryBuilder.addDate(dateFrom);
                 } else {
                     practiceHistoryBuilder = new PracticeHistory.Builder(id_practice_history);
-                    practiceHistoryBuilder.addDate(cursor.getLong(2));
+                    practiceHistoryBuilder.addDate(cursor.getLong(3));
                 }
-                Practice practice=null;
+                Practice practice = null;
                 if (containsPractice(id_practice)) {
-                    practice=getPractice(id_practice);
+                    practice = getPractice(id_practice);
                 }
                 practiceHistoryBuilder.addPractice(practice)
-                        .addLastTime(cursor.getLong(3))
-                        .addDuration(cursor.getLong(4))
+                        .addLastTime(cursor.getLong(4))
+                        .addDuration(cursor.getLong(5))
                         .build();
                 PracticeHistory practiceHistory = new PracticeHistory(practiceHistoryBuilder);
                 practiceHistoryList.add(practiceHistory);
@@ -1408,10 +1506,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         PracticeHistory practiceHistory = null;
         if (cursor.moveToFirst()) {
-            Practice practice=null;
-            int practiceId=cursor.getInt(1);
+            Practice practice = null;
+            int practiceId = cursor.getInt(1);
             if (containsPractice(practiceId)) {
-                practice=getPractice(practiceId);
+                practice = getPractice(practiceId);
             }
             practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
                     .addPractice(practice)
@@ -1443,10 +1541,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1480,10 +1578,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 PracticeHistory practiceHistory = new PracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1509,10 +1607,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(selectQuery, null);
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1541,10 +1639,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1574,10 +1672,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1608,10 +1706,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1643,10 +1741,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                Practice practice=null;
-                int practiceId=cursor.getInt(1);
+                Practice practice = null;
+                int practiceId = cursor.getInt(1);
                 if (containsPractice(practiceId)) {
-                    practice=getPractice(practiceId);
+                    practice = getPractice(practiceId);
                 }
                 DetailedPracticeHistory detailedPracticeHistory = new DetailedPracticeHistory.Builder(cursor.getInt(0))
                         .addPractice(practice)
@@ -1850,7 +1948,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (practiceHistory.getPractice() != null) {
             values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getPractice().getId());
         } else {
-            values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE,0);
+            values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, 0);
 
         }
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
@@ -1870,7 +1968,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         if (detailedPracticeHistory.getPractice() != null) {
             values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getPractice().getId());
         } else {
-            values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE,0);
+            values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, 0);
         }
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());

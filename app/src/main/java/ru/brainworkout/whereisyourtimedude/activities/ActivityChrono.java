@@ -377,14 +377,16 @@ public class ActivityChrono extends AbstractActivity {
         String areaName = "";
         int areaColor = 0;
 
-        Practice practice = currentPracticeHistory.getPractice();
-        if (practice != null) {
-            Project project = practice.getProject();
-            if (project != null) {
-                Area area = project.getArea();
-                if (area != null) {
-                    areaName = area.getName();
-                    areaColor = area.getColor();
+        if (currentPracticeHistory!=null) {
+            Practice practice = currentPracticeHistory.getPractice();
+            if (practice != null) {
+                Project project = practice.getProject();
+                if (project != null) {
+                    Area area = project.getArea();
+                    if (area != null) {
+                        areaName = area.getName();
+                        areaColor = area.getColor();
+                    }
                 }
             }
         }
@@ -399,17 +401,19 @@ public class ActivityChrono extends AbstractActivity {
         TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
         if (tvCurrentName != null) {
             if (currentPracticeHistory != null) {
-                practice = currentPracticeHistory.getPractice();
+                Practice practice = currentPracticeHistory.getPractice();
                 if (practice != null) {
                     tvCurrentName.setText(practice.getName());
                 }
             }
         }
 
-        if (mChronometerIsWorking) {
-            setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration());
-        } else {
-            setTimerText(Common.SYMBOL_STOP, currentPracticeHistory.getDuration());
+        if (currentPracticeHistory!=null) {
+            if (mChronometerIsWorking) {
+                setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration());
+            } else {
+                setTimerText(Common.SYMBOL_STOP, currentPracticeHistory.getDuration());
+            }
         }
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
@@ -419,10 +423,12 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
         if (tvCurrentDate != null) {
-            if (currentPracticeHistory.getLastTime() != 0) {
-                tvCurrentDate.setText(convertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
-            } else {
-                tvCurrentDate.setText("");
+            if (currentPracticeHistory!=null) {
+                if (currentPracticeHistory.getLastTime() != 0) {
+                    tvCurrentDate.setText(convertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
+                } else {
+                    tvCurrentDate.setText("");
+                }
             }
         }
         int tableIDCurrentWork = getResources().getIdentifier("tableCurrentWork", "id", getPackageName());

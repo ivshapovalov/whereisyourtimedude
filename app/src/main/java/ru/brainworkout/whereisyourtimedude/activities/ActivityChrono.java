@@ -372,7 +372,6 @@ public class ActivityChrono extends AbstractActivity {
         updateAllRows();
     }
 
-
     private void updateAllRows() {
 
         String areaName = "";

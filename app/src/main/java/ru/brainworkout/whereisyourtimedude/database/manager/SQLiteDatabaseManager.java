@@ -1336,6 +1336,9 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
+//        first - this day practices by last time;
+//        second - previous days practices date and duration within date;
+//        third - other practices by name;
     public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
@@ -1445,10 +1448,9 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 "select " +
                 "2 as filter, " +
                         tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID+", " +
-                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        "0,0"+", " +
                         tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
-                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_DURATION+" from " +
+                        "0 "+" from " +
                         " temp."+tempTablePreviousDatePractices+" "+
                 "union all " +
                 "select " +

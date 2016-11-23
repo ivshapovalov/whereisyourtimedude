@@ -1356,83 +1356,104 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 //                + " order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc";
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String tempTablesQuery = "create temporary table active_practices as select " +
-                TABLE_PRACTICES+"."+KEY_PRACTICE_ID+"," +
+        String tempTableActivePractices="active_practices";
+        String tempTableCurrentDatePractices="current_date_practices";
+        String tempTablePreviousDatePractices="previous_date_practices";
+        String tempTableOtherPractices="other_practices";
+
+        String tempTablesQuery = "create temporary table "+tempTableActivePractices+" as select " +
+                TABLE_PRACTICES+"."+KEY_PRACTICE_ID+", " +
                 TABLE_PRACTICES+"."+KEY_PRACTICE_NAME + " "+
                 "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "."+KEY_PRACTICE_IS_ACTIVE+"=1 " +
                 "AND "+TABLE_PRACTICES+"."+KEY_PRACTICE_ID_USER+"=1;";
         db.execSQL(tempTablesQuery);
-        tempTablesQuery =         "create temporary table history as select " +
-                "practice_history_id, " +
-                "practice_history_id_practice, " +
-                "practice_history_date, " +
-                "practice_history_last_time, " +
-                "practice_history_duration " +
-                "from practice_history WHERE practice_history_id_practice in " +
-                "(select active_practices.practice_id from active_practices as active_practices) " +
-                "AND practice_history_date>= 1480032000000 AND practice_history_date <=1480032000000 " +
-                "order by practice_history_last_time desc; ";
+        tempTablesQuery =
+                " create temporary table "+tempTableCurrentDatePractices+" as select " +
+                        KEY_PRACTICE_HISTORY_ID+", " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        KEY_PRACTICE_HISTORY_DATE+", " +
+                        KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        KEY_PRACTICE_HISTORY_DURATION+" " +
+                " from "+TABLE_PRACTICE_HISTORY+" WHERE "+KEY_PRACTICE_HISTORY_ID_PRACTICE+" in " +
+                " (select " +
+                        tempTableActivePractices+"."+KEY_PRACTICE_ID+" from "+tempTableActivePractices+" " +
+                        "as "+tempTableActivePractices+") " +
+                " AND "
+                        +KEY_PRACTICE_HISTORY_DATE+" >= " + dateFrom + " AND " +
+                        KEY_PRACTICE_HISTORY_DATE + " <= " + dateTo +" " +
+                "order by "+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
         db.execSQL(tempTablesQuery);
 
         tempTablesQuery =
-                "create temporary table last_history as  " +
-                "select " +
-                "history.practice_history_id, " +
-                "practices_max_time.practice_history_id_practice, " +
-                "history.practice_history_date, " +
-                "practices_max_time.practice_history_last_time, " +
-                "history.practice_history_duration " +
+                "create temporary table "+tempTablePreviousDatePractices+" as select " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID+", " +
+                        "practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DURATION+" " +
                 "from (select " +
-                "practice_history_id_practice, " +
-                "max(practice_history_last_time) as practice_history_last_time " +
-                "from practice_history WHERE " +
-                "practice_history_id_practice in (select active_practices.practice_id from active_practices as active_practices) AND " +
-                "practice_history_id_practice not in (select history.practice_history_id_practice from history as history) AND practice_history_date< 1480032000000 " +
-                "group by practice_history_id_practice) as practices_max_time " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        "max("+KEY_PRACTICE_HISTORY_LAST_TIME+") as "+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
+                        "from "+TABLE_PRACTICE_HISTORY+" WHERE " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+" in " +
+                        "(select "+tempTableActivePractices+".practice_id from " +
+                        ""+tempTableActivePractices+" as "+tempTableActivePractices+") AND " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+" not in " +
+                        "(select "+tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
+                        tempTableCurrentDatePractices+" as "+tempTableCurrentDatePractices+") AND " +
+                        KEY_PRACTICE_HISTORY_DATE+"< "+dateFrom+" " +
+                        "group by "+KEY_PRACTICE_HISTORY_ID_PRACTICE+") as practices_max_time " +
                 "left join " +
                 "(select " +
-                "practice_history_id, " +
-                "practice_history_id_practice, " +
-                "practice_history_date, " +
-                "practice_history_last_time, " +
-                "practice_history_duration " +
-                "from practice_history ) as history " +
-                "on practices_max_time.practice_history_id_practice=history.practice_history_id_practice " +
+                        KEY_PRACTICE_HISTORY_ID+", " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        KEY_PRACTICE_HISTORY_DATE+", " +
+                        KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        KEY_PRACTICE_HISTORY_DURATION+" " +
+                "from "+TABLE_PRACTICE_HISTORY+" ) as "+TABLE_PRACTICE_HISTORY+" " +
+                "on practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+"="
+                        +TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" " +
                 "and " +
-                "practices_max_time.practice_history_last_time=history.practice_history_last_time " +
-                "order by practices_max_time.practice_history_last_time desc; ";
+                "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+"=" +
+                        ""+TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
+                "order by practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
         db.execSQL(tempTablesQuery);
 
-        tempTablesQuery =         "create temporary table other_practices as " +
+        tempTablesQuery =         "create temporary table "+tempTableOtherPractices+" as " +
                 "select " +
-                "active_practices.practice_id,active_practices.practice_name " +
-                "from active_practices WHERE active_practices.practice_id not in " +
-                "(select history.practice_history_id_practice from history as history " +
+                tempTableActivePractices+"."+KEY_PRACTICE_ID+", " +
+                tempTableActivePractices+"."+KEY_PRACTICE_NAME+" " +
+                "from "+tempTableActivePractices+" WHERE "+tempTableActivePractices+"."+KEY_PRACTICE_ID+" not in " +
+                "(select "+tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
+                tempTableCurrentDatePractices+" as " +tempTableCurrentDatePractices+" " +
                 "union " +
-                "select last_history.practice_history_id_practice from last_history as last_history) " +
-                "order by practice_name; ";
+                "select "+tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
+                tempTablePreviousDatePractices+" as "+tempTablePreviousDatePractices+") " +
+                "order by "+KEY_PRACTICE_NAME+"; ";
         db.execSQL(tempTablesQuery);
                 String selectQuery="select " +
                 "1 as filter, " +
-                "history.practice_history_id_practice, " +
-                "history.practice_history_id, " +
-                "history.practice_history_date, " +
-                "history.practice_history_last_time, " +
-                "history.practice_history_duration from temp.history " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_DURATION+" from " +
+                        "temp."+tempTableCurrentDatePractices +" "+
                 "union all " +
                 "select " +
                 "2 as filter, " +
-                "last_history.practice_history_id_practice, " +
-                "last_history.practice_history_id, " +
-                "last_history.practice_history_date, " +
-                "last_history.practice_history_last_time, " +
-                "last_history.practice_history_duration from temp.last_history " +
-                "union  all " +
-                "select  " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_DATE+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
+                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_DURATION+" from " +
+                        " temp."+tempTablePreviousDatePractices+" "+
+                "union all " +
+                "select " +
                 "3 as filter, " +
-                "other_practices.practice_id, " +
-                "0,0,0,0 " +
-                "from temp.other_practices " +
+                        tempTableOtherPractices+"."+KEY_PRACTICE_ID+", " +
+                        "0,0,0,0 " +
+                "from temp."+tempTableOtherPractices +" "+
                 "ORDER BY filter; ";
         Cursor cursor = db.rawQuery(selectQuery, null);
         int id_practice_count = 0;

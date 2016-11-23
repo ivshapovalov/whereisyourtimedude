@@ -1361,13 +1361,13 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         String tempTablePreviousDatePractices="previous_date_practices";
         String tempTableOtherPractices="other_practices";
 
-        String tempTablesQuery = "create temporary table "+tempTableActivePractices+" as select " +
+        String tempTableQuery = "create temporary table "+tempTableActivePractices+" as select " +
                 TABLE_PRACTICES+"."+KEY_PRACTICE_ID+", " +
                 TABLE_PRACTICES+"."+KEY_PRACTICE_NAME + " "+
                 "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "."+KEY_PRACTICE_IS_ACTIVE+"=1 " +
                 "AND "+TABLE_PRACTICES+"."+KEY_PRACTICE_ID_USER+"=1;";
-        db.execSQL(tempTablesQuery);
-        tempTablesQuery =
+        db.execSQL(tempTableQuery);
+        tempTableQuery =
                 " create temporary table "+tempTableCurrentDatePractices+" as select " +
                         KEY_PRACTICE_HISTORY_ID+", " +
                         KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
@@ -1382,9 +1382,9 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                         +KEY_PRACTICE_HISTORY_DATE+" >= " + dateFrom + " AND " +
                         KEY_PRACTICE_HISTORY_DATE + " <= " + dateTo +" " +
                 "order by "+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
-        db.execSQL(tempTablesQuery);
+        db.execSQL(tempTableQuery);
 
-        tempTablesQuery =
+        tempTableQuery =
                 "create temporary table "+tempTablePreviousDatePractices+" as select " +
                         TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID+", " +
                         "practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
@@ -1416,10 +1416,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 "and " +
                 "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+"=" +
                         ""+TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
-                "order by practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
-        db.execSQL(tempTablesQuery);
+                "order by "+TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DATE+" desc, " +
+                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DURATION+" desc; ";
+        db.execSQL(tempTableQuery);
 
-        tempTablesQuery =         "create temporary table "+tempTableOtherPractices+" as " +
+        tempTableQuery =
+                "create temporary table "+tempTableOtherPractices+" as " +
                 "select " +
                 tempTableActivePractices+"."+KEY_PRACTICE_ID+", " +
                 tempTableActivePractices+"."+KEY_PRACTICE_NAME+" " +
@@ -1430,7 +1432,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 "select "+tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
                 tempTablePreviousDatePractices+" as "+tempTablePreviousDatePractices+") " +
                 "order by "+KEY_PRACTICE_NAME+"; ";
-        db.execSQL(tempTablesQuery);
+        db.execSQL(tempTableQuery);
                 String selectQuery="select " +
                 "1 as filter, " +
                         tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +

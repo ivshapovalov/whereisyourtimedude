@@ -286,20 +286,17 @@ public class ActivityPracticeHistory extends AbstractActivity {
     public void btDelete_onClick(final View view) {
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущую историю?")
+                .setMessage("Do you want to delete current practice history?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentPracticeHistory.dbDelete(DB);
                         sessionCurrentPracticeHistory = null;
-
                         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
                     }
                 }).setNegativeButton("Нет", null).show();
-
     }
 
 

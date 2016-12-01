@@ -115,6 +115,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     }
 
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        db.execSQL("PRAGMA foreign_keys=ON");
+    }
+
     public synchronized void update1To2(SQLiteDatabase db) {
         //detailed practice history
         String CREATE_DETAILED_PRACTICE_HISTORY_TABLE = "CREATE TABLE " + TABLE_DETAILED_PRACTICE_HISTORY + "("
@@ -124,8 +130,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + " INTEGER,"
                 + KEY_DETAILED_PRACTICE_HISTORY_DURATION + " INTEGER,"
                 + KEY_DETAILED_PRACTICE_HISTORY_TIME + " INTEGER, "
-                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES " + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + "),"
-                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")"
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES "
+                + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + ") ON DELETE CASCADE ON UPDATE CASCADE,"
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ") REFERENCES "
+                + TABLE_USERS + "(" + KEY_USER_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_TABLE);
 
@@ -194,7 +202,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_AREA_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_AREA_ID_USER + " INTEGER, "
                 + KEY_AREA_NAME + " TEXT," + KEY_AREA_COLOR + " INTEGER,"
-                + " FOREIGN KEY(" + KEY_AREA_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")"
+                + " FOREIGN KEY(" + KEY_AREA_ID_USER + ") REFERENCES "
+                + TABLE_USERS + "(" + KEY_USER_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_AREAS_TABLE);
 
@@ -209,8 +218,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_PROJECT_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_PROJECT_ID_USER + " INTEGER, "
                 + KEY_PROJECT_NAME + " TEXT," + KEY_PROJECT_ID_AREA + " INTEGER,"
-                + " FOREIGN KEY(" + KEY_PROJECT_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")" + ","
-                + " FOREIGN KEY(" + KEY_PROJECT_ID_AREA + ") REFERENCES " + TABLE_AREAS + "(" + KEY_AREA_ID + ")"
+                + " FOREIGN KEY(" + KEY_PROJECT_ID_USER + ") REFERENCES "
+                + TABLE_USERS + "(" + KEY_USER_ID + ") ON DELETE CASCADE ON UPDATE CASCADE,"
+                + " FOREIGN KEY(" + KEY_PROJECT_ID_AREA + ") REFERENCES "
+                + TABLE_AREAS + "(" + KEY_AREA_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_PROJECTS_TABLE);
 
@@ -232,8 +243,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_ID_PROJECT + " INTEGER, "
                 + KEY_PRACTICE_IS_ACTIVE + " INTEGER, "
                 + KEY_PRACTICE_NAME + " TEXT,"
-                + " FOREIGN KEY(" + KEY_PRACTICE_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")" + ","
-                + " FOREIGN KEY(" + KEY_PRACTICE_ID_PROJECT + ") REFERENCES " + TABLE_PROJECTS + "(" + KEY_PROJECT_ID + ")"
+                + " FOREIGN KEY(" + KEY_PRACTICE_ID_USER + ") REFERENCES "
+                + TABLE_USERS + "(" + KEY_USER_ID + ") ON DELETE CASCADE ON UPDATE CASCADE" + ","
+                + " FOREIGN KEY(" + KEY_PRACTICE_ID_PROJECT + ") REFERENCES "
+                + TABLE_PROJECTS + "(" + KEY_PROJECT_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_PRACTICES_TABLE);
 
@@ -255,8 +268,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_HISTORY_DATE + " INTEGER,"
                 + KEY_PRACTICE_HISTORY_DURATION + " INTEGER,"
                 + KEY_PRACTICE_HISTORY_LAST_TIME + " INTEGER, "
-                + "FOREIGN KEY(" + KEY_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES " + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + "),"
-                + "FOREIGN KEY(" + KEY_PRACTICE_HISTORY_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")"
+                + "FOREIGN KEY(" + KEY_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES "
+                + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + ") ON DELETE CASCADE ON UPDATE CASCADE,"
+                + "FOREIGN KEY(" + KEY_PRACTICE_HISTORY_ID_USER + ") REFERENCES "
+                + TABLE_USERS + "(" + KEY_USER_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_PRACTICE_HISTORY_TABLE);
 
@@ -293,8 +308,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + " INTEGER,"
                 + KEY_DETAILED_PRACTICE_HISTORY_DURATION + " INTEGER,"
                 + KEY_DETAILED_PRACTICE_HISTORY_TIME + " INTEGER, "
-                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES " + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + "),"
-                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ") REFERENCES " + TABLE_USERS + "(" + KEY_USER_ID + ")"
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ") REFERENCES "
+                + TABLE_PRACTICES + "(" + KEY_PRACTICE_ID + ") ON DELETE CASCADE ON UPDATE CASCADE,"
+                + "FOREIGN KEY(" + KEY_DETAILED_PRACTICE_HISTORY_ID_USER + ") REFERENCES "
+                + TABLE_USERS + "(" + KEY_USER_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_DETAILED_PRACTICE_HISTORY_TABLE);
 
@@ -1336,7 +1353,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
-//        first - this day practices by last time;
+    //        first - this day practices by last time;
 //        second - previous days practices date and duration within date;
 //        third - other practices by name;
     public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
@@ -1359,105 +1376,105 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 //                + " order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc";
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String tempTableActivePractices="active_practices";
-        String tempTableCurrentDatePractices="current_date_practices";
-        String tempTablePreviousDatePractices="previous_date_practices";
-        String tempTableOtherPractices="other_practices";
+        String tempTableActivePractices = "active_practices";
+        String tempTableCurrentDatePractices = "current_date_practices";
+        String tempTablePreviousDatePractices = "previous_date_practices";
+        String tempTableOtherPractices = "other_practices";
 
-        String tempTableQuery = "create temporary table "+tempTableActivePractices+" as select " +
-                TABLE_PRACTICES+"."+KEY_PRACTICE_ID+", " +
-                TABLE_PRACTICES+"."+KEY_PRACTICE_NAME + " "+
-                "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "."+KEY_PRACTICE_IS_ACTIVE+"=1 " +
-                "AND "+TABLE_PRACTICES+"."+KEY_PRACTICE_ID_USER+"=1;";
+        String tempTableQuery = "create temporary table " + tempTableActivePractices + " as select " +
+                TABLE_PRACTICES + "." + KEY_PRACTICE_ID + ", " +
+                TABLE_PRACTICES + "." + KEY_PRACTICE_NAME + " " +
+                "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 " +
+                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=1;";
         db.execSQL(tempTableQuery);
         tempTableQuery =
-                " create temporary table "+tempTableCurrentDatePractices+" as select " +
-                        KEY_PRACTICE_HISTORY_ID+", " +
-                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        KEY_PRACTICE_HISTORY_DATE+", " +
-                        KEY_PRACTICE_HISTORY_LAST_TIME+", " +
-                        KEY_PRACTICE_HISTORY_DURATION+" " +
-                " from "+TABLE_PRACTICE_HISTORY+" WHERE "+KEY_PRACTICE_HISTORY_ID_PRACTICE+" in " +
-                " (select " +
-                        tempTableActivePractices+"."+KEY_PRACTICE_ID+" from "+tempTableActivePractices+" " +
-                        "as "+tempTableActivePractices+") " +
-                " AND "
-                        +KEY_PRACTICE_HISTORY_DATE+" >= " + dateFrom + " AND " +
-                        KEY_PRACTICE_HISTORY_DATE + " <= " + dateTo +" " +
-                "order by "+KEY_PRACTICE_HISTORY_LAST_TIME+" desc; ";
-        db.execSQL(tempTableQuery);
-
-        tempTableQuery =
-                "create temporary table "+tempTablePreviousDatePractices+" as select " +
-                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID+", " +
-                        "practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DATE+", " +
-                        "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
-                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DURATION+" " +
-                "from (select " +
-                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        "max("+KEY_PRACTICE_HISTORY_LAST_TIME+") as "+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
-                        "from "+TABLE_PRACTICE_HISTORY+" WHERE " +
-                        KEY_PRACTICE_HISTORY_ID_PRACTICE+" in " +
-                        "(select "+tempTableActivePractices+".practice_id from " +
-                        ""+tempTableActivePractices+" as "+tempTableActivePractices+") AND " +
-                        KEY_PRACTICE_HISTORY_ID_PRACTICE+" not in " +
-                        "(select "+tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
-                        tempTableCurrentDatePractices+" as "+tempTableCurrentDatePractices+") AND " +
-                        KEY_PRACTICE_HISTORY_DATE+"< "+dateFrom+" " +
-                        "group by "+KEY_PRACTICE_HISTORY_ID_PRACTICE+") as practices_max_time " +
-                "left join " +
-                "(select " +
-                        KEY_PRACTICE_HISTORY_ID+", " +
-                        KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        KEY_PRACTICE_HISTORY_DATE+", " +
-                        KEY_PRACTICE_HISTORY_LAST_TIME+", " +
-                        KEY_PRACTICE_HISTORY_DURATION+" " +
-                "from "+TABLE_PRACTICE_HISTORY+" ) as "+TABLE_PRACTICE_HISTORY+" " +
-                "on practices_max_time."+KEY_PRACTICE_HISTORY_ID_PRACTICE+"="
-                        +TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" " +
-                "and " +
-                "practices_max_time."+KEY_PRACTICE_HISTORY_LAST_TIME+"=" +
-                        ""+TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_LAST_TIME+" " +
-                "order by "+TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DATE+" desc, " +
-                        TABLE_PRACTICE_HISTORY+"."+KEY_PRACTICE_HISTORY_DURATION+" desc; ";
+                " create temporary table " + tempTableCurrentDatePractices + " as select " +
+                        KEY_PRACTICE_HISTORY_ID + ", " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
+                        KEY_PRACTICE_HISTORY_DATE + ", " +
+                        KEY_PRACTICE_HISTORY_LAST_TIME + ", " +
+                        KEY_PRACTICE_HISTORY_DURATION + " " +
+                        " from " + TABLE_PRACTICE_HISTORY + " WHERE " + KEY_PRACTICE_HISTORY_ID_PRACTICE + " in " +
+                        " (select " +
+                        tempTableActivePractices + "." + KEY_PRACTICE_ID + " from " + tempTableActivePractices + " " +
+                        "as " + tempTableActivePractices + ") " +
+                        " AND "
+                        + KEY_PRACTICE_HISTORY_DATE + " >= " + dateFrom + " AND " +
+                        KEY_PRACTICE_HISTORY_DATE + " <= " + dateTo + " " +
+                        "order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc; ";
         db.execSQL(tempTableQuery);
 
         tempTableQuery =
-                "create temporary table "+tempTableOtherPractices+" as " +
-                "select " +
-                tempTableActivePractices+"."+KEY_PRACTICE_ID+", " +
-                tempTableActivePractices+"."+KEY_PRACTICE_NAME+" " +
-                "from "+tempTableActivePractices+" WHERE "+tempTableActivePractices+"."+KEY_PRACTICE_ID+" not in " +
-                "(select "+tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
-                tempTableCurrentDatePractices+" as " +tempTableCurrentDatePractices+" " +
-                "union " +
-                "select "+tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+" from " +
-                tempTablePreviousDatePractices+" as "+tempTablePreviousDatePractices+") " +
-                "order by "+KEY_PRACTICE_NAME+"; ";
+                "create temporary table " + tempTablePreviousDatePractices + " as select " +
+                        TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_ID + ", " +
+                        "practices_max_time." + KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
+                        TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_DATE + ", " +
+                        "practices_max_time." + KEY_PRACTICE_HISTORY_LAST_TIME + ", " +
+                        TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_DURATION + " " +
+                        "from (select " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
+                        "max(" + KEY_PRACTICE_HISTORY_LAST_TIME + ") as " + KEY_PRACTICE_HISTORY_LAST_TIME + " " +
+                        "from " + TABLE_PRACTICE_HISTORY + " WHERE " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE + " in " +
+                        "(select " + tempTableActivePractices + ".practice_id from " +
+                        "" + tempTableActivePractices + " as " + tempTableActivePractices + ") AND " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE + " not in " +
+                        "(select " + tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + " from " +
+                        tempTableCurrentDatePractices + " as " + tempTableCurrentDatePractices + ") AND " +
+                        KEY_PRACTICE_HISTORY_DATE + "< " + dateFrom + " " +
+                        "group by " + KEY_PRACTICE_HISTORY_ID_PRACTICE + ") as practices_max_time " +
+                        "left join " +
+                        "(select " +
+                        KEY_PRACTICE_HISTORY_ID + ", " +
+                        KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
+                        KEY_PRACTICE_HISTORY_DATE + ", " +
+                        KEY_PRACTICE_HISTORY_LAST_TIME + ", " +
+                        KEY_PRACTICE_HISTORY_DURATION + " " +
+                        "from " + TABLE_PRACTICE_HISTORY + " ) as " + TABLE_PRACTICE_HISTORY + " " +
+                        "on practices_max_time." + KEY_PRACTICE_HISTORY_ID_PRACTICE + "="
+                        + TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + " " +
+                        "and " +
+                        "practices_max_time." + KEY_PRACTICE_HISTORY_LAST_TIME + "=" +
+                        "" + TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_LAST_TIME + " " +
+                        "order by " + TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_DATE + " desc, " +
+                        TABLE_PRACTICE_HISTORY + "." + KEY_PRACTICE_HISTORY_DURATION + " desc; ";
         db.execSQL(tempTableQuery);
-                String selectQuery="select " +
+
+        tempTableQuery =
+                "create temporary table " + tempTableOtherPractices + " as " +
+                        "select " +
+                        tempTableActivePractices + "." + KEY_PRACTICE_ID + ", " +
+                        tempTableActivePractices + "." + KEY_PRACTICE_NAME + " " +
+                        "from " + tempTableActivePractices + " WHERE " + tempTableActivePractices + "." + KEY_PRACTICE_ID + " not in " +
+                        "(select " + tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + " from " +
+                        tempTableCurrentDatePractices + " as " + tempTableCurrentDatePractices + " " +
+                        "union " +
+                        "select " + tempTablePreviousDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + " from " +
+                        tempTablePreviousDatePractices + " as " + tempTablePreviousDatePractices + ") " +
+                        "order by " + KEY_PRACTICE_NAME + "; ";
+        db.execSQL(tempTableQuery);
+        String selectQuery = "select " +
                 "1 as filter, " +
-                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_ID+", " +
-                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_DATE+", " +
-                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
-                        tempTableCurrentDatePractices+"."+KEY_PRACTICE_HISTORY_DURATION+" from " +
-                        "temp."+tempTableCurrentDatePractices +" "+
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID + ", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_DATE + ", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_LAST_TIME + ", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_DURATION + " from " +
+                "temp." + tempTableCurrentDatePractices + " " +
                 "union all " +
                 "select " +
                 "2 as filter, " +
-                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
-                        "0,0"+", " +
-                        tempTablePreviousDatePractices+"."+KEY_PRACTICE_HISTORY_LAST_TIME+", " +
-                        "0 "+" from " +
-                        " temp."+tempTablePreviousDatePractices+" "+
+                tempTablePreviousDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
+                "0,0" + ", " +
+                tempTablePreviousDatePractices + "." + KEY_PRACTICE_HISTORY_LAST_TIME + ", " +
+                "0 " + " from " +
+                " temp." + tempTablePreviousDatePractices + " " +
                 "union all " +
                 "select " +
                 "3 as filter, " +
-                        tempTableOtherPractices+"."+KEY_PRACTICE_ID+", " +
-                        "0,0,0,0 " +
-                "from temp."+tempTableOtherPractices +" "+
+                tempTableOtherPractices + "." + KEY_PRACTICE_ID + ", " +
+                "0,0,0,0 " +
+                "from temp." + tempTableOtherPractices + " " +
                 "ORDER BY filter; ";
         Cursor cursor = db.rawQuery(selectQuery, null);
         int id_practice_count = 0;

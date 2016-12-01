@@ -282,24 +282,20 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         blink(view, this);
 
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущую детальную историю?")
+                .setMessage("Do you want to delete current detailed practice history?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentDetailedPracticeHistory.dbDelete(DB);
                         sessionCurrentDetailedPracticeHistory = null;
-
                         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
                     }
                 }).setNegativeButton("Нет", null).show();
-
     }
 
     public void tvDuration_onClick(View view) {
-
         Intent intent = new Intent(ActivityDetailedPracticeHistory.this, ActivityDateTimePickerDialog.class);
         intent.putExtra("millis", sessionCurrentDetailedPracticeHistory.getDuration());
         intent.putExtra("CurrentActivity", "ActivityDetailedPracticeHistory");

@@ -115,13 +115,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     }
 
-
     @Override
     public void onOpen(SQLiteDatabase db) {
         super.onOpen(db);
         db.execSQL("PRAGMA foreign_keys=ON");
     }
-
 
     public synchronized void update1To2(SQLiteDatabase db) {
         //detailed practice history

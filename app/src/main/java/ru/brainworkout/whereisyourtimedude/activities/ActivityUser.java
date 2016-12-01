@@ -151,18 +151,11 @@ public class ActivityUser extends AbstractActivity {
     public void btDelete_onClick(final View view) {
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущего пользователя, его занятия, проекты и области?")
+                .setMessage("Do you want to delete current user, areas, projects and practices?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        DB.deleteAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
-                        DB.deleteAllPracticeHistoryOfUser(sessionCurrentUser.getId());
-                        DB.deleteAllPracticesOfUser(sessionCurrentUser.getId());
-                        DB.deleteAllProjectsOfUser(sessionCurrentUser.getId());
-                        DB.deleteAllAreasOfUser(sessionCurrentUser.getId());
                         mCurrentUser.dbDelete(DB);
-
                         if (mCurrentUser.equals(sessionCurrentUser)) {
                             List<User> userList = DB.getAllUsers();
                             if (userList.size() == 1) {
@@ -172,11 +165,9 @@ public class ActivityUser extends AbstractActivity {
                                 currentUser.dbSave(DB);
                             }
                         }
-
                         Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
                     }
                 }).setNegativeButton("Нет", null).show();
 

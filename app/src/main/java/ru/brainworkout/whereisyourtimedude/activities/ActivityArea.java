@@ -172,32 +172,16 @@ public class ActivityArea extends AbstractActivity {
 
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущую область, ее занятия, проекты и историю?")
+                .setMessage("Do you want to delete current area, it's projects and practices?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        List<Project> projects = DB.getAllProjectsOfArea(sessionCurrentArea.getId());
-
-                        for (Project project : projects
-                                ) {
-                            List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
-                            for (Practice practice : practices
-                                    ) {
-                                DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                            }
-                            DB.deleteAllPracticesOfProject(project.getId());
-                        }
-                        DB.deleteAllProjectsOfArea(sessionCurrentArea.getId());
-
                         sessionCurrentArea.dbDelete(DB);
                         sessionCurrentArea = null;
                         sessionOpenActivities.pollFirst();
-
                         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
                     }
                 }).setNegativeButton("Нет", null).show();
     }

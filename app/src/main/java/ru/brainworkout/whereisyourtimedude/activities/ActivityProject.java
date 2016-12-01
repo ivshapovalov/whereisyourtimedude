@@ -166,28 +166,16 @@ public class ActivityProject extends AbstractActivity {
     public void btDelete_onClick(final View view) {
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущий проект, его занятия и историю?")
+                .setMessage("Do you want to delete project, its practices and other?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        List<Practice> practices = DB.getAllActivePracticesOfProject(sessionCurrentProject.getId());
-
-                        for (Practice practice : practices
-                                ) {
-                            DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-
-                        }
-                        DB.deleteAllPracticesOfProject(sessionCurrentProject.getId());
-
                         sessionCurrentProject.dbDelete(DB);
                         sessionCurrentProject = null;
-
                         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
                         sessionOpenActivities.pollFirst();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-
                     }
                 }).setNegativeButton("Нет", null).show();
     }

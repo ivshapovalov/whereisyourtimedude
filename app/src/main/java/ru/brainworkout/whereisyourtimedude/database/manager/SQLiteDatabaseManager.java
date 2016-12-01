@@ -1385,7 +1385,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 TABLE_PRACTICES + "." + KEY_PRACTICE_ID + ", " +
                 TABLE_PRACTICES + "." + KEY_PRACTICE_NAME + " " +
                 "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 " +
-                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=1;";
+                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "="+id_user+";";
         db.execSQL(tempTableQuery);
         tempTableQuery =
                 " create temporary table " + tempTableCurrentDatePractices + " as select " +

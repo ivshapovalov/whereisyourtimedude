@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<TableLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.ActivityChrono">
-
-    <TableLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="*"
-        android:shrinkColumns="*">
+    android:stretchColumns="*"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".activities.ActivityChrono"
+    android:shrinkColumns="*">
 
         <TableRow
             android:layout_width="match_parent"
@@ -28,7 +24,8 @@
                 android:onClick="tv_AddNewPractice_onClick"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:layout_weight="100"/>
+                android:layout_span="108"
+                />
         </TableRow>
 
         <TableRow
@@ -44,8 +41,8 @@
                 android:gravity="center"
                 android:onClick="tvDate_onClick"
                 android:textStyle="bold"
-                android:layout_weight="100"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:layout_span="108"/>
         </TableRow>
 
         <TableRow
@@ -54,55 +51,55 @@
             android:id="@+id/rowCurrentWork"
             android:onClick="rowCurrentWork_onClick"
             android:layout_marginTop="10dp"
-            android:background="@android:drawable/progress_horizontal">
+            android:background="@android:drawable/progress_horizontal"
+            android:layout_margin="5dp">
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:stretchColumns="*"
                 android:id="@+id/tableCurrentWork"
-                android:layout_margin="5dp"
                 android:layout_weight="100">
 
                 <TableRow
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="100">
+                    >
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Name"
                         android:id="@+id/tvCurrentWorkName"
-                        android:layout_weight="50"/>
+                        android:layout_span="54"/>
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Time"
                         android:id="@+id/tvCurrentWorkTime"
-                        android:layout_weight="50"/>
+                        android:layout_span="54"/>
                 </TableRow>
 
                 <TableRow
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_span="50"
                     android:layout_weight="100">
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Area"
                         android:id="@+id/tvCurrentWorkArea"
-                        android:layout_weight="50"/>
+                        android:layout_span="54"/>
 
                     <TextView
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Date"
                         android:id="@+id/tvCurrentWorkDate"
-                        android:layout_weight="50"/>
+                        android:layout_span="54"/>
                 </TableRow>
             </TableLayout>
         </TableRow>
@@ -111,61 +108,71 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:id="@+id/scrollView"
-            android:layout_weight="100"
             android:layout_margin="5dp"
-            android:fillViewport="false">
+            android:fillViewport="false"
+            android:layout_weight="100">
 
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tablePractices"
-                android:stretchColumns="*">
+                android:stretchColumns="*"
+                android:shrinkColumns="*">
 
             </TableLayout>
         </ScrollView>
 
         <TableRow
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:id="@+id/tableRow2"
-            android:background="@drawable/bt_border"
-            >
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center">
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/button6"
                 android:onClick="btPreviousPage_onClick"
-                android:background="@drawable/bt_border"
+                android:background="@android:drawable/progress_horizontal"
                 android:text="PREV"
-                android:textColor="@color/text_color"
-                android:layout_span="0"
+                android:textColor="@color/white"
+                android:layout_span="45"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
                 />
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/btPageNumber"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color"
+                android:background="@android:drawable/progress_horizontal"
+                android:textColor="@color/white"
                 android:clickable="false"
-                android:layout_span="20"
-                />
+                android:layout_span="18"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:text="1000"
+                android:gravity="center"
+                android:layout_gravity="center_vertical"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="NEXT"
                 android:id="@+id/button26"
                 android:onClick="btNextPage_onClick"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color"
-                android:layout_span="20"
-                />
+                android:background="@android:drawable/progress_horizontal"
+                android:textColor="@color/white"
+                android:layout_span="45"
+                android:layout_marginLeft="1dp"
+                android:layout_marginRight="1dp"
+                android:gravity="center"/>
         </TableRow>
 
         <Chronometer
@@ -173,15 +180,14 @@
             android:layout_height="wrap_content"
             android:id="@+id/mChronometer"
             android:visibility="gone"
-            android:layout_weight="100"/>
+            />
 
         <Chronometer
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/mChronometerEternity"
             android:visibility="gone"
-            android:layout_weight="100"/>
+            />
 
     </TableLayout>
 
-</RelativeLayout>

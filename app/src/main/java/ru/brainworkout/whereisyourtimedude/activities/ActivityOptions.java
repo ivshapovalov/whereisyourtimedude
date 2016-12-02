@@ -29,19 +29,25 @@ public class ActivityOptions extends AbstractActivity {
         setTitleOfActivity(this);
     }
 
-
     public void buttonSave_onClick(View view) {
+        blink(view, this);
 
-        int mSaveInterval = getResources().getIdentifier("etSaveInterval", "id", getPackageName());
-        EditText txt = (EditText) findViewById(mSaveInterval);
-        if (txt != null) {
+        int saveIntervalID = getResources().getIdentifier("etSaveInterval", "id", getPackageName());
+        EditText etSaveInterval = (EditText) findViewById(saveIntervalID);
+        if (etSaveInterval != null) {
             try {
-                options.setSaveInterval(Integer.valueOf(txt.getText().toString()));
+                options.setSaveInterval(Integer.valueOf(etSaveInterval.getText().toString()));
             } catch (ClassCastException e) {
 
             }
         }
-        blink(view, this);
+
+        int rowNumberInListsID = getResources().getIdentifier("etRowNumberInLists", "id", getPackageName());
+        EditText etRowNumberInLists = (EditText) findViewById(rowNumberInListsID);
+        if (etRowNumberInLists != null) {
+            options.setRowNumberInLists(Integer.valueOf(etRowNumberInLists.getText().toString()));
+        }
+
         options.dbSave(DB);
         Session.sessionOptions = options;
         Session.saveInterval = options.getSaveInterval();
@@ -139,6 +145,12 @@ public class ActivityOptions extends AbstractActivity {
         EditText txt = (EditText) findViewById(idSaveInterval);
         if (txt != null) {
             txt.setText(String.valueOf(options.getSaveInterval()));
+        }
+
+        int rowNumberInListsID = getResources().getIdentifier("etRowNumberInLists", "id", getPackageName());
+        EditText rowNumberInLists = (EditText) findViewById(rowNumberInListsID);
+        if (rowNumberInLists != null) {
+            rowNumberInLists.setText(String.valueOf(options.getRowNumberInLists()));
         }
 
     }

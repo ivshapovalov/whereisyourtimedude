@@ -37,7 +37,7 @@ public class ActivityMain extends AbstractActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getPreferencesFromDB();
+        getOptionsFromDB();
         showElementsOnScreen();
         resumeChronoIfWorking();
 
@@ -144,7 +144,7 @@ public class ActivityMain extends AbstractActivity {
         }
     }
 
-    private void getPreferencesFromDB() {
+    private void getOptionsFromDB() {
         Options options = null;
         if (Session.sessionCurrentUser != null) {
             options = DB.getOptionsOfUser(Session.sessionCurrentUser.getId());

@@ -157,4 +157,31 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/lineRowNumberInLists"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:layout_below="@+id/lineSaveInterval">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="50"
+            android:text="ROW NUMBER IN LISTS"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_color"/>
+
+        <EditText
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:ems="10"
+            android:id="@+id/etRowNumberInLists"
+            android:layout_weight="50"/>
+    </LinearLayout>
+
 </RelativeLayout>

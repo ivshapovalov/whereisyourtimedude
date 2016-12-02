@@ -10,6 +10,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
     private int displayNotificationTimerSwitch;
     private int saveInterval;
     private int chronoIsWorking;
+    private int rowNumberInLists;
 
     public int getRecoveryOnRunSwitch() {
         return recoveryOnRunSwitch;
@@ -43,6 +44,14 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
         this.chronoIsWorking = chronoIsWorking;
     }
 
+    public int getRowNumberInLists() {
+        return rowNumberInLists;
+    }
+
+    public void setRowNumberInLists(int rowNumberInLists) {
+        this.rowNumberInLists = rowNumberInLists;
+    }
+
     private Options(Builder builder) {
 
         this.id = builder.id;
@@ -50,7 +59,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
         this.displayNotificationTimerSwitch = builder.displayNotificationTimerSwitch;
         this.saveInterval = builder.saveInterval;
         this.chronoIsWorking = builder.chronoIsWorking;
-
+        this.rowNumberInLists = builder.rowNumberInLists;
     }
 
     @Override
@@ -84,7 +93,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
         private int displayNotificationTimerSwitch;
         private int saveInterval;
         private int chronoIsWorking;
-
+        private int rowNumberInLists;
 
         public Builder(SQLiteDatabaseManager DB) {
             this.id = DB.getOptionsMaxNumber() + 1;
@@ -112,6 +121,11 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
 
         public Builder addChronoIsWorking(int chronoIsWorking) {
             this.chronoIsWorking = chronoIsWorking;
+            return this;
+        }
+
+        public Builder addRowsNumberInLists(int rowsNumberInLists) {
+            this.rowNumberInLists = rowsNumberInLists;
             return this;
         }
 

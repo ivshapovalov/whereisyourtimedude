@@ -68,9 +68,52 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/svTableAreas"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="20dp"
+            android:layout_weight="100">
 
         </ScrollView>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tableRow3"
+            android:background="@drawable/bt_border">
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/button25"
+                android:onClick="btPreviousPage_onClick"
+                android:layout_span="14"
+                android:background="@drawable/bt_border"
+                android:text="PREVIOUS PAGE"
+                android:textColor="@color/text_color"/>
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btPageNumber"
+                android:layout_span="8"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"
+                android:nestedScrollingEnabled="true"
+                android:clickable="false"/>
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="NEXT PAGE"
+                android:id="@+id/button28"
+                android:onClick="btNextPage_onClick"
+                android:layout_span="14"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+        </TableRow>
 
     </TableLayout>
 

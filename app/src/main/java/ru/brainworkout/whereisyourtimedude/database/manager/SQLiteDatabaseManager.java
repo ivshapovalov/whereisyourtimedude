@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     // Database Name
     private static final String DATABASE_NAME = "wiytd";
@@ -43,6 +43,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER = "options_display_notification_timer";
     private static final String KEY_OPTIONS_SAVE_INTERVAL = "options_save_interval";
     private static final String KEY_OPTIONS_CHRONO_IS_WORKING = "options_chrono_is_working";
+    private static final String KEY_OPTIONS_ROW_NUMBER_IN_LISTS= "options_rows_number_in_lists";
+
 
     // Practice
     private static final String KEY_PRACTICE_ID = "practice_id";
@@ -90,7 +92,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     @Override
     public synchronized void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 1 && newVersion == 2) {
+        if (oldVersion == 2 && newVersion == 3) {
             //TODO
             //update1To2(db);
 
@@ -188,7 +190,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_OPTIONS_ID_USER + " INTEGER, "
                 + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
-                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER," + KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER" + ")";
+                + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER," + KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER,"
+                + KEY_OPTIONS_ROW_NUMBER_IN_LISTS + " INTEGER"+ ")";
         db.execSQL(CREATE_OPTIONS_TABLE);
 
         //users
@@ -207,7 +210,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_AREAS_TABLE);
 
-
         String CREATE_AREAS_INDEX_USER_ASC = "CREATE INDEX AREAS_USER_IDX_ASC ON " + TABLE_AREAS + " (" + KEY_AREA_ID_USER + " ASC)";
         db.execSQL(CREATE_AREAS_INDEX_USER_ASC);
         String CREATE_AREAS_INDEX_USER_DESC = "CREATE INDEX AREAS_USER_IDX_DESC ON " + TABLE_AREAS + " (" + KEY_AREA_ID_USER + " DESC)";
@@ -224,7 +226,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + TABLE_AREAS + "(" + KEY_AREA_ID + ") ON DELETE CASCADE ON UPDATE CASCADE"
                 + ")";
         db.execSQL(CREATE_PROJECTS_TABLE);
-
 
         String CREATE_PROJECTS_INDEX_USER_ASC = "CREATE INDEX PROJECTS_USER_IDX_ASC ON " + TABLE_PROJECTS + " (" + KEY_PROJECT_ID_USER + " ASC)";
         db.execSQL(CREATE_PROJECTS_INDEX_USER_ASC);
@@ -391,6 +392,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
+        values.put(KEY_OPTIONS_ROW_NUMBER_IN_LISTS, options.getRowNumberInLists());
 
         db.insert(TABLE_OPTIONS, null, values);
         db.close();
@@ -547,7 +549,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
-                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING,
+                        KEY_OPTIONS_ROW_NUMBER_IN_LISTS}, KEY_OPTIONS_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -561,6 +564,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                     .addDisplaySwitch(cursor.getInt(2))
                     .addSaveInterval(cursor.getInt(3))
                     .addChronoIsWorking(cursor.getInt(4))
+                    .addRowsNumberInLists(cursor.getInt(5))
                     .build();
 
             cursor.close();
@@ -573,7 +577,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
-                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL,
+                KEY_OPTIONS_CHRONO_IS_WORKING,KEY_OPTIONS_ROW_NUMBER_IN_LISTS}, KEY_OPTIONS_ID_USER + "=?",
                 new String[]{String.valueOf(id_user)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -588,6 +593,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                     .addDisplaySwitch(cursor.getInt(2))
                     .addSaveInterval(cursor.getInt(3))
                     .addChronoIsWorking(cursor.getInt(4))
+                    .addRowsNumberInLists(cursor.getInt(5))
                     .build();
 
             cursor.close();
@@ -1919,6 +1925,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, options.getDisplayNotificationTimerSwitch());
         values.put(KEY_OPTIONS_SAVE_INTERVAL, options.getSaveInterval());
         values.put(KEY_OPTIONS_CHRONO_IS_WORKING, options.getChronoIsWorking());
+        values.put(KEY_OPTIONS_ROW_NUMBER_IN_LISTS, options.getRowNumberInLists());
         int rows = db.update(TABLE_OPTIONS, values, KEY_OPTIONS_ID + " = ?",
                 new String[]{String.valueOf(options.getId())});
         db.close();

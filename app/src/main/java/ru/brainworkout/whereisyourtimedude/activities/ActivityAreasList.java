@@ -126,8 +126,8 @@ public class ActivityAreasList extends AbstractActivity {
     private void showAreas() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null) {
-            pageNumber.setText(String.valueOf(currentPage));
+        if (pageNumber != null && pagingAreas!=null ) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingAreas.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableAreas);

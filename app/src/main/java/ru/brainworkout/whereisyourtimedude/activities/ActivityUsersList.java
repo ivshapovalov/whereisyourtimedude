@@ -13,11 +13,15 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
+import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 
@@ -25,6 +29,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.paramsTextViewWithSpanInList;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
 public class ActivityUsersList extends AbstractActivity {
 
@@ -36,7 +43,11 @@ public class ActivityUsersList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
+    private int id_user;
 
+    private int rows_number;
+    Map<Integer, List<User>> pagingUsers = new HashMap<>();
+    private int currentPage = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -49,12 +60,17 @@ public class ActivityUsersList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
+        Intent intent = getIntent();
+        getIntentParams(intent);
+
+        if (Session.sessionOptions!=null) {
+            rows_number=sessionOptions.getRowNumberInLists();
+        }
+
+        pageUsers();
         showUsers();
 
-        Intent intent = getIntent();
-        int id = intent.getIntExtra("id", 0);
-
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_user);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableUsers", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
@@ -63,6 +79,32 @@ public class ActivityUsersList extends AbstractActivity {
             }
         }
         setTitleOfActivity(this);
+    }
+
+    private void getIntentParams(Intent intent) {
+        id_user = intent.getIntExtra("id", 0);
+    }
+
+    private void pageUsers() {
+        List<User> users = DB.getAllUsers();
+        List<User> pageContent = new ArrayList<>();
+        int pageNumber = 1;
+        for (int i = 0; i < users.size(); i++) {
+            if (id_user != 0) {
+                if (users.get(i).getId() == id_user) {
+                    currentPage = pageNumber;
+                }
+            }
+            pageContent.add(users.get(i));
+            if (pageContent.size() == rows_number) {
+                pagingUsers.put(pageNumber, pageContent);
+                pageContent = new ArrayList<>();
+                pageNumber++;
+            }
+        }
+        if (pageContent.size() != 0) {
+            pagingUsers.put(pageNumber, pageContent);
+        }
     }
 
     public void btUsersAdd_onClick(final View view) {
@@ -75,7 +117,10 @@ public class ActivityUsersList extends AbstractActivity {
 
     private void showUsers() {
 
-        List<User> users = DB.getAllUsers();
+        Button pageNumber = (Button) findViewById(R.id.btPageNumber);
+        if (pageNumber != null && pagingUsers!=null) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingUsers.size());
+        }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableUsers);
         try {
@@ -101,9 +146,13 @@ public class ActivityUsersList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        for (int numUser = 0; numUser < users.size(); numUser++) {
+        List<User> page = pagingUsers.get(currentPage);
+        if (page == null) return;
+        int currentPageSize = page.size();
+        for (int num = 0; num < currentPageSize; num++) {
+            User user=page.get(num);
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + users.get(numUser).getId());
+            mRow.setId(NUMBER_OF_VIEWS + user.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -115,7 +164,7 @@ public class ActivityUsersList extends AbstractActivity {
             mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(users.get(numUser).getId()));
+            txt.setText(String.valueOf(user.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setTextSize(mTextSize);
@@ -124,7 +173,7 @@ public class ActivityUsersList extends AbstractActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = String.valueOf(users.get(numUser).getName()) + ((users.get(numUser).isCurrentUser() == 1) ? " (CURRENT)" : "");
+            String name = String.valueOf(user.getName()) + ((user.isCurrentUser() == 1) ? " (CURRENT)" : "");
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -138,7 +187,6 @@ public class ActivityUsersList extends AbstractActivity {
 
         }
         sv.addView(layout);
-
     }
 
     private void rowUser_onClick(final TableRow view) {
@@ -200,6 +248,23 @@ public class ActivityUsersList extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void btNextPage_onClick(View view) {
+        blink(view, this);
+
+        if (currentPage != pagingUsers.size()) {
+            currentPage++;
+        }
+        showUsers();
+    }
+
+    public void btPreviousPage_onClick(View view) {
+        blink(view, this);
+        if (currentPage != 1) {
+            currentPage--;
+        }
+        showUsers();
     }
 }
 

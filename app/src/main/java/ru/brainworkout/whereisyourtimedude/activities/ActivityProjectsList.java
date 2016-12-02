@@ -124,8 +124,8 @@ public class ActivityProjectsList extends AbstractActivity {
     private void showProjects() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null) {
-            pageNumber.setText(String.valueOf(currentPage));
+        if (pageNumber != null && pagingProjects!=null) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingProjects.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);

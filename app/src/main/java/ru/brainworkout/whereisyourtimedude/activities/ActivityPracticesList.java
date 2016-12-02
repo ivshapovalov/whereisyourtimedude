@@ -14,7 +14,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
@@ -42,6 +45,10 @@ public class ActivityPracticesList extends AbstractActivity {
     private int id_practice;
     private ConnectionParameters params;
 
+    private int rows_number = 17;
+    Map<Integer, List<Practice>> pagingPractices = new HashMap<>();
+    private int currentPage = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +62,11 @@ public class ActivityPracticesList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
+        if (Session.sessionOptions!=null) {
+            rows_number=sessionOptions.getRowNumberInLists();
+        }
+
+        pagePractices();
         showPractices();
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_practice);
@@ -68,6 +80,32 @@ public class ActivityPracticesList extends AbstractActivity {
         setTitleOfActivity(this);
     }
 
+    private void pagePractices() {
+        List<Practice> practices = new ArrayList<>();
+        if (sessionCurrentUser == null) {
+        } else {
+            practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
+        }
+        List<Practice> pageContent = new ArrayList<>();
+        int pageNumber = 1;
+        for (int i = 0; i < practices.size(); i++) {
+            if (id_practice != 0) {
+                if (practices.get(i).getId() == id_practice) {
+                    currentPage = pageNumber;
+                }
+            }
+            pageContent.add(practices.get(i));
+            if (pageContent.size() == rows_number) {
+                pagingPractices.put(pageNumber, pageContent);
+                pageContent = new ArrayList<>();
+                pageNumber++;
+            }
+        }
+        if (pageContent.size() != 0) {
+            pagingPractices.put(pageNumber, pageContent);
+        }
+    }
+
     private void getIntentParams(Intent intent) {
         id_practice = intent.getIntExtra("CurrentPracticeID", 0);
         if (!sessionOpenActivities.isEmpty()) {
@@ -77,11 +115,9 @@ public class ActivityPracticesList extends AbstractActivity {
 
     private void showPractices() {
 
-        List<Practice> practices;
-        if (sessionCurrentUser != null) {
-            practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
-        } else {
-            practices = DB.getAllActivePractices();
+        Button pageNumber = (Button) findViewById(R.id.btPageNumber);
+        if (pageNumber != null && pagingPractices!=null ) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingPractices.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTablePractices);
@@ -108,9 +144,11 @@ public class ActivityPracticesList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        for (int numPractice = 0; numPractice < practices.size(); numPractice++) {
-
-            Practice currentPractice = practices.get(numPractice);
+        List<Practice> page = pagingPractices.get(currentPage);
+        if (page == null) return;
+        int currentPageSize = page.size();
+        for (int num = 0; num < currentPageSize; num++) {
+            Practice currentPractice = page.get(num);
 
             TableRow mRow = new TableRow(this);
             mRow.setId(NUMBER_OF_VIEWS + currentPractice.getId());
@@ -321,6 +359,23 @@ public class ActivityPracticesList extends AbstractActivity {
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void btNextPage_onClick(View view) {
+        blink(view, this);
+
+        if (currentPage != pagingPractices.size()) {
+            currentPage++;
+        }
+        showPractices();
+    }
+
+    public void btPreviousPage_onClick(View view) {
+        blink(view, this);
+        if (currentPage != 1) {
+            currentPage--;
+        }
+        showPractices();
     }
 }
 

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Chronometer;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -29,9 +30,10 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgroundChronometer;
@@ -55,6 +57,11 @@ public class ActivityChrono extends AbstractActivity {
     private Intent backgroundServiceIntent;
     private TableLayout tableHistory;
     private ConnectionParameters params;
+
+    private int rows_number = 5;
+    Map<Integer, List<PracticeHistory>> pagingPracticeHistories = new HashMap<>();
+    private int currentPage = 1;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,7 +147,9 @@ public class ActivityChrono extends AbstractActivity {
                 }
             }
         }
+
         updateAllRows();
+
 
         //уберу до поры до времени.
 //        SwipeDetectorActivity swipeDetectorActivity = new SwipeDetectorActivity(ActivityChrono.this);
@@ -148,10 +157,11 @@ public class ActivityChrono extends AbstractActivity {
 //        sv.setOnTouchListener(swipeDetectorActivity);
     }
 
+
     private void init() {
 
         currentDateInMillis = getBeginOfCurrentDateInMillis();
-        updatePractices(currentDateInMillis);
+        updateAndPagePractices(currentDateInMillis);
 
         if (practiceHistories.isEmpty()) {
             return;
@@ -185,7 +195,7 @@ public class ActivityChrono extends AbstractActivity {
     private void autoChangeDay(Long newDateInMillis) {
         mChronometerIsWorking = false;
 
-        updatePractices(newDateInMillis);
+        updateAndPagePractices(newDateInMillis);
 
         if (practiceHistories.isEmpty()) {
             return;
@@ -211,7 +221,7 @@ public class ActivityChrono extends AbstractActivity {
 //        if (mChronometerIsWorking) {
 //            stopTimer();
 //        }
-        updatePractices(date);
+        updateAndPagePractices(date);
 
         if (practiceHistories.isEmpty()) {
             return;
@@ -321,16 +331,32 @@ public class ActivityChrono extends AbstractActivity {
         mChronometerIsWorking = true;
         mChronometer.start();
 
-        updatePractices(currentDateInMillis);
+        updateAndPagePractices(currentDateInMillis);
         updateAllRows();
     }
 
-    private void updatePractices(long date) {
+    private void updateAndPagePractices(long date) {
 
         if (sessionCurrentUser != null) {
             practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
-        }
 
+            List<PracticeHistory> pageContent = new ArrayList<>();
+            int pageNumber = 1;
+            pageContent.add(practiceHistories.get(0));
+            pagingPracticeHistories.put(0,pageContent );
+            pageContent=new ArrayList<>();
+            for (int i = 1; i < practiceHistories.size(); i++) {
+                pageContent.add(practiceHistories.get(i));
+                if (pageContent.size() == rows_number) {
+                    pagingPracticeHistories.put(pageNumber, pageContent);
+                    pageContent = new ArrayList<>();
+                    pageNumber++;
+                }
+            }
+            if (pageContent.size() != 0) {
+                pagingPracticeHistories.put(pageNumber, pageContent);
+            }
+        }
     }
 
     public void rowCurrentWork_onClick(View view) {
@@ -375,10 +401,15 @@ public class ActivityChrono extends AbstractActivity {
 
     private void updateAllRows() {
 
+        Button pageNumber = (Button) findViewById(R.id.btPageNumber);
+        if (pageNumber != null) {
+            pageNumber.setText(String.valueOf(currentPage));
+        }
+
         String areaName = "";
         int areaColor = 0;
 
-        if (currentPracticeHistory!=null) {
+        if (currentPracticeHistory != null) {
             Practice practice = currentPracticeHistory.getPractice();
             if (practice != null) {
                 Project project = practice.getProject();
@@ -409,7 +440,7 @@ public class ActivityChrono extends AbstractActivity {
             }
         }
 
-        if (currentPracticeHistory!=null) {
+        if (currentPracticeHistory != null) {
             if (mChronometerIsWorking) {
                 setTimerText(Common.SYMBOL_PLAY, currentPracticeHistory.getDuration());
             } else {
@@ -424,7 +455,7 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
         if (tvCurrentDate != null) {
-            if (currentPracticeHistory!=null) {
+            if (currentPracticeHistory != null) {
                 if (currentPracticeHistory.getLastTime() != 0) {
                     tvCurrentDate.setText(convertMillisToStringDateTime(currentPracticeHistory.getLastTime()));
                 } else {
@@ -439,16 +470,19 @@ public class ActivityChrono extends AbstractActivity {
         }
 
         tableHistory.removeAllViews();
-        for (int i = 1; i < practiceHistories.size(); i++
-                ) {
-            TableRow mRow = CreateTableRow(i);
+
+        List<PracticeHistory> page = pagingPracticeHistories.get(currentPage);
+        if (page == null) return;
+        int currentPageSize = page.size();
+        for (int num = 0; num < currentPageSize; num++) {
+            TableRow mRow = CreateTableRow(num);
             tableHistory.addView(mRow);
         }
     }
 
     @NonNull
     private TableRow CreateTableRow(int i) {
-        PracticeHistory practiceHistory = practiceHistories.get(i);
+        PracticeHistory practiceHistory = pagingPracticeHistories.get(currentPage).get(i);
 
         String practiceName = "";
         String areaName = "";
@@ -485,31 +519,29 @@ public class ActivityChrono extends AbstractActivity {
 
         TableRow row1 = new TableRow(this);
         row1.setLayoutParams(paramsRow);
+        row1.setBackgroundColor(areaColor);
 
         TextView txtName = new TextView(this);
-        txtName.setBackgroundColor(areaColor);
         txtName.setText(practiceName);
         txtName.setLayoutParams(paramsTextView);
         row1.addView(txtName);
 
         TextView txtTime = new TextView(this);
-        txtTime.setBackgroundColor(areaColor);
         txtTime.setText(convertMillisToStringWithAllTime(practiceHistory.getDuration()));
         txtTime.setLayoutParams(paramsTextView);
         row1.addView(txtTime);
         layout.addView(row1);
 
         TableRow row2 = new TableRow(this);
+        row2.setBackgroundColor(areaColor);
         row2.setLayoutParams(paramsRow);
         TextView txtArea = new TextView(this);
-        txtArea.setBackgroundColor(areaColor);
         txtArea.setText(areaName);
         txtArea.setLayoutParams(paramsTextView);
         row2.addView(txtArea);
 
         TextView txtDate = new TextView(this);
         txtDate.setBackgroundColor(areaColor);
-
         if (practiceHistory.getLastTime() != 0) {
             String date = convertMillisToStringDateTime(practiceHistory.getLastTime());
             txtDate.setText(date);
@@ -586,6 +618,23 @@ public class ActivityChrono extends AbstractActivity {
         currentDateInMillis = 0;
         startActivity(intent);
 
+    }
+
+    public void btNextPage_onClick(View view) {
+        blink(view, this);
+
+        if (currentPage != pagingPracticeHistories.size()) {
+            currentPage++;
+        }
+        updateAllRows();
+    }
+
+    public void btPreviousPage_onClick(View view) {
+        blink(view, this);
+        if (currentPage != 1) {
+            currentPage--;
+        }
+        updateAllRows();
     }
 
     //пока не использовать.

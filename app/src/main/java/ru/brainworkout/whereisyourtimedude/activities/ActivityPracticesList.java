@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -42,11 +41,11 @@ public class ActivityPracticesList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private int id_practice;
+    private int idIntentPractice;
     private ConnectionParameters params;
 
     private int rows_number = 17;
-    Map<Integer, List<Practice>> pagingPractices = new HashMap<>();
+    private Map<Integer, List<Practice>> pagedPractices = new HashMap<>();
     private int currentPage = 1;
 
     @Override
@@ -69,7 +68,7 @@ public class ActivityPracticesList extends AbstractActivity {
         pagePractices();
         showPractices();
 
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_practice);
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentPractice);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTablePractices", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
@@ -89,25 +88,25 @@ public class ActivityPracticesList extends AbstractActivity {
         List<Practice> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < practices.size(); i++) {
-            if (id_practice != 0) {
-                if (practices.get(i).getId() == id_practice) {
+            if (idIntentPractice != 0) {
+                if (practices.get(i).getId() == idIntentPractice) {
                     currentPage = pageNumber;
                 }
             }
             pageContent.add(practices.get(i));
             if (pageContent.size() == rows_number) {
-                pagingPractices.put(pageNumber, pageContent);
+                pagedPractices.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;
             }
         }
         if (pageContent.size() != 0) {
-            pagingPractices.put(pageNumber, pageContent);
+            pagedPractices.put(pageNumber, pageContent);
         }
     }
 
     private void getIntentParams(Intent intent) {
-        id_practice = intent.getIntExtra("CurrentPracticeID", 0);
+        idIntentPractice = intent.getIntExtra("CurrentPracticeID", 0);
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
@@ -116,8 +115,8 @@ public class ActivityPracticesList extends AbstractActivity {
     private void showPractices() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagingPractices!=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingPractices.size());
+        if (pageNumber != null && pagedPractices !=null ) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPractices.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTablePractices);
@@ -144,7 +143,7 @@ public class ActivityPracticesList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        List<Practice> page = pagingPractices.get(currentPage);
+        List<Practice> page = pagedPractices.get(currentPage);
         if (page == null) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
@@ -354,7 +353,7 @@ public class ActivityPracticesList extends AbstractActivity {
 
                 intent = new Intent(getApplicationContext(), transmitterClass);
                 sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentPracticeID", id_practice);
+                intent.putExtra("CurrentPracticeID", idIntentPractice);
             }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -364,7 +363,7 @@ public class ActivityPracticesList extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagingPractices.size()) {
+        if (currentPage != pagedPractices.size()) {
             currentPage++;
         }
         showPractices();

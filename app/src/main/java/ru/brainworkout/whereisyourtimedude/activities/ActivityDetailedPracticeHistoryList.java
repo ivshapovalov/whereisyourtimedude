@@ -13,7 +13,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
@@ -22,7 +25,6 @@ import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.convertMillisToStringDate;
 import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
@@ -32,6 +34,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.paramsTextViewWi
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
 public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
@@ -43,7 +46,12 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    ConnectionParameters params;
+    private int idIntentDetailedPracticeHistory;
+    private ConnectionParameters params;
+
+    private int rows_number = 0;
+    private Map<Integer, List<DetailedPracticeHistory>> pagedDetailedPracticeHistory = new HashMap<>();
+    private int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +73,20 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
+        if (Session.sessionOptions!=null) {
+            rows_number=sessionOptions.getRowNumberInLists();
+        }
+
+        Intent intent = getIntent();
+        getIntentParams(intent);
+        pageDetailedPracticeHistory();
         showDetailedPracticeHistory();
 
         LOG.debug("ActivityDetailedPracticeHistoryList after show pr history");
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
-        Intent intent = getIntent();
-        int id = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
-
-        TableRow mRow = (TableRow) findViewById(id);
+        TableRow mRow = (TableRow) findViewById(idIntentDetailedPracticeHistory);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableDetailedPracticeHistory", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
@@ -90,11 +102,40 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         LOG.debug(message);
     }
 
+    private void pageDetailedPracticeHistory() {
+        List<DetailedPracticeHistory> areas = new ArrayList<>();
+        if (sessionCurrentUser == null) {
+        } else {
+            areas = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
+        }
+        List<DetailedPracticeHistory> pageContent = new ArrayList<>();
+        int pageNumber = 1;
+        for (int i = 0; i < areas.size(); i++) {
+            if (idIntentDetailedPracticeHistory != 0) {
+                if (areas.get(i).getId() == idIntentDetailedPracticeHistory) {
+                    currentPage = pageNumber;
+                }
+            }
+            pageContent.add(areas.get(i));
+            if (pageContent.size() == rows_number) {
+                pagedDetailedPracticeHistory.put(pageNumber, pageContent);
+                pageContent = new ArrayList<>();
+                pageNumber++;
+            }
+        }
+        if (pageContent.size() != 0) {
+            pagedDetailedPracticeHistory.put(pageNumber, pageContent);
+        }
+
+    }
+
+    private void getIntentParams(Intent intent) {
+        idIntentDetailedPracticeHistory = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
+    }
 
     public void btDetailedPracticeHistoryAdd_onClick(final View view) {
 
         blink(view, this);
-
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityDetailedPracticeHistory")
                 .isTransmitterNew(true)
@@ -113,16 +154,14 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     private void showDetailedPracticeHistory() {
 
+        Button pageNumber = (Button) findViewById(R.id.btPageNumber);
+        if (pageNumber != null && pagedDetailedPracticeHistory !=null ) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedDetailedPracticeHistory.size());
+        }
+
         LOG.debug("ActivityDetailedPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
-
-        List<DetailedPracticeHistory> detailedPracticeHistories;
-        if (sessionCurrentUser != null) {
-            detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
-        } else {
-            detailedPracticeHistories = DB.getAllDetailedPracticeHistory();
-        }
 
         LOG.debug("after get histories from db");
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
@@ -150,9 +189,11 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        for (int numDetailedPracticeHistory = 0; numDetailedPracticeHistory < detailedPracticeHistories.size(); numDetailedPracticeHistory++) {
-
-            DetailedPracticeHistory currentDetailedPracticeHistory = detailedPracticeHistories.get(numDetailedPracticeHistory);
+        List<DetailedPracticeHistory> page = pagedDetailedPracticeHistory.get(currentPage);
+        if (page == null) return;
+        int currentPageSize = page.size();
+        for (int num = 0; num < currentPageSize; num++) {
+            DetailedPracticeHistory currentDetailedPracticeHistory = page.get(num);
 
             TableRow mRow = new TableRow(this);
             mRow.setId(currentDetailedPracticeHistory.getId());
@@ -240,6 +281,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.putExtra("CurrentDetailedPracticeHistoryID", id);
         startActivity(intent);
+
     }
 
     private void rowDetailedPracticeHistory_onClick(final TableRow view) {
@@ -262,12 +304,10 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     }
 
     public void btEdit_onClick(final View view) {
-
         blink(view, this);
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
-
 
     public void buttonHome_onClick(final View view) {
         blink(view, this);
@@ -302,6 +342,22 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     protected void onDestroy() {
         LOG.debug("ActivityDetailedPracticeHistoryList destroyed");
         super.onDestroy();
+    }
+
+    public void btNextPage_onClick(View view) {
+        blink(view, this);
+        if (currentPage != pagedDetailedPracticeHistory.size()) {
+            currentPage++;
+        }
+        showDetailedPracticeHistory();
+    }
+
+    public void btPreviousPage_onClick(View view) {
+        blink(view, this);
+        if (currentPage != 1) {
+            currentPage--;
+        }
+        showDetailedPracticeHistory();
     }
 }
 

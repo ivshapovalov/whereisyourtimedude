@@ -26,7 +26,6 @@ import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
@@ -47,11 +46,11 @@ public class ActivityProjectsList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private int id_project;
-    ConnectionParameters params;
+    private int idIntentProject;
+    private ConnectionParameters params;
 
     private int rows_number = 17;
-    Map<Integer, List<Project>> pagingProjects = new HashMap<>();
+    private Map<Integer, List<Project>> pagedProjects = new HashMap<>();
     private int currentPage = 1;
 
     @Override
@@ -75,7 +74,7 @@ public class ActivityProjectsList extends AbstractActivity {
 
         pageProjects();
         showProjects();
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_project);
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentProject);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
@@ -97,25 +96,25 @@ public class ActivityProjectsList extends AbstractActivity {
         List<Project> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < projects.size(); i++) {
-            if (id_project != 0) {
-                if (projects.get(i).getId() == id_project) {
+            if (idIntentProject != 0) {
+                if (projects.get(i).getId() == idIntentProject) {
                     currentPage = pageNumber;
                 }
             }
             pageContent.add(projects.get(i));
             if (pageContent.size() == rows_number) {
-                pagingProjects.put(pageNumber, pageContent);
+                pagedProjects.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;
             }
         }
         if (pageContent.size() != 0) {
-            pagingProjects.put(pageNumber, pageContent);
+            pagedProjects.put(pageNumber, pageContent);
         }
     }
 
     private void getIntentParams(Intent intent) {
-        id_project = intent.getIntExtra("CurrentProjectID", 0);
+        idIntentProject = intent.getIntExtra("CurrentProjectID", 0);
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
@@ -124,8 +123,8 @@ public class ActivityProjectsList extends AbstractActivity {
     private void showProjects() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagingProjects!=null) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingProjects.size());
+        if (pageNumber != null && pagedProjects !=null) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedProjects.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);
@@ -150,7 +149,7 @@ public class ActivityProjectsList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        List<Project> page = pagingProjects.get(currentPage);
+        List<Project> page = pagedProjects.get(currentPage);
         if (page == null) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
@@ -336,7 +335,7 @@ public class ActivityProjectsList extends AbstractActivity {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
                 sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentProjectID", id_project);
+                intent.putExtra("CurrentProjectID", idIntentProject);
             }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -346,7 +345,7 @@ public class ActivityProjectsList extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagingProjects.size()) {
+        if (currentPage != pagedProjects.size()) {
             currentPage++;
         }
         showProjects();

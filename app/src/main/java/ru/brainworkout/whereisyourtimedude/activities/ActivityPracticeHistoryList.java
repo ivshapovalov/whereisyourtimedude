@@ -13,7 +13,10 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
@@ -22,7 +25,6 @@ import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
@@ -30,17 +32,24 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
 public class ActivityPracticeHistoryList extends AbstractActivity {
 
-    private final int MAX_VERTICAL_BUTTON_COUNT = 15;
+    private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
     private final int NUMBER_OF_VIEWS = 40000;
+
     private int mHeight = 0;
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    ConnectionParameters params;
+    private ConnectionParameters params;
+    private int idIntentPracticeHistory;
+
+    private int rows_number = 0;
+    private Map<Integer, List<PracticeHistory>> pagedPracticeHistory = new HashMap<>();
+    private int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +71,19 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
+        if (Session.sessionOptions!=null) {
+            rows_number=sessionOptions.getRowNumberInLists();
+        }
+        Intent intent = getIntent();
+        getIntentParams(intent);
+        pagePracticeHistories();
         showPracticeHistory();
 
         LOG.debug("ActivityPracticeHistoryList after show pr history");
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
-        Intent intent = getIntent();
-        int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
-
-        TableRow mRow = (TableRow) findViewById(id);
+        TableRow mRow = (TableRow) findViewById(idIntentPracticeHistory);
         //TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTablePracticeHistory", "id", getPackageName());
@@ -87,11 +99,40 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         LOG.debug(message);
     }
 
+    private void pagePracticeHistories() {
+        List<PracticeHistory> practiceHistories= new ArrayList<>();
+        if (sessionCurrentUser == null) {
+        } else {
+            practiceHistories = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
+        }
+        List<PracticeHistory> pageContent = new ArrayList<>();
+        int pageNumber = 1;
+        for (int i = 0; i < practiceHistories.size(); i++) {
+            if (idIntentPracticeHistory != 0) {
+                if (practiceHistories.get(i).getId() == idIntentPracticeHistory) {
+                    currentPage = pageNumber;
+                }
+            }
+            pageContent.add(practiceHistories.get(i));
+            if (pageContent.size() == rows_number) {
+                pagedPracticeHistory.put(pageNumber, pageContent);
+                pageContent = new ArrayList<>();
+                pageNumber++;
+            }
+        }
+        if (pageContent.size() != 0) {
+            pagedPracticeHistory.put(pageNumber, pageContent);
+        }
+    }
+
+    private void getIntentParams(Intent intent) {
+        idIntentPracticeHistory = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+    }
+
 
     public void btPracticeHistoryAdd_onClick(final View view) {
 
         blink(view, this);
-
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistory")
                 .isTransmitterNew(true)
@@ -109,16 +150,14 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
     private void showPracticeHistory() {
 
+        Button pageNumber = (Button) findViewById(R.id.btPageNumber);
+        if (pageNumber != null && pagedPracticeHistory !=null ) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPracticeHistory.size());
+        }
+
         LOG.debug("ActivityPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
         String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
-
-        List<PracticeHistory> practiceHistoryList;
-        if (sessionCurrentUser != null) {
-            practiceHistoryList = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
-        } else {
-            practiceHistoryList = DB.getAllPracticeHistory();
-        }
 
         LOG.debug("after get histories from db");
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
@@ -146,9 +185,11 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        for (int numPracticeHistory = 0; numPracticeHistory < practiceHistoryList.size(); numPracticeHistory++) {
-
-            PracticeHistory currentPracticeHistory = practiceHistoryList.get(numPracticeHistory);
+        List<PracticeHistory> page = pagedPracticeHistory.get(currentPage);
+        if (page == null) return;
+        int currentPageSize = page.size();
+        for (int num = 0; num < currentPageSize; num++) {
+            PracticeHistory currentPracticeHistory = page.get(num);
 
             TableRow mRow = new TableRow(this);
             mRow.setId(currentPracticeHistory.getId());
@@ -300,10 +341,21 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         super.onDestroy();
     }
 
-    public void btPreviousScreen_onClick(View view) {
+    public void btNextPage_onClick(View view) {
+        blink(view, this);
+
+        if (currentPage != pagedPracticeHistory.size()) {
+            currentPage++;
+        }
+        showPracticeHistory();
     }
 
-    public void btNextScreen_onClick(View view) {
+    public void btPreviousPage_onClick(View view) {
+        blink(view, this);
+        if (currentPage != 1) {
+            currentPage--;
+        }
+        showPracticeHistory();
     }
 }
 

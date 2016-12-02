@@ -46,11 +46,11 @@ public class ActivityAreasList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private int id_area;
-    ConnectionParameters params;
+    private int idIntentArea;
+    private ConnectionParameters params;
 
     private int rows_number = 17;
-    Map<Integer, List<Area>> pagingAreas = new HashMap<>();
+    private Map<Integer, List<Area>> pagedAreas = new HashMap<>();
     private int currentPage = 1;
 
     @Override
@@ -74,7 +74,7 @@ public class ActivityAreasList extends AbstractActivity {
         pageAreas();
         showAreas();
 
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_area);
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentArea);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableAreas", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
@@ -98,25 +98,25 @@ public class ActivityAreasList extends AbstractActivity {
         List<Area> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < areas.size(); i++) {
-            if (id_area != 0) {
-                if (areas.get(i).getId() == id_area) {
+            if (idIntentArea != 0) {
+                if (areas.get(i).getId() == idIntentArea) {
                     currentPage = pageNumber;
                 }
             }
             pageContent.add(areas.get(i));
             if (pageContent.size() == rows_number) {
-                pagingAreas.put(pageNumber, pageContent);
+                pagedAreas.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;
             }
         }
         if (pageContent.size() != 0) {
-            pagingAreas.put(pageNumber, pageContent);
+            pagedAreas.put(pageNumber, pageContent);
         }
     }
 
     private void getIntentParams(Intent intent) {
-        id_area = intent.getIntExtra("CurrentAreaID", 0);
+        idIntentArea = intent.getIntExtra("CurrentAreaID", 0);
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
@@ -126,8 +126,8 @@ public class ActivityAreasList extends AbstractActivity {
     private void showAreas() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagingAreas!=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingAreas.size());
+        if (pageNumber != null && pagedAreas !=null ) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedAreas.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableAreas);
@@ -154,7 +154,7 @@ public class ActivityAreasList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        List<Area> page = pagingAreas.get(currentPage);
+        List<Area> page = pagedAreas.get(currentPage);
         if (page == null) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
@@ -346,7 +346,7 @@ public class ActivityAreasList extends AbstractActivity {
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityProject.class);
                 sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentAreaID", id_area);
+                intent.putExtra("CurrentAreaID", idIntentArea);
             }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -356,7 +356,7 @@ public class ActivityAreasList extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagingAreas.size()) {
+        if (currentPage != pagedAreas.size()) {
             currentPage++;
         }
         showAreas();

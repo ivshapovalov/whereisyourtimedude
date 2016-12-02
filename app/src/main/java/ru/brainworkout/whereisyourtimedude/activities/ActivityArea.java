@@ -185,4 +185,12 @@ public class ActivityArea extends AbstractActivity {
                     }
                 }).setNegativeButton("Нет", null).show();
     }
+
+    public void btProjectsOfArea_onClick(View view) {
+
+        blink(view, this);
+
+
+
+    }
 }

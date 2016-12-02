@@ -113,7 +113,7 @@
             android:id="@+id/scrollView"
             android:layout_weight="100"
             android:layout_margin="5dp"
-            android:fillViewport="true">
+            android:fillViewport="false">
 
             <TableLayout
                 android:layout_width="match_parent"

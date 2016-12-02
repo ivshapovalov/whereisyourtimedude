@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -58,7 +59,7 @@ public class ActivityChrono extends AbstractActivity {
     private TableLayout tableHistory;
     private ConnectionParameters params;
 
-    private int rows_number = 5;
+    private int rows_number = 15;
     Map<Integer, List<PracticeHistory>> pagingPracticeHistories = new HashMap<>();
     private int currentPage = 1;
 
@@ -343,8 +344,8 @@ public class ActivityChrono extends AbstractActivity {
             List<PracticeHistory> pageContent = new ArrayList<>();
             int pageNumber = 1;
             pageContent.add(practiceHistories.get(0));
-            pagingPracticeHistories.put(0,pageContent );
-            pageContent=new ArrayList<>();
+            pagingPracticeHistories.put(0, pageContent);
+            pageContent = new ArrayList<>();
             for (int i = 1; i < practiceHistories.size(); i++) {
                 pageContent.add(practiceHistories.get(i));
                 if (pageContent.size() == rows_number) {
@@ -477,6 +478,17 @@ public class ActivityChrono extends AbstractActivity {
         for (int num = 0; num < currentPageSize; num++) {
             TableRow mRow = CreateTableRow(num);
             tableHistory.addView(mRow);
+        }
+
+        //focus to first row
+        int mScrID = getResources().getIdentifier("scrollView", "id", getPackageName());
+        ScrollView mScrollView = (ScrollView) findViewById(mScrID);
+        if (mScrollView != null) {
+            int firstRowID = getResources().getIdentifier(String.valueOf(page.get(0).getId()), "id", getPackageName());
+            TableRow firstRow = (TableRow) findViewById(firstRowID);
+            if (firstRow != null) {
+                mScrollView.requestChildFocus(firstRow, firstRow);
+            }
         }
     }
 

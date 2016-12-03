@@ -32,6 +32,7 @@ public class ActivityArea extends AbstractActivity {
 
     private ConnectionParameters params;
     private boolean isNew;
+    private Area currentArea;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +44,11 @@ public class ActivityArea extends AbstractActivity {
         getIntentParams(intent);
 
         if (isNew) {
-            if (sessionCurrentArea == null) {
-                sessionCurrentArea = new Area.Builder(DB).build();
-            }
+            currentArea = new Area.Builder(DB).build();
         } else {
             int id = intent.getIntExtra("CurrentAreaID", 0);
             if (DB.containsArea(id)) {
-                sessionCurrentArea = DB.getArea(id);
+                currentArea = DB.getArea(id);
             } else {
                 throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
             }

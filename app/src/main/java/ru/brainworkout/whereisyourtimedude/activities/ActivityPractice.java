@@ -21,7 +21,6 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 

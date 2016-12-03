@@ -30,7 +30,8 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProject;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentAreas;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProjects;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -266,7 +267,9 @@ public class ActivityAreasList extends AbstractActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 if (DB.containsArea(id)) {
-                    sessionCurrentProject.setArea(DB.getArea(id));
+                    Project project=sessionCurrentProjects.pollFirst();
+                    project.setArea(DB.getArea(id));
+                    project.dbSave(DB);
                 } else {
                     throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
                 }

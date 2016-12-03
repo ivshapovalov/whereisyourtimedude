@@ -17,11 +17,11 @@ public class Session {
     }
 
     public static User sessionCurrentUser;
-    public static Project sessionCurrentProject;
-    public static Area sessionCurrentArea;
-    public static Practice sessionCurrentPractice;
-    public static PracticeHistory sessionCurrentPracticeHistory;
-    public static DetailedPracticeHistory sessionCurrentDetailedPracticeHistory;
+    public static final Deque <Project> sessionCurrentProjects= new ArrayDeque<>();;
+    public static final Deque<Area> sessionCurrentAreas=new ArrayDeque<>();
+    public static final Deque<Practice> sessionCurrentPractices=new ArrayDeque<>();
+    public static final Deque<PracticeHistory> sessionCurrentPracticeHistories=new ArrayDeque<>();
+    public static final Deque<DetailedPracticeHistory> sessionCurrentDetailedPracticeHistories=new ArrayDeque<>();
 
     public static final Deque<ConnectionParameters> sessionOpenActivities = new ArrayDeque<>();
     public static BackgroundChronometer sessionBackgroundChronometer;

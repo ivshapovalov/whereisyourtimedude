@@ -59,7 +59,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         LOG.debug(message);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practices_history_list);
+        setContentView(R.layout.activity_practice_history_list);
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btPracticeHistoryDBEditor", "id", getPackageName());

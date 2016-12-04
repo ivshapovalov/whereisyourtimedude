@@ -180,7 +180,7 @@ public class ActivityMain extends AbstractActivity {
 
     public void btUsers_onClick(final View view) {
 
-        Intent intent = new Intent(ActivityMain.this, ActivityUsersList.class);
+        Intent intent = new Intent(ActivityMain.this, ActivityUserList.class);
         startActivity(intent);
 
     }
@@ -188,21 +188,21 @@ public class ActivityMain extends AbstractActivity {
     public void btAreas_onClick(final View view) {
 
         if (isUserDefined()) {
-            Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityAreaList.class);
             startActivity(intent);
         }
     }
 
     public void btProjects_onClick(final View view) {
         if (isUserDefined()) {
-            Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityProjectList.class);
             startActivity(intent);
         }
     }
 
     public void btPractices_onClick(final View view) {
         if (isUserDefined()) {
-            Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
+            Intent intent = new Intent(ActivityMain.this, ActivityPracticeList.class);
             startActivity(intent);
         }
     }

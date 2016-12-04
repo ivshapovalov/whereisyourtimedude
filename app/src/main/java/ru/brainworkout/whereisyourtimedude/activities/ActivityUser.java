@@ -94,7 +94,7 @@ public class ActivityUser extends AbstractActivity {
     public void btClose_onClick(final View view) {
 
         blink(view, this);
-        Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityUserList.class);
         intent.putExtra("id", mCurrentUser.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -124,7 +124,7 @@ public class ActivityUser extends AbstractActivity {
         }
         mCurrentUser.dbSave(DB);
         setDBCurrentUser();
-        Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityUserList.class);
         intent.putExtra("id", mCurrentUser.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -165,7 +165,7 @@ public class ActivityUser extends AbstractActivity {
                                 currentUser.dbSave(DB);
                             }
                         }
-                        Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
+                        Intent intent = new Intent(getApplicationContext(), ActivityUserList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }

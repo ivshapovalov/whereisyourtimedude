@@ -14,20 +14,15 @@ import com.flask.colorpicker.OnColorSelectedListener;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-import java.util.List;
-
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionAreaSequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 
 public class ActivityArea extends AbstractActivity {
 
@@ -45,7 +40,11 @@ public class ActivityArea extends AbstractActivity {
         getIntentParams(intent);
 
         if (isNew) {
-            currentArea = new Area.Builder(DB).build();
+            if (!sessionAreaSequence.isEmpty()) {
+                currentArea= sessionAreaSequence.pollFirst();
+            } else {
+                currentArea = new Area.Builder(DB).build();
+            }
         } else {
             int id = intent.getIntExtra("CurrentAreaID", 0);
             if (DB.containsArea(id)) {
@@ -141,7 +140,7 @@ public class ActivityArea extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
         blink(view, this);
-        closeActivity(new Intent(getApplicationContext(), ActivityAreasList.class));
+        closeActivity(new Intent(getApplicationContext(), ActivityAreaList.class));
     }
 
     private void closeActivity(Intent intent) {
@@ -156,13 +155,13 @@ public class ActivityArea extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
         currentArea.dbSave(DB);
-        closeActivity(new Intent(getApplicationContext(), ActivityAreasList.class));
+        closeActivity(new Intent(getApplicationContext(), ActivityAreaList.class));
     }
 
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
-            intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+            intent = new Intent(getApplicationContext(), ActivityAreaList.class);
         }
         closeActivity(intent);
     }
@@ -177,7 +176,7 @@ public class ActivityArea extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         currentArea.dbDelete(DB);
                         sessionOpenActivities.pollFirst();
-                        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+                        Intent intent = new Intent(getApplicationContext(), ActivityAreaList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
@@ -186,14 +185,13 @@ public class ActivityArea extends AbstractActivity {
 
     public void btProjectsOfArea_onClick(View view) {
         blink(view, this);
-
-        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityProjectList.class);
         Boolean isNew = params != null ? params.isReceiverNew() : false;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityArea")
                 .isTransmitterNew(isNew)
                 .isTransmitterForChoice(false)
-                .addReceiverActivityName("ActivityProjectsList")
+                .addReceiverActivityName("ActivityProjectList")
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
@@ -202,6 +200,5 @@ public class ActivityArea extends AbstractActivity {
         intent.putExtra("CurrentAreaID", currentArea.getId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 }

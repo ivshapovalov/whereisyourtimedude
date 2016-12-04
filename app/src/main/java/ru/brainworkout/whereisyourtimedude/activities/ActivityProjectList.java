@@ -20,18 +20,24 @@ import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
-
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Session;
+import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
-import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
+
+import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
+import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Session.*;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionAreaSequence;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeSequence;
 
-public class ActivityPracticesList extends AbstractActivity {
+public class ActivityProjectList extends AbstractActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
@@ -41,89 +47,94 @@ public class ActivityPracticesList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private int idIntentPractice;
+    private int idIntentProject;
     private ConnectionParameters params;
 
     private int rows_number = 17;
-    private Map<Integer, List<Practice>> pagedPractices = new HashMap<>();
+    private Map<Integer, List<Project>> pagedProjects = new HashMap<>();
     private int currentPage = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_practices_list);
+        setContentView(R.layout.activity_project_list);
+
         Intent intent = getIntent();
         getIntentParams(intent);
 
         if (!Common.isDebug) {
-            int mEditorID = getResources().getIdentifier("btPracticesDBEditor", "id", getPackageName());
+            int mEditorID = getResources().getIdentifier("btProjectsDBEditor", "id", getPackageName());
             Button btEditor = (Button) findViewById(mEditorID);
             hideEditorButton(btEditor);
         }
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
-        pagePractices();
-        showPractices();
-
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentPractice);
+        pageProjects();
+        showProjects();
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentProject);
         if (mRow != null) {
-            int mScrID = getResources().getIdentifier("svTablePractices", "id", getPackageName());
+            int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
+
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
+
         setTitleOfActivity(this);
     }
 
-    private void pagePractices() {
-        List<Practice> practices = new ArrayList<>();
+    private void pageProjects() {
+        List<Project> projects = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
+            if (sessionAreaSequence.isEmpty()) {
+                projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
+            } else {
+                projects = DB.getAllProjectsOfArea(sessionAreaSequence.getFirst().getId());
+            }
         }
-        List<Practice> pageContent = new ArrayList<>();
+        List<Project> pageContent = new ArrayList<>();
         int pageNumber = 1;
-        for (int i = 0; i < practices.size(); i++) {
-            if (idIntentPractice != 0) {
-                if (practices.get(i).getId() == idIntentPractice) {
+        for (int i = 0; i < projects.size(); i++) {
+            if (idIntentProject != 0) {
+                if (projects.get(i).getId() == idIntentProject) {
                     currentPage = pageNumber;
                 }
             }
-            pageContent.add(practices.get(i));
+            pageContent.add(projects.get(i));
             if (pageContent.size() == rows_number) {
-                pagedPractices.put(pageNumber, pageContent);
+                pagedProjects.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;
             }
         }
         if (pageContent.size() != 0) {
-            pagedPractices.put(pageNumber, pageContent);
+            pagedProjects.put(pageNumber, pageContent);
         }
     }
 
     private void getIntentParams(Intent intent) {
-        idIntentPractice = intent.getIntExtra("CurrentPracticeID", 0);
+        idIntentProject = intent.getIntExtra("CurrentProjectID", 0);
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
     }
 
-    private void showPractices() {
+    private void showProjects() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedPractices !=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPractices.size());
+        if (pageNumber != null && pagedProjects != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedProjects.size());
         }
 
-        ScrollView sv = (ScrollView) findViewById(R.id.svTablePractices);
+        ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);
         try {
-
             sv.removeAllViews();
-
         } catch (NullPointerException e) {
         }
 
@@ -143,26 +154,27 @@ public class ActivityPracticesList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        List<Practice> page = pagedPractices.get(currentPage);
+        List<Project> page = pagedProjects.get(currentPage);
         if (page == null) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
-            Practice currentPractice = page.get(num);
+
+            Project currentProject = page.get(num);
 
             TableRow mRow = new TableRow(this);
-            mRow.setId(NUMBER_OF_VIEWS + currentPractice.getId());
+            mRow.setId(NUMBER_OF_VIEWS + currentProject.getId());
             mRow.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    rowPractice_onClick((TableRow) v);
+                    rowProject_onClick((TableRow) v);
                 }
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
-            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
-            txt.setText(String.valueOf(currentPractice.getId()));
+            txt.setText(String.valueOf(currentProject.getId()));
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
             txt.setTextSize(mTextSize);
@@ -171,7 +183,7 @@ public class ActivityPracticesList extends AbstractActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String name = String.valueOf(currentPractice.getName());
+            String name = String.valueOf(currentProject.getName());
             txt.setText(name);
             txt.setBackgroundResource(R.drawable.bt_border);
             txt.setGravity(Gravity.CENTER);
@@ -181,14 +193,13 @@ public class ActivityPracticesList extends AbstractActivity {
             mRow.addView(txt);
 
             txt = new TextView(this);
-            String nameProject = "";
-            Project project = currentPractice.getProject();
-            if (project != null) {
-                nameProject = project.getName();
+            String nameArea = "";
+            Area area = currentProject.getArea();
+            if (area != null) {
+                nameArea = area.getName();
+                txt.setBackgroundColor(area.getColor());
             }
-
-            txt.setText(nameProject);
-            txt.setBackgroundResource(R.drawable.bt_border);
+            txt.setText(nameArea);
             txt.setGravity(Gravity.CENTER);
             txt.setTextSize(mTextSize);
             txt.setTextColor(getResources().getColor(R.color.text_color));
@@ -204,99 +215,88 @@ public class ActivityPracticesList extends AbstractActivity {
             txt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    txtPracticeEdit_onClick((TextView) v);
+                    txtProjectEdit_onClick((TextView) v);
                 }
             });
-            mRow.addView(txt);
-            mRow.setBackgroundResource(R.drawable.bt_border);
             txt.setLayoutParams(paramsTextViewWithSpanInList(3));
+            mRow.addView(txt);
+
+            mRow.setBackgroundResource(R.drawable.bt_border);
             layout.addView(mRow);
+
         }
         sv.addView(layout);
+
     }
 
-    public void btPracticeAdd_onClick(final View view) {
-
+    public void btProjectAdd_onClick(final View view) {
         blink(view, this);
-
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityPracticesList")
+                .addTransmitterActivityName("ActivityProjectList")
                 .isTransmitterNew(false)
-                .isTransmitterForChoice(params != null && params.isReceiverForChoice())
-                .addReceiverActivityName("ActivityPractice")
+                .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                .addReceiverActivityName("ActivityProject")
                 .isReceiverNew(true)
                 .isReceiverForChoice(false)
                 .build();
         sessionOpenActivities.push(paramsNew);
-        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
-    private void txtPracticeEdit_onClick(TextView view) {
+    private void txtProjectEdit_onClick(TextView view) {
         blink(view, this);
-
         int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityPracticesList")
+                .addTransmitterActivityName("ActivityProjectList")
                 .isTransmitterNew(false)
                 .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
-                .addReceiverActivityName("ActivityPractice")
+                .addReceiverActivityName("ActivityProject")
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
         sessionOpenActivities.push(paramsNew);
-        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
-        intent.putExtra("CurrentPracticeID", id);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
+        intent.putExtra("CurrentProjectID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
-    private void rowPractice_onClick(final TableRow view) {
-
+    private void rowProject_onClick(final TableRow view) {
         blink(view, this);
-
         int id = view.getId() % NUMBER_OF_VIEWS;
-        Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
-        intent.putExtra("CurrentPracticeID", id);
+        Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         if (params != null) {
-            if (params.isReceiverForChoice()) {
-                Class<?> transmitterClass = null;
-                try {
-                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                if (DB.containsPractice(id)) {
-                    if (transmitterClass == ActivityPracticeHistory.class
-                            ) {
-                        sessionCurrentPracticeHistory.setPractice(DB.getPractice(id));
-                    } else if (transmitterClass == ActivityDetailedPracticeHistory.class
-                            ) {
-                        sessionCurrentDetailedPracticeHistory.setPractice(DB.getPractice(id));
-                    }
-                } else {
-                    throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
-                }
-                intent = new Intent(getApplicationContext(), transmitterClass);
-                sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentPracticeID", id);
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
+            intent = new Intent(getApplicationContext(), myClass);
+            if (params.isReceiverForChoice()) {
+                if (DB.containsProject(id)) {
+                    Practice practice = sessionPracticeSequence.getFirst();
+                    practice.setProject(DB.getProject(id));
+                }
+                intent = new Intent(getApplicationContext(), ActivityPractice.class);
+            }
+            sessionOpenActivities.pollFirst();
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                    .addTransmitterActivityName("ActivityPracticesList")
+                    .addTransmitterActivityName("ActivityProjectList")
                     .isTransmitterNew(false)
                     .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
-                    .addReceiverActivityName("ActivityPractice")
+                    .addReceiverActivityName("ActivityProject")
                     .isReceiverNew(false)
                     .isReceiverForChoice(false)
                     .build();
             sessionOpenActivities.push(paramsNew);
         }
+        intent.putExtra("CurrentProjectID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btEdit_onClick(final View view) {
@@ -305,34 +305,36 @@ public class ActivityPracticesList extends AbstractActivity {
         startActivity(dbmanager);
     }
 
-
     public void buttonHome_onClick(final View view) {
-
         blink(view, this);
         sessionOpenActivities.clear();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btClear_onClick(final View view) {
-
         blink(view, this);
-
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить занятия и их историю?")
+                .setMessage("Вы действительно хотите удалить все проекты и занятия?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+
                         if (Session.sessionCurrentUser != null) {
-                            List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getId());
-                            for (Practice practice : practices
+
+                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionCurrentUser.getId());
+                            for (Project project : projects
                                     ) {
-                                DB.deleteAllPracticeHistoryOfPractice(practice.getId());
+                                List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
+                                for (Practice practice : practices
+                                        ) {
+                                    DB.deleteAllPracticeHistoryOfPractice(practice.getId());
+                                }
+                                DB.deleteAllPracticesOfProject(project.getId());
                             }
-                            DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getId());
-                            showPractices();
+                            DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getId());
+                            showProjects();
                         }
                     }
 
@@ -340,21 +342,20 @@ public class ActivityPracticesList extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
-            if (params.isReceiverForChoice()) {
-                Class<?> transmitterClass = null;
-                try {
-                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                intent = new Intent(getApplicationContext(), transmitterClass);
-                sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentPracticeID", idIntentPractice);
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
+            intent = new Intent(getApplicationContext(), myClass);
+            if (params.isReceiverForChoice()) {
+                intent = new Intent(getApplicationContext(), ActivityPractice.class);
+                intent.putExtra("CurrentProjectID", idIntentProject);
+            }
+            sessionOpenActivities.pollFirst();
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -363,10 +364,10 @@ public class ActivityPracticesList extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagedPractices.size()) {
+        if (currentPage != pagedProjects.size()) {
             currentPage++;
         }
-        showPractices();
+        showProjects();
     }
 
     public void btPreviousPage_onClick(View view) {
@@ -374,7 +375,7 @@ public class ActivityPracticesList extends AbstractActivity {
         if (currentPage != 1) {
             currentPage--;
         }
-        showPractices();
+        showProjects();
     }
 }
 

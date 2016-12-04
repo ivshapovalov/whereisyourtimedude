@@ -25,7 +25,7 @@
             android:name=".database.manager.AndroidDatabaseManager"
             android:theme="@style/Theme.AppCompat.Light"/>
         <activity
-            android:name=".activities.ActivityUsersList"
+            android:name=".activities.ActivityUserList"
             android:label="@string/users_list_name"
             android:screenOrientation="portrait"/>
         <activity
@@ -45,7 +45,7 @@
             android:label="@string/about_name"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.ActivityAreasList"
+            android:name=".activities.ActivityAreaList"
             android:label="@string/areas_list_name"
             android:screenOrientation="portrait"/>
         <activity
@@ -57,7 +57,7 @@
             android:label="@string/options_name"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.ActivityProjectsList"
+            android:name=".activities.ActivityProjectList"
             android:label="@string/projects_list_name"
             android:screenOrientation="portrait"/>
         <activity
@@ -65,7 +65,7 @@
             android:label="@string/project_name"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".activities.ActivityPracticesList"
+            android:name=".activities.ActivityPracticeList"
             android:label="@string/practices_list_name"
             android:screenOrientation="portrait"/>
         <activity

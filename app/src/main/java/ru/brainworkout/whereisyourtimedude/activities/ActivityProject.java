@@ -28,7 +28,6 @@ public class ActivityProject extends AbstractActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project);
         Intent intent = getIntent();
@@ -96,7 +95,6 @@ public class ActivityProject extends AbstractActivity {
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-
             currentProject.setName(String.valueOf(etName.getText()));
         }
     }
@@ -111,13 +109,13 @@ public class ActivityProject extends AbstractActivity {
             id_area = area.getId();
         }
 
-        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityAreaList.class);
         Boolean isNew = params != null ? params.isReceiverNew() : false;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityProject")
                 .isTransmitterNew(isNew)
                 .isTransmitterForChoice(false)
-                .addReceiverActivityName("ActivityAreasList")
+                .addReceiverActivityName("ActivityAreaList")
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
@@ -130,7 +128,7 @@ public class ActivityProject extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
         blink(view, this);
-        closeActivity(new Intent(getApplicationContext(), ActivityProjectsList.class));
+        closeActivity(new Intent(getApplicationContext(), ActivityProjectList.class));
     }
 
     private void closeActivity(Intent intent) {
@@ -144,11 +142,11 @@ public class ActivityProject extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
         currentProject.dbSave(DB);
-        closeActivity(new Intent(getApplicationContext(), ActivityProjectsList.class));
+        closeActivity(new Intent(getApplicationContext(), ActivityProjectList.class));
     }
 
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityProjectList.class);
         if (params != null) {
             Class<?> myClass = null;
             try {
@@ -169,11 +167,30 @@ public class ActivityProject extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         currentProject.dbDelete(DB);
-                        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+                        Intent intent = new Intent(getApplicationContext(), ActivityProjectList.class);
                         sessionOpenActivities.pollFirst();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
                 }).setNegativeButton("Нет", null).show();
+    }
+
+    public void btPracticesOfProject_onClick(View view) {
+        blink(view, this);
+        Intent intent = new Intent(getApplicationContext(), ActivityPracticeList.class);
+        Boolean isNew = params != null ? params.isReceiverNew() : false;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityProject")
+                .isTransmitterNew(isNew)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityPracticeList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        sessionProjectSequence.push(currentProject);
+        sessionOpenActivities.push(paramsNew);
+        intent.putExtra("CurrentProjectID", currentProject.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

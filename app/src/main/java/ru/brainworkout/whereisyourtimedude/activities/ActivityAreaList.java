@@ -23,7 +23,6 @@ import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
@@ -38,7 +37,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentU
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
-public class ActivityAreasList extends AbstractActivity {
+public class ActivityAreaList extends AbstractActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
@@ -59,7 +58,7 @@ public class ActivityAreasList extends AbstractActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_areas_list);
+        setContentView(R.layout.activity_area_list);
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btAreasDBEditor", "id", getPackageName());
@@ -223,7 +222,7 @@ public class ActivityAreasList extends AbstractActivity {
 
         blink(view, this);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityAreasList")
+                .addTransmitterActivityName("ActivityAreaList")
                 .isTransmitterNew(false)
                 .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
                 .addReceiverActivityName("ActivityArea")
@@ -241,7 +240,7 @@ public class ActivityAreasList extends AbstractActivity {
         blink(view, this);
         int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityAreasList")
+                .addTransmitterActivityName("ActivityAreaList")
                 .isTransmitterNew(false)
                 .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
                 .addReceiverActivityName("ActivityArea")
@@ -276,7 +275,7 @@ public class ActivityAreasList extends AbstractActivity {
             }
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                    .addTransmitterActivityName("ActivityAreasList")
+                    .addTransmitterActivityName("ActivityAreaList")
                     .isTransmitterNew(false)
                     .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
                     .addReceiverActivityName("ActivityArea")

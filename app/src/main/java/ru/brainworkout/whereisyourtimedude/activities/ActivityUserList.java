@@ -21,7 +21,6 @@ import java.util.Map;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 
@@ -29,11 +28,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.paramsTextViewWithSpanInList;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
-public class ActivityUsersList extends AbstractActivity {
+public class ActivityUserList extends AbstractActivity {
 
     private final int MAX_VERTICAL_BUTTON_COUNT = 17;
     private final int MAX_HORIZONTAL_BUTTON_COUNT = 2;
@@ -52,7 +49,7 @@ public class ActivityUsersList extends AbstractActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_users_list);
+        setContentView(R.layout.activity_user_list);
 
         if (!Common.isDebug) {
             int mEditorID = getResources().getIdentifier("btUsersDBEditor", "id", getPackageName());

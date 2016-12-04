@@ -179,13 +179,13 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
             id_practice = practice.getId();
         }
 
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityPracticeList.class);
         Boolean isNew = !DB.containsDetailedPracticeHistory(sessionCurrentDetailedPracticeHistory.getId());
         ConnectionParameters params = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityDetailedPracticeHistory")
                 .isTransmitterNew(isNew)
                 .isTransmitterForChoice(false)
-                .addReceiverActivityName("ActivityPracticesList")
+                .addReceiverActivityName("ActivityPracticeList")
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();

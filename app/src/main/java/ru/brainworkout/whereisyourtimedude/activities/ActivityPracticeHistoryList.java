@@ -30,9 +30,12 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.clearAllSessionSequences;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeSequence;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 
 public class ActivityPracticeHistoryList extends AbstractActivity {
 
@@ -71,8 +74,8 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
         Intent intent = getIntent();
         getIntentParams(intent);
@@ -100,10 +103,14 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     }
 
     private void pagePracticeHistories() {
-        List<PracticeHistory> practiceHistories= new ArrayList<>();
+        List<PracticeHistory> practiceHistories = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            practiceHistories = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
+            if (sessionPracticeSequence.isEmpty()) {
+                practiceHistories = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
+            } else {
+                practiceHistories = DB.getAllPracticeHistoryOfPractice(sessionPracticeSequence.getFirst().getId());
+            }
         }
         List<PracticeHistory> pageContent = new ArrayList<>();
         int pageNumber = 1;
@@ -129,9 +136,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         idIntentPracticeHistory = intent.getIntExtra("CurrentPracticeHistoryID", 0);
     }
 
-
     public void btPracticeHistoryAdd_onClick(final View view) {
-
         blink(view, this);
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeHistory")
@@ -141,7 +146,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sessionOpenActivities.clear();
         sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -151,8 +155,8 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     private void showPracticeHistory() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedPracticeHistory !=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPracticeHistory.size());
+        if (pageNumber != null && pagedPracticeHistory != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedPracticeHistory.size());
         }
 
         LOG.debug("ActivityPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
@@ -201,7 +205,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
-            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentPracticeHistory.getId()));
@@ -270,7 +274,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sessionOpenActivities.clear();
         sessionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -279,7 +282,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     }
 
     private void rowPracticeHistory_onClick(final TableRow view) {
-
         blink(view, this);
         int id = view.getId();
         ConnectionParameters params = new ConnectionParameters.Builder()
@@ -290,7 +292,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sessionOpenActivities.clear();
         sessionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -304,16 +305,16 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         startActivity(dbmanager);
     }
 
-
     public void buttonHome_onClick(final View view) {
         blink(view, this);
+        sessionOpenActivities.clear();
+        clearAllSessionSequences();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
     public void btClear_onClick(final View view) {
-
         blink(view, this);
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить всю историю занятий?")
@@ -331,6 +332,19 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                Class<?> transmitterClass = null;
+                try {
+                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                intent = new Intent(getApplicationContext(), transmitterClass);
+                sessionOpenActivities.pollFirst();
+                intent.putExtra("CurrentPracticeHistoryID", idIntentPracticeHistory);
+            }
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

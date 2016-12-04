@@ -32,9 +32,12 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.SYMBOL_EDIT;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.paramsTextViewWithSpanInList;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.clearAllSessionSequences;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeSequence;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 
 public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
@@ -103,20 +106,23 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     }
 
     private void pageDetailedPracticeHistory() {
-        List<DetailedPracticeHistory> areas = new ArrayList<>();
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            areas = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
-        }
+            if (sessionPracticeSequence.isEmpty()) {
+                detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
+            } else {
+                detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfPractice(sessionPracticeSequence.getFirst().getId());
+            }        }
         List<DetailedPracticeHistory> pageContent = new ArrayList<>();
         int pageNumber = 1;
-        for (int i = 0; i < areas.size(); i++) {
+        for (int i = 0; i < detailedPracticeHistories.size(); i++) {
             if (idIntentDetailedPracticeHistory != 0) {
-                if (areas.get(i).getId() == idIntentDetailedPracticeHistory) {
+                if (detailedPracticeHistories.get(i).getId() == idIntentDetailedPracticeHistory) {
                     currentPage = pageNumber;
                 }
             }
-            pageContent.add(areas.get(i));
+            pageContent.add(detailedPracticeHistories.get(i));
             if (pageContent.size() == rows_number) {
                 pagedDetailedPracticeHistory.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
@@ -144,12 +150,10 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sessionOpenActivities.clear();
         sessionOpenActivities.push(paramsNew);
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     private void showDetailedPracticeHistory() {
@@ -275,7 +279,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sessionOpenActivities.clear();
         sessionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -295,7 +298,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(false)
                 .build();
-        sessionOpenActivities.clear();
         sessionOpenActivities.push(params);
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistory.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -311,6 +313,8 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     public void buttonHome_onClick(final View view) {
         blink(view, this);
+        sessionOpenActivities.clear();
+        clearAllSessionSequences();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -334,6 +338,19 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+        if (params != null) {
+            if (params.isReceiverForChoice()) {
+                Class<?> transmitterClass = null;
+                try {
+                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                intent = new Intent(getApplicationContext(), transmitterClass);
+                sessionOpenActivities.pollFirst();
+                intent.putExtra("CurrentPracticeHistoryID", idIntentDetailedPracticeHistory);
+            }
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

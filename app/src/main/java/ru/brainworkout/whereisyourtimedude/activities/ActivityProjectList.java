@@ -31,6 +31,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
+import static ru.brainworkout.whereisyourtimedude.common.Session.clearAllSessionSequences;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionAreaSequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
@@ -80,11 +81,9 @@ public class ActivityProjectList extends AbstractActivity {
             int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
             if (mScrollView != null) {
-
                 mScrollView.requestChildFocus(mRow, mRow);
             }
         }
-
         setTitleOfActivity(this);
     }
 
@@ -226,7 +225,6 @@ public class ActivityProjectList extends AbstractActivity {
 
         }
         sv.addView(layout);
-
     }
 
     public void btProjectAdd_onClick(final View view) {
@@ -308,6 +306,7 @@ public class ActivityProjectList extends AbstractActivity {
     public void buttonHome_onClick(final View view) {
         blink(view, this);
         sessionOpenActivities.clear();
+        clearAllSessionSequences();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -320,19 +319,7 @@ public class ActivityProjectList extends AbstractActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
                         if (Session.sessionCurrentUser != null) {
-
-                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionCurrentUser.getId());
-                            for (Project project : projects
-                                    ) {
-                                List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
-                                for (Practice practice : practices
-                                        ) {
-                                    DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                                }
-                                DB.deleteAllPracticesOfProject(project.getId());
-                            }
                             DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getId());
                             showProjects();
                         }
@@ -351,10 +338,6 @@ public class ActivityProjectList extends AbstractActivity {
                 e.printStackTrace();
             }
             intent = new Intent(getApplicationContext(), myClass);
-            if (params.isReceiverForChoice()) {
-                intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                intent.putExtra("CurrentProjectID", idIntentProject);
-            }
             sessionOpenActivities.pollFirst();
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

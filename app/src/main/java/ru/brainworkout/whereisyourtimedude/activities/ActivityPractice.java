@@ -19,7 +19,9 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionDetailedPracticeHistorySequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeHistorySequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeSequence;
 
 public class ActivityPractice extends AbstractActivity {

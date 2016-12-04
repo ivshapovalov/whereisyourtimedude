@@ -23,7 +23,9 @@ import ru.brainworkout.whereisyourtimedude.common.Common;
 
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Session;
+import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
+import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
@@ -61,8 +63,8 @@ public class ActivityPracticeList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
         pagePractices();
@@ -83,7 +85,11 @@ public class ActivityPracticeList extends AbstractActivity {
         List<Practice> practices = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
+            if (sessionProjectSequence.isEmpty()) {
+                practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
+            } else {
+                practices = DB.getAllActivePracticesOfProject(sessionProjectSequence.getFirst().getId());
+            }
         }
         List<Practice> pageContent = new ArrayList<>();
         int pageNumber = 1;
@@ -115,8 +121,8 @@ public class ActivityPracticeList extends AbstractActivity {
     private void showPractices() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedPractices !=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPractices.size());
+        if (pageNumber != null && pagedPractices != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedPractices.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTablePractices);
@@ -159,7 +165,7 @@ public class ActivityPracticeList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
-            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentPractice.getId()));
@@ -216,9 +222,7 @@ public class ActivityPracticeList extends AbstractActivity {
     }
 
     public void btPracticeAdd_onClick(final View view) {
-
         blink(view, this);
-
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeList")
                 .isTransmitterNew(false)
@@ -231,12 +235,10 @@ public class ActivityPracticeList extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     private void txtPracticeEdit_onClick(TextView view) {
         blink(view, this);
-
         int id = ((TableRow) view.getParent()).getId() % NUMBER_OF_VIEWS;
         ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                 .addTransmitterActivityName("ActivityPracticeList")
@@ -254,34 +256,34 @@ public class ActivityPracticeList extends AbstractActivity {
     }
 
     private void rowPractice_onClick(final TableRow view) {
-
         blink(view, this);
 
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("CurrentPracticeID", id);
         if (params != null) {
+            Class<?> transmitterClass = null;
+            try {
+                transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            intent = new Intent(getApplicationContext(), transmitterClass);
             if (params.isReceiverForChoice()) {
-                Class<?> transmitterClass = null;
-                try {
-                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
                 if (DB.containsPractice(id)) {
                     if (transmitterClass == ActivityPracticeHistory.class
                             ) {
-                        sessionCurrentPracticeHistory.setPractice(DB.getPractice(id));
+                        PracticeHistory practiceHistory = sessionPracticeHistorySequence.getFirst();
+                        practiceHistory.setPractice(DB.getPractice(id));
                     } else if (transmitterClass == ActivityDetailedPracticeHistory.class
                             ) {
-                        sessionCurrentDetailedPracticeHistory.setPractice(DB.getPractice(id));
+                        DetailedPracticeHistory detailedPracticeHistory = sessionDetailedPracticeHistorySequence.getFirst();
+                        detailedPracticeHistory.setPractice(DB.getPractice(id));
                     }
                 } else {
                     throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
                 }
-                intent = new Intent(getApplicationContext(), transmitterClass);
                 sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentPracticeID", id);
             }
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
@@ -294,6 +296,7 @@ public class ActivityPracticeList extends AbstractActivity {
                     .build();
             sessionOpenActivities.push(paramsNew);
         }
+        intent.putExtra("CurrentPracticeID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
@@ -310,6 +313,7 @@ public class ActivityPracticeList extends AbstractActivity {
 
         blink(view, this);
         sessionOpenActivities.clear();
+        clearAllSessionSequences();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -317,20 +321,13 @@ public class ActivityPracticeList extends AbstractActivity {
     }
 
     public void btClear_onClick(final View view) {
-
         blink(view, this);
-
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить занятия и их историю?")
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getId());
-                            for (Practice practice : practices
-                                    ) {
-                                DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                            }
                             DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getId());
                             showPractices();
                         }
@@ -340,7 +337,6 @@ public class ActivityPracticeList extends AbstractActivity {
     }
 
     public void onBackPressed() {
-
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
             if (params.isReceiverForChoice()) {

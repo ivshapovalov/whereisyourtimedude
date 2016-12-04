@@ -307,7 +307,6 @@ public class ActivityAreaList extends AbstractActivity {
     }
 
     public void btClear_onClick(final View view) {
-
         blink(view, this);
         new AlertDialog.Builder(this)
                 .setMessage("Вы действительно хотите удалить все области,их проекты и занятия?")
@@ -316,7 +315,7 @@ public class ActivityAreaList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getId());
-                            sessionAreaSequence.clear();
+                            clearAllSessionSequences();
                             showAreas();
                         }
                     }

@@ -178,7 +178,7 @@ public class ActivityPractice extends AbstractActivity {
         if (params != null) {
             Class<?> myClass = null;
             try {
-                myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.getFirst().getTransmitterActivityName());
+                myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

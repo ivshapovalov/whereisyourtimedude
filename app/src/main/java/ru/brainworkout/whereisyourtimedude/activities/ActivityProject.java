@@ -9,18 +9,15 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.util.List;
-
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProjects;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 public class ActivityProject extends AbstractActivity {
@@ -38,7 +35,11 @@ public class ActivityProject extends AbstractActivity {
         getIntentParams(intent);
 
         if (isNew) {
-            currentProject = new Project.Builder(DB).build();
+            if (!sessionProjectSequence.isEmpty()) {
+                currentProject= sessionProjectSequence.pollFirst();
+            } else {
+                currentProject = new Project.Builder(DB).build();
+            }
         } else {
             int id = intent.getIntExtra("CurrentProjectID", 0);
             if (DB.containsProject(id)) {
@@ -120,7 +121,7 @@ public class ActivityProject extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        sessionCurrentProjects.push(currentProject);
+        sessionProjectSequence.push(currentProject);
         sessionOpenActivities.push(paramsNew);
         intent.putExtra("CurrentAreaID", id_area);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -149,7 +150,13 @@ public class ActivityProject extends AbstractActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
         if (params != null) {
-            intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.getFirst().getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            intent = new Intent(getApplicationContext(), myClass);
         }
         closeActivity(intent);
     }

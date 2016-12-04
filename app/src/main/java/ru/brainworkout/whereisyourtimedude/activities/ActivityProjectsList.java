@@ -31,10 +31,12 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionAreaSequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeSequence;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 
 public class ActivityProjectsList extends AbstractActivity {
 
@@ -68,8 +70,8 @@ public class ActivityProjectsList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
         pageProjects();
@@ -91,7 +93,11 @@ public class ActivityProjectsList extends AbstractActivity {
         List<Project> projects = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
+            if (sessionAreaSequence.isEmpty()) {
+                projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
+            } else {
+                projects = DB.getAllProjectsOfArea(sessionAreaSequence.getFirst().getId());
+            }
         }
         List<Project> pageContent = new ArrayList<>();
         int pageNumber = 1;
@@ -123,8 +129,8 @@ public class ActivityProjectsList extends AbstractActivity {
     private void showProjects() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedProjects !=null) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedProjects.size());
+        if (pageNumber != null && pagedProjects != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedProjects.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);
@@ -166,7 +172,7 @@ public class ActivityProjectsList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
-            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentProject.getId()));
@@ -262,15 +268,22 @@ public class ActivityProjectsList extends AbstractActivity {
         blink(view, this);
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
-        intent.putExtra("CurrentProjectID", id);
         if (params != null) {
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            intent = new Intent(getApplicationContext(), myClass);
             if (params.isReceiverForChoice()) {
                 if (DB.containsProject(id)) {
-                    sessionCurrentPractice.setProject(DB.getProject(id));
+                    Practice practice = sessionPracticeSequence.getFirst();
+                    practice.setProject(DB.getProject(id));
                 }
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                sessionOpenActivities.pollFirst();
             }
+            sessionOpenActivities.pollFirst();
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                     .addTransmitterActivityName("ActivityProjectsList")
@@ -282,6 +295,7 @@ public class ActivityProjectsList extends AbstractActivity {
                     .build();
             sessionOpenActivities.push(paramsNew);
         }
+        intent.putExtra("CurrentProjectID", id);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -291,7 +305,6 @@ public class ActivityProjectsList extends AbstractActivity {
         Intent dbmanager = new Intent(getApplicationContext(), AndroidDatabaseManager.class);
         startActivity(dbmanager);
     }
-
 
     public void buttonHome_onClick(final View view) {
         blink(view, this);
@@ -332,11 +345,18 @@ public class ActivityProjectsList extends AbstractActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            intent = new Intent(getApplicationContext(), myClass);
             if (params.isReceiverForChoice()) {
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
-                sessionOpenActivities.pollFirst();
                 intent.putExtra("CurrentProjectID", idIntentProject);
             }
+            sessionOpenActivities.pollFirst();
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

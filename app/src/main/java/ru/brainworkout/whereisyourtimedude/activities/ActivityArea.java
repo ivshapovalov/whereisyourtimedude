@@ -25,8 +25,9 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentArea;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionAreaSequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 
 public class ActivityArea extends AbstractActivity {
 
@@ -74,14 +75,14 @@ public class ActivityArea extends AbstractActivity {
         TextView tvID = (TextView) findViewById(mID);
         if (tvID != null) {
 
-            tvID.setText(String.valueOf(sessionCurrentArea.getId()));
+            tvID.setText(String.valueOf(currentArea.getId()));
         }
 
         //Имя
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            etName.setText(sessionCurrentArea.getName());
+            etName.setText(currentArea.getName());
         }
 
         //ID
@@ -89,7 +90,7 @@ public class ActivityArea extends AbstractActivity {
         TextView tvColor = (TextView) findViewById(mColor);
         if (tvColor != null) {
 
-            tvColor.setBackgroundColor(sessionCurrentArea.getColor());
+            tvColor.setBackgroundColor(currentArea.getColor());
         }
     }
 
@@ -97,7 +98,7 @@ public class ActivityArea extends AbstractActivity {
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-            sessionCurrentArea.setName(String.valueOf(etName.getText()));
+            currentArea.setName(String.valueOf(etName.getText()));
         }
     }
 
@@ -107,7 +108,7 @@ public class ActivityArea extends AbstractActivity {
         ColorPickerDialogBuilder
                 .with(this)
                 .setTitle("Choose color")
-                .initialColor(sessionCurrentArea.getColor())
+                .initialColor(currentArea.getColor())
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(12)
                 .setOnColorSelectedListener(new OnColorSelectedListener() {
@@ -132,8 +133,8 @@ public class ActivityArea extends AbstractActivity {
     }
 
     private void changeColor(int selectedColor) {
-        if (sessionCurrentArea != null) {
-            sessionCurrentArea.setColor(selectedColor);
+        if (currentArea != null) {
+            currentArea.setColor(selectedColor);
             showAreaOnScreen();
         }
     }
@@ -144,9 +145,8 @@ public class ActivityArea extends AbstractActivity {
     }
 
     private void closeActivity(Intent intent) {
-        intent.putExtra("CurrentAreaID", sessionCurrentArea.getId());
+        intent.putExtra("CurrentAreaID", currentArea.getId());
         sessionOpenActivities.pollFirst();
-        sessionCurrentArea = null;
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -155,7 +155,7 @@ public class ActivityArea extends AbstractActivity {
 
         blink(view, this);
         getPropertiesFromScreen();
-        sessionCurrentArea.dbSave(DB);
+        currentArea.dbSave(DB);
         closeActivity(new Intent(getApplicationContext(), ActivityAreasList.class));
     }
 
@@ -175,8 +175,7 @@ public class ActivityArea extends AbstractActivity {
                 .setCancelable(false)
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        sessionCurrentArea.dbDelete(DB);
-                        sessionCurrentArea = null;
+                        currentArea.dbDelete(DB);
                         sessionOpenActivities.pollFirst();
                         Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -186,10 +185,23 @@ public class ActivityArea extends AbstractActivity {
     }
 
     public void btProjectsOfArea_onClick(View view) {
-
         blink(view, this);
 
-
+        Intent intent = new Intent(getApplicationContext(), ActivityProjectsList.class);
+        Boolean isNew = params != null ? params.isReceiverNew() : false;
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityArea")
+                .isTransmitterNew(isNew)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityProjectsList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(false)
+                .build();
+        sessionAreaSequence.push(currentArea);
+        sessionOpenActivities.push(paramsNew);
+        intent.putExtra("CurrentAreaID", currentArea.getId());
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 }

@@ -17,11 +17,11 @@ public class Session {
     }
 
     public static User sessionCurrentUser;
-    public static final Deque <Project> sessionCurrentProjects= new ArrayDeque<>();;
-    public static final Deque<Area> sessionCurrentAreas=new ArrayDeque<>();
-    public static final Deque<Practice> sessionCurrentPractices=new ArrayDeque<>();
-    public static final Deque<PracticeHistory> sessionCurrentPracticeHistories=new ArrayDeque<>();
-    public static final Deque<DetailedPracticeHistory> sessionCurrentDetailedPracticeHistories=new ArrayDeque<>();
+    public static final Deque <Project> sessionProjectSequence = new ArrayDeque<>();;
+    public static final Deque<Area> sessionAreaSequence =new ArrayDeque<>();
+    public static final Deque<Practice> sessionPracticeSequence =new ArrayDeque<>();
+    public static final Deque<PracticeHistory> sessionPracticeHistorySequence = new ArrayDeque<>();
+    public static final Deque<DetailedPracticeHistory> sessionDetailedPracticeHistorySequence =new ArrayDeque<>();
 
     public static final Deque<ConnectionParameters> sessionOpenActivities = new ArrayDeque<>();
     public static BackgroundChronometer sessionBackgroundChronometer;
@@ -35,4 +35,11 @@ public class Session {
         LOG.debug(message);
     }
 
+    public  static void clearAllSessionSequences(){
+        sessionAreaSequence.clear();
+        sessionProjectSequence.clear();
+        sessionPracticeSequence.clear();
+        sessionPracticeHistorySequence.clear();
+        sessionDetailedPracticeHistorySequence.clear();
+    }
 }

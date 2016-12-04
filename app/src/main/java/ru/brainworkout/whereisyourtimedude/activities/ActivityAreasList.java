@@ -30,8 +30,9 @@ import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainE
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentAreas;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentProjects;
+import static ru.brainworkout.whereisyourtimedude.common.Session.clearAllSessionSequences;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionAreaSequence;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
@@ -66,8 +67,8 @@ public class ActivityAreasList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
         Intent intent = getIntent();
@@ -87,8 +88,6 @@ public class ActivityAreasList extends AbstractActivity {
 
         setTitleOfActivity(this);
     }
-
-
 
     private void pageAreas() {
         List<Area> areas = new ArrayList<>();
@@ -121,14 +120,13 @@ public class ActivityAreasList extends AbstractActivity {
         if (!sessionOpenActivities.isEmpty()) {
             params = sessionOpenActivities.peek();
         }
-
     }
 
     private void showAreas() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedAreas !=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedAreas.size());
+        if (pageNumber != null && pagedAreas != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedAreas.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableAreas);
@@ -267,9 +265,8 @@ public class ActivityAreasList extends AbstractActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 if (DB.containsArea(id)) {
-                    Project project=sessionCurrentProjects.pollFirst();
+                    Project project = sessionProjectSequence.getFirst();
                     project.setArea(DB.getArea(id));
-                    project.dbSave(DB);
                 } else {
                     throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
                 }
@@ -303,6 +300,7 @@ public class ActivityAreasList extends AbstractActivity {
 
         blink(view, this);
         sessionOpenActivities.clear();
+        clearAllSessionSequences();
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -318,23 +316,8 @@ public class ActivityAreasList extends AbstractActivity {
                 .setPositiveButton("Да", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getId());
-                            for (Area area : areas
-                                    ) {
-                                List<Project> projects = DB.getAllProjectsOfArea(area.getId());
-                                for (Project project : projects
-                                        ) {
-                                    List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
-                                    for (Practice practice : practices
-                                            ) {
-                                        DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                                    }
-                                    DB.deleteAllPracticesOfProject(project.getId());
-                                }
-                                DB.deleteAllProjectsOfArea(area.getId());
-                            }
-
                             DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getId());
+                            sessionAreaSequence.clear();
                             showAreas();
                         }
                     }

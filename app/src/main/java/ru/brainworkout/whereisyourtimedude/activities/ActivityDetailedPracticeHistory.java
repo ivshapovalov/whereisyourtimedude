@@ -49,11 +49,10 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
 
         Intent intent = getIntent();
         getIntentParams(intent);
-
-        if (isNew) {
-            if (!sessionPracticeHistorySequence.isEmpty()) {
-                currentDetailedPracticeHistory = sessionDetailedPracticeHistorySequence.pollFirst();
-            } else {
+        if (!sessionDetailedPracticeHistorySequence.isEmpty()) {
+            currentDetailedPracticeHistory = sessionDetailedPracticeHistorySequence.pollFirst();
+        } else {
+            if (isNew) {
                 currentDetailedPracticeHistory = new DetailedPracticeHistory.Builder(DB).build();
                 Calendar calendar = Calendar.getInstance();
                 calendar.clear(Calendar.HOUR);
@@ -63,17 +62,19 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
                 calendar.clear(Calendar.MILLISECOND);
                 currentDetailedPracticeHistory.setDate(calendar.getTimeInMillis());
                 currentDetailedPracticeHistory.setTime(calendar.getTimeInMillis());
-            }
-        } else {
-            int id = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
-            if (DB.containsDetailedPracticeHistory(id)) {
-                currentDetailedPracticeHistory = DB.getDetailedPracticeHistory(id);
+
             } else {
-                throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
+                int id = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
+                if (DB.containsDetailedPracticeHistory(id)) {
+                    currentDetailedPracticeHistory = DB.getDetailedPracticeHistory(id);
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
+                }
             }
         }
 
-        if (currentDetailedPracticeHistory != null) {
+        if (currentDetailedPracticeHistory != null)
+        {
             long currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
             if (currentDateInMillis != 0) {
                 currentDetailedPracticeHistory.setDate(currentDateInMillis);
@@ -84,14 +85,17 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
                 currentDetailedPracticeHistory.setDuration(millis);
             }
         }
+
         showDetailedPracticeHistoryOnScreen();
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         setTitleOfActivity(this);
-
     }
 
     private void getIntentParams(Intent intent) {
-        params = sessionOpenActivities.peek();
+        if (!sessionOpenActivities.isEmpty()) {
+            params = sessionOpenActivities.peek();
+        }
         isNew = (params != null ? params.isTransmitterNew() : false);
     }
 

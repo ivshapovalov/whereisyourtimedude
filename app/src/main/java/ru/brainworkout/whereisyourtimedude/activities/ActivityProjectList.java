@@ -37,6 +37,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActi
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionPracticeSequence;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionProjectSequence;
 
 public class ActivityProjectList extends AbstractActivity {
 

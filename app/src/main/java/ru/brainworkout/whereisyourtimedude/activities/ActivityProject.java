@@ -33,21 +33,19 @@ public class ActivityProject extends AbstractActivity {
         Intent intent = getIntent();
         getIntentParams(intent);
 
-        if (isNew) {
-            if (!sessionProjectSequence.isEmpty()) {
-                currentProject = sessionProjectSequence.pollFirst();
+        int id = intent.getIntExtra("CurrentProjectID", 0);
+        if (id != 0) {
+            if (DB.containsProject(id)) {
+                currentProject = DB.getProject(id);
             } else {
-                currentProject = new Project.Builder(DB).build();
+                throw new TableDoesNotContainElementException(String.format("Project with id ='%s' does not exists in database", id));
             }
         } else {
-            if (!sessionProjectSequence.isEmpty()) {
-                currentProject = sessionProjectSequence.pollFirst();
+            if (isNew) {
+                currentProject = new Project.Builder(DB).build();
             } else {
-                int id = intent.getIntExtra("CurrentProjectID", 0);
-                if (DB.containsProject(id)) {
-                    currentProject = DB.getProject(id);
-                } else {
-                    throw new TableDoesNotContainElementException(String.format("Project with id ='%s' does not exists in database", id));
+                if (!sessionProjectSequence.isEmpty()) {
+                    currentProject = sessionProjectSequence.pollFirst();
                 }
             }
         }

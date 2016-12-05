@@ -134,6 +134,9 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
     private void getIntentParams(Intent intent) {
         idIntentPracticeHistory = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+        if (!sessionOpenActivities.isEmpty()) {
+            params = sessionOpenActivities.peek();
+        }
     }
 
     public void btPracticeHistoryAdd_onClick(final View view) {
@@ -333,7 +336,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
-            if (params.isReceiverForChoice()) {
                 Class<?> transmitterClass = null;
                 try {
                     transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
@@ -343,7 +345,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                 intent = new Intent(getApplicationContext(), transmitterClass);
                 sessionOpenActivities.pollFirst();
                 intent.putExtra("CurrentPracticeHistoryID", idIntentPracticeHistory);
-            }
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

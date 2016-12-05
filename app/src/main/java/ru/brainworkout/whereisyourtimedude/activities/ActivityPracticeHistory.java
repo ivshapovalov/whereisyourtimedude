@@ -52,28 +52,27 @@ public class ActivityPracticeHistory extends AbstractActivity {
         Intent intent = getIntent();
         getIntentParams(intent);
 
-        if (isNew) {
-            if (!sessionPracticeHistorySequence.isEmpty()) {
-                currentPracticeHistory = sessionPracticeHistorySequence.pollFirst();
+        if (!sessionPracticeHistorySequence.isEmpty()) {
+            currentPracticeHistory = sessionPracticeHistorySequence.pollFirst();}
+        else {
+            if (isNew) {
+                    currentPracticeHistory = new PracticeHistory.Builder(DB).build();
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.clear(Calendar.HOUR);
+                    calendar.clear(Calendar.HOUR_OF_DAY);
+                    calendar.clear(Calendar.MINUTE);
+                    calendar.clear(Calendar.SECOND);
+                    calendar.clear(Calendar.MILLISECOND);
+                    currentPracticeHistory.setDate(calendar.getTimeInMillis());
+                    currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
             } else {
-                currentPracticeHistory = new PracticeHistory.Builder(DB).build();
-                Calendar calendar = Calendar.getInstance();
-                calendar.clear(Calendar.HOUR);
-                calendar.clear(Calendar.HOUR_OF_DAY);
-                calendar.clear(Calendar.MINUTE);
-                calendar.clear(Calendar.SECOND);
-                calendar.clear(Calendar.MILLISECOND);
-                currentPracticeHistory.setDate(calendar.getTimeInMillis());
-                currentPracticeHistory.setLastTime(calendar.getTimeInMillis());
-            }
-        } else {
-
-            if (currentPracticeHistory == null) {
-                int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
-                if (DB.containsPracticeHistory(id)) {
-                    currentPracticeHistory = DB.getPracticeHistory(id);
-                } else {
-                    throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
+                if (currentPracticeHistory == null) {
+                    int id = intent.getIntExtra("CurrentPracticeHistoryID", 0);
+                    if (DB.containsPracticeHistory(id)) {
+                        currentPracticeHistory = DB.getPracticeHistory(id);
+                    } else {
+                        throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
+                    }
                 }
             }
         }
@@ -94,7 +93,9 @@ public class ActivityPracticeHistory extends AbstractActivity {
     }
 
     private void getIntentParams(Intent intent) {
-        params = sessionOpenActivities.peek();
+        if (!sessionOpenActivities.isEmpty()) {
+            params = sessionOpenActivities.peek();
+        }
         isNew = (params != null ? params.isTransmitterNew() : false);
     }
 

@@ -76,8 +76,8 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
         LOG.debug(message);
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
         Intent intent = getIntent();
@@ -109,11 +109,12 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            if ((params!=null && params.isReceiverForChoice()) || sessionPracticeSequence.isEmpty()) {
+            if ((params != null && params.isReceiverForChoice()) || sessionPracticeSequence.isEmpty()) {
                 detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
             } else {
                 detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfPractice(sessionPracticeSequence.getFirst().getId());
-            }        }
+            }
+        }
         List<DetailedPracticeHistory> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < detailedPracticeHistories.size(); i++) {
@@ -137,6 +138,9 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     private void getIntentParams(Intent intent) {
         idIntentDetailedPracticeHistory = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
+        if (!sessionOpenActivities.isEmpty()) {
+            params = sessionOpenActivities.peek();
+        }
     }
 
     public void btDetailedPracticeHistoryAdd_onClick(final View view) {
@@ -159,8 +163,8 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     private void showDetailedPracticeHistory() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedDetailedPracticeHistory !=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedDetailedPracticeHistory.size());
+        if (pageNumber != null && pagedDetailedPracticeHistory != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedDetailedPracticeHistory.size());
         }
 
         LOG.debug("ActivityDetailedPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
@@ -209,7 +213,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
-            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentDetailedPracticeHistory.getId()));
@@ -339,17 +343,15 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
-            if (params.isReceiverForChoice()) {
-                Class<?> transmitterClass = null;
-                try {
-                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                intent = new Intent(getApplicationContext(), transmitterClass);
-                sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentPracticeHistoryID", idIntentDetailedPracticeHistory);
+            Class<?> transmitterClass = null;
+            try {
+                transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
+            intent = new Intent(getApplicationContext(), transmitterClass);
+            sessionOpenActivities.pollFirst();
+            intent.putExtra("CurrentPracticeHistoryID", idIntentDetailedPracticeHistory);
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

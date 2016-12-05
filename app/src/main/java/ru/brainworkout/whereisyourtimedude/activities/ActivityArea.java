@@ -41,16 +41,20 @@ public class ActivityArea extends AbstractActivity {
 
         if (isNew) {
             if (!sessionAreaSequence.isEmpty()) {
-                currentArea= sessionAreaSequence.pollFirst();
+                currentArea = sessionAreaSequence.pollFirst();
             } else {
                 currentArea = new Area.Builder(DB).build();
             }
         } else {
-            int id = intent.getIntExtra("CurrentAreaID", 0);
-            if (DB.containsArea(id)) {
-                currentArea = DB.getArea(id);
+            if (!sessionAreaSequence.isEmpty()) {
+                currentArea = sessionAreaSequence.pollFirst();
             } else {
-                throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
+                int id = intent.getIntExtra("CurrentAreaID", 0);
+                if (DB.containsArea(id)) {
+                    currentArea = DB.getArea(id);
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
+                }
             }
         }
         showAreaOnScreen();

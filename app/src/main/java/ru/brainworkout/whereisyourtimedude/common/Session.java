@@ -17,7 +17,7 @@ public class Session {
     }
 
     public static User sessionCurrentUser;
-    public static final Deque <Project> sessionProjectSequence = new ArrayDeque<>();;
+    public static final Deque<Project> sessionProjectSequence = new ArrayDeque<>();;
     public static final Deque<Area> sessionAreaSequence =new ArrayDeque<>();
     public static final Deque<Practice> sessionPracticeSequence =new ArrayDeque<>();
     public static final Deque<PracticeHistory> sessionPracticeHistorySequence = new ArrayDeque<>();

@@ -266,21 +266,31 @@ public class ActivityProjectList extends AbstractActivity {
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityProject.class);
         if (params != null) {
-            Class<?> myClass = null;
-            try {
-                myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            intent = new Intent(getApplicationContext(), myClass);
             if (params.isReceiverForChoice()) {
+                Class<?> myClass = null;
+                try {
+                    myClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                intent = new Intent(getApplicationContext(), myClass);
                 if (DB.containsProject(id)) {
                     Practice practice = sessionPracticeSequence.getFirst();
                     practice.setProject(DB.getProject(id));
                 }
                 intent = new Intent(getApplicationContext(), ActivityPractice.class);
+                sessionOpenActivities.pollFirst();
+            } else {
+                ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                        .addTransmitterActivityName("ActivityProjectList")
+                        .isTransmitterNew(false)
+                        .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                        .addReceiverActivityName("ActivityProject")
+                        .isReceiverNew(false)
+                        .isReceiverForChoice(false)
+                        .build();
+                sessionOpenActivities.push(paramsNew);
             }
-            sessionOpenActivities.pollFirst();
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
                     .addTransmitterActivityName("ActivityProjectList")
@@ -338,6 +348,7 @@ public class ActivityProjectList extends AbstractActivity {
                 e.printStackTrace();
             }
             intent = new Intent(getApplicationContext(), myClass);
+            intent.putExtra("CurrentProjectID", idIntentProject);
             sessionOpenActivities.pollFirst();
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

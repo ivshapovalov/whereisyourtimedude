@@ -257,19 +257,18 @@ public class ActivityPracticeList extends AbstractActivity {
 
     private void rowPractice_onClick(final TableRow view) {
         blink(view, this);
-
         int id = view.getId() % NUMBER_OF_VIEWS;
         Intent intent = new Intent(getApplicationContext(), ActivityPractice.class);
         intent.putExtra("CurrentPracticeID", id);
         if (params != null) {
-            Class<?> transmitterClass = null;
-            try {
-                transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
-            intent = new Intent(getApplicationContext(), transmitterClass);
             if (params.isReceiverForChoice()) {
+                Class<?> transmitterClass = null;
+                try {
+                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+                intent = new Intent(getApplicationContext(), transmitterClass);
                 if (DB.containsPractice(id)) {
                     if (transmitterClass == ActivityPracticeHistory.class
                             ) {
@@ -284,6 +283,16 @@ public class ActivityPracticeList extends AbstractActivity {
                     throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
                 }
                 sessionOpenActivities.pollFirst();
+            } else {
+                ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                        .addTransmitterActivityName("ActivityPracticeList")
+                        .isTransmitterNew(false)
+                        .isTransmitterForChoice(params != null ? params.isReceiverForChoice() : false)
+                        .addReceiverActivityName("ActivityPractice")
+                        .isReceiverNew(false)
+                        .isReceiverForChoice(false)
+                        .build();
+                sessionOpenActivities.push(paramsNew);
             }
         } else {
             ConnectionParameters paramsNew = new ConnectionParameters.Builder()
@@ -339,18 +348,15 @@ public class ActivityPracticeList extends AbstractActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         if (params != null) {
-            if (params.isReceiverForChoice()) {
-                Class<?> transmitterClass = null;
-                try {
-                    transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-
-                intent = new Intent(getApplicationContext(), transmitterClass);
-                sessionOpenActivities.pollFirst();
-                intent.putExtra("CurrentPracticeID", idIntentPractice);
+            Class<?> transmitterClass = null;
+            try {
+                transmitterClass = Class.forName(getPackageName() + ".activities." + params.getTransmitterActivityName());
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
             }
+            intent = new Intent(getApplicationContext(), transmitterClass);
+            intent.putExtra("CurrentPracticeID", idIntentPractice);
+            sessionOpenActivities.pollFirst();
         }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);

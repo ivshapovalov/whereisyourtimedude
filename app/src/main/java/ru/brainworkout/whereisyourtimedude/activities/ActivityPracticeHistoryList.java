@@ -106,7 +106,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         List<PracticeHistory> practiceHistories = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            if (sessionPracticeSequence.isEmpty()) {
+            if ((params!=null && params.isReceiverForChoice()) || sessionPracticeSequence.isEmpty()) {
                 practiceHistories = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
             } else {
                 practiceHistories = DB.getAllPracticeHistoryOfPractice(sessionPracticeSequence.getFirst().getId());

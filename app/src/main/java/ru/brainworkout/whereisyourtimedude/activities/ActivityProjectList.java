@@ -91,7 +91,7 @@ public class ActivityProjectList extends AbstractActivity {
         List<Project> projects = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            if (sessionAreaSequence.isEmpty()) {
+            if ((params!=null && params.isReceiverForChoice()) || sessionAreaSequence.isEmpty()) {
                 projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
             } else {
                 projects = DB.getAllProjectsOfArea(sessionAreaSequence.getFirst().getId());

@@ -37,19 +37,19 @@ public class ActivityPractice extends AbstractActivity {
         Intent intent = getIntent();
         getIntentParams(intent);
 
-        if (isNew) {
-            if (!sessionPracticeSequence.isEmpty()) {
-                currentPractice= sessionPracticeSequence.pollFirst();
-            } else {
-                currentPractice = new Practice.Builder(DB).build();
-            }
+        if (!sessionPracticeSequence.isEmpty()) {
+            currentPractice = sessionPracticeSequence.pollFirst();
         } else {
+            if (isNew) {
+                currentPractice = new Practice.Builder(DB).build();
+            } else {
                 int id = intent.getIntExtra("CurrentPracticeID", 0);
                 if (DB.containsPractice(id)) {
                     currentPractice = DB.getPractice(id);
                 } else {
                     throw new TableDoesNotContainElementException(String.format("Practice with id ='%s' does not exists in database", id));
                 }
+            }
         }
 
         showPracticeOnScreen();
@@ -127,7 +127,6 @@ public class ActivityPractice extends AbstractActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
-
 
     private void getPropertiesFromScreen() {
 

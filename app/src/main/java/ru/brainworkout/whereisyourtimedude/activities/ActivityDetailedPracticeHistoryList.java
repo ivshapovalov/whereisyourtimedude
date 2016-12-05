@@ -109,7 +109,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            if (sessionPracticeSequence.isEmpty()) {
+            if ((params!=null && params.isReceiverForChoice()) || sessionPracticeSequence.isEmpty()) {
                 detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
             } else {
                 detailedPracticeHistories = DB.getAllDetailedPracticeHistoryOfPractice(sessionPracticeSequence.getFirst().getId());

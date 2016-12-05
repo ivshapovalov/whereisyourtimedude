@@ -85,7 +85,7 @@ public class ActivityPracticeList extends AbstractActivity {
         List<Practice> practices = new ArrayList<>();
         if (sessionCurrentUser == null) {
         } else {
-            if (sessionProjectSequence.isEmpty()) {
+            if ((params!=null && params.isReceiverForChoice()) || sessionProjectSequence.isEmpty()) {
                 practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
             } else {
                 practices = DB.getAllActivePracticesOfProject(sessionProjectSequence.getFirst().getId());

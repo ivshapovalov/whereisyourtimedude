@@ -38,23 +38,27 @@ public class ActivityArea extends AbstractActivity {
 
         Intent intent = getIntent();
         getIntentParams(intent);
-        if (!sessionAreaSequence.isEmpty()) {
-            currentArea = sessionAreaSequence.pollFirst();
-        } else {
-            if (isNew) {
-                currentArea = new Area.Builder(DB).build();
+
+        int id = intent.getIntExtra("CurrentAreaID", 0);
+        if (id != 0) {
+            if (DB.containsArea(id)) {
+                currentArea = DB.getArea(id);
             } else {
-                int id = intent.getIntExtra("CurrentAreaID", 0);
-                if (DB.containsArea(id)) {
-                    currentArea = DB.getArea(id);
-                } else {
-                    throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
+                throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
+            }
+        } else {
+            if (!sessionAreaSequence.isEmpty()) {
+                currentArea = sessionAreaSequence.pollFirst();
+            } else {
+                if (isNew) {
+                    currentArea = new Area.Builder(DB).build();
                 }
             }
+
+        }
             showAreaOnScreen();
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
             setTitleOfActivity(this);
-        }
     }
 
     private void getIntentParams(Intent intent) {

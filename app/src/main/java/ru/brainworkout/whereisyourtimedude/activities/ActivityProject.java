@@ -41,13 +41,14 @@ public class ActivityProject extends AbstractActivity {
                 throw new TableDoesNotContainElementException(String.format("Project with id ='%s' does not exists in database", id));
             }
         } else {
-            if (isNew) {
-                currentProject = new Project.Builder(DB).build();
+            if (!sessionProjectSequence.isEmpty()) {
+                currentProject = sessionProjectSequence.pollFirst();
             } else {
-                if (!sessionProjectSequence.isEmpty()) {
-                    currentProject = sessionProjectSequence.pollFirst();
+                if (isNew) {
+                    currentProject = new Project.Builder(DB).build();
                 }
             }
+
         }
         showProjectOnScreen();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -121,7 +122,6 @@ public class ActivityProject extends AbstractActivity {
                 .isReceiverNew(false)
                 .isReceiverForChoice(true)
                 .build();
-        sessionProjectSequence.push(currentProject);
         sessionOpenActivities.push(paramsNew);
         intent.putExtra("CurrentAreaID", id_area);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

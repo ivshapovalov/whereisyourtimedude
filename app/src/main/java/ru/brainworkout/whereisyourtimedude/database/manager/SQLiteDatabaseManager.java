@@ -79,7 +79,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_DETAILED_PRACTICE_HISTORY_DURATION = "detailed_practice_history_duration";
     private static final String KEY_DETAILED_PRACTICE_HISTORY_TIME = "detailed_practice_history_last_time";
 
-    //  Users AbstractEntity
+    //  Users
     private static final String KEY_USER_ID = "user_id";
     private static final String KEY_USER_NAME = "user_name";
     private static final String KEY_USER_IS_CURRENT = "user_is_current";
@@ -543,11 +543,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         }
     }
 
-    public synchronized Options getOptions(int id) {
+    public synchronized Options getOptionsByID(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
-                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL,
+                        KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -573,7 +574,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
-                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL, KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL,
+                        KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID_USER + "=?",
                 new String[]{String.valueOf(id_user)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -1014,6 +1016,34 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return users;
+    }
+
+    public synchronized List<Options> getAllOptions() {
+
+        List<Options> optionsList = new ArrayList<>();
+        String selectQuery = "SELECT  "
+                + KEY_OPTIONS_ID + "," + KEY_OPTIONS_RECOVERY_ON_RUN + ","
+                + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + "," + KEY_OPTIONS_SAVE_INTERVAL + ","
+                + KEY_OPTIONS_CHRONO_IS_WORKING + " FROM " + TABLE_OPTIONS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Options options = new Options.Builder(Integer.parseInt(cursor.getString(0)))
+                        .addRecoverySwitch(cursor.getInt(1))
+                        .addDisplaySwitch(cursor.getInt(2))
+                        .addSaveInterval(cursor.getInt(3))
+                        .addChronoIsWorking(cursor.getInt(4))
+                        .build();
+                optionsList.add(options);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return optionsList;
     }
 
     public synchronized List<Area> getAllAreas() {

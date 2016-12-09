@@ -25,7 +25,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import java.util.Map;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
+import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
 import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Project;
@@ -45,17 +45,20 @@ public class ActivityFileExportImport extends AbstractActivity {
 
     private long mDateFrom;
     private long mDateTo;
+    private boolean mIncludeHistory;
     private final SQLiteDatabaseManager DB = new SQLiteDatabaseManager(this);
+    private static final String SYMBOL_SPLIT = ";";
 
     private StringBuilder message = new StringBuilder();
     private StringBuilder messageErrors = new StringBuilder();
 
     private List<User> users = new ArrayList<>();
+    private List<Options> options = new ArrayList<>();
     private List<Area> areas = new ArrayList<>();
     private List<Project> projects = new ArrayList<>();
     private List<Practice> practices = new ArrayList<>();
-    private List<PracticeHistory> practiceHistories= new ArrayList<>();
-    private List<DetailedPracticeHistory> detailedPracticeHistories= new ArrayList<>();
+    private List<PracticeHistory> practiceHistories = new ArrayList<>();
+    private List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         setTitleOfActivity(this);
     }
 
-
     private void getIntentParams() {
         Intent intent = getIntent();
         long mCurrentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
@@ -76,118 +78,77 @@ public class ActivityFileExportImport extends AbstractActivity {
         mDateTo = mCurrentDateToInMillis;
     }
 
-    private List<String[]> createDataArray(TypeOfView type) {
+    /*********************
+     * WRITE
+     ****/
+
+    public void exportToFile() {
+
+        if (mDateFrom == 0) {
+            mDateFrom = Long.MIN_VALUE;
+        }
+        if (mDateTo == 0) {
+            mDateTo = Long.MAX_VALUE;
+        }
+        users = DB.getAllUsers();
+        options = DB.getAllOptions();
+        areas = DB.getAllAreas();
+        projects = DB.getAllProjects();
+        practices = DB.getAllPractices();
+        practiceHistories = DB.getAllPracticeHistory();
+        detailedPracticeHistories = DB.getAllDetailedPracticeHistory();
+
+        Map<String, List<String[]>> dataSheets = new HashMap<>();
+        dataSheets.put("users", createDataArray("users"));
+        dataSheets.put("options", createDataArray());
+        dataSheets.put("areas", createDataArray());
+        dataSheets.put("projects", createDataArray());
+        dataSheets.put("practices", createDataArray());
+        if (mIncludeHistory) {
+            dataSheets.put("practice_history", createDataArray());
+            dataSheets.put("detailed_practices_history", createDataArray());
+
+        }
+
+        writeToFile(dataSheets);
+    }
+
+    private List<String[]> createDataArray(String name) {
 
         message = new StringBuilder();
-        int countTrainings = 1;
-        List<String[]> data = new ArrayList<String[]>();
-        StringBuilder mNewString = new StringBuilder();
-        switch (type) {
-            case FULL:
-                mNewString.append("EXERCISE(" + SYMBOL_ID + "ID" + SYMBOL_DEF_VOLUME + "DEF_VOL" + ")/DATE(" + SYMBOL_ID + "ID" + ");");
-                break;
-            default:
-                mNewString.append("EXERCISE(" + SYMBOL_DEF_VOLUME + "DEF_VOL" + ")/DATE;");
-                break;
-        }
+        List<String[]> data = new ArrayList<>();
+        StringBuilder newString = new StringBuilder();
+        newString.append("ID").append(SYMBOL_SPLIT)
+                .append("NAME").append(SYMBOL_SPLIT)
+                .append("IS_CURRENT").append(SYMBOL_SPLIT)
+                .append("\n");
 
-        for (Training mCurrentTraining : users
+        int countUsers=1;
+        for (User currentUser : users
                 ) {
-            switch (type) {
-                case FULL:
-                    mNewString.append(mCurrentTraining.getDayString()).append("(" + SYMBOL_ID).append(mCurrentTraining.getID())
-                            .append(")").append(SYMBOL_SPLIT);
-                    break;
-                default:
-                    mNewString.append(mCurrentTraining.getDayString()).append(SYMBOL_SPLIT);
-                    break;
-
-            }
-
-            message.append(countTrainings++).append(") ").append(mCurrentTraining.getDayString()).append('\n');
+            newString.append(currentUser.getId()).append(SYMBOL_SPLIT)
+                        .append(currentUser.getName()).append(SYMBOL_SPLIT)
+                        .append(currentUser.isCurrentUser()).append(SYMBOL_SPLIT)
+                        .append("\n");
+                    countUsers++;
         }
-        String[] entries = mNewString.toString().split(SYMBOL_SPLIT);
+        message.append("TABLE '").append(name).append("' - ").append(countUsers).append(" rows").append('\n');
+        String[] entries = newString.toString().split(SYMBOL_SPLIT);
+        data.add(entries);
+        entries = newString.toString().split(SYMBOL_SPLIT);
         data.add(entries);
 
-        for (Exercise mCurrentExercise : areas
-                ) {
-            mNewString = new StringBuilder();
-
-            switch (type) {
-                case FULL:
-                    mNewString.append(mCurrentExercise.getName()).append("(").append(SYMBOL_ID).
-                            append(String.valueOf(mCurrentExercise.getID())).append(SYMBOL_DEF_VOLUME).append(mCurrentExercise.getVolumeDefault())
-                            .append(")").append(SYMBOL_SPLIT);
-                    break;
-                default:
-                    mNewString.append(mCurrentExercise.getName()).append("(").append(SYMBOL_DEF_VOLUME).append(mCurrentExercise.getVolumeDefault())
-                            .append(")").append(SYMBOL_SPLIT);
-                    break;
-
-            }
-
-            for (Training mCurrentTraining : users
-                    ) {
-                try {
-                    TrainingContent mCurrentTrainingContent = DB.getTrainingContent(mCurrentExercise.getID(), mCurrentTraining.getID());
-                    String curVolume = mCurrentTrainingContent.getVolume();
-                    if (curVolume == null || "".equals(curVolume.trim())) {
-                        mNewString.append("0");
-                    } else {
-                        mNewString.append(curVolume);
-                    }
-                    switch (type) {
-                        case FULL:
-                            int curWeight = mCurrentTrainingContent.getWeight();
-                            mNewString.append("(").append(SYMBOL_WEIGHT).append(mCurrentTrainingContent.getWeight()).append(")");
-                            break;
-                        case SHORT_WITH_WEIGHTS:
-                            mNewString.append("(").append(mCurrentTrainingContent.getWeight()).append(")");
-                            break;
-                        default:
-
-                            break;
-
-                    }
-
-                    mNewString.append(SYMBOL_SPLIT);
-
-
-                } catch (TableDoesNotContainElementException e) {
-                    switch (type) {
-                        case FULL:
-                            mNewString.append("(").append(SYMBOL_WEIGHT).append(")");
-                            break;
-
-                        default:
-
-                            break;
-
-                    }
-                    mNewString.append(SYMBOL_SPLIT);
-                }
-
-
-            }
-            entries = mNewString.toString().split(SYMBOL_SPLIT);
-            data.add(entries);
-        }
         return data;
     }
 
-    private void writeToFile(Map<TypeOfView, List<String[]>> dataSheets) {
+    private void writeToFile(Map<String, List<String[]>> dataSheets) {
 
         File exportDir = new File(Environment.getExternalStorageDirectory(), "");
-        if (!exportDir.exists())
-
-        {
+        if (!exportDir.exists()) {
             exportDir.mkdirs();
         }
         File file = new File(exportDir, "trainings.xls");
-
-        try
-
-        {
+        try {
 
             if (file.createNewFile()) {
                 //System.out.println("File is created!");
@@ -334,10 +295,11 @@ public class ActivityFileExportImport extends AbstractActivity {
         book.getSheetAt(0).setPrintGridlines(true);
     }
 
+    /*********************
+     * READ
+     */
     private void readFromFile(File file) {
-
         List<String[]> data = new ArrayList<>();
-
         try
 
         {
@@ -627,85 +589,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         }
     }
 
-    private String textBeforeNextSpecialSymbol(String s, int currentPosition) {
-
-        List<Integer> positions = new ArrayList<>();
-
-        for (String symbol : specialSymbols
-                ) {
-            int position = s.indexOf(symbol, currentPosition + 1);
-            if (position != -1) {
-                positions.add(position);
-            }
-
-        }
-        Collections.sort(positions);
-
-        if (!positions.isEmpty()) {
-            return s.substring(currentPosition + 1, positions.get(0));
-        } else {
-            return s.substring(currentPosition + 1);
-        }
-
-    }
-
-    public void btClose_onClick(View view) {
-
-        blink(view,this);
-        Intent intent = new Intent(ActivityFileExportImport.this, ActivityTools.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-    }
-
-    public void onBackPressed() {
-
-        Intent intent = new Intent(getApplicationContext(), ActivityTools.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-
-    }
-
-    public void tvDayFrom_onClick(View view) {
-
-        blink(view,this);
-        day_onClick(true);
-    }
-
-    public void tvDayTo_onClick(View view) {
-
-        blink(view,this);
-        day_onClick(false);
-    }
-
-    private void day_onClick(boolean isBeginDate) {
-
-
-        Intent intent = new Intent(ActivityFileExportImport.this, ActivityCalendarView.class);
-        intent.putExtra("IsBeginDate", isBeginDate);
-        intent.putExtra("CurrentActivity", "ActivityFileExportImport");
-
-        int mDayFromID = getResources().getIdentifier("tvDayFrom", "id", getPackageName());
-        TextView tvDayFrom = (TextView) findViewById(mDayFromID);
-        intent.putExtra("CurrentDateInMillis", 0);
-        intent.putExtra("CurrentDateToInMillis", "");
-        if (tvDayFrom != null) {
-            if (!"".equals(String.valueOf(tvDayFrom.getText()).trim())) {
-                intent.putExtra("CurrentDateInMillis", ConvertStringToDate(String.valueOf(tvDayFrom.getText())).getTime());
-            }
-        }
-        int mDayToID = getResources().getIdentifier("tvDayTo", "id", getPackageName());
-        TextView tvDayTo = (TextView) findViewById(mDayToID);
-        if (tvDayTo != null) {
-            if (!"".equals(String.valueOf(tvDayTo.getText()).trim())) {
-                intent.putExtra("CurrentDateToInMillis", ConvertStringToDate(String.valueOf(tvDayTo.getText())).getTime());
-            }
-        }
-
-        startActivity(intent);
-
-    }
-
     public void loadFromFile() {
 
         File exportDir = new File(Environment.getExternalStorageDirectory(), "");
@@ -718,69 +601,10 @@ public class ActivityFileExportImport extends AbstractActivity {
         }
     }
 
-    public void btImportFromFile_onClick(View view) {
-
-        blink(view,this);
-        loadFromFile();
-
-    }
-
-    public void btExportToFile_onClick(View view) {
-
-        blink(view,this);
-        exportToFile();
-
-    }
-
-    public void exportToFile() {
-        if (mDateFrom == 0) {
-            mDateFrom = Long.MIN_VALUE;
-        }
-        if (mDateTo == 0) {
-            mDateTo = Long.MAX_VALUE;
-        }
-        users = new ArrayList<>();
-        areas = new ArrayList<>();
-        users = DB.getTrainingsByDates(mDateFrom, mDateTo);
-        areas = DB.getExercisesByDates(mDateFrom, mDateTo);
-
-        Map<TypeOfView, List<String[]>> dataSheets = new HashMap<>();
-        if (mFullView) {
-            dataSheets.put(TypeOfView.SHORT, createDataArray(TypeOfView.SHORT));
-            dataSheets.put(TypeOfView.FULL, createDataArray(TypeOfView.FULL));
-            dataSheets.put(TypeOfView.SHORT_WITH_WEIGHTS, createDataArray(TypeOfView.SHORT_WITH_WEIGHTS));
-        } else {
-            dataSheets.put(TypeOfView.SHORT, createDataArray(TypeOfView.SHORT));
-        }
-
-        writeToFile(dataSheets);
-    }
-
-    public void btDayFromClear_onClick(final View view) {
-
-        blink(view,this);
-        int mDayFromID = getResources().getIdentifier("tvDayFrom", "id", getPackageName());
-        TextView tvDayFrom = (TextView) findViewById(mDayFromID);
-        if (tvDayFrom != null) {
-            tvDayFrom.setText("");
-        }
-
-    }
-
-    public void btDayToClear_onClick(final View view) {
-
-        blink(view,this);
-        int mDayToID = getResources().getIdentifier("tvDayTo", "id", getPackageName());
-        TextView tvDayTo = (TextView) findViewById(mDayToID);
-        if (tvDayTo != null) {
-            tvDayTo.setText("");
-        }
-
-    }
+    /**************************************/
 
     private void updateScreen() {
 
-        //Имя
         int mDayFromID = getResources().getIdentifier("tvDayFrom", "id", getPackageName());
         TextView etDayFrom = (TextView) findViewById(mDayFromID);
         if (etDayFrom != null) {
@@ -800,6 +624,125 @@ public class ActivityFileExportImport extends AbstractActivity {
                 etDayTo.setText(convertMillisToStringDate(mDateTo));
             }
         }
+
+        RadioGroup radiogroup = (RadioGroup) findViewById(R.id.rgIncludeHistory);
+
+        if (radiogroup != null) {
+            radiogroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(RadioGroup group, int checkedId) {
+                    switch (checkedId) {
+                        case -1:
+                            break;
+                        case R.id.rbIncludeHistoryYes:
+                            mIncludeHistory = true;
+                            break;
+                        case R.id.rbIncludeHistoryNo:
+                            mIncludeHistory = false;
+                            break;
+                        default:
+                            mIncludeHistory = false;
+                            break;
+                    }
+                }
+            });
+        }
+    }
+
+    /****************
+     * FORM ACTIONS
+     ***************************/
+
+    public void btExportToFile_onClick(View view) {
+
+        blink(view, this);
+        exportToFile();
+
+    }
+
+    public void btImportFromFile_onClick(View view) {
+
+        blink(view, this);
+        loadFromFile();
+
+    }
+
+    private void day_onClick(boolean isBeginDate) {
+
+        Intent intent = new Intent(ActivityFileExportImport.this, ActivityCalendarView.class);
+        intent.putExtra("IsBeginDate", isBeginDate);
+        intent.putExtra("CurrentActivity", "ActivityFileExportImport");
+
+        int mDayFromID = getResources().getIdentifier("tvDayFrom", "id", getPackageName());
+        TextView tvDayFrom = (TextView) findViewById(mDayFromID);
+        intent.putExtra("CurrentDateInMillis", 0);
+        intent.putExtra("CurrentDateToInMillis", "");
+        if (tvDayFrom != null) {
+            if (!"".equals(String.valueOf(tvDayFrom.getText()).trim())) {
+                intent.putExtra("CurrentDateInMillis", convertStringToDate(String.valueOf(tvDayFrom.getText())).getTime());
+            }
+        }
+        int mDayToID = getResources().getIdentifier("tvDayTo", "id", getPackageName());
+        TextView tvDayTo = (TextView) findViewById(mDayToID);
+        if (tvDayTo != null) {
+            if (!"".equals(String.valueOf(tvDayTo.getText()).trim())) {
+                intent.putExtra("CurrentDateToInMillis", convertStringToDate(String.valueOf(tvDayTo.getText())).getTime());
+            }
+        }
+
+        startActivity(intent);
+    }
+
+    public void tvDayFrom_onClick(View view) {
+
+        blink(view, this);
+        day_onClick(true);
+    }
+
+    public void tvDayTo_onClick(View view) {
+
+        blink(view, this);
+        day_onClick(false);
+    }
+
+    public void btDayFromClear_onClick(final View view) {
+
+        blink(view, this);
+        int mDayFromID = getResources().getIdentifier("tvDayFrom", "id", getPackageName());
+        TextView tvDayFrom = (TextView) findViewById(mDayFromID);
+        if (tvDayFrom != null) {
+            tvDayFrom.setText("");
+        }
+
+    }
+
+    public void btDayToClear_onClick(final View view) {
+
+        blink(view, this);
+        int mDayToID = getResources().getIdentifier("tvDayTo", "id", getPackageName());
+        TextView tvDayTo = (TextView) findViewById(mDayToID);
+        if (tvDayTo != null) {
+            tvDayTo.setText("");
+        }
+
+    }
+
+    public void onBackPressed() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityTools.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
+    }
+
+    public void btClose_onClick(View view) {
+
+        blink(view, this);
+        Intent intent = new Intent(ActivityFileExportImport.this, ActivityTools.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+
     }
 
 }

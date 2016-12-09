@@ -208,9 +208,9 @@ public class Common {
 
         Random random = new Random();
         final int USERS_COUNT = 5;
-        final int AREAS_COUNT = 20;
-        final int PROJECTS_COUNT = 100;
-        final int PRACTICES_COUNT = 1000;
+        final int AREAS_COUNT = 10;
+        final int PROJECTS_COUNT = 10;
+        final int PRACTICES_COUNT = 100;
 
         int maxUser = DB.getUserMaxNumber();
         //Users

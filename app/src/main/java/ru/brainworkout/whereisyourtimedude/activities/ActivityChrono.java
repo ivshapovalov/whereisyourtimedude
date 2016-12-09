@@ -41,9 +41,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgrou
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
-
 public class ActivityChrono extends AbstractActivity {
-
     private static PracticeHistory currentPracticeHistory;
     private static List<PracticeHistory> practiceHistories = new ArrayList<>();
     private static long currentDateInMillis;
@@ -60,7 +58,7 @@ public class ActivityChrono extends AbstractActivity {
     private ConnectionParameters params;
 
     private int rows_number = 15;
-    Map<Integer, List<PracticeHistory>> pagingPracticeHistories = new HashMap<>();
+    Map<Integer, List<PracticeHistory>> pagedPracticeHistories = new HashMap<>();
     private int currentPage = 1;
 
 
@@ -254,7 +252,6 @@ public class ActivityChrono extends AbstractActivity {
         }
     }
 
-    //
     private void stopTimer() {
 
         if (mChronometerIsWorking) {
@@ -266,10 +263,9 @@ public class ActivityChrono extends AbstractActivity {
             Session.sessionBackgroundChronometer.pauseTicking();
             mChronometerIsWorking = false;
             sessionBackgroundChronometer.updateNotification(Constants.ACTION.PAUSE_ACTION);
-
+            currentPracticeHistory.dbSave(DB);
         } else {
         }
-        currentPracticeHistory.dbSave(DB);
     }
 
     private void changeTimer() {
@@ -311,6 +307,7 @@ public class ActivityChrono extends AbstractActivity {
         } else {
             int index = practiceHistories.indexOf(new PracticeHistory.Builder(id_practice_history).build());
             currentPracticeHistory = practiceHistories.get(index);
+            currentPracticeHistory.setID(DB.getPracticeHistoryMaxNumber()+1);
         }
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
@@ -344,18 +341,18 @@ public class ActivityChrono extends AbstractActivity {
             List<PracticeHistory> pageContent = new ArrayList<>();
             int pageNumber = 1;
             pageContent.add(practiceHistories.get(0));
-            pagingPracticeHistories.put(0, pageContent);
+            pagedPracticeHistories.put(0, pageContent);
             pageContent = new ArrayList<>();
             for (int i = 1; i < practiceHistories.size(); i++) {
                 pageContent.add(practiceHistories.get(i));
                 if (pageContent.size() == rows_number) {
-                    pagingPracticeHistories.put(pageNumber, pageContent);
+                    pagedPracticeHistories.put(pageNumber, pageContent);
                     pageContent = new ArrayList<>();
                     pageNumber++;
                 }
             }
             if (pageContent.size() != 0) {
-                pagingPracticeHistories.put(pageNumber, pageContent);
+                pagedPracticeHistories.put(pageNumber, pageContent);
             }
         }
     }
@@ -404,7 +401,7 @@ public class ActivityChrono extends AbstractActivity {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
         if (pageNumber != null) {
-            pageNumber.setText(String.valueOf(currentPage));
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPracticeHistories.size());
         }
 
         String areaName = "";
@@ -472,7 +469,7 @@ public class ActivityChrono extends AbstractActivity {
 
         tableHistory.removeAllViews();
 
-        List<PracticeHistory> page = pagingPracticeHistories.get(currentPage);
+        List<PracticeHistory> page = pagedPracticeHistories.get(currentPage);
         if (page == null) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
@@ -494,7 +491,7 @@ public class ActivityChrono extends AbstractActivity {
 
     @NonNull
     private TableRow CreateTableRow(int i) {
-        PracticeHistory practiceHistory = pagingPracticeHistories.get(currentPage).get(i);
+        PracticeHistory practiceHistory = pagedPracticeHistories.get(currentPage).get(i);
 
         String practiceName = "";
         String areaName = "";
@@ -635,7 +632,7 @@ public class ActivityChrono extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagingPracticeHistories.size()) {
+        if (currentPage != pagedPracticeHistories.size()) {
             currentPage++;
         }
         updateAllRows();

@@ -155,7 +155,6 @@
                 android:layout_span="18"
                 android:layout_marginLeft="1dp"
                 android:layout_marginRight="1dp"
-                android:text="1000"
                 android:gravity="center"
                 android:layout_gravity="center_vertical"/>
 

@@ -1,5 +1,6 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import com.thoughtworks.xstream.*;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -27,6 +28,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -34,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
-import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
@@ -90,7 +91,7 @@ public class ActivityFileExportImport extends AbstractActivity {
      * WRITE
      ****/
 
-    public void exportToFile() {
+    public void exportToXLSFile() {
 
         if (mDateFrom == 0) {
             mDateFrom = Long.MIN_VALUE;
@@ -704,14 +705,14 @@ public class ActivityFileExportImport extends AbstractActivity {
      * FORM ACTIONS
      ***************************/
 
-    public void btExportToFile_onClick(View view) {
+    public void btExportToXLSFile_onClick(View view) {
 
         blink(view, this);
-        exportToFile();
+        exportToXLSFile();
 
     }
 
-    public void btImportFromFile_onClick(View view) {
+    public void btImportFromXLSFile_onClick(View view) {
         blink(view, this);
 
         if (backgroundChronometerIsWorking()) return;
@@ -825,5 +826,80 @@ public class ActivityFileExportImport extends AbstractActivity {
 
     }
 
+    public void btExportToXMLFile_onClick(View view) {
+
+        users = DB.getAllUsers();
+
+        UserList uList=new UserList();
+        uList.setList(users);
+
+//        XStream xstream = new XStream();
+//        xstream.alias("person", Person.class);
+//        xstream.alias("persons", PersonList.class);
+//        xstream.addImplicitCollection(PersonList.class, "list");
+//
+//        PersonList list = new PersonList();
+//        list.add(new Person("ABC",12,"address"));
+//        list.add(new Person("XYZ",20,"address2"));
+//
+//        String xml = xstream.toXML(list);
+
+    }
+
+    public void btImportFromXMLFile_onClick(View view) {
+    }
+
+    public void btExportToJSONFile_onClick(View view) {
+
+    }
+
+    public void btImportFromJSONFile_onClick(View view) {
+    }
+
+    public void btBackupBD_onClick(View view) {
+        try {
+            File dbFile = getApplicationContext().getDatabasePath("wiytd");
+            FileInputStream fis = new FileInputStream(dbFile);
+
+            String outFileName = Environment.getExternalStorageDirectory() + "/wiytd_copy.db";
+
+            OutputStream output = new FileOutputStream(outFileName);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+
+            output.flush();
+            output.close();
+            fis.close();
+            Toast toast = Toast.makeText(ActivityFileExportImport.this,
+                    "База данных успешно скопирована в !"+outFileName, Toast.LENGTH_SHORT);
+            toast.show();
+        } catch (Exception e) {
+            Toast toast = Toast.makeText(ActivityFileExportImport.this,
+                    "Бэкап базы данных не удался!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
+
+    }
+
+    private class UserList {
+
+        private List<User> list;
+
+        public UserList(){
+            list = new ArrayList<User>();
+        }
+
+        public void add(User u){
+            list.add(u);
+        }
+
+        public void setList(List<User> list) {
+            this.list = list;
+        }
+    }
 }
 

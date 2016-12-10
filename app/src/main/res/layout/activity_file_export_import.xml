@@ -22,37 +22,101 @@
                 android:text="CLOSE"
                 android:id="@+id/btClose"
                 android:onClick="btClose_onClick"
-                android:layout_span="15"
-                android:gravity="center_vertical|center"
-                android:textSize="12sp"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="WRITE TO FILE"
-                android:id="@+id/btExport"
-                android:onClick="btExportToFile_onClick"
-                android:layout_span="15"
-                android:gravity="center_vertical|center"
-                android:textSize="12sp"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="READ FROM FILE"
-                android:id="@+id/button10"
-                android:onClick="btImportFromFile_onClick"
-                android:layout_span="15"
+                android:layout_span="44"
                 android:gravity="center_vertical|center"
                 android:textSize="12sp"
                 android:background="@drawable/bt_border"
                 android:textColor="@color/text_color" />
 
         </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="WRITE TO XLS"
+                android:id="@+id/btExport"
+                android:onClick="btExportToXLSFile_onClick"
+                android:layout_span="22"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="READ FROM XLS"
+                android:id="@+id/button10"
+                android:onClick="btImportFromXLSFile_onClick"
+                android:layout_span="22"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="WRITE TO XML"
+                android:id="@+id/button27"
+                android:onClick="btExportToXMLFile_onClick"
+                android:layout_span="22"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="READ FROM XML"
+                android:id="@+id/button29"
+                android:onClick="btImportFromXMLFile_onClick"
+                android:layout_span="22"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="WRITE TO JSON"
+                android:id="@+id/button31"
+                android:onClick="btExportToJSONFile_onClick"
+                android:layout_span="22"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="READ FROM JSON"
+                android:id="@+id/button30"
+                android:onClick="btImportFromJSONFile_onClick"
+                android:layout_span="22"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
+        </TableRow>
+
 
         <TableRow
             android:layout_width="match_parent"
@@ -74,7 +138,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_span="15">
+                android:layout_span="14">
 
                 <RadioButton
                     android:id="@+id/rbIncludeHistoryYes"
@@ -119,7 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tvDayFrom"
-                android:layout_span="20"
+                android:layout_span="19"
                 android:onClick="tvDayFrom_onClick"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_gravity="center_vertical"
@@ -172,7 +236,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tvDayTo"
-                android:layout_span="20"
+                android:layout_span="19"
                 android:onClick="tvDayTo_onClick"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_gravity="center_vertical"
@@ -214,7 +278,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/scrollView3"
-                android:layout_span="45">
+                android:layout_span="44">
 
                 <TextView
                     android:layout_width="match_parent"
@@ -225,6 +289,23 @@
                     android:background="@drawable/abc_list_selector_background_transition_holo_light"
                     />
             </ScrollView>
+        </TableRow>
+
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="BACKUP DATABASE TO DB FILE"
+                android:id="@+id/btMain10"
+                android:onClick="btBackupBD_onClick"
+                android:layout_span="44"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color"/>
         </TableRow>
 
     </TableLayout>

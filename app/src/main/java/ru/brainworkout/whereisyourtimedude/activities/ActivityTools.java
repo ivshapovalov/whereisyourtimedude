@@ -155,36 +155,5 @@ public class ActivityTools extends AbstractActivity {
 
     }
 
-    public void btBackupBD_onClick(View view) {
-        try {
-//            Context ctx = this; // for Activity, or Service. Otherwise simply get the context.
-//            String dbname = "mydb.db";
-//            File dbpath = ctx.getDatabasePath(dbname);
-//            final String inFileName = "/data/data/ru.brainworkout.whereisyourtimedude/databases/wiytd.db";
-            File dbFile = getApplicationContext().getDatabasePath("wiytd");
-            FileInputStream fis = new FileInputStream(dbFile);
 
-            String outFileName = Environment.getExternalStorageDirectory() + "/wiytd_copy.db";
-
-            OutputStream output = new FileOutputStream(outFileName);
-
-            byte[] buffer = new byte[1024];
-            int length;
-            while ((length = fis.read(buffer)) > 0) {
-                output.write(buffer, 0, length);
-            }
-
-            output.flush();
-            output.close();
-            fis.close();
-            Toast toast = Toast.makeText(ActivityTools.this,
-                    "База данных успешно скопирована в !"+outFileName, Toast.LENGTH_SHORT);
-            toast.show();
-        } catch (Exception e) {
-            Toast toast = Toast.makeText(ActivityTools.this,
-                    "Бэкап базы данных не удался!", Toast.LENGTH_SHORT);
-            toast.show();
-        }
-
-    }
 }

@@ -25,10 +25,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
@@ -350,6 +352,7 @@ public class ActivityFileExportImport extends AbstractActivity {
     /*********************
      * READ
      */
+
     private void readFromFile(File file) {
         List<String> tables = new ArrayList<>();
         tables.add("users");
@@ -368,7 +371,7 @@ public class ActivityFileExportImport extends AbstractActivity {
             int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
             TextView tvPath = (TextView) findViewById(mPath);
             StringBuilder errorMessage = new StringBuilder();
-            Map<String, List<String[]>> sheets = new HashMap<>();
+            Map<String, List<String[]>> sheets = new LinkedHashMap<>();
             HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(file));
             for (String table : tables
                     ) {
@@ -392,7 +395,7 @@ public class ActivityFileExportImport extends AbstractActivity {
             int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
             TextView tvPath = (TextView) findViewById(mPath);
             if (tvPath != null) {
-                tvPath.setText("Data didn't load from " + Environment.getExternalStorageDirectory().toString() + "/trainings.xls");
+                tvPath.setText("Data didn't load from " + Environment.getExternalStorageDirectory().toString() + "/wiytd.xls");
             }
             e.printStackTrace();
         }
@@ -478,47 +481,127 @@ public class ActivityFileExportImport extends AbstractActivity {
         for (Map.Entry<String,List<String[]>> entry:sheets.entrySet()
              ) {
             switch (entry.getKey()) {
-                case "users": createUsers(entry.getValue());
-                case "options": createOptions(entry.getValue());
-                case "areas": createAreas(entry.getValue());
-                case "projects": createProjects(entry.getValue());
-                case "practices": createPractices(entry.getValue());
-                case "practice_history": createPracticeHistory(entry.getValue());
-                case "detailed_practice_history": createDetailedPracticeHistory(entry.getValue());
+                case "users": createUsers(entry.getValue()); break;
+                case "options": createOptions(entry.getValue());break;
+                case "areas": createAreas(entry.getValue());break;
+                case "projects": createProjects(entry.getValue());break;
+                case "practices": createPractices(entry.getValue());break;
+                case "practice_history": createPracticeHistory(entry.getValue());break;
+                case "detailed_practice_history": createDetailedPracticeHistory(entry.getValue());break;
             }
         }
     }
 
     private void createDetailedPracticeHistory(List<String[]> rows) {
-
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            int idUser=Integer.valueOf(rows.get(i)[1]);
+            int idPractice=Integer.valueOf(rows.get(i)[2]);
+            int duration=Integer.valueOf(rows.get(i)[3]);
+            int time=Integer.valueOf(rows.get(i)[4]);
+            int date=Integer.valueOf(rows.get(i)[5]);
+            DetailedPracticeHistory detailedPracticeHistory=new DetailedPracticeHistory.Builder(id)
+                    .addDuration(duration)
+                    .addTime(time)
+                    .addDate(date)
+                    .build();
+            if (DB.containsPractice(idPractice)) {
+                detailedPracticeHistory.setPractice(DB.getPractice(idPractice));
+            }
+            detailedPracticeHistory.setUser(DB.getUser(idUser));
+            detailedPracticeHistory.dbSave(DB);
+        }
     }
 
     private void createPracticeHistory(List<String[]> rows) {
-
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            int idUser=Integer.valueOf(rows.get(i)[1]);
+            int idPractice=Integer.valueOf(rows.get(i)[2]);
+            int duration=Integer.valueOf(rows.get(i)[3]);
+            int lastTime=Integer.valueOf(rows.get(i)[4]);
+            int date=Integer.valueOf(rows.get(i)[5]);
+            PracticeHistory practiceHistory=new PracticeHistory.Builder(id)
+                    .addDuration(duration)
+                    .addLastTime(lastTime)
+                    .addDate(date)
+                    .build();
+            if (DB.containsPractice(idPractice)) {
+                practiceHistory.setPractice(DB.getPractice(idPractice));
+            }
+            practiceHistory.setUser(DB.getUser(idUser));
+            practiceHistory.dbSave(DB);
+        }
     }
 
     private void createPractices(List<String[]> rows) {
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            int idUser=Integer.valueOf(rows.get(i)[1]);
+            int idProject=Integer.valueOf(rows.get(i)[2]);
+            String name=rows.get(i)[3];
+            int isActive=Integer.valueOf(rows.get(i)[4]);
+            Practice practice=new Practice.Builder(id)
+                    .addName(name)
+                    .addIsActive(isActive)
+                    .build();
+            if (DB.containsProject(idProject)) {
+                practice.setProject(DB.getProject(idProject));
+            }
+            practice.setUser(DB.getUser(idUser));
+            practice.dbSave(DB);
+        }
     }
 
 
     private void createProjects(List<String[]> rows) {
-
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            int idUser=Integer.valueOf(rows.get(i)[1]);
+            int idArea=Integer.valueOf(rows.get(i)[2]);
+            String name=rows.get(i)[3];
+            Project project =new Project.Builder(id)
+                    .addName(name)
+                    .build();
+            if (DB.containsArea(idArea)) {
+                project.setArea(DB.getArea(idArea));
+            }
+            project.setUser(DB.getUser(idUser));
+            project.dbSave(DB);
+        }
     }
 
     private void createAreas(List<String[]> rows) {
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            int idUser=Integer.valueOf(rows.get(i)[1]);
+            String name=rows.get(i)[2];
+            int color=Integer.valueOf(rows.get(i)[3]);
+            Area area =new Area.Builder(id)
+                    .addName(name)
+                    .addColor(color)
+                    .build();
+            area.setUser(DB.getUser(idUser));
+            area.dbSave(DB);
+        }
 
     }
 
     private void createOptions(List<String[]> rows) {
         for (int i = 1; i <rows.size() ; i++) {
             int id=Integer.valueOf(rows.get(i)[0]);
-            int idUser=Integer.valueOf(rows.get(i)[0]);
-            int recovery_on_run=Integer.valueOf(rows.get(i)[0]);
-            int id_user=Integer.valueOf(rows.get(i)[0]);
-            int id_user=Integer.valueOf(rows.get(i)[0]);
-            int id_user=Integer.valueOf(rows.get(i)[0]);
-            Options options =new Options.Builder(id).add(name).addIsCurrentUser(is_current).build();
-            user.dbSave(DB);
+            int idUser=Integer.valueOf(rows.get(i)[1]);
+            int recoveryOnRunSwitch=Integer.valueOf(rows.get(i)[2]);
+            int displayNotificationTimerSwitch=Integer.valueOf(rows.get(i)[3]);
+            int saveInterval=Integer.valueOf(rows.get(i)[4]);
+            int chronoIsWorking=Integer.valueOf(rows.get(i)[5]);
+            Options options =new Options.Builder(id)
+                    .addRecoverySwitch(recoveryOnRunSwitch)
+                    .addDisplaySwitch(displayNotificationTimerSwitch)
+                    .addSaveInterval(saveInterval)
+                    .addChronoIsWorking(chronoIsWorking).build();
+            options.setUser(DB.getUser(idUser));
+            options.dbSave(DB);
         }
     }
 
@@ -529,6 +612,9 @@ public class ActivityFileExportImport extends AbstractActivity {
             int isCurrent=Integer.valueOf(rows.get(i)[2]);
             User user=new User.Builder(id).addName(name).addIsCurrentUser(isCurrent).build();
             user.dbSave(DB);
+            if (user.isCurrentUser()==1) {
+                Session.sessionCurrentUser=user;
+            }
         }
 
     }

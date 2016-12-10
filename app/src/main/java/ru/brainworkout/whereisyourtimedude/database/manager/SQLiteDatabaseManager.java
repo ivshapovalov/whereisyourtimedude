@@ -573,6 +573,33 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         }
     }
 
+    public synchronized Options getOptionsByID(int id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
+                        KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL,
+                        KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+        if (cursor != null)
+            cursor.moveToFirst();
+        Options options = null;
+        if (cursor.getCount() == 0) {
+            db.close();
+            throw new TableDoesNotContainElementException("There is no Options with id - " + id);
+        } else {
+            options = new Options.Builder(Integer.parseInt(cursor.getString(0)))
+                    .addRecoverySwitch(cursor.getInt(1))
+                    .addDisplaySwitch(cursor.getInt(2))
+                    .addSaveInterval(cursor.getInt(3))
+                    .addChronoIsWorking(cursor.getInt(4))
+                    .build();
+
+            cursor.close();
+            db.close();
+            return options;
+        }
+    }
+
     public synchronized Options getOptionsOfUser(int id_user) {
         SQLiteDatabase db = this.getReadableDatabase();
 

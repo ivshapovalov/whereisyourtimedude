@@ -339,7 +339,7 @@ public class ActivityFileExportImport extends AbstractActivity {
                 cName = row.createCell(j);
                 cName.setCellStyle(usualStyle);
                 try {
-                    cName.setCellValue(Integer.valueOf(data.get(i)[j]));
+                    cName.setCellValue(Long.valueOf(data.get(i)[j]));
                 } catch (Exception e) {
                     cName.setCellValue((data.get(i)[j]));
                 }
@@ -497,9 +497,9 @@ public class ActivityFileExportImport extends AbstractActivity {
             int id=Integer.valueOf(rows.get(i)[0]);
             int idUser=Integer.valueOf(rows.get(i)[1]);
             int idPractice=Integer.valueOf(rows.get(i)[2]);
-            int duration=Integer.valueOf(rows.get(i)[3]);
-            int time=Integer.valueOf(rows.get(i)[4]);
-            int date=Integer.valueOf(rows.get(i)[5]);
+            long duration=Long.valueOf(rows.get(i)[3]);
+            long time=Long.valueOf(rows.get(i)[4]);
+            long date=Long.valueOf(rows.get(i)[5]);
             DetailedPracticeHistory detailedPracticeHistory=new DetailedPracticeHistory.Builder(id)
                     .addDuration(duration)
                     .addTime(time)
@@ -518,9 +518,9 @@ public class ActivityFileExportImport extends AbstractActivity {
             int id=Integer.valueOf(rows.get(i)[0]);
             int idUser=Integer.valueOf(rows.get(i)[1]);
             int idPractice=Integer.valueOf(rows.get(i)[2]);
-            int duration=Integer.valueOf(rows.get(i)[3]);
-            int lastTime=Integer.valueOf(rows.get(i)[4]);
-            int date=Integer.valueOf(rows.get(i)[5]);
+            long duration=Long.valueOf(rows.get(i)[3]);
+            long lastTime=Long.valueOf(rows.get(i)[4]);
+            long date=Long.valueOf(rows.get(i)[5]);
             PracticeHistory practiceHistory=new PracticeHistory.Builder(id)
                     .addDuration(duration)
                     .addLastTime(lastTime)

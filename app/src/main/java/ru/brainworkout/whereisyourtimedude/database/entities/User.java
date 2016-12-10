@@ -6,7 +6,6 @@ import ru.brainworkout.whereisyourtimedude.database.interfaces.SavingIntoDB;
 import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb {
-    private int id;
     private String name;
     private int isCurrentUser;
 
@@ -16,14 +15,6 @@ public class User extends AbstractEntity implements SavingIntoDB, DeletingFromDb
         this.name = builder.name;
         this.isCurrentUser = builder.isCurrentUser;
 
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setID(int id) {
-        this.id = id;
     }
 
     public String getName() {

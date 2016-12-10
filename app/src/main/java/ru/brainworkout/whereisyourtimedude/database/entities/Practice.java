@@ -23,6 +23,14 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB, D
         return project;
     }
 
+    public int getProjectId() {
+        if (project!=null) {
+            return project.getId();
+        } else {
+            return -1;
+        }
+    }
+
     public void setProject(Project project) {
         this.project =project;
     }

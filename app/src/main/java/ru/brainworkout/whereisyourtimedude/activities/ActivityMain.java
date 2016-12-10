@@ -181,6 +181,7 @@ public class ActivityMain extends AbstractActivity {
     public void btUsers_onClick(final View view) {
 
         Intent intent = new Intent(ActivityMain.this, ActivityUsersList.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
 
     }
@@ -189,6 +190,7 @@ public class ActivityMain extends AbstractActivity {
 
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityAreasList.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -196,6 +198,7 @@ public class ActivityMain extends AbstractActivity {
     public void btProjects_onClick(final View view) {
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityProjectsList.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -203,6 +206,7 @@ public class ActivityMain extends AbstractActivity {
     public void btPractices_onClick(final View view) {
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticesList.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -210,6 +214,7 @@ public class ActivityMain extends AbstractActivity {
     public void btPracticeHistory_onClick(final View view) {
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityPracticeHistoryList.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -217,6 +222,7 @@ public class ActivityMain extends AbstractActivity {
     public void btDetailedPracticeHistory_onClick(final View view) {
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityDetailedPracticeHistoryList.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -224,6 +230,7 @@ public class ActivityMain extends AbstractActivity {
     public void btChronometer_onClick(final View view) {
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityMain.this, ActivityChrono.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -248,6 +255,7 @@ public class ActivityMain extends AbstractActivity {
     public void btTools_onClick(final View view) {
         blink(view, this);
         Intent intent = new Intent(ActivityMain.this, ActivityTools.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 

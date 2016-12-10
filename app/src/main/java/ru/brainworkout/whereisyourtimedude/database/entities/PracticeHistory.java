@@ -14,7 +14,6 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
     private volatile long lastTime;//millis
     private volatile long date;//millis
 
-
     @Override
     public boolean equals(Object obj) {
         return this.getId() == ((PracticeHistory) obj).getId();
@@ -36,6 +35,14 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
     public Practice getPractice() {
         return practice;
+    }
+
+    public int getPracticeId() {
+        if (practice != null) {
+            return practice.getId();
+        } else {
+            return -1;
+        }
     }
 
     public void setPractice(Practice practice) {

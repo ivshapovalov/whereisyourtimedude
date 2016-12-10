@@ -1,11 +1,15 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -30,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 import ru.brainworkout.whereisyourtimedude.R;
+import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
 import ru.brainworkout.whereisyourtimedude.database.entities.DetailedPracticeHistory;
@@ -41,6 +46,8 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgroundChronometer;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 
 public class ActivityFileExportImport extends AbstractActivity {
 
@@ -132,6 +139,7 @@ public class ActivityFileExportImport extends AbstractActivity {
                 .append("DISPLAY_NOTIFICATION_TIMER_SWITCH").append(SYMBOL_SPLIT)
                 .append("SAVE_INTERVAL").append(SYMBOL_SPLIT)
                 .append("CHRONO_IS_WORKING").append(SYMBOL_SPLIT)
+                .append("ROWS_NUMBER_IN_LISTS").append(SYMBOL_SPLIT)
                 .toString().split(SYMBOL_SPLIT));
         countEntities = 1;
         for (Options currentEntity : options
@@ -143,6 +151,7 @@ public class ActivityFileExportImport extends AbstractActivity {
                     .append(currentEntity.getDisplayNotificationTimerSwitch()).append(SYMBOL_SPLIT)
                     .append(currentEntity.getSaveInterval()).append(SYMBOL_SPLIT)
                     .append(currentEntity.getChronoIsWorking()).append(SYMBOL_SPLIT)
+                    .append(currentEntity.getRowNumberInLists()).append(SYMBOL_SPLIT)
                     .toString().split(SYMBOL_SPLIT));
             countEntities++;
         }
@@ -553,7 +562,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         }
     }
 
-
     private void createProjects(List<String[]> rows) {
         for (int i = 1; i <rows.size() ; i++) {
             int id=Integer.valueOf(rows.get(i)[0]);
@@ -595,11 +603,14 @@ public class ActivityFileExportImport extends AbstractActivity {
             int displayNotificationTimerSwitch=Integer.valueOf(rows.get(i)[3]);
             int saveInterval=Integer.valueOf(rows.get(i)[4]);
             int chronoIsWorking=Integer.valueOf(rows.get(i)[5]);
+            int rowNumberInLists=Integer.valueOf(rows.get(i)[6]);
             Options options =new Options.Builder(id)
                     .addRecoverySwitch(recoveryOnRunSwitch)
                     .addDisplaySwitch(displayNotificationTimerSwitch)
                     .addSaveInterval(saveInterval)
-                    .addChronoIsWorking(chronoIsWorking).build();
+                    .addChronoIsWorking(chronoIsWorking)
+                    .addRowsNumberInLists(rowNumberInLists)
+                    .build();
             options.setUser(DB.getUser(idUser));
             options.dbSave(DB);
         }
@@ -679,6 +690,16 @@ public class ActivityFileExportImport extends AbstractActivity {
         }
     }
 
+    private boolean backgroundChronometerIsWorking() {
+        if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
+            Toast toast = Toast.makeText(ActivityFileExportImport.this,
+                    "Остановите хронометраж. Нельзя загружать данные при работающем хронометраже!", Toast.LENGTH_SHORT);
+            toast.show();
+            return true;
+        }
+        return false;
+    }
+
     /****************
      * FORM ACTIONS
      ***************************/
@@ -691,9 +712,39 @@ public class ActivityFileExportImport extends AbstractActivity {
     }
 
     public void btImportFromFile_onClick(View view) {
-
         blink(view, this);
-        loadFromFile();
+
+        if (backgroundChronometerIsWorking()) return;
+        new AlertDialog.Builder(this)
+                .setMessage("Вы действительно хотите очистить базу данных и загрузить в нее данные из файла?")
+                .setCancelable(false)
+                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        try {
+                            SQLiteDatabase db = DB.getWritableDatabase();
+                            DB.ClearDB(db);
+                            sessionCurrentUser = null;
+
+                            loadFromFile();
+                            db.close();
+
+                            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
+                                sessionBackgroundChronometer.getService().stopForeground(true);
+                                sessionBackgroundChronometer.getService().stopSelf();
+                            }
+                            Toast toast = Toast.makeText(ActivityFileExportImport.this,
+                                    "База данных очищена и заполнена данными из файла!", Toast.LENGTH_SHORT);
+                            toast.show();
+                            setTitleOfActivity(ActivityFileExportImport.this);
+
+                        } catch (Exception e) {
+                            Toast toast = Toast.makeText(ActivityFileExportImport.this,
+                                    "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+                    }
+                }).setNegativeButton("Нет", null).show();
+
 
     }
 

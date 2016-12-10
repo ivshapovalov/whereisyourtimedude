@@ -22,7 +22,7 @@ import ru.brainworkout.whereisyourtimedude.database.entities.User;
 public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "wiytd";
@@ -578,7 +578,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
                         KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL,
-                        KEY_OPTIONS_CHRONO_IS_WORKING}, KEY_OPTIONS_ID + "=?",
+                        KEY_OPTIONS_CHRONO_IS_WORKING, KEY_OPTIONS_ROW_NUMBER_IN_LISTS}, KEY_OPTIONS_ID + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -592,6 +592,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                     .addDisplaySwitch(cursor.getInt(2))
                     .addSaveInterval(cursor.getInt(3))
                     .addChronoIsWorking(cursor.getInt(4))
+                    .addRowsNumberInLists(cursor.getInt(5))
                     .build();
 
             cursor.close();
@@ -1025,6 +1026,36 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_DETAILED_PRACTICE_HISTORY, KEY_DETAILED_PRACTICE_HISTORY_ID_USER + "=?", new String[]{String.valueOf(id_user)});
         db.close();
+    }
+
+    public synchronized List<Options> getAllOptions() {
+
+        List<Options> optionsList = new ArrayList<>();
+        String selectQuery = "SELECT  "
+                + KEY_OPTIONS_ID + "," + KEY_OPTIONS_RECOVERY_ON_RUN + ","
+                + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + "," + KEY_OPTIONS_SAVE_INTERVAL + ","
+                + KEY_OPTIONS_CHRONO_IS_WORKING+","
+                + KEY_OPTIONS_ROW_NUMBER_IN_LISTS+" FROM " + TABLE_OPTIONS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                Options options = new Options.Builder(Integer.parseInt(cursor.getString(0)))
+                        .addRecoverySwitch(cursor.getInt(1))
+                        .addDisplaySwitch(cursor.getInt(2))
+                        .addSaveInterval(cursor.getInt(3))
+                        .addChronoIsWorking(cursor.getInt(4))
+                        .addRowsNumberInLists(cursor.getInt(5))
+                        .build();
+                optionsList.add(options);
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return optionsList;
     }
 
     public synchronized List<User> getAllUsers() {

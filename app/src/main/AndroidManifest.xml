@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:versionCode="10"
-        android:versionName="1.14">
+        android:versionName="1.15">
         <service android:name=".common.BackgroundChronometerService"/>
 
         <activity

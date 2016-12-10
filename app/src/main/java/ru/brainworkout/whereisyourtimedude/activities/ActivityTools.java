@@ -1,14 +1,21 @@
 package ru.brainworkout.whereisyourtimedude.activities;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
@@ -145,6 +152,39 @@ public class ActivityTools extends AbstractActivity {
             Intent intent = new Intent(ActivityTools.this, ActivityFileExportImport.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+
+    }
+
+    public void btBackupBD_onClick(View view) {
+        try {
+//            Context ctx = this; // for Activity, or Service. Otherwise simply get the context.
+//            String dbname = "mydb.db";
+//            File dbpath = ctx.getDatabasePath(dbname);
+//            final String inFileName = "/data/data/ru.brainworkout.whereisyourtimedude/databases/wiytd.db";
+            File dbFile = getApplicationContext().getDatabasePath("wiytd");
+            FileInputStream fis = new FileInputStream(dbFile);
+
+            String outFileName = Environment.getExternalStorageDirectory() + "/wiytd_copy.db";
+
+            OutputStream output = new FileOutputStream(outFileName);
+
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = fis.read(buffer)) > 0) {
+                output.write(buffer, 0, length);
+            }
+
+            output.flush();
+            output.close();
+            fis.close();
+            Toast toast = Toast.makeText(ActivityTools.this,
+                    "База данных успешно скопирована в !"+outFileName, Toast.LENGTH_SHORT);
+            toast.show();
+        } catch (Exception e) {
+            Toast toast = Toast.makeText(ActivityTools.this,
+                    "Бэкап базы данных не удался!", Toast.LENGTH_SHORT);
+            toast.show();
+        }
 
     }
 }

@@ -84,6 +84,22 @@
                 android:layout_height="match_parent">
 
                 <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="BACKUP DATABASE"
+                    android:id="@+id/btMain10"
+                    android:onClick="btBackupBD_onClick"
+                    android:layout_span="30"
+                    android:background="@drawable/bt_border"
+                    android:textColor="@color/text_color"/>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="TEST FILLING"

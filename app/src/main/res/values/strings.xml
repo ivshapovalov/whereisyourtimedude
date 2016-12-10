@@ -19,7 +19,6 @@
     <string name="options_name">OPTIONS</string>
     <string name="chrono_name">CHRONOMETER</string>
     <string name="date_time_picker_name">CHOOSE THE DATE</string>
-    <string name="about_text">2016. This program will help you to chrono your activities</string>
 
     <!--&lt;!&ndash; App name &ndash;&gt;-->
     <!--<string name="app_version_number">1.0</string>-->

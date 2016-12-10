@@ -29,7 +29,7 @@
                     android:textAppearance="?android:attr/textAppearanceLarge"
                     android:id="@+id/tvMessage"
                     android:layout_span="30"
-                    android:text="@string/about_text"
+                    android:text=""
                     android:gravity="center"/>
             </TableRow>
 

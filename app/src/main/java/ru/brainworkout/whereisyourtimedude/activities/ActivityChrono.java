@@ -396,7 +396,6 @@ public class ActivityChrono extends AbstractActivity {
         updateAllRows();
     }
 
-
     private void updateAllRows() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);

@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.ActivityFileExportImport"
+    android:padding="5dp">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:stretchColumns="*"
+        android:layout_weight="0">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="CLOSE"
+                android:id="@+id/btClose"
+                android:onClick="btClose_onClick"
+                android:layout_span="15"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="WRITE TO FILE"
+                android:id="@+id/btExport"
+                android:onClick="btExportToFile_onClick"
+                android:layout_span="15"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="READ FROM FILE"
+                android:id="@+id/button10"
+                android:onClick="btImportFromFile_onClick"
+                android:layout_span="15"
+                android:gravity="center_vertical|center"
+                android:textSize="12sp"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="INCLUDE HISTORY"
+                android:id="@+id/textView8"
+                android:layout_span="30"
+                android:gravity="center_vertical|start|center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/text_color" />
+
+            <RadioGroup
+                android:id="@+id/rgIncludeHistory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_span="15">
+
+                <RadioButton
+                    android:id="@+id/rbIncludeHistoryYes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="30"
+                    android:checked="false"
+                    android:text="YES"
+                    android:textColor="@color/text_color"
+                    android:textSize="10dp"/>
+
+                <RadioButton
+                    android:id="@+id/rbIncludeHistoryNo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="30"
+                    android:text="NO"
+                    android:textColor="@color/text_color"
+                    android:checked="true"
+                    android:textSize="10dp"/>
+
+            </RadioGroup>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DATE FROM"
+                android:id="@+id/textView6"
+                android:layout_span="10"
+                android:gravity="center_vertical|start|center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/text_color" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/tvDayFrom"
+                android:layout_span="20"
+                android:onClick="tvDayFrom_onClick"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/text_color" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="..."
+                android:id="@+id/button7"
+                android:layout_span="8"
+                android:onClick="tvDayFrom_onClick"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="X"
+                android:id="@+id/button14"
+                android:layout_span="7"
+                android:onClick="btDayFromClear_onClick"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="DATE TO"
+                android:id="@+id/textView7"
+                android:layout_span="10"
+                android:gravity="center_vertical|start|center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/text_color" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/tvDayTo"
+                android:layout_span="20"
+                android:onClick="tvDayTo_onClick"
+                android:gravity="center_vertical|center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/text_color" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="..."
+                android:id="@+id/button9"
+                android:layout_span="8"
+                android:onClick="tvDayTo_onClick"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+
+            <Button
+                style="?android:attr/buttonStyleSmall"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="X"
+                android:id="@+id/button15"
+                android:layout_span="7"
+                android:onClick="btDayToClear_onClick"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical|center_horizontal"
+                android:background="@drawable/bt_border"
+                android:textColor="@color/text_color" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/scrollView3"
+                android:layout_span="45">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/tvPathToFiles"
+                    android:layout_span="45"
+                    android:gravity="bottom"
+                    android:background="@drawable/abc_list_selector_background_transition_holo_light"
+                    />
+            </ScrollView>
+        </TableRow>
+
+    </TableLayout>
+
+</RelativeLayout>

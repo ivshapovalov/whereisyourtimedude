@@ -89,6 +89,10 @@
             android:label="@string/detailed_practice_history_name"
             android:screenOrientation="portrait"/>
         <activity
+            android:name=".activities.ActivityFileExportImport"
+            android:label="@string/export_import"
+            android:screenOrientation="portrait"/>
+        <activity
             android:name=".activities.ActivityMain"
             android:screenOrientation="portrait">
             <intent-filter>

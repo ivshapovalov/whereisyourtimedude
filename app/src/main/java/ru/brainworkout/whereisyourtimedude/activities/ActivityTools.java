@@ -86,6 +86,7 @@ public class ActivityTools extends AbstractActivity {
     public void btOptions_onClick(final View view) {
         if (isUserDefined()) {
             Intent intent = new Intent(ActivityTools.this, ActivityOptions.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
     }
@@ -138,5 +139,12 @@ public class ActivityTools extends AbstractActivity {
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    public void btExportImport_onClick(View view) {
+            Intent intent = new Intent(ActivityTools.this, ActivityFileExportImport.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+
     }
 }

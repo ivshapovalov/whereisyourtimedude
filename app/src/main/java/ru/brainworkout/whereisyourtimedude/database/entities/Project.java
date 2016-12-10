@@ -26,6 +26,14 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
         return area;
     }
 
+    public int getAreaId() {
+        if (area!=null) {
+            return area.getId();
+        } else {
+            return -1;
+        }
+    }
+
     public void setArea(Area area) {
         this.area = area;
     }

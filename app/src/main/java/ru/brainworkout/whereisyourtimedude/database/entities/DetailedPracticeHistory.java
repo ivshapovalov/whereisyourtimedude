@@ -34,6 +34,14 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
         return practice;
     }
 
+    public int getPracticeId() {
+        if (practice != null) {
+            return practice.getId();
+        } else {
+            return -1;
+        }
+    }
+
     public void setPractice(Practice practice) {
         this.practice = practice;
     }

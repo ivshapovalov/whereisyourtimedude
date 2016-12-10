@@ -351,34 +351,37 @@ public class ActivityFileExportImport extends AbstractActivity {
      * READ
      */
     private void readFromFile(File file) {
-        List<String> tables=new ArrayList<>();
+        List<String> tables = new ArrayList<>();
         tables.add("users");
         tables.add("options");
         tables.add("areas");
         tables.add("projects");
         tables.add("practices");
-        tables.add("practice_history");
-        tables.add("detailed_practice_history");
+        if (mIncludeHistory) {
+            tables.add("practice_history");
+            tables.add("detailed_practice_history");
+        }
+
         try
 
         {
             int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
             TextView tvPath = (TextView) findViewById(mPath);
             StringBuilder errorMessage = new StringBuilder();
-            Map <String,List<String[]>> sheets=new HashMap<>();
+            Map<String, List<String[]>> sheets = new HashMap<>();
             HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(file));
-            for (String table:tables
-                 ) {
+            for (String table : tables
+                    ) {
                 HSSFSheet myExcelSheet = myExcelBook.getSheet(table);
                 if (myExcelSheet == null) {
-                    errorMessage.append("Missed sheet - '"+table+"'").append("\n");
+                    errorMessage.append("Missed sheet - '" + table + "'").append("\n");
                 }
                 List<String[]> data = ReadDataFromSheets(myExcelSheet);
-                sheets.put(table,data);
+                sheets.put(table, data);
             }
 
-            if (tvPath != null && errorMessage.length()!=0) {
-               errorMessage.append("Date didn't load from ").append(Environment.getExternalStorageDirectory().toString())
+            if (tvPath != null && errorMessage.length() != 0) {
+                errorMessage.append("Data didn't load from ").append(Environment.getExternalStorageDirectory().toString())
                         .append("/wiytd.xls");
                 tvPath.setText(errorMessage.toString());
             }
@@ -389,7 +392,7 @@ public class ActivityFileExportImport extends AbstractActivity {
             int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
             TextView tvPath = (TextView) findViewById(mPath);
             if (tvPath != null) {
-                tvPath.setText("Trainings didn't load from " + Environment.getExternalStorageDirectory().toString() + "/trainings.xls");
+                tvPath.setText("Data didn't load from " + Environment.getExternalStorageDirectory().toString() + "/trainings.xls");
             }
             e.printStackTrace();
         }
@@ -405,7 +408,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         int mColumnCount = 0;
 
         while (true) {
-
             try {
                 String name = currentRow.getCell(mColumn).getStringCellValue();
                 if ("".equals(name)) {
@@ -425,13 +427,16 @@ public class ActivityFileExportImport extends AbstractActivity {
         while (true) {
             currentRow = myExcelSheet.getRow(mRow);
             try {
-                String name = currentRow.getCell(mColumn).getStringCellValue();
+                String name = "";
+                if (currentRow.getCell(mColumn).getCellType() == Cell.CELL_TYPE_NUMERIC) {
+                    name = String.valueOf(currentRow.getCell(mColumn).getNumericCellValue());
+                } else if (currentRow.getCell(mColumn).getCellType() == Cell.CELL_TYPE_STRING) {
+                    name = currentRow.getCell(mColumn).getStringCellValue();
+                }
                 if ("".equals(name)) {
-
                     mRowCount = mRow;
                     break;
                 }
-
                 mRow++;
             } catch (Exception e) {
                 mRowCount = mRow;
@@ -468,183 +473,64 @@ public class ActivityFileExportImport extends AbstractActivity {
         return data;
     }
 
-    private void writeDataToDB(Map<String,List<String[]>> sheets) throws Exception {
+    private void writeDataToDB(Map<String, List<String[]>> sheets) throws Exception {
 
-        users = new ArrayList<Training>();
-        areas = new ArrayList<Exercise>();
-        List<String> trainingWeights = new ArrayList<>();
-
-        int trainingsCount = 1;
-
-        for (int i = 1; i < data.get(0).length; i++) {
-            String s = data.get(0)[i];
-            String day;
-            if (s.indexOf("(") != -1) {
-                day = s.substring(0, s.indexOf("("));
-            } else {
-                day = s.substring(0);
+        for (Map.Entry<String,List<String[]>> entry:sheets.entrySet()
+             ) {
+            switch (entry.getKey()) {
+                case "users": createUsers(entry.getValue());
+                case "options": createOptions(entry.getValue());
+                case "areas": createAreas(entry.getValue());
+                case "projects": createProjects(entry.getValue());
+                case "practices": createPractices(entry.getValue());
+                case "practice_history": createPracticeHistory(entry.getValue());
+                case "detailed_practice_history": createDetailedPracticeHistory(entry.getValue());
             }
+        }
+    }
 
-            String id;
-            int indexSymbolID = s.indexOf(SYMBOL_ID);
-            if (indexSymbolID != -1) {
-                id = textBeforeNextSpecialSymbol(s, indexSymbolID);
-            } else {
-                id = "";
-            }
+    private void createDetailedPracticeHistory(List<String[]> rows) {
 
-            String weightOfAllTraining;
-            int indexSymbolWeight = s.indexOf(SYMBOL_WEIGHT);
-            if (indexSymbolWeight != -1) {
-                weightOfAllTraining = textBeforeNextSpecialSymbol(s, indexSymbolWeight);
+    }
 
-            } else {
-                weightOfAllTraining = "";
-            }
-            trainingWeights.add(weightOfAllTraining);
+    private void createPracticeHistory(List<String[]> rows) {
 
-            Training training;
-            if (!"".equals(id)) {
-                training = new Training.Builder(Integer.valueOf(id)).addDay(ConvertStringToDate(day).getTime()).build();
-            } else {
-                training = new Training.Builder(DB.getTrainingMaxNumber() + trainingsCount++).addDay(ConvertStringToDate(day).getTime()).build();
-            }
-            users.add(training);
+    }
 
+    private void createPractices(List<String[]> rows) {
+    }
+
+
+    private void createProjects(List<String[]> rows) {
+
+    }
+
+    private void createAreas(List<String[]> rows) {
+
+    }
+
+    private void createOptions(List<String[]> rows) {
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            int idUser=Integer.valueOf(rows.get(i)[0]);
+            int recovery_on_run=Integer.valueOf(rows.get(i)[0]);
+            int id_user=Integer.valueOf(rows.get(i)[0]);
+            int id_user=Integer.valueOf(rows.get(i)[0]);
+            int id_user=Integer.valueOf(rows.get(i)[0]);
+            Options options =new Options.Builder(id).add(name).addIsCurrentUser(is_current).build();
+            user.dbSave(DB);
+        }
+    }
+
+    private void createUsers(List<String[]> rows) {
+        for (int i = 1; i <rows.size() ; i++) {
+            int id=Integer.valueOf(rows.get(i)[0]);
+            String name=rows.get(i)[1];
+            int isCurrent=Integer.valueOf(rows.get(i)[2]);
+            User user=new User.Builder(id).addName(name).addIsCurrentUser(isCurrent).build();
+            user.dbSave(DB);
         }
 
-        int exercisesCount = 1;
-        for (int i = 1; i < data.size(); i++) {
-            String s = data.get(i)[0];
-            String name = s.substring(0, s.indexOf("("));
-
-            String id;
-            int indexSymbolID = s.indexOf(SYMBOL_ID);
-            if (indexSymbolID != -1) {
-                id = textBeforeNextSpecialSymbol(s, indexSymbolID);
-            } else {
-                id = "";
-            }
-
-            String def_volume;
-            int indexSymbolDefaultVolume = s.indexOf(SYMBOL_DEF_VOLUME);
-            if (indexSymbolDefaultVolume != -1) {
-                def_volume = textBeforeNextSpecialSymbol(s, indexSymbolDefaultVolume);
-            } else {
-                def_volume = "";
-            }
-
-            Exercise exercise;
-            if (!"".equals(id)) {
-                exercise = new Exercise.Builder(Integer.valueOf(id))
-                        .addName(name)
-                        .addVolumeDefault(def_volume)
-                        .build();
-
-            } else {
-                exercise = new Exercise.Builder(DB.getExerciseMaxNumber() + exercisesCount++)
-                        .addName(name)
-                        .addVolumeDefault(def_volume)
-                        .build();
-            }
-            areas.add(exercise);
-
-        }
-
-        message = new StringBuilder();
-        int maxNum = DB.getTrainingContentMaxNumber();
-        for (int curTrainingIndex = 0; curTrainingIndex < users.size(); curTrainingIndex++
-                ) {
-            Training curTraining = users.get(curTrainingIndex);
-            message.append(curTraining.getDayString()).append('\n');
-            Training dbTraining;
-            try {
-                dbTraining = DB.getTraining(curTraining.getID());
-                DB.updateTraining(curTraining);
-            } catch (TableDoesNotContainElementException e) {
-                DB.addTraining(curTraining);
-            }
-
-
-            for (int curExerciseIndex = 0; curExerciseIndex < areas.size(); curExerciseIndex++
-                    ) {
-                Exercise curExercise = areas.get(curExerciseIndex);
-                Exercise dbExercise;
-                try {
-                    dbExercise = DB.getExercise(curExercise.getID());
-                    dbExercise.setName(curExercise.getName());
-                    curExercise = dbExercise;
-                    DB.updateExercise(dbExercise);
-
-                } catch (TableDoesNotContainElementException e) {
-                    curExercise.setIsActive(1);
-                    DB.addExercise(curExercise);
-
-                }
-
-                TrainingContent trainingContent = new TrainingContent.Builder(++maxNum)
-                        .addExerciseId(curExercise.getID())
-                        .addTrainingId(curTraining.getID())
-                        .build();
-
-                //разбираем ячейку со значениями количества и веса
-                String cellValue = data.get(curExerciseIndex + 1)[curTrainingIndex + 1];
-                //String volume = cellValue;
-
-                String volume;
-                int indexSymbolBrackets = cellValue.indexOf("(");
-                if (indexSymbolBrackets != -1) {
-                    volume = cellValue.substring(0, indexSymbolBrackets);
-                } else {
-                    volume = cellValue.substring(0);
-                }
-
-                String weight;
-                int indexSymbolWeight = cellValue.indexOf(SYMBOL_WEIGHT);
-                if (indexSymbolWeight != -1) {
-
-                    weight = textBeforeNextSpecialSymbol(cellValue, indexSymbolWeight);
-
-                } else {
-                    //check common weight of training
-                    weight = trainingWeights.get(curTrainingIndex);
-
-                }
-
-                int iWeight;
-                try {
-                    iWeight = Integer.parseInt(weight);
-                } catch (NumberFormatException e) {
-                    iWeight = 0;
-                }
-                trainingContent.setWeight(iWeight);
-
-                trainingContent.setVolume(volume);
-
-                TrainingContent dbTrainingContent;
-                try {
-                    dbTrainingContent = DB.getTrainingContent(curExercise.getID(), curTraining.getID());
-                    dbTrainingContent.setVolume(trainingContent.getVolume());
-                    dbTrainingContent.setWeight(trainingContent.getWeight());
-                    DB.updateTrainingContent(dbTrainingContent);
-                } catch (TableDoesNotContainElementException e) {
-                    DB.addTrainingContent(trainingContent);
-                }
-
-            }
-
-        }
-        int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
-        TextView tvPath = (TextView) findViewById(mPath);
-        if (tvPath != null) {
-
-            message.insert(0, "From file  \n" + Environment.getExternalStorageDirectory().toString() + "/trainings.xls" + '\n'
-                    + " successfully loaded trainings:" + "\n")
-                    .insert(0, tvPath.getText().toString());
-            tvPath.setText("");
-            tvPath.setText(message);
-
-        }
     }
 
     public void loadFromFile() {

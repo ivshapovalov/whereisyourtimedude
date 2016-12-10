@@ -52,4 +52,5 @@ dependencies {
     compile 'log4j:log4j:1.2.17'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile files('libs/xstream-1.4.4-sources.jar')
+    compile 'com.google.code.gson:gson:2.8.0'
 }

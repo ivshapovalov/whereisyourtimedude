@@ -102,6 +102,11 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         LOG.debug(message);
     }
 
+    private void updateDetailedPracticeHistory() {
+        pageDetailedPracticeHistory();
+        showDetailedPracticeHistory();
+    }
+
     private void pageDetailedPracticeHistory() {
         List<DetailedPracticeHistory> areas = new ArrayList<>();
         if (sessionCurrentUser == null) {
@@ -334,6 +339,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                     }
 
                 }).setNegativeButton("No", null).show();
+        updateDetailedPracticeHistory();
     }
 
     public void onBackPressed() {

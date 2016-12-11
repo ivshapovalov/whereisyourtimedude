@@ -197,11 +197,8 @@ public class ActivityPractice extends AbstractActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        DB.deleteAllPracticeHistoryOfPractice(sessionCurrentPractice.getId());
-
                         sessionCurrentPractice.dbDelete(DB);
-                        sessionCurrentPractice = null;
-
+                       sessionCurrentPractice = null;
                         Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
                         sessionOpenActivities.pollFirst();
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

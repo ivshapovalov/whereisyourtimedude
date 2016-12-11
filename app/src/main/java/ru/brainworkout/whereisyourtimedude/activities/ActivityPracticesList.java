@@ -65,8 +65,7 @@ public class ActivityPracticesList extends AbstractActivity {
             rows_number=sessionOptions.getRowNumberInLists();
         }
 
-        pagePractices();
-        showPractices();
+        updatePractices();
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentPractice);
         if (mRow != null) {
@@ -319,6 +318,11 @@ public class ActivityPracticesList extends AbstractActivity {
 
     }
 
+    private void updatePractices() {
+        pagePractices();
+        showPractices();
+    }
+
     public void btClear_onClick(final View view) {
 
         blink(view, this);
@@ -329,17 +333,13 @@ public class ActivityPracticesList extends AbstractActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getId());
-                            for (Practice practice : practices
-                                    ) {
-                                DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                            }
                             DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getId());
                             showPractices();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
+        updatePractices();
     }
 
     public void onBackPressed() {

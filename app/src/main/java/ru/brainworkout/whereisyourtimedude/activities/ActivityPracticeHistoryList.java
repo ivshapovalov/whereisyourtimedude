@@ -76,8 +76,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         }
         Intent intent = getIntent();
         getIntentParams(intent);
-        pagePracticeHistories();
-        showPracticeHistory();
+        updatePracticeHistory();
 
         LOG.debug("ActivityPracticeHistoryList after show pr history");
         message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
@@ -330,6 +329,12 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                     }
 
                 }).setNegativeButton("No", null).show();
+        updatePracticeHistory();
+    }
+
+    private void updatePracticeHistory() {
+        pagePracticeHistories();
+        showPracticeHistory();
     }
 
     public void onBackPressed() {

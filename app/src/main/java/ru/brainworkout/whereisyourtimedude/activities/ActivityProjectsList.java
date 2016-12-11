@@ -68,12 +68,11 @@ public class ActivityProjectsList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
-        pageProjects();
-        showProjects();
+        updateProjects();
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentProject);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableProjects", "id", getPackageName());
@@ -85,6 +84,11 @@ public class ActivityProjectsList extends AbstractActivity {
         }
 
         setTitleOfActivity(this);
+    }
+
+    private void updateProjects() {
+        pageProjects();
+        showProjects();
     }
 
     private void pageProjects() {
@@ -112,8 +116,8 @@ public class ActivityProjectsList extends AbstractActivity {
             pagedProjects.put(pageNumber, pageContent);
         }
 
-        if (pagedProjects.size()==0) {
-            currentPage=0;
+        if (pagedProjects.size() == 0) {
+            currentPage = 0;
         }
     }
 
@@ -127,8 +131,8 @@ public class ActivityProjectsList extends AbstractActivity {
     private void showProjects() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedProjects !=null) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedProjects.size());
+        if (pageNumber != null && pagedProjects != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedProjects.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableProjects);
@@ -170,7 +174,7 @@ public class ActivityProjectsList extends AbstractActivity {
             });
             mRow.setMinimumHeight(mHeight);
             mRow.setBackgroundResource(R.drawable.bt_border);
-            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,TableRow.LayoutParams.MATCH_PARENT));
+            mRow.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
 
             TextView txt = new TextView(this);
             txt.setText(String.valueOf(currentProject.getId()));
@@ -314,22 +318,13 @@ public class ActivityProjectsList extends AbstractActivity {
 
                         if (Session.sessionCurrentUser != null) {
 
-                            List<Project> projects = DB.getAllProjectsOfUser(Session.sessionCurrentUser.getId());
-                            for (Project project : projects
-                                    ) {
-                                List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
-                                for (Practice practice : practices
-                                        ) {
-                                    DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                                }
-                                DB.deleteAllPracticesOfProject(project.getId());
-                            }
                             DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getId());
                             showProjects();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
+        updateProjects();
     }
 
     public void onBackPressed() {

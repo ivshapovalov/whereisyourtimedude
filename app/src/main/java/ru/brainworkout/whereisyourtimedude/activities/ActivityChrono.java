@@ -82,8 +82,8 @@ public class ActivityChrono extends AbstractActivity {
             }
         });
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rows_number = sessionOptions.getRowNumberInLists();
         }
 
         mChronometerEternity = (Chronometer) findViewById(R.id.mChronometerEternity);
@@ -305,7 +305,7 @@ public class ActivityChrono extends AbstractActivity {
         } else {
             int index = practiceHistories.indexOf(new PracticeHistory.Builder(id_practice_history).build());
             currentPracticeHistory = practiceHistories.get(index);
-            currentPracticeHistory.setID(DB.getPracticeHistoryMaxNumber()+1);
+            currentPracticeHistory.setID(DB.getPracticeHistoryMaxNumber() + 1);
         }
         currentPracticeHistory.setLastTime(Calendar.getInstance().getTimeInMillis());
         currentPracticeHistory.dbSave(DB);
@@ -336,28 +336,33 @@ public class ActivityChrono extends AbstractActivity {
         if (sessionCurrentUser != null) {
             practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
 
-            List<PracticeHistory> pageContent = new ArrayList<>();
-            int pageNumber = 1;
-            pageContent.add(practiceHistories.get(0));
-            pagedPracticeHistories.put(0, pageContent);
-            pageContent = new ArrayList<>();
-            for (int i = 1; i < practiceHistories.size(); i++) {
-                pageContent.add(practiceHistories.get(i));
-                if (pageContent.size() == rows_number) {
-                    pagedPracticeHistories.put(pageNumber, pageContent);
-                    pageContent = new ArrayList<>();
-                    pageNumber++;
+            if (practiceHistories.size() != 0) {
+                List<PracticeHistory> pageContent = new ArrayList<>();
+                int pageNumber = 1;
+                pageContent.add(practiceHistories.get(0));
+                pagedPracticeHistories.put(0, pageContent);
+                pageContent = new ArrayList<>();
+                for (int i = 1; i < practiceHistories.size(); i++) {
+                    pageContent.add(practiceHistories.get(i));
+                    if (pageContent.size() == rows_number) {
+                        pagedPracticeHistories.put(pageNumber, pageContent);
+                        pageContent = new ArrayList<>();
+                        pageNumber++;
+                    }
                 }
+                if (pageContent.size() != 0) {
+                    pagedPracticeHistories.put(pageNumber, pageContent);
+                }
+            } else {
+                currentPage = 0;
             }
-            if (pageContent.size() != 0) {
-                pagedPracticeHistories.put(pageNumber, pageContent);
-            }
+
         }
     }
 
     public void rowCurrentWork_onClick(View view) {
 
-        if (!isToday) {
+        if (!isToday || currentPracticeHistory == null) {
             return;
         }
         blink(view, this);
@@ -398,7 +403,7 @@ public class ActivityChrono extends AbstractActivity {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
         if (pageNumber != null) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPracticeHistories.size());
+            pageNumber.setText(String.valueOf(currentPage) + "/" + (pagedPracticeHistories.size()-1));
         }
 
         String areaName = "";
@@ -629,7 +634,7 @@ public class ActivityChrono extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagedPracticeHistories.size()) {
+        if (currentPage != pagedPracticeHistories.size()-1) {
             currentPage++;
         }
         updateAllRows();
@@ -637,7 +642,7 @@ public class ActivityChrono extends AbstractActivity {
 
     public void btPreviousPage_onClick(View view) {
         blink(view, this);
-        if (currentPage != 1) {
+        if (currentPage > 1) {
             currentPage--;
         }
         updateAllRows();

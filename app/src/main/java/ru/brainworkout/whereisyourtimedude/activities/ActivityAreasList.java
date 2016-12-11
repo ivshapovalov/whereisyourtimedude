@@ -71,8 +71,7 @@ public class ActivityAreasList extends AbstractActivity {
 
         Intent intent = getIntent();
         getIntentParams(intent);
-        pageAreas();
-        showAreas();
+        updateAreas();
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idIntentArea);
         if (mRow != null) {
@@ -87,7 +86,10 @@ public class ActivityAreasList extends AbstractActivity {
         setTitleOfActivity(this);
     }
 
-
+    private void updateAreas() {
+        pageAreas();
+        showAreas();
+    }
 
     private void pageAreas() {
         List<Area> areas = new ArrayList<>();
@@ -319,28 +321,13 @@ public class ActivityAreasList extends AbstractActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
-                            List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getId());
-                            for (Area area : areas
-                                    ) {
-                                List<Project> projects = DB.getAllProjectsOfArea(area.getId());
-                                for (Project project : projects
-                                        ) {
-                                    List<Practice> practices = DB.getAllActivePracticesOfProject(project.getId());
-                                    for (Practice practice : practices
-                                            ) {
-                                        DB.deleteAllPracticeHistoryOfPractice(practice.getId());
-                                    }
-                                    DB.deleteAllPracticesOfProject(project.getId());
-                                }
-                                DB.deleteAllProjectsOfArea(area.getId());
-                            }
-
                             DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getId());
                             showAreas();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
+        updateAreas();
     }
 
     public void onBackPressed() {

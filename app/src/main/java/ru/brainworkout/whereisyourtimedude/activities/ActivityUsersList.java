@@ -64,8 +64,7 @@ public class ActivityUsersList extends AbstractActivity {
             rows_number=sessionOptions.getRowNumberInLists();
         }
 
-        pageUsers();
-        showUsers();
+        updateUsers();
 
         TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_user);
         if (mRow != null) {
@@ -80,6 +79,11 @@ public class ActivityUsersList extends AbstractActivity {
 
     private void getIntentParams(Intent intent) {
         id_user = intent.getIntExtra("id", 0);
+    }
+
+    private void updateUsers() {
+        pageUsers();
+        showUsers();
     }
 
     private void pageUsers() {
@@ -225,17 +229,6 @@ public class ActivityUsersList extends AbstractActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
-                        List<User> users = DB.getAllUsers();
-                        for (User user : users
-                                ) {
-                            DB.deleteAllDetailedPracticeHistoryOfUser(user.getId());
-                            DB.deleteAllPracticeHistoryOfUser(user.getId());
-                            DB.deleteAllPracticesOfUser(user.getId());
-                            DB.deleteAllProjectsOfUser(user.getId());
-                            DB.deleteAllAreasOfUser(user.getId());
-
-                        }
                         DB.deleteAllUsers();
                         Session.sessionCurrentUser = null;
 
@@ -243,6 +236,7 @@ public class ActivityUsersList extends AbstractActivity {
                     }
 
                 }).setNegativeButton("No", null).show();
+        updateUsers() ;
     }
 
     public void onBackPressed() {

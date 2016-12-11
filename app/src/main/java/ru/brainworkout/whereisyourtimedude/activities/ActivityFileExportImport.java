@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -70,7 +69,6 @@ public class ActivityFileExportImport extends AbstractActivity {
 
     private StringBuilder message = new StringBuilder();
     private StringBuilder messageErrors = new StringBuilder();
-
     private List<User> users = new ArrayList<>();
     private List<Options> options = new ArrayList<>();
     private List<Area> areas = new ArrayList<>();
@@ -88,6 +86,7 @@ public class ActivityFileExportImport extends AbstractActivity {
         updateScreen();
         setTitleOfActivity(this);
 
+
     }
 
     private void getIntentParams() {
@@ -103,7 +102,6 @@ public class ActivityFileExportImport extends AbstractActivity {
      ****/
 
     public void exportToXLSFile() {
-
 
         getTablesFromDB();
 
@@ -327,19 +325,12 @@ public class ActivityFileExportImport extends AbstractActivity {
             book.write(new FileOutputStream(file));
             book.close();
 
-            int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
-            TextView tvPath = (TextView) findViewById(mPath);
-            if (tvPath != null) {
-                tvPath.setText("");
-                tvPath.setText("Successfully write to file \n" + Environment.getExternalStorageDirectory().toString() + '\n'
+            displayMessage("Successfully write to file \n" + Environment.getExternalStorageDirectory().toString() + '\n'
                         + " tables \n" + message.toString());
-            }
+
         } catch (Exception e) {
-            int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
-            TextView tvPath = (TextView) findViewById(mPath);
-            if (tvPath != null) {
-                tvPath.setText("Wile with data not created in " + Environment.getExternalStorageDirectory().toString());
-            }
+            displayMessage("Wile with data not created in " + Environment.getExternalStorageDirectory().toString());
+
         }
     }
 
@@ -397,8 +388,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         try
 
         {
-            int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
-            TextView tvPath = (TextView) findViewById(mPath);
             StringBuilder errorMessage = new StringBuilder();
             Map<String, List<String[]>> sheets = new LinkedHashMap<>();
             HSSFWorkbook myExcelBook = new HSSFWorkbook(new FileInputStream(file));
@@ -412,20 +401,16 @@ public class ActivityFileExportImport extends AbstractActivity {
                 sheets.put(table, data);
             }
 
-            if (tvPath != null && errorMessage.length() != 0) {
+            if (errorMessage.length() != 0) {
                 errorMessage.append("Data didn't load from ").append(Environment.getExternalStorageDirectory().toString())
                         .append("/wiytd.xls");
-                tvPath.setText(errorMessage.toString());
+                displayMessage(errorMessage.toString());
             }
             myExcelBook.close();
             writeDataToDB(sheets);
 
         } catch (Exception e) {
-            int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
-            TextView tvPath = (TextView) findViewById(mPath);
-            if (tvPath != null) {
-                tvPath.setText("Data didn't load from " + Environment.getExternalStorageDirectory().toString() + "/wiytd.xls");
-            }
+            displayMessage("Data didn't load from " + Environment.getExternalStorageDirectory().toString() + "/wiytd.xls");
             e.printStackTrace();
         }
     }
@@ -472,7 +457,6 @@ public class ActivityFileExportImport extends AbstractActivity {
                 mRowCount = mRow;
                 break;
             }
-
         }
         StringBuilder mNewString = new StringBuilder();
         for (mRow = 0; mRow < mRowCount; mRow++) {
@@ -741,7 +725,6 @@ public class ActivityFileExportImport extends AbstractActivity {
 
     }
 
-
     private void day_onClick(boolean isBeginDate) {
 
         Intent intent = new Intent(ActivityFileExportImport.this, ActivityCalendarView.class);
@@ -842,41 +825,22 @@ public class ActivityFileExportImport extends AbstractActivity {
                                 sessionBackgroundChronometer.getService().stopForeground(true);
                                 sessionBackgroundChronometer.getService().stopSelf();
                             }
+                            String message="Database cleared and filled by file data!";
                             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                                    "Database cleared and filled by file data!", Toast.LENGTH_SHORT);
+                                    message, Toast.LENGTH_SHORT);
                             toast.show();
+                            displayMessage(message);
                             setTitleOfActivity(ActivityFileExportImport.this);
 
                         } catch (Exception e) {
+                            String message="Unable to connect to database!";
                             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                                    "Unable to connect to database!", Toast.LENGTH_SHORT);
+                                    message, Toast.LENGTH_SHORT);
                             toast.show();
+                            displayMessage(message);
                         }
                     }
                 }).setNegativeButton("No", null).show();
-    }
-
-    public void btExportToXMLFile_onClick(View view) {
-
-//        users = DB.getAllUsers();
-//
-//        UserList uList = new UserList();
-//        uList.setList(users);
-
-//        XStream xstream = new XStream();
-//        xstream.alias("person", Person.class);
-//        xstream.alias("persons", PersonList.class);
-//        xstream.addImplicitCollection(PersonList.class, "list");
-//
-//        PersonList list = new PersonList();
-//        list.add(new Person("ABC",12,"address"));
-//        list.add(new Person("XYZ",20,"address2"));
-//
-//        String xml = xstream.toXML(list);
-
-    }
-
-    public void btImportFromXMLFile_onClick(View view) {
     }
 
     public void btExportToJSONFile_onClick(View view) {
@@ -947,7 +911,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("stop");
     }
 
     public void btImportFromJSONFile_onClick(View view) {
@@ -975,13 +938,17 @@ public class ActivityFileExportImport extends AbstractActivity {
             output.flush();
             output.close();
             fis.close();
+            String message="The database is successfully copied to " + outFileName;
             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                    "The database is successfully copied to " + outFileName, Toast.LENGTH_SHORT);
+                    message, Toast.LENGTH_SHORT);
             toast.show();
+            displayMessage(message);
         } catch (Exception e) {
+            String message="Database copy failed!";
             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                    "Database copy failed!", Toast.LENGTH_SHORT);
+                    message, Toast.LENGTH_SHORT);
             toast.show();
+            displayMessage(message);
         }
 
     }
@@ -1097,6 +1064,14 @@ public class ActivityFileExportImport extends AbstractActivity {
         @Override
         public void load() {
 
+        }
+    }
+
+    private void displayMessage(String message) {
+        int idMessage = getResources().getIdentifier("tvMessage", "id", getPackageName());
+        TextView tvMessage = (TextView) findViewById(idMessage);
+        if (tvMessage!=null) {
+            tvMessage.setText(message);
         }
     }
 }

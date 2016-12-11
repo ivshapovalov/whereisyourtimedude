@@ -129,7 +129,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         idIntentPracticeHistory = intent.getIntExtra("CurrentPracticeHistoryID", 0);
     }
 
-
     public void btPracticeHistoryAdd_onClick(final View view) {
 
         blink(view, this);
@@ -316,9 +315,9 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить всю историю занятий?")
+                .setMessage("Are you really want to delete all practice history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllPracticeHistoryOfUser(Session.sessionCurrentUser.getId());
@@ -326,7 +325,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                         }
                     }
 
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void onBackPressed() {

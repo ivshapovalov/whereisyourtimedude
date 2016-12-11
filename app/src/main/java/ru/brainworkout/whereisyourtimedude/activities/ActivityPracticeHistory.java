@@ -260,7 +260,6 @@ public class ActivityPracticeHistory extends AbstractActivity {
         return null;
     }
 
-
     public void btSave_onClick(final View view) {
 
         blink(view, this);
@@ -288,7 +287,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
         new AlertDialog.Builder(this)
                 .setMessage("Do you want to delete current practice history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentPracticeHistory.dbDelete(DB);
                         sessionCurrentPracticeHistory = null;
@@ -296,9 +295,8 @@ public class ActivityPracticeHistory extends AbstractActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
-
 
     public void tvDuration_onClick(View view) {
         Intent intent = new Intent(ActivityPracticeHistory.this, ActivityDateTimePickerDialog.class);

@@ -40,6 +40,7 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionBackgroundChronometer;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
 public class ActivityChrono extends AbstractActivity {
     private static PracticeHistory currentPracticeHistory;
@@ -57,7 +58,7 @@ public class ActivityChrono extends AbstractActivity {
     private TableLayout tableHistory;
     private ConnectionParameters params;
 
-    private int rows_number = 15;
+    private int rows_number = 17;
     Map<Integer, List<PracticeHistory>> pagedPracticeHistories = new HashMap<>();
     private int currentPage = 1;
 
@@ -80,6 +81,10 @@ public class ActivityChrono extends AbstractActivity {
                 }
             }
         });
+
+        if (Session.sessionOptions!=null) {
+            rows_number=sessionOptions.getRowNumberInLists();
+        }
 
         mChronometerEternity = (Chronometer) findViewById(R.id.mChronometerEternity);
         mChronometerEternity.setOnChronometerTickListener(new Chronometer.OnChronometerTickListener() {
@@ -130,7 +135,6 @@ public class ActivityChrono extends AbstractActivity {
         if (id_practice != -1) {
             if (DB.containsPractice(id_practice)) {
                 Practice practice = DB.getPractice(id_practice);
-
                 if (practice.getIsActive() == 1) {
                     for (PracticeHistory practiceHistory : practiceHistories
                             ) {
@@ -549,7 +553,7 @@ public class ActivityChrono extends AbstractActivity {
         row2.addView(txtArea);
 
         TextView txtDate = new TextView(this);
-        txtDate.setBackgroundColor(areaColor);
+        //txtDate.setBackgroundColor(areaColor);
         if (practiceHistory.getLastTime() != 0) {
             String date = convertMillisToStringDateTime(practiceHistory.getLastTime());
             txtDate.setText(date);

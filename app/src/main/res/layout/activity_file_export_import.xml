@@ -179,28 +179,20 @@
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/text_color" />
 
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tvDayFrom"
-                android:layout_span="19"
+                android:layout_span="27"
                 android:onClick="tvDayFrom_onClick"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_gravity="center_vertical"
-                android:textColor="@color/text_color" />
+                android:textColor="@color/text_color"
+                android:clickable="false"
+                android:editable="false"
+                android:background="@drawable/bt_border"/>
 
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="..."
-                android:id="@+id/button7"
-                android:layout_span="8"
-                android:onClick="tvDayFrom_onClick"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|center_horizontal"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
+
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -232,28 +224,18 @@
                 android:layout_gravity="center_vertical"
                 android:textColor="@color/text_color" />
 
-            <EditText
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/tvDayTo"
-                android:layout_span="19"
+                android:layout_span="27"
                 android:onClick="tvDayTo_onClick"
                 android:gravity="center_vertical|center_horizontal"
                 android:layout_gravity="center_vertical"
-                android:textColor="@color/text_color" />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="..."
-                android:id="@+id/button9"
-                android:layout_span="8"
-                android:onClick="tvDayTo_onClick"
-                android:layout_gravity="center_vertical"
-                android:gravity="center_vertical|center_horizontal"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
+                android:textColor="@color/text_color"
+                android:clickable="false"
+                android:editable="false"
+                android:background="@drawable/bt_border"/>
 
             <Button
                 style="?android:attr/buttonStyleSmall"
@@ -300,7 +282,7 @@
                 style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="BACKUP DATABASE TO DB FILE"
+                android:text="COPY DB FILE TO SD CARD"
                 android:id="@+id/btMain10"
                 android:onClick="btBackupBD_onClick"
                 android:layout_span="44"

@@ -87,7 +87,6 @@ public class ActivityPractice extends AbstractActivity {
                         } else {
                             sessionCurrentPractice.setIsActive(0);
                         }
-
                     }
                 }
             });
@@ -122,19 +121,23 @@ public class ActivityPractice extends AbstractActivity {
 
     public void btClose_onClick(final View view) {
         blink(view, this);
-        Class<?> myClass = null;
-        try {
-            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pollFirst().getTransmitterActivityName());
-        } catch (ClassNotFoundException|NullPointerException e) {
-            e.printStackTrace();
-        }
-        closeActivity(new Intent(getApplicationContext(), myClass));
+        closeActivity();
     }
 
-    private void closeActivity(Intent intent) {
+    private void closeActivity() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+        if (params != null) {
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pollFirst().getTransmitterActivityName());
+            } catch (ClassNotFoundException | NullPointerException e) {
+                e.printStackTrace();
+            }
+            intent = new Intent(getApplicationContext(), myClass);
+        }
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         sessionCurrentPractice = null;
-        sessionOpenActivities.pollFirst();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -145,7 +148,6 @@ public class ActivityPractice extends AbstractActivity {
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());
         EditText etName = (EditText) findViewById(mNameID);
         if (etName != null) {
-
             sessionCurrentPractice.setName(String.valueOf(etName.getText()));
         }
     }
@@ -181,33 +183,19 @@ public class ActivityPractice extends AbstractActivity {
         blink(view, this);
         getPropertiesFromScreen();
         sessionCurrentPractice.dbSave(DB);
-        blink(view, this);
-        Class<?> myClass = null;
-        try {
-            myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pollFirst().getTransmitterActivityName());
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        closeActivity(new Intent(getApplicationContext(), myClass));
-
+        closeActivity();
     }
 
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-        if (params != null) {
-            intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
-        }
-        closeActivity(intent);
+        closeActivity();
     }
 
     public void btDelete_onClick(final View view) {
         blink(view, this);
-
-
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить текущее занятие и его историю?")
+                .setMessage("Do you want to remove the current practice and its history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         DB.deleteAllPracticeHistoryOfPractice(sessionCurrentPractice.getId());
 
@@ -220,7 +208,6 @@ public class ActivityPractice extends AbstractActivity {
                         startActivity(intent);
 
                     }
-                }).setNegativeButton("Нет", null).show();
-
+                }).setNegativeButton("No", null).show();
     }
 }

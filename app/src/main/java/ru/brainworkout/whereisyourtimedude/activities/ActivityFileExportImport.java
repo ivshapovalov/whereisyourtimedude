@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -86,6 +87,7 @@ public class ActivityFileExportImport extends AbstractActivity {
         getIntentParams();
         updateScreen();
         setTitleOfActivity(this);
+
     }
 
     private void getIntentParams() {
@@ -102,12 +104,7 @@ public class ActivityFileExportImport extends AbstractActivity {
 
     public void exportToXLSFile() {
 
-        if (mDateFrom == 0) {
-            mDateFrom = Long.MIN_VALUE;
-        }
-        if (mDateTo == 0) {
-            mDateTo = Long.MAX_VALUE;
-        }
+
         getTablesFromDB();
 
         Map<String, List<String[]>> dataSheets = createDataArray();
@@ -115,13 +112,22 @@ public class ActivityFileExportImport extends AbstractActivity {
     }
 
     private void getTablesFromDB() {
+        if (mDateFrom == 0) {
+            mDateFrom = Long.MIN_VALUE;
+        }
+        if (mDateTo == 0) {
+            mDateTo = Long.MAX_VALUE;
+        }
+
         users = DB.getAllUsers();
         options = DB.getAllOptions();
         areas = DB.getAllAreas();
         projects = DB.getAllProjects();
         practices = DB.getAllPractices();
-        practiceHistories = DB.getAllPracticeHistory();
-        detailedPracticeHistories = DB.getAllDetailedPracticeHistory();
+        if (mIncludeHistory) {
+            practiceHistories = DB.getAllPracticeHistoryByDates(mDateFrom, mDateTo);
+            detailedPracticeHistories = DB.getAllDetailedPracticeHistoryByDates(mDateFrom, mDateTo);
+        }
     }
 
     private Map<String, List<String[]>> createDataArray() {
@@ -325,14 +331,14 @@ public class ActivityFileExportImport extends AbstractActivity {
             TextView tvPath = (TextView) findViewById(mPath);
             if (tvPath != null) {
                 tvPath.setText("");
-                tvPath.setText("В файл XLS по пути \n" + Environment.getExternalStorageDirectory().toString() + '\n'
-                        + " успешно выгружены таблицы \n" + message.toString());
+                tvPath.setText("Successfully write to file \n" + Environment.getExternalStorageDirectory().toString() + '\n'
+                        + " tables \n" + message.toString());
             }
         } catch (Exception e) {
             int mPath = getResources().getIdentifier("tvPathToFiles", "id", getPackageName());
             TextView tvPath = (TextView) findViewById(mPath);
             if (tvPath != null) {
-                tvPath.setText("Файл не выгружен в " + Environment.getExternalStorageDirectory().toString());
+                tvPath.setText("Wile with data not created in " + Environment.getExternalStorageDirectory().toString());
             }
         }
     }
@@ -422,7 +428,6 @@ public class ActivityFileExportImport extends AbstractActivity {
             }
             e.printStackTrace();
         }
-
     }
 
     private List<String[]> ReadDataFromSheets(HSSFSheet myExcelSheet) {
@@ -445,7 +450,6 @@ public class ActivityFileExportImport extends AbstractActivity {
                 mColumnCount = mColumn;
                 break;
             }
-
         }
         int mRow = 0;
         int mRowCount = 0;
@@ -620,7 +624,6 @@ public class ActivityFileExportImport extends AbstractActivity {
             area.setUser(DB.getUser(idUser));
             area.dbSave(DB);
         }
-
     }
 
     private void createOptions(List<String[]> rows) {
@@ -655,7 +658,6 @@ public class ActivityFileExportImport extends AbstractActivity {
                 Session.sessionCurrentUser = user;
             }
         }
-
     }
 
     public void loadFromXLSFile() {
@@ -721,7 +723,7 @@ public class ActivityFileExportImport extends AbstractActivity {
     private boolean backgroundChronometerIsWorking() {
         if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                    "Остановите хронометраж. Нельзя загружать данные при работающем хронометраже!", Toast.LENGTH_SHORT);
+                    "Stop chronometer. You can't load data when chrono is working!", Toast.LENGTH_SHORT);
             toast.show();
             return true;
         }
@@ -738,7 +740,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         exportToXLSFile();
 
     }
-
 
 
     private void day_onClick(boolean isBeginDate) {
@@ -763,7 +764,6 @@ public class ActivityFileExportImport extends AbstractActivity {
                 intent.putExtra("CurrentDateToInMillis", convertStringToDate(String.valueOf(tvDayTo.getText())).getTime());
             }
         }
-
         startActivity(intent);
     }
 
@@ -798,7 +798,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         if (tvDayTo != null) {
             tvDayTo.setText("");
         }
-
     }
 
     public void onBackPressed() {
@@ -827,9 +826,9 @@ public class ActivityFileExportImport extends AbstractActivity {
 
         if (backgroundChronometerIsWorking()) return;
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите очистить базу данных и загрузить в нее данные из файла?")
+                .setMessage("Do you want to clear database and load data from file?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
                             SQLiteDatabase db = DB.getWritableDatabase();
@@ -844,17 +843,17 @@ public class ActivityFileExportImport extends AbstractActivity {
                                 sessionBackgroundChronometer.getService().stopSelf();
                             }
                             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                                    "База данных очищена и заполнена данными из файла!", Toast.LENGTH_SHORT);
+                                    "Database cleared and filled by file data!", Toast.LENGTH_SHORT);
                             toast.show();
                             setTitleOfActivity(ActivityFileExportImport.this);
 
                         } catch (Exception e) {
                             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                                    "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
+                                    "Unable to connect to database!", Toast.LENGTH_SHORT);
                             toast.show();
                         }
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void btExportToXMLFile_onClick(View view) {
@@ -883,15 +882,12 @@ public class ActivityFileExportImport extends AbstractActivity {
     public void btExportToJSONFile_onClick(View view) {
         blink(view, this);
 
-         getTablesFromDB();
-//        users = DB.getAllUsers();
-//        options = DB.getAllOptions();
+        getTablesFromDB();
 
         File fileZIP;
         try {
 
             fileZIP = new File(Environment.getExternalStorageDirectory() + "/wiytd.zip");
-            //fileZIP = File.createTempFile("wiytd.zip", null, this.getCacheDir());
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(fileZIP));
             Gson gson = new Gson();
             ZipEntry e;
@@ -932,14 +928,14 @@ public class ActivityFileExportImport extends AbstractActivity {
             out.closeEntry();
 
             if (mIncludeHistory) {
-                e = new ZipEntry("practiceHistory.txt");
+                e = new ZipEntry("practice_history.txt");
                 out.putNextEntry(e);
                 String jsonPracticeHistoryList = gson.toJson(practiceHistories);
                 data = jsonPracticeHistoryList.toString().getBytes();
                 out.write(data, 0, data.length);
                 out.closeEntry();
 
-                e = new ZipEntry("detailedPracticeHistory.txt");
+                e = new ZipEntry("detailed_practice_history.txt");
                 out.putNextEntry(e);
                 String jsonDetailedPracticeHistoryList = gson.toJson(detailedPracticeHistories);
                 data = jsonDetailedPracticeHistoryList.toString().getBytes();
@@ -980,22 +976,21 @@ public class ActivityFileExportImport extends AbstractActivity {
             output.close();
             fis.close();
             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                    "База данных успешно скопирована в !" + outFileName, Toast.LENGTH_SHORT);
+                    "The database is successfully copied to " + outFileName, Toast.LENGTH_SHORT);
             toast.show();
         } catch (Exception e) {
             Toast toast = Toast.makeText(ActivityFileExportImport.this,
-                    "Бэкап базы данных не удался!", Toast.LENGTH_SHORT);
+                    "Database copy failed!", Toast.LENGTH_SHORT);
             toast.show();
         }
 
     }
 
     private interface Fileloader {
-
-        void load ();
+        void load();
     }
 
-    private class XLSloader implements Fileloader{
+    private class XLSloader implements Fileloader {
         @Override
         public void load() {
             loadFromXLSFile();
@@ -1007,7 +1002,8 @@ public class ActivityFileExportImport extends AbstractActivity {
         public void load() {
             byte[] buffer = new byte[1024];
             try {
-                ZipInputStream zis = new ZipInputStream(new FileInputStream(Environment.getExternalStorageDirectory() + "/wiytd.zip"));
+                ZipInputStream zis = new ZipInputStream(new FileInputStream(Environment.getExternalStorageDirectory()
+                        + "/wiytd.zip"));
                 ZipEntry ze;
                 int read = 0;
                 Gson gson = new Gson();
@@ -1057,7 +1053,7 @@ public class ActivityFileExportImport extends AbstractActivity {
                         }.getType();
                         List<SavingIntoDB> practiceList = gson.fromJson(jsonPracticeList.toString(), type);
                         saveToDB(practiceList);
-                    } else if (ze.getName().equals("practiceHistory.txt")) {
+                    } else if (ze.getName().equals("practice_history.txt")) {
                         if (mIncludeHistory) {
                             StringBuilder jsonPracticeHistoryList = new StringBuilder();
                             while ((read = zis.read(buffer, 0, 1024)) >= 0) {
@@ -1069,7 +1065,7 @@ public class ActivityFileExportImport extends AbstractActivity {
                             saveToDB(practiceHistoryList);
                         }
 
-                    } else if (ze.getName().equals("detailedPracticeHistory.txt")) {
+                    } else if (ze.getName().equals("detailed_practice_history.txt")) {
                         if (mIncludeHistory) {
                             StringBuilder jsonDetailedPracticeHistoryList = new StringBuilder();
                             while ((read = zis.read(buffer, 0, 1024)) >= 0) {
@@ -1087,14 +1083,12 @@ public class ActivityFileExportImport extends AbstractActivity {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
-
         }
     }
 
     private void saveToDB(List<SavingIntoDB> entities) {
-        for (SavingIntoDB entity:entities
-             ) {
+        for (SavingIntoDB entity : entities
+                ) {
             entity.dbSave(DB);
         }
     }

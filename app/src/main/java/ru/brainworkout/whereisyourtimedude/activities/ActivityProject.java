@@ -168,7 +168,7 @@ public class ActivityProject extends AbstractActivity {
         new AlertDialog.Builder(this)
                 .setMessage("Do you want to delete project, its practices and other?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentProject.dbDelete(DB);
                         sessionCurrentProject = null;
@@ -177,6 +177,6 @@ public class ActivityProject extends AbstractActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 }

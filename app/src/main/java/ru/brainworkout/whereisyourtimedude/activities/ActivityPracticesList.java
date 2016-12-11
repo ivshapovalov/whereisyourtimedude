@@ -321,9 +321,9 @@ public class ActivityPracticesList extends AbstractActivity {
         blink(view, this);
 
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить занятия и их историю?")
+                .setMessage("Are you really want to delete all practices with its history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             List<Practice> practices = DB.getAllActivePracticesOfUser(Session.sessionCurrentUser.getId());
@@ -336,7 +336,7 @@ public class ActivityPracticesList extends AbstractActivity {
                         }
                     }
 
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void onBackPressed() {

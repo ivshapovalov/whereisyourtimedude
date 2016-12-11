@@ -284,7 +284,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         new AlertDialog.Builder(this)
                 .setMessage("Do you want to delete current detailed practice history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentDetailedPracticeHistory.dbDelete(DB);
                         sessionCurrentDetailedPracticeHistory = null;
@@ -292,7 +292,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void tvDuration_onClick(View view) {

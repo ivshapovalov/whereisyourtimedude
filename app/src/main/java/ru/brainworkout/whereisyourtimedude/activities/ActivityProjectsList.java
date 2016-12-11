@@ -221,7 +221,6 @@ public class ActivityProjectsList extends AbstractActivity {
 
         }
         sv.addView(layout);
-
     }
 
     public void btProjectAdd_onClick(final View view) {
@@ -304,9 +303,9 @@ public class ActivityProjectsList extends AbstractActivity {
     public void btClear_onClick(final View view) {
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить все проекты и занятия?")
+                .setMessage("Do you want to remove all the projects and its practices with history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                         if (Session.sessionCurrentUser != null) {
@@ -326,7 +325,7 @@ public class ActivityProjectsList extends AbstractActivity {
                         }
                     }
 
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void onBackPressed() {

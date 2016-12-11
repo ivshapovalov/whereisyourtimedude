@@ -220,9 +220,9 @@ public class ActivityUsersList extends AbstractActivity {
         blink(view,this);
 
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить всех пользователей, их проекты, области, занятия?")
+                .setMessage("Do you want to remove all the users, its areas, projects and practices with history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                         List<User> users = DB.getAllUsers();
@@ -241,7 +241,7 @@ public class ActivityUsersList extends AbstractActivity {
                         showUsers();
                     }
 
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void onBackPressed() {

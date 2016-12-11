@@ -319,9 +319,9 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     public void btClear_onClick(final View view) {
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить всю детальную историю занятий?")
+                .setMessage("Do you want to remove all the detailed practice history?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllDetailedPracticeHistoryOfUser(Session.sessionCurrentUser.getId());
@@ -329,7 +329,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                         }
                     }
 
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void onBackPressed() {

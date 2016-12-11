@@ -310,9 +310,9 @@ public class ActivityAreasList extends AbstractActivity {
 
         blink(view, this);
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите удалить все области,их проекты и занятия?")
+                .setMessage("Do you want to remove all the areas of their projects and activities?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             List<Area> areas = DB.getAllAreasOfUser(Session.sessionCurrentUser.getId());
@@ -336,7 +336,7 @@ public class ActivityAreasList extends AbstractActivity {
                         }
                     }
 
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void onBackPressed() {

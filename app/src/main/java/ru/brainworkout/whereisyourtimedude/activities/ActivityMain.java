@@ -244,7 +244,7 @@ public class ActivityMain extends AbstractActivity {
         }
         if (list.size() == 0) {
             Toast toast = Toast.makeText(ActivityMain.this,
-                    "Отсутствуют активные занятия. Заполните список занятий!", Toast.LENGTH_SHORT);
+                    "There are no active practices. Complete list of practices!", Toast.LENGTH_SHORT);
             toast.show();
             return false;
         } else {
@@ -261,9 +261,9 @@ public class ActivityMain extends AbstractActivity {
 
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите покинуть программу?")
+                .setMessage("Are you really want to exit the program?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         finish();
                         if (sessionBackgroundChronometer != null
@@ -276,6 +276,6 @@ public class ActivityMain extends AbstractActivity {
                             LOG.debug("Close MainActivity");
                         }
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 }

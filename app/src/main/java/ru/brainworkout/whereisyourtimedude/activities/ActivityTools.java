@@ -59,9 +59,9 @@ public class ActivityTools extends AbstractActivity {
     public void btTestFill_onClick(final View view) {
         if (backgroundChronometerIsWorking()) return;
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите очистить базу данных и заполнить ее тестовыми данными?")
+                .setMessage("Do you want to clear the database and fille it by test data?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
 
@@ -77,17 +77,17 @@ public class ActivityTools extends AbstractActivity {
                                 sessionBackgroundChronometer.getService().stopSelf();
                             }
                             Toast toast = Toast.makeText(ActivityTools.this,
-                                    "База данных очищена и заполнена тестовыми данными!", Toast.LENGTH_SHORT);
+                                    "Database cleared and filled by test data!", Toast.LENGTH_SHORT);
                             toast.show();
                             setTitleOfActivity(ActivityTools.this);
 
                         } catch (Exception e) {
                             Toast toast = Toast.makeText(ActivityTools.this,
-                                    "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
+                                    "Unable to connect to database!", Toast.LENGTH_SHORT);
                             toast.show();
                         }
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     public void btOptions_onClick(final View view) {
@@ -103,9 +103,9 @@ public class ActivityTools extends AbstractActivity {
         if (backgroundChronometerIsWorking()) return;
 
         new AlertDialog.Builder(this)
-                .setMessage("Вы действительно хотите очистить базу данных?")
+                .setMessage("Do you want to clear the database?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {
 
@@ -120,22 +120,22 @@ public class ActivityTools extends AbstractActivity {
                             }
 
                             Toast toast = Toast.makeText(ActivityTools.this,
-                                    "База данных очищена!", Toast.LENGTH_SHORT);
+                                    "Database cleared!", Toast.LENGTH_SHORT);
                             toast.show();
                             setTitleOfActivity(ActivityTools.this);
                         } catch (Exception e) {
                             Toast toast = Toast.makeText(ActivityTools.this,
-                                    "Невозможно подключиться к базе данных!", Toast.LENGTH_SHORT);
+                                    "Unable to connect to database!", Toast.LENGTH_SHORT);
                             toast.show();
                         }
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 
     private boolean backgroundChronometerIsWorking() {
         if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
             Toast toast = Toast.makeText(ActivityTools.this,
-                    "Остановите хронометраж. Нельзя очистить базу данных при работающем хронометраже!", Toast.LENGTH_SHORT);
+                    "Stop the chronometer. Unable to clear the database when chronometer is working!", Toast.LENGTH_SHORT);
             toast.show();
             return true;
         }
@@ -154,6 +154,4 @@ public class ActivityTools extends AbstractActivity {
             startActivity(intent);
 
     }
-
-
 }

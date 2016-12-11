@@ -174,7 +174,7 @@ public class ActivityArea extends AbstractActivity {
         new AlertDialog.Builder(this)
                 .setMessage("Do you want to delete current area, it's projects and practices?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentArea.dbDelete(DB);
                         sessionCurrentArea = null;
@@ -183,6 +183,6 @@ public class ActivityArea extends AbstractActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
     }
 }

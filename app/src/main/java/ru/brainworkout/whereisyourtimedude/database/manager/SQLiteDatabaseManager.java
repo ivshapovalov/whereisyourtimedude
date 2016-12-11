@@ -1618,7 +1618,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
-                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + "\" AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo
+                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo
                 + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME;
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1783,7 +1783,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
-                + " WHERE " + KEY_DETAILED_PRACTICE_HISTORY_DATE + ">= " + dateFrom + "\" AND " + KEY_DETAILED_PRACTICE_HISTORY_DATE + " <=" + dateTo
+                + " WHERE " + KEY_DETAILED_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND "
+                + KEY_DETAILED_PRACTICE_HISTORY_DATE + " <=" + dateTo
                 + " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME;
 
         SQLiteDatabase db = this.getWritableDatabase();

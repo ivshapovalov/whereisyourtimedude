@@ -116,8 +116,8 @@ public class ActivityUser extends AbstractActivity {
         if (mCurrentUser.isCurrentUser() == 1) {
             if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
                 Toast toast = Toast.makeText(ActivityUser.this,
-                        "Вернитесь в хронометраж и остановите счетчик прежде чем поменять активного" +
-                                "пользователя", Toast.LENGTH_SHORT);
+                        "Back to chrono and stop the chronometer. Then you may change active user"
+                                , Toast.LENGTH_SHORT);
                 toast.show();
                 return;
             }
@@ -153,7 +153,7 @@ public class ActivityUser extends AbstractActivity {
         new AlertDialog.Builder(this)
                 .setMessage("Do you want to delete current user, areas, projects and practices?")
                 .setCancelable(false)
-                .setPositiveButton("Да", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mCurrentUser.dbDelete(DB);
                         if (mCurrentUser.equals(sessionCurrentUser)) {
@@ -169,7 +169,7 @@ public class ActivityUser extends AbstractActivity {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                     }
-                }).setNegativeButton("Нет", null).show();
+                }).setNegativeButton("No", null).show();
 
     }
 }

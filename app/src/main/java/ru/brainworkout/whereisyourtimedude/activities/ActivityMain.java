@@ -261,7 +261,7 @@ public class ActivityMain extends AbstractActivity {
 
     public void onBackPressed() {
         new AlertDialog.Builder(this)
-                .setMessage("Are you really want to exit the program?")
+                .setMessage("Do you want to exit the program?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

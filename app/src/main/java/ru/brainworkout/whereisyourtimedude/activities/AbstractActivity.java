@@ -36,7 +36,6 @@ public abstract class AbstractActivity extends AppCompatActivity {
                 currentUser.setIsCurrentUser(1);
                 currentUser.dbSave(DB);
             } else {
-                //ищем активного
                 for (User user : userList
                         ) {
                     if (user.isCurrentUser() == 1) {
@@ -52,7 +51,7 @@ public abstract class AbstractActivity extends AppCompatActivity {
     public boolean isUserDefined() {
         if (sessionCurrentUser == null) {
             Toast toast = Toast.makeText(this,
-                    "Не выбран пользатель. Создайте пользователя и сделайте его активным!", Toast.LENGTH_SHORT);
+                    "No active user. Create the user and make it active!", Toast.LENGTH_SHORT);
             toast.show();
             return false;
         }

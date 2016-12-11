@@ -97,9 +97,9 @@ public class ActivityChrono extends AbstractActivity {
                     if (!isToday) {
                         return;
                     }
-                    if (currentPracticeHistory != null && sessionBackgroundChronometer != null && sessionBackgroundChronometer.getCurrentPracticeHistory() != null) {
+                    if (currentPracticeHistory != null && sessionBackgroundChronometer != null &&
+                            sessionBackgroundChronometer.getCurrentPracticeHistory() != null) {
                         if (currentPracticeHistory.getDate() < sessionBackgroundChronometer.getCurrentPracticeHistory().getDate()) {
-
                             autoChangeDay(sessionBackgroundChronometer.getCurrentPracticeHistory().getDate());
                         }
                     }
@@ -153,8 +153,7 @@ public class ActivityChrono extends AbstractActivity {
 
         updateAllRows();
 
-
-        //уберу до поры до времени.
+        //replace .
 //        SwipeDetectorActivity swipeDetectorActivity = new SwipeDetectorActivity(ActivityChrono.this);
 //        ScrollView sv = (ScrollView) this.findViewById(R.id.scrollView);
 //        sv.setOnTouchListener(swipeDetectorActivity);
@@ -181,8 +180,6 @@ public class ActivityChrono extends AbstractActivity {
                 localChronometerCount = currentPracticeHistory.getDuration();
                 Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
-
-
         } else {
             LOG.debug("init:before create background chronometer");
             Session.sessionBackgroundChronometer = new BackgroundChronometer();
@@ -221,9 +218,6 @@ public class ActivityChrono extends AbstractActivity {
 
     private void defineNewDayPractice(Long date) {
 
-//        if (mChronometerIsWorking) {
-//            stopTimer();
-//        }
         updateAndPagePractices(date);
 
         if (practiceHistories.isEmpty()) {
@@ -662,7 +656,7 @@ public class ActivityChrono extends AbstractActivity {
 
         public final void onRightToLeftSwipe() {
             // System.out.println("Right to Left swipe [Previous]");
-            Toast.makeText(ActivityChrono.this, "[Следующий день]", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityChrono.this, "[Next day]", Toast.LENGTH_SHORT).show();
             long nextDateInMillis = currentDateInMillis + 3600 * 24 * 1000;
             isToday = nextDateInMillis == getBeginOfCurrentDateInMillis();
             defineNewDayPractice(nextDateInMillis);
@@ -672,7 +666,7 @@ public class ActivityChrono extends AbstractActivity {
 
         public void onLeftToRightSwipe() {
             // System.out.println("Left to Right swipe [Next]");
-            Toast.makeText(ActivityChrono.this, "[Предыдущий день]", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ActivityChrono.this, "[Previous day]", Toast.LENGTH_SHORT).show();
             long previousDateInMillis = currentDateInMillis - 3600 * 24 * 1000;
             isToday = previousDateInMillis == getBeginOfCurrentDateInMillis();
             defineNewDayPractice(previousDateInMillis);

@@ -86,7 +86,6 @@ public class ActivityFileExportImport extends AbstractActivity {
         updateScreen();
         setTitleOfActivity(this);
 
-
     }
 
     private void getIntentParams() {

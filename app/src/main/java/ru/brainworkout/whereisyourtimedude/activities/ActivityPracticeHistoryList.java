@@ -123,6 +123,10 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         if (pageContent.size() != 0) {
             pagedPracticeHistory.put(pageNumber, pageContent);
         }
+
+        if (pagedPracticeHistory.size()==0) {
+            currentPage=0;
+        }
     }
 
     private void getIntentParams(Intent intent) {
@@ -351,7 +355,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
     public void btPreviousPage_onClick(View view) {
         blink(view, this);
-        if (currentPage != 1) {
+        if (currentPage > 1) {
             currentPage--;
         }
         showPracticeHistory();

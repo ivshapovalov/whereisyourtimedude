@@ -43,7 +43,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER = "options_display_notification_timer";
     private static final String KEY_OPTIONS_SAVE_INTERVAL = "options_save_interval";
     private static final String KEY_OPTIONS_CHRONO_IS_WORKING = "options_chrono_is_working";
-    private static final String KEY_OPTIONS_ROW_NUMBER_IN_LISTS= "options_rows_number_in_lists";
+    private static final String KEY_OPTIONS_ROW_NUMBER_IN_LISTS = "options_rows_number_in_lists";
 
 
     // Practice
@@ -98,20 +98,13 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         } else {
 
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
-
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_AREAS);
-
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
-
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICES);
-
-            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
-
             db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
-
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICES);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_AREAS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
+            db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
             onCreate(db);
         }
 
@@ -185,20 +178,20 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     @Override
     public synchronized void onCreate(SQLiteDatabase db) {
 
+        //users
+        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "("
+                + KEY_USER_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
+                + KEY_USER_NAME + " TEXT," + KEY_USER_IS_CURRENT + " INTEGER)";
+        db.execSQL(CREATE_USERS_TABLE);
+
         //options
         String CREATE_OPTIONS_TABLE = "CREATE TABLE " + TABLE_OPTIONS + "("
                 + KEY_OPTIONS_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_OPTIONS_ID_USER + " INTEGER, "
                 + KEY_OPTIONS_RECOVERY_ON_RUN + " INTEGER," + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + " INTEGER,"
                 + KEY_OPTIONS_SAVE_INTERVAL + " INTEGER," + KEY_OPTIONS_CHRONO_IS_WORKING + " INTEGER,"
-                + KEY_OPTIONS_ROW_NUMBER_IN_LISTS + " INTEGER"+ ")";
+                + KEY_OPTIONS_ROW_NUMBER_IN_LISTS + " INTEGER" + ")";
         db.execSQL(CREATE_OPTIONS_TABLE);
-
-        //users
-        String CREATE_USERS_TABLE = "CREATE TABLE " + TABLE_USERS + "("
-                + KEY_USER_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
-                + KEY_USER_NAME + " TEXT," + KEY_USER_IS_CURRENT + " INTEGER)";
-        db.execSQL(CREATE_USERS_TABLE);
 
         //areas
         String CREATE_AREAS_TABLE = "CREATE TABLE " + TABLE_AREAS + "("
@@ -237,7 +230,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         String CREATE_PROJECTS_INDEX_AREA_DESC = "CREATE INDEX PROJECTS_AREA_IDX_DESC ON " + TABLE_PROJECTS + " (" + KEY_PROJECT_ID_AREA + " DESC)";
         db.execSQL(CREATE_PROJECTS_INDEX_AREA_DESC);
 
-        //practises
+        //practices
         String CREATE_PRACTICES_TABLE = "CREATE TABLE " + TABLE_PRACTICES + "("
                 + KEY_PRACTICE_ID + " INTEGER UNIQUE PRIMARY KEY NOT NULL,"
                 + KEY_PRACTICE_ID_USER + " INTEGER, "
@@ -420,10 +413,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PROJECT_NAME, project.getName());
         if (project.getArea() != null) {
             values.put(KEY_PROJECT_ID_AREA, project.getArea().getId());
-        } else {
-            values.put(KEY_PROJECT_ID_AREA, 0);
         }
-
         db.insert(TABLE_PROJECTS, null, values);
         db.close();
     }
@@ -437,8 +427,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_NAME, practice.getName());
         if (practice.getProject() != null) {
             values.put(KEY_PRACTICE_ID_PROJECT, practice.getProject().getId());
-        } else {
-            values.put(KEY_PRACTICE_ID_PROJECT, 0);
         }
         values.put(KEY_PRACTICE_IS_ACTIVE, practice.getIsActive());
 
@@ -454,9 +442,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getUserId());
         if (practiceHistory.getPractice() != null) {
             values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getPractice().getId());
-        } else {
-            values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, 0);
-
         }
         values.put(KEY_PRACTICE_HISTORY_DATE, practiceHistory.getDate());
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
@@ -474,10 +459,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getUserId());
         if (detailedPracticeHistory.getPractice() != null) {
             values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getPractice().getId());
-        } else {
-            values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, 0);
-
         }
+
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DATE, detailedPracticeHistory.getDate());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());
@@ -606,7 +589,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(TABLE_OPTIONS, new String[]{KEY_OPTIONS_ID, KEY_OPTIONS_RECOVERY_ON_RUN,
                         KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER, KEY_OPTIONS_SAVE_INTERVAL,
-                KEY_OPTIONS_CHRONO_IS_WORKING,KEY_OPTIONS_ROW_NUMBER_IN_LISTS}, KEY_OPTIONS_ID_USER + "=?",
+                        KEY_OPTIONS_CHRONO_IS_WORKING, KEY_OPTIONS_ROW_NUMBER_IN_LISTS}, KEY_OPTIONS_ID_USER + "=?",
                 new String[]{String.valueOf(id_user)}, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
@@ -730,7 +713,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             db.close();
             return true;
         }
-
     }
 
     public synchronized Practice getPractice(int id) {
@@ -1034,8 +1016,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         String selectQuery = "SELECT  "
                 + KEY_OPTIONS_ID + "," + KEY_OPTIONS_RECOVERY_ON_RUN + ","
                 + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + "," + KEY_OPTIONS_SAVE_INTERVAL + ","
-                + KEY_OPTIONS_CHRONO_IS_WORKING+","
-                + KEY_OPTIONS_ROW_NUMBER_IN_LISTS+" FROM " + TABLE_OPTIONS;
+                + KEY_OPTIONS_CHRONO_IS_WORKING + ","
+                + KEY_OPTIONS_ROW_NUMBER_IN_LISTS + " FROM " + TABLE_OPTIONS;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1390,7 +1372,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
                 + " WHERE " + KEY_PRACTICE_HISTORY_ID_USER + "=" + id_user +
-                " ORDER BY " + KEY_PRACTICE_HISTORY_DATE+" DESC ,"+ KEY_PRACTICE_HISTORY_LAST_TIME + " DESC";
+                " ORDER BY " + KEY_PRACTICE_HISTORY_DATE + " DESC ," + KEY_PRACTICE_HISTORY_LAST_TIME + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1449,7 +1431,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 TABLE_PRACTICES + "." + KEY_PRACTICE_ID + ", " +
                 TABLE_PRACTICES + "." + KEY_PRACTICE_NAME + " " +
                 "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 " +
-                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "="+id_user+";";
+                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + id_user + ";";
         db.execSQL(tempTableActivePracticesQuery);
         String tempTableCurrentDatePracticesQuery =
                 " create temporary table " + tempTableCurrentDatePractices + " as select " +
@@ -1998,9 +1980,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PROJECT_ID_USER, project.getUserId());
         if (project.getArea() != null) {
             values.put(KEY_PROJECT_ID_AREA, project.getArea().getId());
-        } else {
-            values.put(KEY_PROJECT_ID_AREA, 0);
-
         }
         int rows = db.update(TABLE_PROJECTS, values, KEY_PROJECT_ID + " = ?",
                 new String[]{String.valueOf(project.getId())});
@@ -2016,8 +1995,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_ID_USER, practice.getUserId());
         if (practice.getProject() != null) {
             values.put(KEY_PRACTICE_ID_PROJECT, practice.getProject().getId());
-        } else {
-            values.put(KEY_PRACTICE_ID_PROJECT, 0);
         }
         values.put(KEY_PRACTICE_IS_ACTIVE, practice.getIsActive());
         int rows = db.update(TABLE_PRACTICES, values, KEY_PRACTICE_ID + " = ?",
@@ -2034,9 +2011,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_PRACTICE_HISTORY_ID_USER, practiceHistory.getUserId());
         if (practiceHistory.getPractice() != null) {
             values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, practiceHistory.getPractice().getId());
-        } else {
-            values.put(KEY_PRACTICE_HISTORY_ID_PRACTICE, 0);
-
         }
         values.put(KEY_PRACTICE_HISTORY_DURATION, practiceHistory.getDuration());
         values.put(KEY_PRACTICE_HISTORY_LAST_TIME, practiceHistory.getLastTime());
@@ -2054,8 +2028,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_USER, detailedPracticeHistory.getUserId());
         if (detailedPracticeHistory.getPractice() != null) {
             values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, detailedPracticeHistory.getPractice().getId());
-        } else {
-            values.put(KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE, 0);
         }
         values.put(KEY_DETAILED_PRACTICE_HISTORY_DURATION, detailedPracticeHistory.getDuration());
         values.put(KEY_DETAILED_PRACTICE_HISTORY_TIME, detailedPracticeHistory.getTime());

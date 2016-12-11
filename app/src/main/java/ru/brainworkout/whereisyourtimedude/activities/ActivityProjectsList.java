@@ -111,6 +111,10 @@ public class ActivityProjectsList extends AbstractActivity {
         if (pageContent.size() != 0) {
             pagedProjects.put(pageNumber, pageContent);
         }
+
+        if (pagedProjects.size()==0) {
+            currentPage=0;
+        }
     }
 
     private void getIntentParams(Intent intent) {
@@ -352,7 +356,7 @@ public class ActivityProjectsList extends AbstractActivity {
 
     public void btPreviousPage_onClick(View view) {
         blink(view, this);
-        if (currentPage != 1) {
+        if (currentPage > 1) {
             currentPage--;
         }
         showProjects();

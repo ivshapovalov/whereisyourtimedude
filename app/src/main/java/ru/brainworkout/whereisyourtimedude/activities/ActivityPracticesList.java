@@ -103,6 +103,9 @@ public class ActivityPracticesList extends AbstractActivity {
         if (pageContent.size() != 0) {
             pagedPractices.put(pageNumber, pageContent);
         }
+        if (pagedPractices.size()==0) {
+            currentPage=0;
+        }
     }
 
     private void getIntentParams(Intent intent) {
@@ -371,7 +374,7 @@ public class ActivityPracticesList extends AbstractActivity {
 
     public void btPreviousPage_onClick(View view) {
         blink(view, this);
-        if (currentPage != 1) {
+        if (currentPage > 1) {
             currentPage--;
         }
         showPractices();

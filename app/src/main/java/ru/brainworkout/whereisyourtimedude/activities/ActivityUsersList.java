@@ -21,7 +21,6 @@ import java.util.Map;
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.Session;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 
@@ -29,8 +28,6 @@ import static ru.brainworkout.whereisyourtimedude.common.Common.hideEditorButton
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.paramsTextViewWithSpanInList;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentUser;
-import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
 public class ActivityUsersList extends AbstractActivity {
@@ -46,7 +43,7 @@ public class ActivityUsersList extends AbstractActivity {
     private int id_user;
 
     private int rows_number;
-    Map<Integer, List<User>> pagingUsers = new HashMap<>();
+    Map<Integer, List<User>> pagedUsers = new HashMap<>();
     private int currentPage = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,13 +94,17 @@ public class ActivityUsersList extends AbstractActivity {
             }
             pageContent.add(users.get(i));
             if (pageContent.size() == rows_number) {
-                pagingUsers.put(pageNumber, pageContent);
+                pagedUsers.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;
             }
         }
         if (pageContent.size() != 0) {
-            pagingUsers.put(pageNumber, pageContent);
+            pagedUsers.put(pageNumber, pageContent);
+        }
+
+        if (pagedUsers.size()==0) {
+            currentPage=0;
         }
     }
 
@@ -118,8 +119,8 @@ public class ActivityUsersList extends AbstractActivity {
     private void showUsers() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagingUsers!=null) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+pagingUsers.size());
+        if (pageNumber != null && pagedUsers !=null) {
+            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedUsers.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableUsers);
@@ -146,7 +147,7 @@ public class ActivityUsersList extends AbstractActivity {
         layout.setStretchAllColumns(true);
         layout.setShrinkAllColumns(true);
 
-        List<User> page = pagingUsers.get(currentPage);
+        List<User> page = pagedUsers.get(currentPage);
         if (page == null) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
@@ -253,7 +254,7 @@ public class ActivityUsersList extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagingUsers.size()) {
+        if (currentPage != pagedUsers.size()) {
             currentPage++;
         }
         showUsers();
@@ -261,7 +262,7 @@ public class ActivityUsersList extends AbstractActivity {
 
     public void btPreviousPage_onClick(View view) {
         blink(view, this);
-        if (currentPage != 1) {
+        if (currentPage > 1) {
             currentPage--;
         }
         showUsers();

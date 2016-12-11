@@ -113,6 +113,10 @@ public class ActivityAreasList extends AbstractActivity {
         if (pageContent.size() != 0) {
             pagedAreas.put(pageNumber, pageContent);
         }
+
+        if (pagedAreas.size()==0) {
+            currentPage=0;
+        }
     }
 
     private void getIntentParams(Intent intent) {
@@ -364,7 +368,7 @@ public class ActivityAreasList extends AbstractActivity {
 
     public void btPreviousPage_onClick(View view) {
         blink(view, this);
-        if (currentPage != 1) {
+        if (currentPage > 1) {
             currentPage--;
         }
         showAreas();

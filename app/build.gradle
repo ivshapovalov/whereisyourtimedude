@@ -1,3 +1,5 @@
+//import com.android.builder.core.DefaultManifestParser;
+
 apply plugin: 'com.android.application'
 
 android {
@@ -11,10 +13,12 @@ android {
         minSdkVersion 14
         targetSdkVersion 23
         versionCode 10
-        versionName "4.1"
+        versionName "4.2"
     }
-//    buildTypes {
-//        time_release {
+
+//    sourceSets {
+//        main {
+//            manifest.srcFile 'src/main/AndroidManifest.xml'
 //        }
 //    }
 
@@ -26,18 +30,17 @@ android {
 
         applicationVariants.all { variant ->
             variant.outputs.each { output ->
-                //output.outputFile = file("$project.buildDir/outputs/apk/timer_test.apk")
-                //output.outputFile = file("Q://Dropbox/android/timer_test-$version"+".apk")
-                //output.outputFile = file("Q://ya_disk/timer_test.apk")
 
                 def file = new File("Q://Dropbox/android/timer_test.apk");
-                //                def manifestParser = new com.android.builder.core.DefaultManifestParser()
                 output.outputFile = new File(file.parent, file.name.replace(".apk", "_${variant.versionName}.apk"))
+//                def manifestParser = new DefaultManifestParser();
+//                def versionName=manifestParser.getVersionName(android.sourceSets.main.manifest.srcFile);
+//                println (versionName);
+//                output.outputFile = new File(file.parent, file.name.replace(".apk", "-" +
+//                        versionName + ".apk"))
 
             }
         }
-    }
-    productFlavors {
     }
 }
 

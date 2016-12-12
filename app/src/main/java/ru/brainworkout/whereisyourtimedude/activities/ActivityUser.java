@@ -121,8 +121,20 @@ public class ActivityUser extends AbstractActivity {
                 toast.show();
                 return;
             }
+            if (sessionBackgroundChronometer != null) {
+                if( sessionBackgroundChronometer.getService()!=null) {
+                    sessionBackgroundChronometer.getService().stopForeground(true);
+                    sessionBackgroundChronometer.getService().stopSelf();
+                }
+                sessionBackgroundChronometer.setCurrentPracticeHistory(null);
+                sessionBackgroundChronometer.setCurrentDetailedPracticeHistory(null);
+                sessionBackgroundChronometer.setGlobalChronometerCount(0L);
+                sessionBackgroundChronometer.setService(null);
+                sessionBackgroundChronometer.interrupt();
+            }
         }
         mCurrentUser.dbSave(DB);
+
         setDBCurrentUser();
         Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);
         intent.putExtra("id", mCurrentUser.getId());
@@ -134,7 +146,6 @@ public class ActivityUser extends AbstractActivity {
         if (mCurrentUser.isCurrentUser() == 1) {
             sessionCurrentUser = mCurrentUser;
             List<User> userList = DB.getAllUsers();
-
             for (User user : userList) {
                 if (user.getId() != mCurrentUser.getId()) {
                     user.setIsCurrentUser(0);
@@ -155,7 +166,17 @@ public class ActivityUser extends AbstractActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
+                        if (mCurrentUser.isCurrentUser() == 1) {
+                            if (sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
+                                Toast toast = Toast.makeText(ActivityUser.this,
+                                        "Back to chrono and stop the chronometer. Then you may change active user"
+                                        , Toast.LENGTH_SHORT);
+                                toast.show();
+                                return;
+                            }
+                        }
                         mCurrentUser.dbDelete(DB);
+
                         if (mCurrentUser.equals(sessionCurrentUser)) {
                             List<User> userList = DB.getAllUsers();
                             if (userList.size() == 1) {
@@ -163,6 +184,17 @@ public class ActivityUser extends AbstractActivity {
                                 sessionCurrentUser = currentUser;
                                 currentUser.setIsCurrentUser(1);
                                 currentUser.dbSave(DB);
+                            }
+                            if (sessionBackgroundChronometer != null) {
+                                if( sessionBackgroundChronometer.getService()!=null) {
+                                    sessionBackgroundChronometer.getService().stopForeground(true);
+                                    sessionBackgroundChronometer.getService().stopSelf();
+                                }
+                                sessionBackgroundChronometer.setCurrentPracticeHistory(null);
+                                sessionBackgroundChronometer.setCurrentDetailedPracticeHistory(null);
+                                sessionBackgroundChronometer.setGlobalChronometerCount(0L);
+                                sessionBackgroundChronometer.setService(null);
+                                sessionBackgroundChronometer.interrupt();
                             }
                         }
                         Intent intent = new Intent(getApplicationContext(), ActivityUsersList.class);

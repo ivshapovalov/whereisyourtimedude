@@ -43,9 +43,9 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActi
 import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOptions;
 
 public class ActivityChrono extends AbstractActivity {
-    private static PracticeHistory currentPracticeHistory;
-    private static List<PracticeHistory> practiceHistories = new ArrayList<>();
-    private static long currentDateInMillis;
+    private PracticeHistory currentPracticeHistory;
+    private List<PracticeHistory> practiceHistories = new ArrayList<>();
+    private long currentDateInMillis;
 
     private Chronometer mChronometer;
     private Chronometer mChronometerEternity;

@@ -322,12 +322,11 @@ public class ActivityAreasList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllAreasOfUser(Session.sessionCurrentUser.getId());
-                            showAreas();
+                            updateAreas();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
-        updateAreas();
     }
 
     public void onBackPressed() {

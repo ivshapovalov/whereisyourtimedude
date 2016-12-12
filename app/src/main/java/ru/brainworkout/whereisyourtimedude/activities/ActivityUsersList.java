@@ -231,12 +231,10 @@ public class ActivityUsersList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         DB.deleteAllUsers();
                         Session.sessionCurrentUser = null;
-
-                        showUsers();
+                        updateUsers() ;
                     }
 
                 }).setNegativeButton("No", null).show();
-        updateUsers() ;
     }
 
     public void onBackPressed() {

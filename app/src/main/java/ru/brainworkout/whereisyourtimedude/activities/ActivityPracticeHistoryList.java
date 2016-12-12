@@ -54,10 +54,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        LOG.debug("ActivityPracticeHistoryList start");
-        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practices_history_list);
 
@@ -67,20 +63,12 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        LOG.debug("ActivityPracticeHistoryList before show pr history");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
-
         if (Session.sessionOptions!=null) {
             rows_number=sessionOptions.getRowNumberInLists();
         }
         Intent intent = getIntent();
         getIntentParams(intent);
         updatePracticeHistory();
-
-        LOG.debug("ActivityPracticeHistoryList after show pr history");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
 
         TableRow mRow = (TableRow) findViewById(idIntentPracticeHistory);
         //TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id);
@@ -93,9 +81,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         }
 
         setTitleOfActivity(this);
-        LOG.debug("ActivityPracticeHistoryList end");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
     }
 
     private void pagePracticeHistories() {
@@ -156,14 +141,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         if (pageNumber != null && pagedPracticeHistory !=null ) {
             pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedPracticeHistory.size());
         }
-
-        LOG.debug("ActivityPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
-        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
-
-        LOG.debug("after get histories from db");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTablePracticeHistory);
         try {
@@ -324,12 +301,11 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllPracticeHistoryOfUser(Session.sessionCurrentUser.getId());
-                            showPracticeHistory();
+                            updatePracticeHistory();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
-        updatePracticeHistory();
     }
 
     private void updatePracticeHistory() {
@@ -345,7 +321,6 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
 
     @Override
     protected void onDestroy() {
-        LOG.debug("ActivityPracticeHistoryList destroyd");
         super.onDestroy();
     }
 

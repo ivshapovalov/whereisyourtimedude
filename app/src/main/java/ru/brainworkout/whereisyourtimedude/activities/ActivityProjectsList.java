@@ -319,12 +319,11 @@ public class ActivityProjectsList extends AbstractActivity {
                         if (Session.sessionCurrentUser != null) {
 
                             DB.deleteAllProjectsOfUser(Session.sessionCurrentUser.getId());
-                            showProjects();
+                            updateProjects();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
-        updateProjects();
     }
 
     public void onBackPressed() {

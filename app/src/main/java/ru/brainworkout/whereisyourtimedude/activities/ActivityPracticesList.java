@@ -334,12 +334,11 @@ public class ActivityPracticesList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllPracticesOfUser(Session.sessionCurrentUser.getId());
-                            showPractices();
+                            updatePractices();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
-        updatePractices();
     }
 
     public void onBackPressed() {

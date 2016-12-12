@@ -142,7 +142,6 @@ public class ActivityPractice extends AbstractActivity {
         startActivity(intent);
     }
 
-
     private void getPropertiesFromScreen() {
 
         int mNameID = getResources().getIdentifier("etName", "id", getPackageName());

@@ -16,12 +16,12 @@ public class Alogger {
 //        if (Build.MODEL.contains("ME173")) {
 //            logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "Android/data/com.dropbox.android/files/scratch/android/timer_"+ Build.MODEL+".log");
 //        } else {
-            logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "timer_"+ Build.MODEL+".log");
-            //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "Android/data/com.dropbox.android/files/u56524148/scratch/android/timer_"+ Build.MODEL+".log");
+        logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "timer_" + Build.MODEL + ".log");
+        //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "Android/data/com.dropbox.android/files/u56524148/scratch/android/timer_"+ Build.MODEL+".log");
         //}
         //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "Android/data/com.yandex.disk/files/disk/timer_"+ Build.MODEL+".log");
-       //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "Android/data/com.dropbox.android/files/u56524148/scratch/android/timer.log");
-       //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "log/timer.log");
+        //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "Android/data/com.dropbox.android/files/u56524148/scratch/android/timer.log");
+        //logConfigurator.setFileName(Environment.getExternalStorageDirectory().toString() + File.separator + "log/timer.log");
         logConfigurator.setRootLevel(Level.ALL);
         logConfigurator.setLevel("org.apache", Level.ALL);
         logConfigurator.setUseFileAppender(true);

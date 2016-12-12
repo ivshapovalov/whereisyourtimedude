@@ -12,8 +12,6 @@ import android.support.v4.app.NotificationCompat;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import org.apache.log4j.Logger;
-
 import java.util.Calendar;
 
 import ru.brainworkout.whereisyourtimedude.R;
@@ -30,7 +28,6 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
 public class BackgroundChronometer extends Thread {
 
-    private static Logger LOG = Alogger.getLogger(BackgroundChronometer.class);
     private volatile Long globalChronometerCount = 0L;
     private volatile Long beginTimeinMillis = 0L;
     private volatile boolean ticking;
@@ -41,21 +38,15 @@ public class BackgroundChronometer extends Thread {
     private volatile boolean notificationStatusIsPlay;
 
     public BackgroundChronometer() {
-        LOG.debug("Before new thread created");
-        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
         this.setName("ThreadChrono-" + Calendar.getInstance().getTimeInMillis());
-        LOG.debug(this.getName() + " created");
     }
 
     public BackgroundChronometer(Service service) {
-
         this.service = service;
     }
 
     @Override
     protected void finalize() throws Throwable {
-        LOG.debug(this.getName() + " finalizes ");
         super.finalize();
     }
 
@@ -65,7 +56,6 @@ public class BackgroundChronometer extends Thread {
 
     public void setService(Service service) {
         this.service = service;
-        //LOG.debug(this.getName() + " set service + " + service.toString());
     }
 
     public long getGlobalChronometerCount() {
@@ -89,16 +79,12 @@ public class BackgroundChronometer extends Thread {
         }
         this.ticking = false;
         setAndSaveChronometerState(false);
-        LOG.debug(this.getName() + " paused");
     }
 
     public void resumeTicking() {
-
         createNewDetailedPracticeHistory();
         this.ticking = true;
         setAndSaveChronometerState(true);
-        LOG.debug(this.getName() + " resumed");
-
     }
 
     private void createNewDetailedPracticeHistory() {
@@ -133,21 +119,25 @@ public class BackgroundChronometer extends Thread {
     }
 
     public void setCurrentPracticeHistory(PracticeHistory currentPracticeHistory) {
-        synchronized (currentPracticeHistory) {
-            this.currentPracticeHistory = currentPracticeHistory;
+        if (currentPracticeHistory != null) {
+            synchronized (currentPracticeHistory) {
+                this.currentPracticeHistory = currentPracticeHistory;
+            }
         }
     }
 
     public DetailedPracticeHistory getCurrentDetailedPracticeHistory() {
-        synchronized (currentDetailedPracticeHistory) {
-            return currentDetailedPracticeHistory;
-        }
+            synchronized (currentDetailedPracticeHistory) {
+                return currentDetailedPracticeHistory;
+            }
     }
 
     public void setCurrentDetailedPracticeHistory(DetailedPracticeHistory currentDetailedPracticeHistory) {
-        synchronized (currentDetailedPracticeHistory) {
+        if (currentDetailedPracticeHistory != null) {
+
+            synchronized (currentDetailedPracticeHistory) {
             this.currentDetailedPracticeHistory = currentDetailedPracticeHistory;
-        }
+        }}
     }
 
     public boolean isTicking() {
@@ -157,17 +147,14 @@ public class BackgroundChronometer extends Thread {
     @Override
     public void run() {
         setAndSaveChronometerState(true);
-        LOG.debug(this.getName() + " run");
         while (!isInterrupted()) {
             tick();
         }
-        LOG.error(this.getName() + " stopped ");
         sessionBackgroundChronometer = null;
     }
 
     @Override
     public void interrupt() {
-        LOG.error(this.getName() + " interrupted ");
         pauseTicking();
         super.interrupt();
     }
@@ -191,9 +178,8 @@ public class BackgroundChronometer extends Thread {
                 synchronized (globalChronometerCount) {
                     globalChronometerCount = System.currentTimeMillis() - beginTimeinMillis;
                 }
-                // System.out.println(Common.convertMillisToStringTime(System.currentTimeMillis()) +": count - " +globalChronometerCount);
                 checkAndChangeDateIfNeeded();
-                if ((globalChronometerCount/1000) % saveInterval == 0) {
+                if ((globalChronometerCount / 1000) % saveInterval == 0) {
                     if (ticking) {
                         if (DB != null && currentPracticeHistory != null) {
                             synchronized (currentPracticeHistory) {
@@ -214,12 +200,11 @@ public class BackgroundChronometer extends Thread {
                             if (ticking) {
                                 if (sessionOptions != null) {
                                     if (service != null) {
-                                        writeMemoryInLog();
+                                        //writeMemoryInLog();
                                         updateNotification(Constants.ACTION.PLAY_ACTION);
                                     }
 
                                 } else {
-                                    LOG.error(this.getName() + " sessionOptions==null");
                                 }
                             }
                         }
@@ -227,7 +212,6 @@ public class BackgroundChronometer extends Thread {
                 }
             }
         }
-        LOG.debug(this.getName() + " out of tick");
 
     }
 
@@ -249,7 +233,7 @@ public class BackgroundChronometer extends Thread {
         activityManager.getMemoryInfo(mi);
         long availableKbs = mi.availMem / 1024;
 
-        LOG.info(this.getName() + "-Tick. Total free " + availableKbs + "Kb. Free app memory in heap " + freeSize + "Kb. Used memory in heap " + usedSize + "Kb");
+        //LOG.info(this.getName() + "-Tick. Total free " + availableKbs + "Kb. Free app memory in heap " + freeSize + "Kb. Used memory in heap " + usedSize + "Kb");
 
     }
 
@@ -410,7 +394,6 @@ public class BackgroundChronometer extends Thread {
             return notification;
 
         } catch (NullPointerException e) {
-            LOG.error(this.getName() + "-" + e.getMessage(), e);
             throw e;
         }
     }

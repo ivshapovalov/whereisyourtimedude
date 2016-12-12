@@ -5,11 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
-import org.apache.log4j.Logger;
-
 import java.util.List;
 
-import ru.brainworkout.whereisyourtimedude.common.Alogger;
 import ru.brainworkout.whereisyourtimedude.database.entities.User;
 import ru.brainworkout.whereisyourtimedude.database.manager.SQLiteDatabaseManager;
 
@@ -18,7 +15,6 @@ import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentU
 public abstract class AbstractActivity extends AppCompatActivity {
 
     protected final SQLiteDatabaseManager DB = new SQLiteDatabaseManager(this);
-    protected Logger LOG = Alogger.getLogger(this.getClass());
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

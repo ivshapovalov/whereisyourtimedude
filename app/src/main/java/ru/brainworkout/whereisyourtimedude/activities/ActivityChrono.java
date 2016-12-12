@@ -107,11 +107,11 @@ public class ActivityChrono extends AbstractActivity {
                     if (!mChronometerIsWorking && sessionBackgroundChronometer != null && sessionBackgroundChronometer.isTicking()) {
                         mChronometerIsWorking = true;
                         mChronometer.start();
-                        updateAllRows();
+                        showHistories();
                     } else if (mChronometerIsWorking && sessionBackgroundChronometer != null && !sessionBackgroundChronometer.isTicking()) {
                         mChronometerIsWorking = false;
                         mChronometer.stop();
-                        updateAllRows();
+                        showHistories();
                     }
 
                 }
@@ -151,7 +151,7 @@ public class ActivityChrono extends AbstractActivity {
             }
         }
 
-        updateAllRows();
+        showHistories();
 
         //replace .
 //        SwipeDetectorActivity swipeDetectorActivity = new SwipeDetectorActivity(ActivityChrono.this);
@@ -181,7 +181,6 @@ public class ActivityChrono extends AbstractActivity {
                 Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
         } else {
-            LOG.debug("init:before create background chronometer");
             Session.sessionBackgroundChronometer = new BackgroundChronometer();
             Session.sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
             Session.sessionBackgroundChronometer.setDB(DB);
@@ -213,7 +212,7 @@ public class ActivityChrono extends AbstractActivity {
                 Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
             }
         }
-        updateAllRows();
+        showHistories();
     }
 
     private void defineNewDayPractice(Long date) {
@@ -292,7 +291,6 @@ public class ActivityChrono extends AbstractActivity {
             return;
         }
 
-        LOG.debug("Timer start rowWork_onClick");
         blink(view, this);
         int id_practice_history = view.getId();
         startPracticeHistoryTimerOnEvent(id_practice_history);
@@ -311,11 +309,9 @@ public class ActivityChrono extends AbstractActivity {
         currentPracticeHistory.dbSave(DB);
 
         localChronometerCount = currentPracticeHistory.getDuration();
-        LOG.debug("rowWork_onClick:before start service");
 
         backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
         backgroundServiceIntent.setAction(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
-        LOG.debug("Before service start");
         startService(backgroundServiceIntent);
 
         Session.sessionBackgroundChronometer.setGlobalChronometerCount(localChronometerCount);
@@ -328,7 +324,7 @@ public class ActivityChrono extends AbstractActivity {
         mChronometer.start();
 
         updateAndPagePractices(currentDateInMillis);
-        updateAllRows();
+        showHistories();
     }
 
     private void updateAndPagePractices(long date) {
@@ -353,10 +349,12 @@ public class ActivityChrono extends AbstractActivity {
                 if (pageContent.size() != 0) {
                     pagedPracticeHistories.put(pageNumber, pageContent);
                 }
+                if (practiceHistories.size()==1) {
+                    currentPage=0;
+                }
             } else {
                 currentPage = 0;
             }
-
         }
     }
 
@@ -367,12 +365,10 @@ public class ActivityChrono extends AbstractActivity {
         }
         blink(view, this);
         if (!mChronometerIsWorking) {
-            LOG.debug("Timer start currentWork_onClick");
             //startService(backgroundServiceIntent);
             if (sessionBackgroundChronometer.isAlive()) {
                 backgroundServiceIntent = new Intent(this, BackgroundChronometerService.class);
                 backgroundServiceIntent.setAction(Constants.ACTION.SHOW_NOTIFICATION_TIMER);
-                LOG.debug("Before service start");
                 startService(backgroundServiceIntent);
                 sessionBackgroundChronometer.setCurrentPracticeHistory(currentPracticeHistory);
                 if (!sessionBackgroundChronometer.isTicking()) {
@@ -396,14 +392,15 @@ public class ActivityChrono extends AbstractActivity {
             stopTimer();
 
         }
-        updateAllRows();
+        showHistories();
     }
 
-    private void updateAllRows() {
+    private void showHistories() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
         if (pageNumber != null) {
-            pageNumber.setText(String.valueOf(currentPage) + "/" + (pagedPracticeHistories.size()-1));
+            pageNumber.setText(String.valueOf(currentPage) + "/" +
+                    (pagedPracticeHistories.size()==0?0:pagedPracticeHistories.size()-1));
         }
 
         String areaName = "";
@@ -472,7 +469,7 @@ public class ActivityChrono extends AbstractActivity {
         tableHistory.removeAllViews();
 
         List<PracticeHistory> page = pagedPracticeHistories.get(currentPage);
-        if (page == null) return;
+        if (page == null || currentPage==0) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
             TableRow mRow = CreateTableRow(num);
@@ -587,7 +584,6 @@ public class ActivityChrono extends AbstractActivity {
 //            sessionBackgroundChronometer.interrupt();
 //
 //        }
-        LOG.debug("Close ActivityChrono");
         Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
@@ -596,7 +592,6 @@ public class ActivityChrono extends AbstractActivity {
 
     @Override
     protected void onDestroy() {
-        LOG.debug("ActivityChrono away from screen ");
         super.onDestroy();
     }
 
@@ -620,7 +615,6 @@ public class ActivityChrono extends AbstractActivity {
 
     public void tvDate_onClick(View view) {
 
-        LOG.debug("TvDate on click ");
         blink(view, this);
 
         Intent intent = new Intent(ActivityChrono.this, ActivityCalendarView.class);
@@ -634,10 +628,10 @@ public class ActivityChrono extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagedPracticeHistories.size()-1) {
+        if (currentPage != pagedPracticeHistories.size()-1 && pagedPracticeHistories.size()!=0) {
             currentPage++;
         }
-        updateAllRows();
+        showHistories();
     }
 
     public void btPreviousPage_onClick(View view) {
@@ -645,7 +639,7 @@ public class ActivityChrono extends AbstractActivity {
         if (currentPage > 1) {
             currentPage--;
         }
-        updateAllRows();
+        showHistories();
     }
 
     //пока не использовать.
@@ -665,7 +659,7 @@ public class ActivityChrono extends AbstractActivity {
             long nextDateInMillis = currentDateInMillis + 3600 * 24 * 1000;
             isToday = nextDateInMillis == getBeginOfCurrentDateInMillis();
             defineNewDayPractice(nextDateInMillis);
-            updateAllRows();
+            showHistories();
 
         }
 
@@ -675,7 +669,7 @@ public class ActivityChrono extends AbstractActivity {
             long previousDateInMillis = currentDateInMillis - 3600 * 24 * 1000;
             isToday = previousDateInMillis == getBeginOfCurrentDateInMillis();
             defineNewDayPractice(previousDateInMillis);
-            updateAllRows();
+            showHistories();
         }
 
         public void onTopToBottomSwipe() {

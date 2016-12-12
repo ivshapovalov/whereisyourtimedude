@@ -56,10 +56,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        LOG.debug("ActivityDetailedPracticeHistoryList start");
-        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed_practices_history_list);
 
@@ -69,10 +65,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        LOG.debug("ActivityDetailedPracticeHistoryList before show pr history");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
-
         if (Session.sessionOptions!=null) {
             rows_number=sessionOptions.getRowNumberInLists();
         }
@@ -81,10 +73,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         getIntentParams(intent);
         pageDetailedPracticeHistory();
         showDetailedPracticeHistory();
-
-        LOG.debug("ActivityDetailedPracticeHistoryList after show pr history");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
 
         TableRow mRow = (TableRow) findViewById(idIntentDetailedPracticeHistory);
         if (mRow != null) {
@@ -97,9 +85,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         }
 
         setTitleOfActivity(this);
-        LOG.debug("ActivityDetailedPracticeHistoryList end");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
+
     }
 
     private void updateDetailedPracticeHistory() {
@@ -167,14 +153,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         if (pageNumber != null && pagedDetailedPracticeHistory !=null ) {
             pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedDetailedPracticeHistory.size());
         }
-
-        LOG.debug("ActivityDetailedPracticeHistoryList before in show pr history + sessionCurrentUser=" + sessionCurrentUser);
-        String message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
-
-        LOG.debug("after get histories from db");
-        message = Common.convertStackTraceToString(Thread.currentThread().getStackTrace());
-        LOG.debug(message);
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableDetailedPracticeHistory);
         try {
@@ -334,12 +312,11 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
                     public void onClick(DialogInterface dialog, int id) {
                         if (Session.sessionCurrentUser != null) {
                             DB.deleteAllDetailedPracticeHistoryOfUser(Session.sessionCurrentUser.getId());
-                            showDetailedPracticeHistory();
+                            updateDetailedPracticeHistory();
                         }
                     }
 
                 }).setNegativeButton("No", null).show();
-        updateDetailedPracticeHistory();
     }
 
     public void onBackPressed() {
@@ -350,7 +327,6 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
 
     @Override
     protected void onDestroy() {
-        LOG.debug("ActivityDetailedPracticeHistoryList destroyed");
         super.onDestroy();
     }
 

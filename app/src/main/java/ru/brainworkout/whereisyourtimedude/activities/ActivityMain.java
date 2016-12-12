@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import org.apache.log4j.Logger;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,7 +29,6 @@ import ru.brainworkout.whereisyourtimedude.database.entities.PracticeHistory;
 public class ActivityMain extends AbstractActivity {
 
     private static final int MAX_VERTICAL_BUTTON_COUNT = 10;
-    private static Logger LOG = Alogger.getLogger(ActivityMain.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,12 +265,9 @@ public class ActivityMain extends AbstractActivity {
                         finish();
                         if (sessionBackgroundChronometer != null
                                 && sessionBackgroundChronometer.getService() != null) {
-                            LOG.debug("Before close app");
                             sessionBackgroundChronometer.getService().stopForeground(true);
                             sessionBackgroundChronometer.getService().stopSelf();
                             sessionBackgroundChronometer.interrupt();
-                            LOG.debug("After close app");
-                            LOG.debug("Close MainActivity");
                         }
                     }
                 }).setNegativeButton("No", null).show();

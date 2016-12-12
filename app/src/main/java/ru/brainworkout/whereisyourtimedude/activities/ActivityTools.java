@@ -114,9 +114,13 @@ public class ActivityTools extends AbstractActivity {
                             sessionCurrentUser = null;
                             db.close();
 
-                            if (Session.sessionBackgroundChronometer != null && Session.sessionBackgroundChronometer.getService() != null) {
-                                sessionBackgroundChronometer.getService().stopForeground(true);
-                                sessionBackgroundChronometer.getService().stopSelf();
+                            if (Session.sessionBackgroundChronometer != null) {
+                                sessionBackgroundChronometer.setCurrentPracticeHistory(null);
+                                sessionBackgroundChronometer.setCurrentDetailedPracticeHistory(null);
+                                if (Session.sessionBackgroundChronometer.getService()!=null){
+                                    sessionBackgroundChronometer.getService().stopForeground(true);
+                                    sessionBackgroundChronometer.getService().stopSelf();
+                                }
                             }
 
                             Toast toast = Toast.makeText(ActivityTools.this,
@@ -149,9 +153,9 @@ public class ActivityTools extends AbstractActivity {
     }
 
     public void btExportImport_onClick(View view) {
-            Intent intent = new Intent(ActivityTools.this, ActivityFileExportImport.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        Intent intent = new Intent(ActivityTools.this, ActivityFileExportImport.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
 
     }
 }

@@ -655,7 +655,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
             throw new TableDoesNotContainElementException("There is no Project with id - " + id);
         } else {
             Area area = null;
-            int areaId = cursor.getInt(cursor.getColumnIndex(KEY_AREA_ID));
+            int areaId = cursor.getInt(cursor.getColumnIndex(KEY_PROJECT_ID_AREA));
             if (containsArea(areaId)) {
                 area = getArea(areaId);
             }

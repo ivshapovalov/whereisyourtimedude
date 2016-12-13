@@ -84,7 +84,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
     }
 
     public static Options getOptionsFromDB(SQLiteDatabaseManager DB, int id) {
-        return DB.getOptionsByID(id);
+        return DB.getOptions(id);
     }
 
     public static class Builder extends AbstractEntity {

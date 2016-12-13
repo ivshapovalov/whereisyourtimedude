@@ -59,7 +59,7 @@ public class ActivityTools extends AbstractActivity {
     public void btTestFill_onClick(final View view) {
         if (backgroundChronometerIsWorking()) return;
         new AlertDialog.Builder(this)
-                .setMessage("Do you want to clear the database and fille it by test data?")
+                .setMessage("Do you want to clear the database and fill it by test data?")
                 .setCancelable(false)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {

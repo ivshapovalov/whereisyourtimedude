@@ -1478,11 +1478,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         db.execSQL(tempTableOtherPracticesQuery);
         String selectQuery = "select " +
                 "1 as filter, " +
-                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + ", " +
-                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID + ", " +
-                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_DATE + ", " +
-                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_LAST_TIME + ", " +
-                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_DURATION + " from " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID_PRACTICE + " AS "+KEY_PRACTICE_HISTORY_ID_PRACTICE+", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_ID + " AS "+KEY_PRACTICE_HISTORY_ID+", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_DATE +" AS "+KEY_PRACTICE_HISTORY_DATE+", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_LAST_TIME +" AS "+KEY_PRACTICE_HISTORY_LAST_TIME+ ", " +
+                tempTableCurrentDatePractices + "." + KEY_PRACTICE_HISTORY_DURATION + " AS "+KEY_PRACTICE_HISTORY_DURATION+" from " +
                 "temp." + tempTableCurrentDatePractices + " " +
                 "union all " +
                 "select " +

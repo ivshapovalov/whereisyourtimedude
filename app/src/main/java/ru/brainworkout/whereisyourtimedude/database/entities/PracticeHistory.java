@@ -87,19 +87,17 @@ public class PracticeHistory extends AbstractEntityMultiUser implements SavingIn
 
         synchronized (this) {
             if (db.containsPracticeHistory(this.getId())) {
-                db.updatePracticeHistory((PracticeHistory) this);
+                db.updatePracticeHistory(this);
             } else {
-                db.addPracticeHistory((PracticeHistory) this);
+                db.addPracticeHistory(this);
             }
         }
-
     }
 
     @Override
     public void dbDelete(SQLiteDatabaseManager db) {
-
         if (db.containsPracticeHistory(this.getId())) {
-            db.deletePracticeHistory((PracticeHistory) this);
+            db.deletePracticeHistory(this);
         }
 
     }

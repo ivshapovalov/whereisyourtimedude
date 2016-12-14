@@ -47,7 +47,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
     private ConnectionParameters params;
     private int idIntentPracticeHistory;
 
-    private int rows_number = 0;
+    private int rowsNumber;
     private Map<Integer, List<PracticeHistory>> pagedPracticeHistory = new HashMap<>();
     private int currentPage = 1;
 
@@ -64,7 +64,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         }
 
         if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+            rowsNumber =sessionOptions.getRowNumberInLists();
         }
         Intent intent = getIntent();
         getIntentParams(intent);
@@ -98,7 +98,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
                 }
             }
             pageContent.add(practiceHistories.get(i));
-            if (pageContent.size() == rows_number) {
+            if (pageContent.size() == rowsNumber) {
                 pagedPracticeHistory.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;

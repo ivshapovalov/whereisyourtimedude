@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
@@ -44,7 +45,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     private static final String KEY_OPTIONS_SAVE_INTERVAL = "options_save_interval";
     private static final String KEY_OPTIONS_CHRONO_IS_WORKING = "options_chrono_is_working";
     private static final String KEY_OPTIONS_ROW_NUMBER_IN_LISTS = "options_rows_number_in_lists";
-
 
     // Practice
     private static final String KEY_PRACTICE_ID = "practice_id";
@@ -338,17 +338,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     public synchronized void DropDB(SQLiteDatabase db) {
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_OPTIONS);
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_AREAS);
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROJECTS);
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICES);
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PRACTICE_HISTORY);
-
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DETAILED_PRACTICE_HISTORY);
     }
 
@@ -1341,13 +1335,13 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
-    public synchronized List<PracticeHistory> getAllPracticeHistoryOfUser(int id_user) {
+    public synchronized List<PracticeHistory> getAllPracticeHistoryOfUser(int idUser) {
         List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY
-                + " WHERE " + KEY_PRACTICE_HISTORY_ID_USER + "=" + id_user +
+                + " WHERE " + KEY_PRACTICE_HISTORY_ID_USER + "=" + idUser +
                 " ORDER BY " + KEY_PRACTICE_HISTORY_DATE + " DESC ," + KEY_PRACTICE_HISTORY_LAST_TIME + " DESC";
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1379,24 +1373,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     //        first - this day practices by last time;
     //        second - previous days practices date and duration within date;
     //        third - other practices by name;
-    public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
+    public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserByDates(int idUser, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
         List<PracticeHistory> practiceHistoryList = new ArrayList<>();
-
-        // Select All Query
-//        String selectQuery = "select active_practices." + KEY_PRACTICE_ID + ",ifnull(history." + KEY_PRACTICE_HISTORY_ID + ",0),"
-//                + "ifnull(history." + KEY_PRACTICE_HISTORY_DATE + ",0),ifnull(history." + KEY_PRACTICE_HISTORY_LAST_TIME + ",0),ifnull(history."
-//                + KEY_PRACTICE_HISTORY_DURATION + ",0)"
-//                + " FROM (select " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID + " from " + TABLE_PRACTICES
-//                + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + id_user
-//                + ") as active_practices "
-//                + " left join ( select " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE
-//                + "," + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
-//                + " from " + TABLE_PRACTICE_HISTORY
-//                + " WHERE " + KEY_PRACTICE_HISTORY_DATE + ">= " + dateFrom + " AND " + KEY_PRACTICE_HISTORY_DATE + " <=" + dateTo + ") as history"
-//                + " on active_practices." + KEY_PRACTICE_ID + "=history." + KEY_PRACTICE_HISTORY_ID_PRACTICE
-//                + " order by " + KEY_PRACTICE_HISTORY_LAST_TIME + " desc";
         SQLiteDatabase db = this.getWritableDatabase();
 
         String tempTableActivePractices = "active_practices";
@@ -1408,7 +1388,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 TABLE_PRACTICES + "." + KEY_PRACTICE_ID + ", " +
                 TABLE_PRACTICES + "." + KEY_PRACTICE_NAME + " " +
                 "from " + TABLE_PRACTICES + " where " + TABLE_PRACTICES + "." + KEY_PRACTICE_IS_ACTIVE + "=1 " +
-                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + id_user + ";";
+                "AND " + TABLE_PRACTICES + "." + KEY_PRACTICE_ID_USER + "=" + idUser + ";";
         db.execSQL(tempTableActivePracticesQuery);
         String tempTableCurrentDatePracticesQuery =
                 " create temporary table " + tempTableCurrentDatePractices + " as select " +
@@ -1535,7 +1515,24 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
-    public synchronized PracticeHistory getLastPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
+    public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(int idUser, int idArea, long dateFrom, long dateTo) {
+        List<PracticeHistory> practiceHistories=getAllPracticeAndPracticeHistoryOfUserByDates(idUser,dateFrom,dateTo);
+        Iterator<PracticeHistory> iter=practiceHistories.iterator();
+        while (iter.hasNext()) {
+            PracticeHistory current=iter.next();
+            if (current.getPractice()==null
+                    || current.getPractice().getProject()==null
+                    || current.getPractice().getProject().getArea()==null
+                    || current.getPractice().getProject().getArea().getId()!=idArea
+                     ) {
+                iter.remove();
+
+            }
+        }
+        return practiceHistories;
+    }
+
+        public synchronized PracticeHistory getLastPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
 

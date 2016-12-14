@@ -44,7 +44,7 @@ public class ActivityPracticesList extends AbstractActivity {
     private int idIntentPractice;
     private ConnectionParameters params;
 
-    private int rows_number = 17;
+    private int rowsNumber;
     private Map<Integer, List<Practice>> pagedPractices = new HashMap<>();
     private int currentPage = 1;
 
@@ -62,7 +62,7 @@ public class ActivityPracticesList extends AbstractActivity {
         }
 
         if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+            rowsNumber =sessionOptions.getRowNumberInLists();
         }
 
         updatePractices();
@@ -93,7 +93,7 @@ public class ActivityPracticesList extends AbstractActivity {
                 }
             }
             pageContent.add(practices.get(i));
-            if (pageContent.size() == rows_number) {
+            if (pageContent.size() == rowsNumber) {
                 pagedPractices.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;

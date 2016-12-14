@@ -27,7 +27,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
     }
 
     public int getAreaId() {
-        if (area!=null) {
+        if (area != null) {
             return area.getId();
         } else {
             return -1;
@@ -47,13 +47,13 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
 
     @Override
     public void dbSave(SQLiteDatabaseManager db) {
-            synchronized (this) {
-                if (db.containsProject(this.getId())) {
-                    db.updateProject(this);
-                } else {
-                    db.addProject(this);
-                }
+        synchronized (this) {
+            if (db.containsProject(this.getId())) {
+                db.updateProject(this);
+            } else {
+                db.addProject(this);
             }
+        }
     }
 
     @Override
@@ -61,10 +61,7 @@ public class Project extends AbstractEntityMultiUser implements SavingIntoDB, De
 
         if (db.containsProject(this.getId())) {
             db.deleteProject(this);
-        } else {
-            db.addProject(this);
         }
-
     }
 
     public static Project getProjectFromDB(SQLiteDatabaseManager DB, int id) {

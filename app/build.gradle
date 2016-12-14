@@ -12,7 +12,7 @@ android {
         applicationId "ru.brainworkout.whereisyourtimedude"
         minSdkVersion 14
         targetSdkVersion 23
-        versionCode 10
+        versionCode 42
         versionName "4.2"
     }
 

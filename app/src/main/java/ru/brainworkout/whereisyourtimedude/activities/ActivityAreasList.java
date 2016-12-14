@@ -23,8 +23,6 @@ import ru.brainworkout.whereisyourtimedude.common.Common;
 import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Area;
-import ru.brainworkout.whereisyourtimedude.database.entities.Practice;
-import ru.brainworkout.whereisyourtimedude.database.entities.Project;
 import ru.brainworkout.whereisyourtimedude.database.manager.AndroidDatabaseManager;
 import ru.brainworkout.whereisyourtimedude.database.manager.TableDoesNotContainElementException;
 
@@ -49,7 +47,7 @@ public class ActivityAreasList extends AbstractActivity {
     private int idIntentArea;
     private ConnectionParameters params;
 
-    private int rows_number = 17;
+    private int rowsNumber;
     private Map<Integer, List<Area>> pagedAreas = new HashMap<>();
     private int currentPage = 1;
 
@@ -65,8 +63,8 @@ public class ActivityAreasList extends AbstractActivity {
             hideEditorButton(btEditor);
         }
 
-        if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+        if (Session.sessionOptions != null) {
+            rowsNumber = sessionOptions.getRowNumberInLists();
         }
 
         Intent intent = getIntent();
@@ -106,7 +104,7 @@ public class ActivityAreasList extends AbstractActivity {
                 }
             }
             pageContent.add(areas.get(i));
-            if (pageContent.size() == rows_number) {
+            if (pageContent.size() == rowsNumber) {
                 pagedAreas.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;
@@ -116,8 +114,8 @@ public class ActivityAreasList extends AbstractActivity {
             pagedAreas.put(pageNumber, pageContent);
         }
 
-        if (pagedAreas.size()==0) {
-            currentPage=0;
+        if (pagedAreas.size() == 0) {
+            currentPage = 0;
         }
     }
 
@@ -132,8 +130,8 @@ public class ActivityAreasList extends AbstractActivity {
     private void showAreas() {
 
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
-        if (pageNumber != null && pagedAreas !=null ) {
-            pageNumber.setText(String.valueOf(currentPage)+"/"+ pagedAreas.size());
+        if (pageNumber != null && pagedAreas != null) {
+            pageNumber.setText(String.valueOf(currentPage) + "/" + pagedAreas.size());
         }
 
         ScrollView sv = (ScrollView) findViewById(R.id.svTableAreas);
@@ -272,11 +270,16 @@ public class ActivityAreasList extends AbstractActivity {
         if (params != null) {
             if (params.isReceiverForChoice()) {
                 if (DB.containsArea(id)) {
-                    sessionCurrentProject.setArea(DB.getArea(id));
+                    if (params.getTransmitterActivityName().equals("ActivityProject")) {
+                        sessionCurrentProject.setArea(DB.getArea(id));
+                        intent = new Intent(getApplicationContext(), ActivityProject.class);
+                    } else if (params.getTransmitterActivityName().equals("ActivityChrono")) {
+                        intent = new Intent(getApplicationContext(), ActivityChrono.class);
+                        intent.putExtra("CurrentAreaID", id);
+                    }
                 } else {
                     throw new TableDoesNotContainElementException(String.format("Area with id ='%s' does not exists in database", id));
                 }
-                intent = new Intent(getApplicationContext(), ActivityProject.class);
                 sessionOpenActivities.pollFirst();
 
             }

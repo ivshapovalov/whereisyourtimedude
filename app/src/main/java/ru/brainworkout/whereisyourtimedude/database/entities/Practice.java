@@ -24,7 +24,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB, D
     }
 
     public int getProjectId() {
-        if (project!=null) {
+        if (project != null) {
             return project.getId();
         } else {
             return -1;
@@ -32,7 +32,7 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB, D
     }
 
     public void setProject(Project project) {
-        this.project =project;
+        this.project = project;
     }
 
     public int getIsActive() {
@@ -53,23 +53,20 @@ public class Practice extends AbstractEntityMultiUser implements SavingIntoDB, D
 
     @Override
     public void dbSave(SQLiteDatabaseManager db) {
-            synchronized (this) {
-                if (db.containsPractice(this.getId())) {
-                    db.updatePractice(this);
-                } else {
-                    db.addPractice(this);
-                }
+        synchronized (this) {
+            if (db.containsPractice(this.getId())) {
+                db.updatePractice(this);
+            } else {
+                db.addPractice(this);
             }
+        }
     }
 
     @Override
     public void dbDelete(SQLiteDatabaseManager db) {
         if (db.containsPractice(this.getId())) {
             db.deletePractice(this);
-        } else {
-            db.addPractice(this);
         }
-
     }
 
     public static Practice getPracticeFromDB(SQLiteDatabaseManager DB, int id) {

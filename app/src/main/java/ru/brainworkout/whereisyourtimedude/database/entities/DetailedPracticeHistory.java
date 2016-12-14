@@ -86,19 +86,18 @@ public class DetailedPracticeHistory extends AbstractEntityMultiUser implements 
     public void dbSave(SQLiteDatabaseManager db) {
         synchronized (this) {
             if (db.containsDetailedPracticeHistory(this.getId())) {
-                db.updateDetailedPracticeHistory((DetailedPracticeHistory) this);
+                db.updateDetailedPracticeHistory(this);
             } else {
-                db.addDetailedPracticeHistory((DetailedPracticeHistory) this);
+                db.addDetailedPracticeHistory(this);
             }
         }
-
     }
 
     @Override
     public void dbDelete(SQLiteDatabaseManager db) {
 
         if (db.containsDetailedPracticeHistory(this.getId())) {
-            db.deleteDetailedPracticeHistory((DetailedPracticeHistory) this);
+            db.deleteDetailedPracticeHistory(this);
         }
 
     }

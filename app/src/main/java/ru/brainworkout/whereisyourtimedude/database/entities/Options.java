@@ -77,10 +77,7 @@ public class Options extends AbstractEntityMultiUser implements SavingIntoDB, De
     public void dbDelete(SQLiteDatabaseManager db) {
         if (db.containsOptions(this.getId())) {
             db.deleteOptions(this);
-        } else {
-            db.addOptions(this);
         }
-
     }
 
     public static Options getOptionsFromDB(SQLiteDatabaseManager DB, int id) {

@@ -24,15 +24,8 @@
                 android:onClick="tv_AddNewPractice_onClick"
                 android:gravity="center"
                 android:layout_gravity="center"
-                android:layout_span="108"
+                android:layout_span="54"
                 />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:background="@android:drawable/progress_horizontal">
 
             <TextView
                 android:layout_width="match_parent"
@@ -42,7 +35,27 @@
                 android:onClick="tvDate_onClick"
                 android:textStyle="bold"
                 android:layout_gravity="center"
-                android:layout_span="108"/>
+                android:layout_span="54"
+                android:layout_marginLeft="5dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:background="@android:drawable/progress_horizontal"
+            android:clickable="true"
+            android:onClick="tvAreaFilter_onClick">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/tvAreaFilter"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_span="108"
+                android:clickable="true"/>
         </TableRow>
 
         <TableRow

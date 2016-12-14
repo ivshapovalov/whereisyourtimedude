@@ -61,7 +61,7 @@ public class ActivityChrono extends AbstractActivity {
     private int rows_number = 17;
     Map<Integer, List<PracticeHistory>> pagedPracticeHistories = new HashMap<>();
     private int currentPage = 1;
-
+    private Area areaFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,7 +121,10 @@ public class ActivityChrono extends AbstractActivity {
         Intent intent = getIntent();
         currentDateInMillis = intent.getLongExtra("CurrentDateInMillis", 0);
         int id_practice = intent.getIntExtra("CurrentPracticeID", -1);
-
+        int idAreaFilter = intent.getIntExtra("CurrentAreaID", -1);
+        if (DB.containsArea(idAreaFilter)) {
+            areaFilter = DB.getArea(idAreaFilter);
+        }
         if (currentDateInMillis == 0) {
             init();
         } else {
@@ -330,7 +333,12 @@ public class ActivityChrono extends AbstractActivity {
     private void updateAndPagePractices(long date) {
 
         if (sessionCurrentUser != null) {
-            practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
+            if (areaFilter == null) {
+                practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
+            } else {
+                practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(sessionCurrentUser.getId()
+                        ,areaFilter.getId(), date, date);
+            }
 
             if (practiceHistories.size() != 0) {
                 List<PracticeHistory> pageContent = new ArrayList<>();
@@ -349,8 +357,8 @@ public class ActivityChrono extends AbstractActivity {
                 if (pageContent.size() != 0) {
                     pagedPracticeHistories.put(pageNumber, pageContent);
                 }
-                if (practiceHistories.size()==1) {
-                    currentPage=0;
+                if (practiceHistories.size() == 1) {
+                    currentPage = 0;
                 }
             } else {
                 currentPage = 0;
@@ -400,7 +408,7 @@ public class ActivityChrono extends AbstractActivity {
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
         if (pageNumber != null) {
             pageNumber.setText(String.valueOf(currentPage) + "/" +
-                    (pagedPracticeHistories.size()==0?0:pagedPracticeHistories.size()-1));
+                    (pagedPracticeHistories.size() == 0 ? 0 : pagedPracticeHistories.size() - 1));
         }
 
         String areaName = "";
@@ -424,6 +432,12 @@ public class ActivityChrono extends AbstractActivity {
         TextView tvCurrentDay = (TextView) findViewById(tvIDCurrentDay);
         if (tvCurrentDay != null) {
             tvCurrentDay.setText(convertMillisToStringDate(currentDateInMillis));
+        }
+
+        int tvIDAreaFilter = getResources().getIdentifier("tvAreaFilter", "id", getPackageName());
+        TextView tvAreaFilter = (TextView) findViewById(tvIDAreaFilter);
+        if (tvAreaFilter!= null && areaFilter!=null) {
+            tvAreaFilter.setText(areaFilter.getName());
         }
 
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
@@ -469,7 +483,7 @@ public class ActivityChrono extends AbstractActivity {
         tableHistory.removeAllViews();
 
         List<PracticeHistory> page = pagedPracticeHistories.get(currentPage);
-        if (page == null || currentPage==0) return;
+        if (page == null || currentPage == 0) return;
         int currentPageSize = page.size();
         for (int num = 0; num < currentPageSize; num++) {
             TableRow mRow = CreateTableRow(num);
@@ -628,7 +642,7 @@ public class ActivityChrono extends AbstractActivity {
     public void btNextPage_onClick(View view) {
         blink(view, this);
 
-        if (currentPage != pagedPracticeHistories.size()-1 && pagedPracticeHistories.size()!=0) {
+        if (currentPage != pagedPracticeHistories.size() - 1 && pagedPracticeHistories.size() != 0) {
             currentPage++;
         }
         showHistories();
@@ -640,6 +654,30 @@ public class ActivityChrono extends AbstractActivity {
             currentPage--;
         }
         showHistories();
+    }
+
+    public void tvAreaFilter_onClick(View view) {
+
+        blink(view, this);
+
+        int id_area = 0;
+        if (areaFilter != null) {
+            id_area = areaFilter.getId();
+        }
+
+        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
+        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                .addTransmitterActivityName("ActivityChrono")
+                .isTransmitterNew(false)
+                .isTransmitterForChoice(false)
+                .addReceiverActivityName("ActivityAreasList")
+                .isReceiverNew(false)
+                .isReceiverForChoice(true)
+                .build();
+        sessionOpenActivities.push(paramsNew);
+        intent.putExtra("CurrentAreaID", id_area);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     //пока не использовать.

@@ -40,9 +40,9 @@ public class ActivityUsersList extends AbstractActivity {
     private int mWidth = 0;
     private int mTextSize = 0;
 
-    private int id_user;
+    private int idUser;
 
-    private int rows_number;
+    private int rowsNumber;
     Map<Integer, List<User>> pagedUsers = new HashMap<>();
     private int currentPage = 1;
     @Override
@@ -61,12 +61,12 @@ public class ActivityUsersList extends AbstractActivity {
         getIntentParams(intent);
 
         if (Session.sessionOptions!=null) {
-            rows_number=sessionOptions.getRowNumberInLists();
+            rowsNumber =sessionOptions.getRowNumberInLists();
         }
 
         updateUsers();
 
-        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + id_user);
+        TableRow mRow = (TableRow) findViewById(NUMBER_OF_VIEWS + idUser);
         if (mRow != null) {
             int mScrID = getResources().getIdentifier("svTableUsers", "id", getPackageName());
             ScrollView mScrollView = (ScrollView) findViewById(mScrID);
@@ -78,7 +78,7 @@ public class ActivityUsersList extends AbstractActivity {
     }
 
     private void getIntentParams(Intent intent) {
-        id_user = intent.getIntExtra("id", 0);
+        idUser = intent.getIntExtra("id", 0);
     }
 
     private void updateUsers() {
@@ -91,13 +91,13 @@ public class ActivityUsersList extends AbstractActivity {
         List<User> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < users.size(); i++) {
-            if (id_user != 0) {
-                if (users.get(i).getId() == id_user) {
+            if (idUser != 0) {
+                if (users.get(i).getId() == idUser) {
                     currentPage = pageNumber;
                 }
             }
             pageContent.add(users.get(i));
-            if (pageContent.size() == rows_number) {
+            if (pageContent.size() == rowsNumber) {
                 pagedUsers.put(pageNumber, pageContent);
                 pageContent = new ArrayList<>();
                 pageNumber++;

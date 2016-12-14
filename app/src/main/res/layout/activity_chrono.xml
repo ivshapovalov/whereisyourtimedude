@@ -45,17 +45,36 @@
             android:layout_margin="5dp"
             android:background="@android:drawable/progress_horizontal"
             android:clickable="true"
-            android:onClick="tvAreaFilter_onClick">
+            >
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/tvAreaFilter"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:layout_span="108"
-                android:clickable="true"/>
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Х"
+                android:id="@+id/textView14"
+                android:layout_span="10"
+                android:gravity="center_vertical|center"
+                android:onClick="txtAreaFilterClear_onClick"/>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/horizontalScrollView"
+                android:background="@android:drawable/progress_horizontal"
+                android:layout_span="98">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:id="@+id/lineAreaFilter"
+                    android:background="@android:drawable/progress_horizontal"
+                    >
+
+                </LinearLayout>
+            </HorizontalScrollView>
+
         </TableRow>
 
         <TableRow

@@ -26,7 +26,6 @@ public class ActivityDateTimePickerDialog extends AbstractActivity {
     private long seconds;
     private long millis;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

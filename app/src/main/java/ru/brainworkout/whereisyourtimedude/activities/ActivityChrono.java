@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Chronometer;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -339,7 +340,7 @@ public class ActivityChrono extends AbstractActivity {
                 practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(sessionCurrentUser.getId()
                         ,areaFilter.getId(), date, date);
             }
-
+            pagedPracticeHistories.clear();
             if (practiceHistories.size() != 0) {
                 List<PracticeHistory> pageContent = new ArrayList<>();
                 int pageNumber = 1;
@@ -434,10 +435,30 @@ public class ActivityChrono extends AbstractActivity {
             tvCurrentDay.setText(convertMillisToStringDate(currentDateInMillis));
         }
 
-        int tvIDAreaFilter = getResources().getIdentifier("tvAreaFilter", "id", getPackageName());
-        TextView tvAreaFilter = (TextView) findViewById(tvIDAreaFilter);
-        if (tvAreaFilter!= null && areaFilter!=null) {
-            tvAreaFilter.setText(areaFilter.getName());
+        int lineAreaFilterId = getResources().getIdentifier("lineAreaFilter", "id", getPackageName());
+        LinearLayout lineAreaFilter = (LinearLayout) findViewById(lineAreaFilterId);
+        if (lineAreaFilter!= null) {
+            List<Area> areas=DB.getAllAreasOfUser(sessionCurrentUser.getId());
+            TableRow.LayoutParams paramsTxt = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+
+            paramsTxt.setMargins(3,3,3,3);
+
+            for (Area area:areas
+                 ) {
+                TextView txtArea = new TextView(this);
+                txtArea.setText(area.getName());
+                txtArea.setId(area.getId());
+                txtArea.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        txtAreaFilter_onClick((TextView) v);
+                    }
+                });
+                txtArea.setBackgroundColor(area.getColor());
+                txtArea.setLayoutParams(paramsTxt);
+                lineAreaFilter.addView(txtArea);
+
+            }
         }
 
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
@@ -500,6 +521,31 @@ public class ActivityChrono extends AbstractActivity {
                 mScrollView.requestChildFocus(firstRow, firstRow);
             }
         }
+    }
+
+    private void txtAreaFilter_onClick(TextView view) {
+        int idArea = view.getId();
+        showFilteredHistories(idArea);
+
+    }
+
+    private void showFilteredHistories(int idArea) {
+        String message="";
+        if (DB.containsArea(idArea)) {
+            areaFilter=DB.getArea(idArea);
+            message=String.format("List filtered by Area '%s'",areaFilter.getName());
+        } else {
+            areaFilter=null;
+            message="Filter is clear";
+        }
+        updateAndPagePractices(currentDateInMillis);
+        showHistories();
+
+        Toast.makeText(ActivityChrono.this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    public void txtAreaFilterClear_onClick(View view) {
+        showFilteredHistories(-1);
     }
 
     @NonNull
@@ -656,31 +702,9 @@ public class ActivityChrono extends AbstractActivity {
         showHistories();
     }
 
-    public void tvAreaFilter_onClick(View view) {
 
-        blink(view, this);
 
-        int id_area = 0;
-        if (areaFilter != null) {
-            id_area = areaFilter.getId();
-        }
-
-        Intent intent = new Intent(getApplicationContext(), ActivityAreasList.class);
-        ConnectionParameters paramsNew = new ConnectionParameters.Builder()
-                .addTransmitterActivityName("ActivityChrono")
-                .isTransmitterNew(false)
-                .isTransmitterForChoice(false)
-                .addReceiverActivityName("ActivityAreasList")
-                .isReceiverNew(false)
-                .isReceiverForChoice(true)
-                .build();
-        sessionOpenActivities.push(paramsNew);
-        intent.putExtra("CurrentAreaID", id_area);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
-    }
-
-    //пока не использовать.
+      //пока не использовать.
     private class SwipeDetectorActivity extends AppCompatActivity implements View.OnTouchListener {
 
         private Activity activity;

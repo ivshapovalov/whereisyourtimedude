@@ -341,6 +341,7 @@ public class ActivityChrono extends AbstractActivity {
                         ,areaFilter.getId(), date, date);
             }
             pagedPracticeHistories.clear();
+            currentPage=1;
             if (practiceHistories.size() != 0) {
                 List<PracticeHistory> pageContent = new ArrayList<>();
                 int pageNumber = 1;
@@ -413,6 +414,7 @@ public class ActivityChrono extends AbstractActivity {
         }
 
         String areaName = "";
+        String projectName = "";
         int areaColor = 0;
 
         if (currentPracticeHistory != null) {
@@ -420,6 +422,7 @@ public class ActivityChrono extends AbstractActivity {
             if (practice != null) {
                 Project project = practice.getProject();
                 if (project != null) {
+                    projectName=project.getName();
                     Area area = project.getArea();
                     if (area != null) {
                         areaName = area.getName();
@@ -442,6 +445,7 @@ public class ActivityChrono extends AbstractActivity {
             TableRow.LayoutParams paramsTxt = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
 
             paramsTxt.setMargins(3,3,3,3);
+            lineAreaFilter.removeAllViews();
 
             for (Area area:areas
                  ) {
@@ -482,7 +486,7 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
         if (tvCurrentArea != null) {
-            tvCurrentArea.setText(areaName);
+            tvCurrentArea.setText(projectName +" - " + areaName);
         }
         int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
@@ -524,6 +528,7 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     private void txtAreaFilter_onClick(TextView view) {
+        blink(view, this);
         int idArea = view.getId();
         showFilteredHistories(idArea);
 
@@ -545,6 +550,7 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     public void txtAreaFilterClear_onClick(View view) {
+        blink(view, this);
         showFilteredHistories(-1);
     }
 

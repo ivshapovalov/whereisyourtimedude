@@ -103,14 +103,14 @@
                         android:layout_height="wrap_content"
                         android:text="Name"
                         android:id="@+id/tvCurrentWorkName"
-                        android:layout_span="54"/>
+                        android:layout_span="62"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Time"
                         android:id="@+id/tvCurrentWorkTime"
-                        android:layout_span="54"/>
+                        android:layout_span="62"/>
                 </TableRow>
 
                 <TableRow
@@ -124,14 +124,14 @@
                         android:layout_height="wrap_content"
                         android:text="Area"
                         android:id="@+id/tvCurrentWorkArea"
-                        android:layout_span="54"/>
+                        android:layout_span="62"/>
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Date"
                         android:id="@+id/tvCurrentWorkDate"
-                        android:layout_span="54"/>
+                        android:layout_span="62"/>
                 </TableRow>
             </TableLayout>
         </TableRow>

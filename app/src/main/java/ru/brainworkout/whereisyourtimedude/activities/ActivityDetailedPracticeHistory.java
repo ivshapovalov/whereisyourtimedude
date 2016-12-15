@@ -62,11 +62,14 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
                 sessionCurrentDetailedPracticeHistory.setTime(calendar.getTimeInMillis());
             }
         } else {
-            int id = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
-            if (DB.containsDetailedPracticeHistory(id)) {
-                sessionCurrentDetailedPracticeHistory = DB.getDetailedPracticeHistory(id);
-            } else {
-                throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
+            if (sessionCurrentDetailedPracticeHistory== null) {
+
+                int id = intent.getIntExtra("CurrentDetailedPracticeHistoryID", 0);
+                if (DB.containsDetailedPracticeHistory(id)) {
+                    sessionCurrentDetailedPracticeHistory = DB.getDetailedPracticeHistory(id);
+                } else {
+                    throw new TableDoesNotContainElementException(String.format("Practice history with id ='%s' does not exists in database", id));
+                }
             }
         }
 

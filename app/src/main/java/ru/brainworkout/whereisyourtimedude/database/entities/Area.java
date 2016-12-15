@@ -40,6 +40,7 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB, Delet
         this.color = builder.color;
     }
 
+
     @Override
     public void dbSave(SQLiteDatabaseManager db) {
         synchronized (this) {

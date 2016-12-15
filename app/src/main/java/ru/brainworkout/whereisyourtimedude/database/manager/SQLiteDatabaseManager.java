@@ -1515,7 +1515,8 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistoryList;
     }
 
-    public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(int idUser, int idArea, long dateFrom, long dateTo) {
+    public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(
+            int idUser, int idArea, long dateFrom, long dateTo) {
         List<PracticeHistory> practiceHistories=getAllPracticeAndPracticeHistoryOfUserByDates(idUser,dateFrom,dateTo);
         Iterator<PracticeHistory> iter=practiceHistories.iterator();
         while (iter.hasNext()) {

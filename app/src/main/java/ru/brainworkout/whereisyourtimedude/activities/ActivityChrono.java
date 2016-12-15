@@ -179,6 +179,7 @@ public class ActivityChrono extends AbstractActivity {
 
             if (Session.sessionBackgroundChronometer.isTicking()) {
                 localChronometerCount = Session.sessionBackgroundChronometer.getGlobalChronometerCount();
+                mChronometerIsWorking = false;
                 rowCurrentWork_onClick(new TextView(this));
             } else {
                 localChronometerCount = currentPracticeHistory.getDuration();
@@ -338,17 +339,33 @@ public class ActivityChrono extends AbstractActivity {
                 practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
             } else {
                 practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(sessionCurrentUser.getId()
-                        ,areaFilter.getId(), date, date);
+                        , areaFilter.getId(), date, date);
             }
             pagedPracticeHistories.clear();
-            currentPage=1;
+            currentPage = 1;
             if (practiceHistories.size() != 0) {
                 List<PracticeHistory> pageContent = new ArrayList<>();
                 int pageNumber = 1;
-                pageContent.add(practiceHistories.get(0));
-                pagedPracticeHistories.put(0, pageContent);
+                int initNumber = 1;
+                if (mChronometerIsWorking) {
+                    if (currentPracticeHistory.getPractice() != null &&
+                            currentPracticeHistory.getPractice() != null &&
+                            currentPracticeHistory.getPractice().getProject() != null &&
+                            currentPracticeHistory.getPractice().getProject().getArea() != null &&
+                            currentPracticeHistory.getPractice().getProject().getArea().equals(areaFilter)
+                            ) {
+
+                    } else if (areaFilter == null) {
+                        initNumber = 1;
+                    } else {
+                        initNumber = 0;
+                    }
+                } else {
+                    pageContent.add(practiceHistories.get(0));
+                    pagedPracticeHistories.put(0, pageContent);
+                }
                 pageContent = new ArrayList<>();
-                for (int i = 1; i < practiceHistories.size(); i++) {
+                for (int i = initNumber; i < practiceHistories.size(); i++) {
                     pageContent.add(practiceHistories.get(i));
                     if (pageContent.size() == rows_number) {
                         pagedPracticeHistories.put(pageNumber, pageContent);
@@ -361,6 +378,12 @@ public class ActivityChrono extends AbstractActivity {
                 }
                 if (practiceHistories.size() == 1) {
                     currentPage = 0;
+                }
+                if (!mChronometerIsWorking) {
+                    currentPracticeHistory = practiceHistories.get(0);
+                    if (sessionBackgroundChronometer != null) {
+                        sessionBackgroundChronometer.setGlobalChronometerCount(currentPracticeHistory.getDuration());
+                    }
                 }
             } else {
                 currentPage = 0;
@@ -422,7 +445,7 @@ public class ActivityChrono extends AbstractActivity {
             if (practice != null) {
                 Project project = practice.getProject();
                 if (project != null) {
-                    projectName=project.getName();
+                    projectName = project.getName();
                     Area area = project.getArea();
                     if (area != null) {
                         areaName = area.getName();
@@ -440,15 +463,15 @@ public class ActivityChrono extends AbstractActivity {
 
         int lineAreaFilterId = getResources().getIdentifier("lineAreaFilter", "id", getPackageName());
         LinearLayout lineAreaFilter = (LinearLayout) findViewById(lineAreaFilterId);
-        if (lineAreaFilter!= null) {
-            List<Area> areas=DB.getAllAreasOfUser(sessionCurrentUser.getId());
+        if (lineAreaFilter != null) {
+            List<Area> areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
             TableRow.LayoutParams paramsTxt = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
 
-            paramsTxt.setMargins(3,3,3,3);
+            paramsTxt.setMargins(3, 3, 3, 3);
             lineAreaFilter.removeAllViews();
 
-            for (Area area:areas
-                 ) {
+            for (Area area : areas
+                    ) {
                 TextView txtArea = new TextView(this);
                 txtArea.setText(area.getName());
                 txtArea.setId(area.getId());
@@ -486,7 +509,7 @@ public class ActivityChrono extends AbstractActivity {
         int tvIDCurrentArea = getResources().getIdentifier("tvCurrentWorkArea", "id", getPackageName());
         TextView tvCurrentArea = (TextView) findViewById(tvIDCurrentArea);
         if (tvCurrentArea != null) {
-            tvCurrentArea.setText(projectName +" - " + areaName);
+            tvCurrentArea.setText(projectName + " - " + areaName);
         }
         int tvIDCurrentDate = getResources().getIdentifier("tvCurrentWorkDate", "id", getPackageName());
         TextView tvCurrentDate = (TextView) findViewById(tvIDCurrentDate);
@@ -535,13 +558,13 @@ public class ActivityChrono extends AbstractActivity {
     }
 
     private void showFilteredHistories(int idArea) {
-        String message="";
+        String message = "";
         if (DB.containsArea(idArea)) {
-            areaFilter=DB.getArea(idArea);
-            message=String.format("List filtered by Area '%s'",areaFilter.getName());
+            areaFilter = DB.getArea(idArea);
+            message = String.format("List filtered by Area '%s'", areaFilter.getName());
         } else {
-            areaFilter=null;
-            message="Filter is clear";
+            areaFilter = null;
+            message = "Filter is clear";
         }
         updateAndPagePractices(currentDateInMillis);
         showHistories();
@@ -559,6 +582,7 @@ public class ActivityChrono extends AbstractActivity {
         PracticeHistory practiceHistory = pagedPracticeHistories.get(currentPage).get(i);
 
         String practiceName = "";
+        String projectName = "";
         String areaName = "";
         int areaColor = Color.WHITE;
         Practice practice = practiceHistory.getPractice();
@@ -566,6 +590,7 @@ public class ActivityChrono extends AbstractActivity {
             practiceName = practice.getName();
             Project project = practice.getProject();
             if (project != null) {
+                projectName = project.getName();
                 Area area = project.getArea();
                 if (area != null) {
                     areaName = area.getName();
@@ -610,7 +635,7 @@ public class ActivityChrono extends AbstractActivity {
         row2.setBackgroundColor(areaColor);
         row2.setLayoutParams(paramsRow);
         TextView txtArea = new TextView(this);
-        txtArea.setText(areaName);
+        txtArea.setText(projectName + " - " + areaName);
         txtArea.setLayoutParams(paramsTextView);
         row2.addView(txtArea);
 
@@ -709,8 +734,7 @@ public class ActivityChrono extends AbstractActivity {
     }
 
 
-
-      //пока не использовать.
+    //пока не использовать.
     private class SwipeDetectorActivity extends AppCompatActivity implements View.OnTouchListener {
 
         private Activity activity;

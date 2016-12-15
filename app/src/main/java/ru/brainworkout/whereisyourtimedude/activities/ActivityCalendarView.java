@@ -31,7 +31,6 @@ public class ActivityCalendarView extends AbstractActivity {
         SetParametersOnScreen();
     }
 
-
     private void getIntentParams() {
 
         Intent intent = getIntent();
@@ -96,9 +95,6 @@ public class ActivityCalendarView extends AbstractActivity {
 
         setTitleOfActivity(this);
     }
-
-
-
 
     public void btSave_onClick(final View view) {
 

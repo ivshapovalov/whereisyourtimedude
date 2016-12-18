@@ -6,9 +6,7 @@ import android.graphics.Color;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -84,7 +82,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -508,6 +506,33 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
                 lineAreaFilter.addView(txtArea);
 
             }
+
+        }
+        //drawer
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        if (navigationView != null) {
+            Menu menu = navigationView.getMenu();
+            menu.removeGroup(0);
+            List<Area> areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
+
+            if (areaFilter == null) {
+                menu.add(0, 0, 0, "NO FILTER").setChecked(true);
+            } else {
+                menu.add(0, 0, 0, "NO FILTER").setChecked(false);
+            }
+
+            for (Area area : areas)
+            {
+                if (areaFilter != null && areaFilter.equals(area)) {
+                    menu.add(0, area.getId(), 0, area.getName()).setCheckable(true).setChecked(true);
+                }
+                 else {
+                    menu.add(0, area.getId(), 0, area.getName()).setCheckable(true).setChecked(false);
+
+                }
+            }
         }
 
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
@@ -578,6 +603,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         showFilteredHistories(idArea);
 
     }
+
 
     private void showFilteredHistories(int idArea) {
         String message = "";
@@ -704,10 +730,11 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
             drawer.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+            Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
-        Intent intent = new Intent(getApplicationContext(), ActivityMain.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+
     }
 
 
@@ -868,7 +895,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.activity_chrono_menu_options, menu);
         return true;
     }
 
@@ -890,21 +917,20 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        }
+        int idArea = item.getItemId();
+        showFilteredHistories(idArea);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+//    private void menuAreaFilter_onClick(MenuItem menuItem) {
+//        int idArea = menuItem.getItemId();
+//        showFilteredHistories(idArea);
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//
+//    }
+
+
 }

@@ -12,18 +12,18 @@ android {
     }
     signingConfigs {
     }
-    compileSdkVersion 24
-    buildToolsVersion "24.0.3"
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "ru.brainworkout.whereisyourtimedude"
         minSdkVersion 14
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 42
         versionName "4.2"
     }
 //    sourceSets {
-//        main {
-//            manifest.srcFile 'src/main/AndroidManifest.xml'
+//        activity_chrono_menu_options {
+//            manifest.srcFile 'src/activity_chrono_menu_options/AndroidManifest.xml'
 //        }
 //    }
     buildTypes {
@@ -41,7 +41,7 @@ android {
                 def file = new File("Q://Dropbox/android/timer_test.apk");
                 output.outputFile = new File(file.parent, file.name.replace(".apk", "_${variant.versionName}.apk"))
 //                def manifestParser = new DefaultManifestParser();
-//                def versionName=manifestParser.getVersionName(android.sourceSets.main.manifest.srcFile);
+//                def versionName=manifestParser.getVersionName(android.sourceSets.activity_chrono_menu_options.manifest.srcFile);
 //                println (versionName);
 //                output.outputFile = new File(file.parent, file.name.replace(".apk", "-" +
 //                        versionName + ".apk"))
@@ -60,8 +60,8 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:24.2.1'
-    compile 'com.android.support:design:24.2.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
+    compile 'com.android.support:design:25.1.0'
     compile 'org.apache.poi:poi:3.15-beta2'
     compile 'com.github.QuadFlask:colorpicker:0.0.11'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'

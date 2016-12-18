@@ -18,6 +18,7 @@
         <activity
             android:name=".activities.ActivityChrono"
             android:label="@string/chrono_name"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
         </activity>
         <activity

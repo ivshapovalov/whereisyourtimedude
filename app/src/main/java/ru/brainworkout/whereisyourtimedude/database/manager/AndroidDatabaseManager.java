@@ -76,14 +76,14 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
 
 		mainscrollview = new ScrollView(AndroidDatabaseManager.this);
 
-		//the main linear layout to which all tables spinners etc will be added.In this activity every element is created dynamically  to avoid using xml file
+		//the activity_chrono_menu_options linear layout to which all tables spinners etc will be added.In this activity every element is created dynamically  to avoid using xml file
 		 mainLayout = new LinearLayout(AndroidDatabaseManager.this);
 		 mainLayout.setOrientation(LinearLayout.VERTICAL);
 		 mainLayout.setBackgroundColor(Color.WHITE);
 		 mainLayout.setScrollContainer(true);
 		mainscrollview.addView(mainLayout);
 
-		//all required layouts are created dynamically and added to the main scrollview
+		//all required layouts are created dynamically and added to the activity_chrono_menu_options scrollview
 		setContentView(mainscrollview);
 
                 //the first row of layout which has a text view and spinner
@@ -108,7 +108,7 @@ public class AndroidDatabaseManager extends Activity implements OnItemClickListe
          	 //the horizontal scroll view for table if the table content doesnot fit into screen
 		 hsv = new HorizontalScrollView(AndroidDatabaseManager.this);
 
-		 //the main table layout where the content of the sql tables will be displayed when user selects a table
+		 //the activity_chrono_menu_options table layout where the content of the sql tables will be displayed when user selects a table
     		 tableLayout = new TableLayout(AndroidDatabaseManager.this);
     		 tableLayout.setHorizontalScrollBarEnabled(true);
     		 hsv.addView(tableLayout);

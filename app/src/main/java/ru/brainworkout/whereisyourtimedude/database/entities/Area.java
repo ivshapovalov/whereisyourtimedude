@@ -52,6 +52,8 @@ public class Area extends AbstractEntityMultiUser implements SavingIntoDB, Delet
         }
     }
 
+
+
     @Override
     public void dbDelete(SQLiteDatabaseManager db) {
         if (db.containsArea(this.getId())) {

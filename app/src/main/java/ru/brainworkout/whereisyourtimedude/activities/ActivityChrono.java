@@ -69,7 +69,8 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     private int rows_number = 17;
     Map<Integer, List<PracticeHistory>> pagedPracticeHistories = new HashMap<>();
     private int currentPage = 1;
-    private Area areaFilter;
+    private Area filterArea;
+    private Project filterProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,7 +146,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         int id_practice = intent.getIntExtra("CurrentPracticeID", -1);
         int idAreaFilter = intent.getIntExtra("CurrentAreaID", -1);
         if (DB.containsArea(idAreaFilter)) {
-            areaFilter = DB.getArea(idAreaFilter);
+            filterArea = DB.getArea(idAreaFilter);
         }
         if (currentDateInMillis == 0) {
             init();
@@ -355,11 +356,16 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     private void updateAndPagePractices(long date) {
 
         if (sessionCurrentUser != null) {
-            if (areaFilter == null) {
+            if (filterArea == null && filterProject == null) {
                 practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserByDates(sessionCurrentUser.getId(), date, date);
             } else {
-                practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(sessionCurrentUser.getId()
-                        , areaFilter.getId(), date, date);
+                if (filterArea != null) {
+                    practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserAndAreaByDates(sessionCurrentUser.getId()
+                            , filterArea.getId(), date, date);
+                } else {
+                    practiceHistories = DB.getAllPracticeAndPracticeHistoryOfUserAndProjectByDates(sessionCurrentUser.getId()
+                            , filterProject.getId(), date, date);
+                }
             }
             pagedPracticeHistories.clear();
             currentPage = 1;
@@ -372,10 +378,10 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
                             currentPracticeHistory.getPractice() != null &&
                             currentPracticeHistory.getPractice().getProject() != null &&
                             currentPracticeHistory.getPractice().getProject().getArea() != null &&
-                            currentPracticeHistory.getPractice().getProject().getArea().equals(areaFilter)
+                            currentPracticeHistory.getPractice().getProject().getArea().equals(filterArea)
                             ) {
 
-                    } else if (areaFilter == null) {
+                    } else if (filterArea == null) {
                         initNumber = 1;
                     } else {
                         initNumber = 0;
@@ -510,30 +516,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         }
         //drawer
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-
-        if (navigationView != null) {
-            Menu menu = navigationView.getMenu();
-            menu.removeGroup(0);
-            List<Area> areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
-
-            if (areaFilter == null) {
-                menu.add(0, 0, 0, "NO FILTER").setChecked(true);
-            } else {
-                menu.add(0, 0, 0, "NO FILTER").setChecked(false);
-            }
-
-            for (Area area : areas)
-            {
-                if (areaFilter != null && areaFilter.equals(area)) {
-                    menu.add(0, area.getId(), 0, area.getName()).setCheckable(true).setChecked(true);
-                }
-                 else {
-                    menu.add(0, area.getId(), 0, area.getName()).setCheckable(true).setChecked(false);
-
-                }
-            }
-        }
+        updateMenuItems(-1);
 
         int tvIDCurrentName = getResources().getIdentifier("tvCurrentWorkName", "id", getPackageName());
         TextView tvCurrentName = (TextView) findViewById(tvIDCurrentName);
@@ -600,19 +583,27 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     private void txtAreaFilter_onClick(TextView view) {
         blink(view, this);
         int idArea = view.getId();
-        showFilteredHistories(idArea);
+        showFilteredHistories(idArea, -1);
 
     }
 
 
-    private void showFilteredHistories(int idArea) {
+    private void showFilteredHistories(int idArea, int idProject) {
         String message = "";
         if (DB.containsArea(idArea)) {
-            areaFilter = DB.getArea(idArea);
-            message = String.format("List filtered by Area '%s'", areaFilter.getName());
+            filterArea = DB.getArea(idArea);
+            message = String.format("List filtered by Area '%s'", filterArea.getName());
         } else {
-            areaFilter = null;
-            message = "Filter is clear";
+            filterArea = null;
+            //message = "Filter is clear";
+        }
+
+        if (DB.containsProject(idProject)) {
+            filterProject = DB.getProject(idProject);
+            message = String.format("List filtered by Project '%s'", filterProject.getName());
+        } else {
+            filterProject = null;
+            //message = "Filter is clear";
         }
         updateAndPagePractices(currentDateInMillis);
         showHistories();
@@ -622,7 +613,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
 
     public void txtAreaFilterClear_onClick(View view) {
         blink(view, this);
-        showFilteredHistories(-1);
+        showFilteredHistories(-1, -1);
     }
 
     @NonNull
@@ -917,20 +908,93 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int idArea = item.getItemId();
-        showFilteredHistories(idArea);
+        int id = item.getItemId();
+        int idGroup = item.getGroupId();
+        if (idGroup ==0) {
+            if (id == 1) {
+                updateMenuItems(1);
+            } else if (id == 2) {
+                updateMenuItems(2);
+            }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        } else {
+            NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+            Menu menu = null;
+            if (navigationView != null) {
+                menu = navigationView.getMenu();
+            }
+            if (idGroup == 1) {
+                if (menu != null) {
+                    menu.getItem(0).setChecked(true);
+                    menu.getItem(1).setChecked(false);
+                }
+                showFilteredHistories(id, -1);
+            } else {
+                if (menu != null) {
+                    menu.getItem(0).setChecked(false);
+                    menu.getItem(1).setChecked(true);                }
+                showFilteredHistories(-1, id);
+            }
+
+            DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+            drawer.closeDrawer(GravityCompat.START);
+        }
         return true;
     }
-//    private void menuAreaFilter_onClick(MenuItem menuItem) {
-//        int idArea = menuItem.getItemId();
-//        showFilteredHistories(idArea);
-//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        drawer.closeDrawer(GravityCompat.START);
-//
-//    }
+
+    private void updateMenuItems(int type) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        if (navigationView != null) {
+            Menu menu = navigationView.getMenu();
+
+            menu.removeGroup(1);
+            menu.removeGroup(2);
+
+            if (filterArea == null && filterProject == null && type == -1) {
+                menu.removeGroup(0);
+                menu.add(0, 1, 0, "AREA FILTER").setChecked(false);
+                menu.add(0, 2, 0, "PROJECT FILTER").setChecked(false);
+                return;
+            }
+
+            if (type == 1 || (filterArea != null && type != 2)) {
+                List<Area> areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
+                Menu subMenu = menu.addSubMenu(1, 1, 0, "Area filter ");
+                if (filterArea == null) {
+                    subMenu.add(1, -1, 0, "NO FILTER").setChecked(true);
+                } else {
+                    subMenu.add(1, -1, 0, "NO FILTER").setChecked(false);
+                }
+
+                for (Area area : areas) {
+                    if (filterArea != null && filterArea.equals(area)) {
+                        subMenu.add(1, area.getId(), 0, area.getName()).setCheckable(true).setChecked(true);
+                    } else {
+                        subMenu.add(1, area.getId(), 0, area.getName()).setCheckable(true).setChecked(false);
+                    }
+                }
+            } else if (type == 2 || (filterProject != null && type != 1)) {
+
+                List<Project> projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
+                Menu subMenu = menu.addSubMenu(2, 1, 0, "Project filter");
+
+                if (filterProject == null) {
+                    subMenu.add(2, -1, 0, "NO FILTER").setChecked(true);
+                } else {
+                    subMenu.add(2, -1, 0, "NO FILTER").setChecked(false);
+                }
+
+                for (Project project : projects) {
+                    if (filterProject != null && filterProject.equals(project)) {
+                        subMenu.add(2, project.getId(), 0, project.getName()).setCheckable(true).setChecked(true);
+                    } else {
+                        subMenu.add(2, project.getId(), 0, project.getName()).setCheckable(true).setChecked(false);
+                    }
+                }
+            }
+        }
+    }
 
 
 }

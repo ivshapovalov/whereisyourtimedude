@@ -1533,6 +1533,22 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return practiceHistories;
     }
 
+    public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserAndProjectByDates(
+            int idUser, int idProject, long dateFrom, long dateTo) {
+        List<PracticeHistory> practiceHistories=getAllPracticeAndPracticeHistoryOfUserByDates(idUser,dateFrom,dateTo);
+        Iterator<PracticeHistory> iter=practiceHistories.iterator();
+        while (iter.hasNext()) {
+            PracticeHistory current=iter.next();
+            if (current.getPractice()==null
+                    || current.getPractice().getProject()==null
+                    || current.getPractice().getProject().getId()!=idProject
+                    ) {
+                iter.remove();
+            }
+        }
+        return practiceHistories;
+    }
+
         public synchronized PracticeHistory getLastPracticeHistoryOfUserByDates(int id_user, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;

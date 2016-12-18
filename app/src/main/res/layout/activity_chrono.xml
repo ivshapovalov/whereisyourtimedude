@@ -1,224 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout
+<android.support.v4.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:stretchColumns="*"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".activities.ActivityChrono"
-    android:shrinkColumns="*">
+    android:fitsSystemWindows="true"
+    tools:openDrawer="start">
 
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:background="@android:drawable/progress_horizontal"
-            android:measureWithLargestChild="false">
+    <include
+        layout="@layout/activity_chrono_bar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvAddNewPractice"
-                android:textStyle="bold"
-                android:text="ADD NEW PRACTICE"
-                android:onClick="tv_AddNewPractice_onClick"
-                android:gravity="center"
-                android:layout_gravity="center"
-                android:layout_span="54"
-                />
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/activity_chrono_nav_header"
+        app:menu="@menu/activity_chrono_drawer"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvCurrentDay"
-                android:gravity="center"
-                android:onClick="tvDate_onClick"
-                android:textStyle="bold"
-                android:layout_gravity="center"
-                android:layout_span="54"
-                android:layout_marginLeft="5dp"/>
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:background="@android:drawable/progress_horizontal"
-            android:clickable="true"
-            >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Х"
-                android:id="@+id/textView14"
-                android:layout_span="10"
-                android:gravity="center_vertical|center"
-                android:onClick="txtAreaFilterClear_onClick"/>
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/horizontalScrollView"
-                android:background="@android:drawable/progress_horizontal"
-                android:layout_span="98">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:id="@+id/lineAreaFilter"
-                    android:background="@android:drawable/progress_horizontal"
-                    >
-
-                </LinearLayout>
-            </HorizontalScrollView>
-
-        </TableRow>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rowCurrentWork"
-            android:onClick="rowCurrentWork_onClick"
-            android:layout_marginTop="10dp"
-            android:background="@android:drawable/progress_horizontal"
-            android:layout_margin="5dp">
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:stretchColumns="*"
-                android:id="@+id/tableCurrentWork"
-                android:layout_weight="100">
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    >
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Name"
-                        android:id="@+id/tvCurrentWorkName"
-                        android:layout_span="5"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Time"
-                        android:id="@+id/tvCurrentWorkTime"
-                        android:layout_span="5"/>
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_span="50"
-                    android:layout_weight="100">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Area"
-                        android:id="@+id/tvCurrentWorkArea"
-                        android:layout_span="5"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Date"
-                        android:id="@+id/tvCurrentWorkDate"
-                        android:layout_span="5"/>
-                </TableRow>
-            </TableLayout>
-        </TableRow>
-
-        <ScrollView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/scrollView"
-            android:layout_margin="5dp"
-            android:fillViewport="false"
-            android:layout_weight="100">
-
-            <TableLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/tablePractices"
-                android:stretchColumns="*"
-                android:shrinkColumns="*">
-
-            </TableLayout>
-        </ScrollView>
-
-        <TableRow
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tableRow2"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:gravity="center">
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:id="@+id/button6"
-                android:onClick="btPreviousPage_onClick"
-                android:background="@android:drawable/progress_horizontal"
-                android:text="PREV"
-                android:textColor="@color/white"
-                android:layout_span="45"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                />
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/btPageNumber"
-                android:background="@android:drawable/progress_horizontal"
-                android:textColor="@color/white"
-                android:clickable="false"
-                android:layout_span="18"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:gravity="center"
-                android:layout_gravity="center_vertical"/>
-
-            <Button
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="NEXT"
-                android:id="@+id/button26"
-                android:onClick="btNextPage_onClick"
-                android:layout_gravity="center_vertical"
-                android:background="@android:drawable/progress_horizontal"
-                android:textColor="@color/white"
-                android:layout_span="45"
-                android:layout_marginLeft="1dp"
-                android:layout_marginRight="1dp"
-                android:gravity="center"/>
-        </TableRow>
-
-        <Chronometer
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mChronometer"
-            android:visibility="gone"
-            />
-
-        <Chronometer
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/mChronometerEternity"
-            android:visibility="gone"
-            />
-
-    </TableLayout>
-
+</android.support.v4.widget.DrawerLayout>

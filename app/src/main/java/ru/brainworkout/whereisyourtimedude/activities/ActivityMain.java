@@ -16,7 +16,6 @@ import ru.brainworkout.whereisyourtimedude.R;
 import static ru.brainworkout.whereisyourtimedude.common.Common.*;
 import static ru.brainworkout.whereisyourtimedude.common.Session.*;
 
-import ru.brainworkout.whereisyourtimedude.common.Alogger;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometer;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
 

@@ -15,7 +15,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/trowButtons"
-            android:background="@drawable/bt_border">
+            android:background="@drawable/bt_border"
+            android:gravity="center_horizontal">
 
             <Button
                 style="?android:attr/buttonBarButtonStyle"
@@ -76,7 +77,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tableRow3"
-            android:background="@drawable/bt_border">
+            android:background="@drawable/bt_border"
+            android:gravity="center_horizontal">
 
             <Button
                 style="?android:attr/buttonStyleSmall"

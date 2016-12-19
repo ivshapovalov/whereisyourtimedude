@@ -469,7 +469,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
         if (pageNumber != null) {
             pageNumber.setText(String.valueOf(currentPage) + "/" +
-            (pagedPracticeHistories.size() == 0 ? 0 : pagedPracticeHistories.size() - 1));
+                    (pagedPracticeHistories.size() == 0 ? 0 : pagedPracticeHistories.size() - 1));
         }
 
         String areaName = "";
@@ -496,35 +496,6 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         if (tvCurrentDay != null) {
             tvCurrentDay.setText(convertMillisToStringDate(currentDateInMillis));
         }
-
-        int lineAreaFilterId = getResources().getIdentifier("lineAreaFilter", "id", getPackageName());
-        LinearLayout lineAreaFilter = (LinearLayout) findViewById(lineAreaFilterId);
-        if (lineAreaFilter != null) {
-            List<Area> areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
-            TableRow.LayoutParams paramsTxt = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-
-            paramsTxt.setMargins(3, 3, 3, 3);
-            lineAreaFilter.removeAllViews();
-
-            for (Area area : areas
-                    ) {
-                TextView txtArea = new TextView(this);
-                txtArea.setText(area.getName());
-                txtArea.setId(area.getId());
-                txtArea.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        txtAreaFilter_onClick((TextView) v);
-                    }
-                });
-                txtArea.setBackgroundColor(area.getColor());
-                txtArea.setLayoutParams(paramsTxt);
-                lineAreaFilter.addView(txtArea);
-
-            }
-
-        }
-        //drawer
 
         updateMenuItems(-1);
 

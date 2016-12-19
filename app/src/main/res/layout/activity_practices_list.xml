@@ -9,13 +9,18 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="*">
+        android:stretchColumns="*"
+        android:shrinkColumns="*"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/trowButtons"
-            android:background="@drawable/bt_border">
+            android:background="@drawable/bt_border"
+            android:gravity="center_horizontal">
 
             <Button
                 style="?android:attr/buttonBarButtonStyle"
@@ -68,7 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/svTablePractices"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="5dp"
             android:layout_weight="100">
 
         </ScrollView>
@@ -76,7 +81,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/tableRow3"
-            android:background="@drawable/bt_border">
+            android:background="@drawable/bt_border"
+            android:gravity="center_horizontal">
 
             <Button
                 style="?android:attr/buttonStyleSmall"

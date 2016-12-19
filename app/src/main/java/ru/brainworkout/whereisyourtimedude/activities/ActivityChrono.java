@@ -983,7 +983,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
 
             if (type == 1 || (filterArea != null && type != 2)) {
                 List<Area> areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
-                Menu subMenu = menu.addSubMenu(1, 1, 0, "Area filter ");
+                Menu subMenu = menu.addSubMenu(1, 1, 0, "Select area filter ");
                 if (filterArea == null) {
                     subMenu.add(1, -1, 0, "NO FILTER").setChecked(true);
                 } else {
@@ -1000,7 +1000,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
             } else if (type == 2 || (filterProject != null && type != 1)) {
 
                 List<Project> projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
-                Menu subMenu = menu.addSubMenu(2, 1, 0, "Project filter");
+                Menu subMenu = menu.addSubMenu(2, 1, 0, "Select project filter");
 
                 if (filterProject == null) {
                     subMenu.add(2, -1, 0, "NO FILTER").setChecked(true);

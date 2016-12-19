@@ -12,8 +12,8 @@
         android:persistent="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:versionCode="42"
-        android:versionName="4.2">
+        android:versionCode="43"
+        android:versionName="4.3">
         <service android:name=".common.BackgroundChronometerService"/>
         <activity
             android:name=".activities.ActivityChrono"

@@ -9,24 +9,39 @@ import android.widget.RadioGroup;
 
 import ru.brainworkout.whereisyourtimedude.R;
 import ru.brainworkout.whereisyourtimedude.common.BackgroundChronometerService;
+import ru.brainworkout.whereisyourtimedude.common.ConnectionParameters;
 import ru.brainworkout.whereisyourtimedude.common.Constants;
 import ru.brainworkout.whereisyourtimedude.common.Session;
 import ru.brainworkout.whereisyourtimedude.database.entities.Options;
 
 import static ru.brainworkout.whereisyourtimedude.common.Common.blink;
 import static ru.brainworkout.whereisyourtimedude.common.Common.setTitleOfActivity;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionCurrentPractice;
+import static ru.brainworkout.whereisyourtimedude.common.Session.sessionOpenActivities;
 
 
 public class ActivityOptions extends AbstractActivity {
     private Options options;
+    ConnectionParameters params;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
+
+        Intent intent = getIntent();
+        getIntentParams(intent);
+
         getPreferencesFromDB();
         setPreferencesOnScreen();
         setTitleOfActivity(this);
+    }
+
+    private void getIntentParams(Intent intent) {
+        if (!sessionOpenActivities.isEmpty()) {
+            params = sessionOpenActivities.peek();
+        }
     }
 
     public void buttonSave_onClick(View view) {
@@ -69,12 +84,29 @@ public class ActivityOptions extends AbstractActivity {
                 }
             }
         }
-        this.finish();
+        closeActivity();
+
     }
 
     public void buttonCancel_onClick(final View view) {
         blink(view, this);
-        this.finish();
+        closeActivity();
+    }
+
+    private void closeActivity() {
+
+        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+        if (params != null) {
+            Class<?> myClass = null;
+            try {
+                myClass = Class.forName(getPackageName() + ".activities." + sessionOpenActivities.pollFirst().getTransmitterActivityName());
+            } catch (ClassNotFoundException | NullPointerException e) {
+                e.printStackTrace();
+            }
+            intent = new Intent(getApplicationContext(), myClass);
+        }
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private void getPreferencesFromDB() {

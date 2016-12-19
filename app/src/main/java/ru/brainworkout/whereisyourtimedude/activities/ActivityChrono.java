@@ -374,18 +374,28 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
                 int pageNumber = 1;
                 int initNumber = 1;
                 if (mChronometerIsWorking) {
-                    if (currentPracticeHistory.getPractice() != null &&
-                            currentPracticeHistory.getPractice() != null &&
-                            currentPracticeHistory.getPractice().getProject() != null &&
-                            currentPracticeHistory.getPractice().getProject().getArea() != null &&
-                            currentPracticeHistory.getPractice().getProject().getArea().equals(filterArea)
-                            ) {
-
-                    } else if (filterArea == null) {
-                        initNumber = 1;
-                    } else {
-                        initNumber = 0;
+                    if (filterArea != null) {
+                        if (currentPracticeHistory.getPractice() != null &&
+                                currentPracticeHistory.getPractice() != null &&
+                                currentPracticeHistory.getPractice().getProject() != null &&
+                                currentPracticeHistory.getPractice().getProject().getArea() != null &&
+                                currentPracticeHistory.getPractice().getProject().getArea().equals(filterArea)
+                                ) {
+                        } else {
+                            initNumber = 0;
+                        }
+                    } else if (filterProject != null) {
+                        if (currentPracticeHistory.getPractice() != null &&
+                                currentPracticeHistory.getPractice() != null &&
+                                currentPracticeHistory.getPractice().getProject() != null &&
+                                currentPracticeHistory.getPractice().getProject().equals(filterProject)
+                                ) {
+                        } else {
+                            initNumber = 0;
+                        }
                     }
+                    pageContent.add(currentPracticeHistory);
+                    pagedPracticeHistories.put(0, pageContent);
                 } else {
                     pageContent.add(practiceHistories.get(0));
                     pagedPracticeHistories.put(0, pageContent);
@@ -402,7 +412,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
                 if (pageContent.size() != 0) {
                     pagedPracticeHistories.put(pageNumber, pageContent);
                 }
-                if (practiceHistories.size() == 1) {
+                if (pagedPracticeHistories.size() == 1) {
                     currentPage = 0;
                 }
                 if (!mChronometerIsWorking) {
@@ -459,7 +469,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
         Button pageNumber = (Button) findViewById(R.id.btPageNumber);
         if (pageNumber != null) {
             pageNumber.setText(String.valueOf(currentPage) + "/" +
-                    (pagedPracticeHistories.size() == 0 ? 0 : pagedPracticeHistories.size() - 1));
+            (pagedPracticeHistories.size() == 0 ? 0 : pagedPracticeHistories.size() - 1));
         }
 
         String areaName = "";
@@ -899,6 +909,18 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_options) {
+            ConnectionParameters paramsNew = new ConnectionParameters.Builder()
+                    .addTransmitterActivityName("ActivityChrono")
+                    .isTransmitterNew(false)
+                    .isTransmitterForChoice(false)
+                    .addReceiverActivityName("ActivityOptions")
+                    .isReceiverNew(false)
+                    .isReceiverForChoice(false)
+                    .build();
+            sessionOpenActivities.push(paramsNew);
+            Intent intent = new Intent(ActivityChrono.this, ActivityOptions.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
             return true;
         }
 
@@ -910,7 +932,7 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         int idGroup = item.getGroupId();
-        if (idGroup ==0) {
+        if (idGroup == 0) {
             if (id == 1) {
                 updateMenuItems(1);
             } else if (id == 2) {
@@ -932,7 +954,8 @@ public class ActivityChrono extends AbstractActivity implements NavigationView.O
             } else {
                 if (menu != null) {
                     menu.getItem(0).setChecked(false);
-                    menu.getItem(1).setChecked(true);                }
+                    menu.getItem(1).setChecked(true);
+                }
                 showFilteredHistories(-1, id);
             }
 

@@ -95,7 +95,7 @@ public class ActivityOptions extends AbstractActivity {
 
     private void closeActivity() {
 
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticesList.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityTools.class);
         if (params != null) {
             Class<?> myClass = null;
             try {

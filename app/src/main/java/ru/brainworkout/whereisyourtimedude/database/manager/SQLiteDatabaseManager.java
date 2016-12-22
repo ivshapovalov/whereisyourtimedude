@@ -980,7 +980,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
     public synchronized List<Options> getAllOptions() {
 
-        List<Options> optionsList = new ArrayList<>();
         String selectQuery = "SELECT  "
                 + KEY_OPTIONS_ID + "," + KEY_OPTIONS_RECOVERY_ON_RUN + ","
                 + KEY_OPTIONS_DISPLAY_NOTIFICATION_TIMER + "," + KEY_OPTIONS_SAVE_INTERVAL + ","
@@ -989,7 +988,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Options> optionsList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Options options = new Options.Builder(cursor.getInt(cursor.getColumnIndex(KEY_OPTIONS_ID)))
@@ -1009,12 +1008,10 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<User> getAllUsers() {
-        List<User> users = new ArrayList<>();
         String selectQuery = "SELECT  " + KEY_USER_ID + "," + KEY_USER_NAME + "," + KEY_USER_IS_CURRENT + " FROM " + TABLE_USERS;
-
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<User> users = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 User user = new User.Builder(cursor.getInt(cursor.getColumnIndex(KEY_USER_ID)))
@@ -1031,12 +1028,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Area> getAllAreas() {
-        List<Area> areas = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_AREA_ID + "," + KEY_AREA_NAME + "," + KEY_AREA_COLOR + " FROM " + TABLE_AREAS;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Area> areas = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Area area = new Area.Builder(cursor.getInt(cursor.getColumnIndex(KEY_AREA_ID)))
@@ -1053,13 +1049,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Area> getAllAreasOfUser(int id_user) {
-        List<Area> areas = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_AREA_ID + "," + KEY_AREA_NAME + "," + KEY_AREA_COLOR + " FROM " + TABLE_AREAS
                 + " WHERE " + KEY_AREA_ID_USER + "=" + id_user + " ORDER BY " + KEY_AREA_ID;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Area> areas = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Area area = new Area.Builder(cursor.getInt(cursor.getColumnIndex(KEY_AREA_ID)))
@@ -1076,12 +1071,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Project> getAllProjects() {
-        List<Project> projects = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PROJECT_ID + "," + KEY_PROJECT_NAME + "," + KEY_PROJECT_ID_AREA + " FROM " + TABLE_PROJECTS;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Project> projects = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Area area = null;
@@ -1103,12 +1097,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Project> getAllProjectsOfUser(int id_user) {
-        List<Project> projects = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PROJECT_ID + "," + KEY_PROJECT_NAME + "," + KEY_PROJECT_ID_AREA + " FROM " + TABLE_PROJECTS
                 + " WHERE " + KEY_PROJECT_ID_USER + "=" + id_user + " ORDER BY " + KEY_PROJECT_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Project> projects = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Area area = null;
@@ -1130,12 +1123,11 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Project> getAllProjectsOfArea(int id_area) {
-        List<Project> projects = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PROJECT_ID + "," + KEY_PROJECT_NAME + "," + KEY_PROJECT_ID_AREA + " FROM " + TABLE_PROJECTS
                 + " WHERE " + KEY_PROJECT_ID_AREA + "=" + id_area + " ORDER BY " + KEY_PROJECT_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Project> projects = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Area area = null;
@@ -1157,13 +1149,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Practice> getAllPractices() {
-        List<Practice> practices = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES;
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Practice> practices = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Project project = null;
@@ -1186,12 +1177,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Practice> getAllActivePractices() {
-        List<Practice> practices = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES
                 + " WHERE " + KEY_PRACTICE_IS_ACTIVE + "=1 ORDER BY " + KEY_PRACTICE_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        List<Practice> practices = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Project project = null;
@@ -1213,14 +1204,13 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Practice> getAllActivePracticesOfUser(int id_user) {
-        List<Practice> practices = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES
                 + " WHERE " + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + KEY_PRACTICE_ID_USER + "=" + id_user +
                 " ORDER BY " + KEY_PRACTICE_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Practice> practices = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Project project = null;
@@ -1242,14 +1232,13 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<Practice> getAllActivePracticesOfProject(int id_project) {
-        List<Practice> practices = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PRACTICE_ID + "," + KEY_PRACTICE_NAME + "," + KEY_PRACTICE_ID_PROJECT + "," + KEY_PRACTICE_IS_ACTIVE
                 + " FROM " + TABLE_PRACTICES
                 + " WHERE " + KEY_PRACTICE_IS_ACTIVE + "=1 AND " + KEY_PRACTICE_ID_PROJECT + "=" + id_project +
                 " ORDER BY " + KEY_PRACTICE_ID;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<Practice> practices = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Project project = null;
@@ -1272,12 +1261,12 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<PracticeHistory> getAllPracticeHistory() {
-        List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_PRACTICE_HISTORY + " ORDER BY " + KEY_PRACTICE_HISTORY_LAST_TIME + " DESC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        List<PracticeHistory> practiceHistoryList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1301,7 +1290,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<PracticeHistory> getAllPracticeHistoryOfPractice(int id_practice) {
-        List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
@@ -1311,7 +1299,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<PracticeHistory> practiceHistoryList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1336,7 +1324,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<PracticeHistory> getAllPracticeHistoryOfUser(int idUser) {
-        List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
@@ -1346,7 +1333,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<PracticeHistory> practiceHistoryList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1376,7 +1363,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     public synchronized List<PracticeHistory> getAllPracticeAndPracticeHistoryOfUserByDates(int idUser, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
-        List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         SQLiteDatabase db = this.getWritableDatabase();
 
         String tempTableActivePractices = "active_practices";
@@ -1481,9 +1467,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
                 "ORDER BY filter; ";
         Cursor cursor = db.rawQuery(selectQuery, null);
         int id_practice_count = 0;
-        if (cursor.getCount() == 0) {
-            return practiceHistoryList;
-        }
+        List<PracticeHistory> practiceHistoryList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 int id_practice = cursor.getInt(cursor.getColumnIndex(KEY_PRACTICE_HISTORY_ID_PRACTICE));
@@ -1586,7 +1570,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     public synchronized List<PracticeHistory> getAllPracticeHistoryByDates(long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
-        List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
@@ -1596,7 +1579,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<PracticeHistory> practiceHistoryList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1623,7 +1606,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     public synchronized List<PracticeHistory> getAllPracticeHistoryOfPracticeByDates(int id_practice, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
-        List<PracticeHistory> practiceHistoryList = new ArrayList<>();
         // Select All Query
         String selectQuery = "SELECT " + KEY_PRACTICE_HISTORY_ID + "," + KEY_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_PRACTICE_HISTORY_DATE + "," + KEY_PRACTICE_HISTORY_LAST_TIME + "," + KEY_PRACTICE_HISTORY_DURATION
@@ -1634,7 +1616,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<PracticeHistory> practiceHistoryList = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1659,13 +1641,13 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<DetailedPracticeHistory> getAllDetailedPracticeHistory() {
-        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY + " ORDER BY " + KEY_DETAILED_PRACTICE_HISTORY_TIME + " DESC";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1689,7 +1671,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     }
 
     public synchronized List<DetailedPracticeHistory> getAllDetailedPracticeHistoryOfPractice(int id_practice) {
-        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
@@ -1698,7 +1679,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1721,9 +1702,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
         return detailedPracticeHistories;
     }
 
-
     public synchronized List<DetailedPracticeHistory> getAllDetailedPracticeHistoryOfUser(int id_user) {
-        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
@@ -1732,7 +1711,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1758,7 +1737,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     public synchronized List<DetailedPracticeHistory> getAllDetailedPracticeHistoryByDates(long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
-        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
@@ -1768,7 +1746,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;
@@ -1794,7 +1772,6 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
     public synchronized List<DetailedPracticeHistory> getAllDetailedPracticeHistoryOfPracticeByDates(int id_practice, long dateFrom, long dateTo) {
         dateFrom = dateFrom == 0 ? Long.MIN_VALUE : dateFrom;
         dateTo = dateTo == 0 ? Long.MAX_VALUE : dateTo;
-        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>();
         String selectQuery = "SELECT " + KEY_DETAILED_PRACTICE_HISTORY_ID + "," + KEY_DETAILED_PRACTICE_HISTORY_ID_PRACTICE + ","
                 + KEY_DETAILED_PRACTICE_HISTORY_DATE + "," + KEY_DETAILED_PRACTICE_HISTORY_TIME + "," + KEY_DETAILED_PRACTICE_HISTORY_DURATION
                 + " FROM " + TABLE_DETAILED_PRACTICE_HISTORY
@@ -1804,7 +1781,7 @@ public class SQLiteDatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
-
+        List<DetailedPracticeHistory> detailedPracticeHistories = new ArrayList<>(cursor.moveToFirst()?cursor.getCount():0);
         if (cursor.moveToFirst()) {
             do {
                 Practice practice = null;

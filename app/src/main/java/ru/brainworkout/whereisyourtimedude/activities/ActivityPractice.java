@@ -135,6 +135,7 @@ public class ActivityPractice extends AbstractActivity {
         }
         intent.putExtra("CurrentPracticeID", sessionCurrentPractice.getId());
         sessionCurrentPractice = null;
+        sessionOpenActivities.pollFirst();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

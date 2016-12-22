@@ -89,6 +89,7 @@ public class ActivityPracticeHistoryList extends AbstractActivity {
         } else {
             practiceHistories = DB.getAllPracticeHistoryOfUser(sessionCurrentUser.getId());
         }
+        pagedPracticeHistory.clear();
         List<PracticeHistory> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < practiceHistories.size(); i++) {

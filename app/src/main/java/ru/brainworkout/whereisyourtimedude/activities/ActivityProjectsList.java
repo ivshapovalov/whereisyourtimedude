@@ -96,6 +96,7 @@ public class ActivityProjectsList extends AbstractActivity {
         } else {
             projects = DB.getAllProjectsOfUser(sessionCurrentUser.getId());
         }
+        pagedProjects.clear();
         List<Project> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < projects.size(); i++) {

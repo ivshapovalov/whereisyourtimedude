@@ -95,6 +95,7 @@ public class ActivityAreasList extends AbstractActivity {
         } else {
             areas = DB.getAllAreasOfUser(sessionCurrentUser.getId());
         }
+        pagedAreas.clear();
         List<Area> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < areas.size(); i++) {

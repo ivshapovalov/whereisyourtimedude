@@ -84,6 +84,7 @@ public class ActivityPracticesList extends AbstractActivity {
         } else {
             practices = DB.getAllActivePracticesOfUser(sessionCurrentUser.getId());
         }
+        pagedPractices.clear();
         List<Practice> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < practices.size(); i++) {

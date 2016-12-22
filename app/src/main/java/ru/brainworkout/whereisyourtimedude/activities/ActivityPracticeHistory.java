@@ -148,11 +148,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
     public void btClose_onClick(final View view) {
 
         blink(view, this);
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getId());
-        sessionCurrentPracticeHistory = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity();
     }
 
 
@@ -266,18 +262,19 @@ public class ActivityPracticeHistory extends AbstractActivity {
         getPropertiesFromScreen();
         sessionCurrentPracticeHistory.dbSave(DB);
 
-        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-        intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getId());
-        sessionCurrentPracticeHistory = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity();
     }
 
     public void onBackPressed() {
 
+        closeActivity();
+    }
+
+    private void closeActivity() {
         Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
         intent.putExtra("CurrentPracticeHistoryID", sessionCurrentPracticeHistory.getId());
         sessionCurrentPracticeHistory = null;
+        sessionOpenActivities.pollFirst();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
@@ -290,10 +287,7 @@ public class ActivityPracticeHistory extends AbstractActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentPracticeHistory.dbDelete(DB);
-                        sessionCurrentPracticeHistory = null;
-                        Intent intent = new Intent(getApplicationContext(), ActivityPracticeHistoryList.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        closeActivity();
                     }
                 }).setNegativeButton("No", null).show();
     }

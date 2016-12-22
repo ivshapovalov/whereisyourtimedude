@@ -88,6 +88,7 @@ public class ActivityUsersList extends AbstractActivity {
 
     private void pageUsers() {
         List<User> users = DB.getAllUsers();
+        pagedUsers.clear();
         List<User> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < users.size(); i++) {

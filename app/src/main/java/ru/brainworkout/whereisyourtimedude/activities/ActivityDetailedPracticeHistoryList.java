@@ -99,6 +99,7 @@ public class ActivityDetailedPracticeHistoryList extends AbstractActivity {
         } else {
             areas = DB.getAllDetailedPracticeHistoryOfUser(sessionCurrentUser.getId());
         }
+        pagedDetailedPracticeHistory.clear();
         List<DetailedPracticeHistory> pageContent = new ArrayList<>();
         int pageNumber = 1;
         for (int i = 0; i < areas.size(); i++) {

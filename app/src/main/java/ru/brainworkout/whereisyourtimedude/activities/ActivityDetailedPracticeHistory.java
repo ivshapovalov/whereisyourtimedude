@@ -143,11 +143,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
     public void btClose_onClick(final View view) {
 
         blink(view, this);
-        Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
-        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getId());
-        sessionCurrentDetailedPracticeHistory = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity();
     }
 
     private void getPropertiesFromScreen() {
@@ -264,21 +260,22 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
         getPropertiesFromScreen();
         sessionCurrentDetailedPracticeHistory.dbSave(DB);
 
-        Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
-        intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getId());
-        sessionCurrentDetailedPracticeHistory = null;
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+        closeActivity();
     }
 
     public void onBackPressed() {
 
+        closeActivity();
+
+    }
+
+    private void closeActivity() {
         Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
         intent.putExtra("CurrentDetailedPracticeHistoryID", sessionCurrentDetailedPracticeHistory.getId());
         sessionCurrentDetailedPracticeHistory = null;
+        sessionOpenActivities.pollFirst();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
-
     }
 
     public void btDelete_onClick(final View view) {
@@ -290,10 +287,7 @@ public class ActivityDetailedPracticeHistory extends AbstractActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         sessionCurrentDetailedPracticeHistory.dbDelete(DB);
-                        sessionCurrentDetailedPracticeHistory = null;
-                        Intent intent = new Intent(getApplicationContext(), ActivityDetailedPracticeHistoryList.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        closeActivity();
                     }
                 }).setNegativeButton("No", null).show();
     }

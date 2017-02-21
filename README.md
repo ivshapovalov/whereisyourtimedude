@@ -1,3 +1,0 @@
-# whereisyourtimedude
-
-Chrono app

@@ -229,21 +229,21 @@ public class Common {
 
         //Areas
         for (int i = 1; i <= AREAS_COUNT; i++) {
-            Area area = new Area.Builder(DB).addName("Область  " + i).addColor(AlphabetColors().get(i)).build();
+            Area area = new Area.Builder(DB).addName("Area  " + i).addColor(AlphabetColors().get(i)).build();
             area.dbSave(DB);
         }
 
         //Projects
         for (int i = 1; i <= PROJECTS_COUNT; i++) {
             int idArea = random.nextInt(AREAS_COUNT) + 1;
-            Project project = new Project.Builder(DB).addName("Проект " + i).addArea(DB.getArea(idArea)).build();
+            Project project = new Project.Builder(DB).addName("Project " + i).addArea(DB.getArea(idArea)).build();
             project.dbSave(DB);
         }
 
         //Practices
         for (int i = 1; i <= PRACTICES_COUNT; i++) {
             int idProject = random.nextInt(PROJECTS_COUNT) + 1;
-            Practice practice = new Practice.Builder(DB).addName("Занятие " + i).addProject(DB.getProject(idProject)).addIsActive(1).build();
+            Practice practice = new Practice.Builder(DB).addName("Activity " + i).addProject(DB.getProject(idProject)).addIsActive(1).build();
             practice.dbSave(DB);
         }
 

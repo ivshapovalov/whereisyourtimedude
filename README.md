@@ -21,7 +21,7 @@ Options | Export/Import
 
 Users |
 ------------------------ | ---------------
-<img src="https://cloud.githubusercontent.com/assets/16797864/23164232/39a87d46-f847-11e6-87bc-6559929b7775.png" width="240" height="400"> | <img src="https://cloud.githubusercontent.com/assets/16797864/23115267/dfc5b278-f754-11e6-91c2-be038b6b4e6f.png" width="240" height="400">
+<img src="https://cloud.githubusercontent.com/assets/16797864/23164232/39a87d46-f847-11e6-87bc-6559929b7775.png" width="240" height="400"> |
 
 
 Areas | Area

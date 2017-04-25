@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-    tools:context=".activities.ActivityUsersList">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".activities.ActivityUsersList">
 
     <TableLayout
         android:layout_width="match_parent"
@@ -12,107 +11,108 @@
         android:stretchColumns="*">
 
         <TableRow
+            android:id="@+id/trowButtons"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/trowButtons"
             android:background="@drawable/bt_border"
             android:gravity="center_horizontal">
 
             <Button
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:id="@+id/buttonHome"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="8"
+                android:background="@drawable/bt_border"
                 android:onClick="buttonHome_onClick"
-                android:layout_span="8"
-                android:background="@drawable/bt_border"
                 android:text="HOME"
-                android:textColor="@color/text_color" />
-
-            <Button
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="ADD"
-                android:id="@+id/btUsersAdd"
-                android:onClick="btUsersAdd_onClick"
-                android:layout_span="8"
-                android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
-
-            <Button
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/btClear"
-                android:onClick="btClear_onClick"
-                android:layout_span="10"
-                android:text="CLEAR"
-                android:background="@drawable/bt_border"
                 android:textColor="@color/text_color"/>
 
             <Button
+                android:id="@+id/btUsersAdd"
+                style="?android:attr/buttonBarButtonStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btUsersDBEditor"
-                android:onClick="btEdit_onClick"
-                android:layout_span="10"
-                android:text="EDITOR"
-                style="?android:attr/buttonBarButtonStyle"
+                android:layout_span="8"
                 android:background="@drawable/bt_border"
-                android:textColor="@color/text_color" />
+                android:onClick="btUsersAdd_onClick"
+                android:text="ADD"
+                android:textColor="@color/text_color"/>
+
+            <Button
+                android:id="@+id/btClear"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="10"
+                android:background="@drawable/bt_border"
+                android:onClick="btClear_onClick"
+                android:text="CLEAR"
+                android:textColor="@color/text_color"/>
+
+            <Button
+                android:id="@+id/btUsersDBEditor"
+                style="?android:attr/buttonBarButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_span="10"
+                android:background="@drawable/bt_border"
+                android:onClick="btEdit_onClick"
+                android:text="EDITOR"
+                android:textColor="@color/text_color"/>
 
 
         </TableRow>
 
         <ScrollView
+            android:id="@+id/svTableUsers"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/svTableUsers"
             android:layout_marginTop="20dp"
             android:layout_weight="100">
 
         </ScrollView>
+
         <TableRow
+            android:id="@+id/tableRow3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/tableRow3"
             android:background="@drawable/bt_border"
             android:gravity="center_horizontal">
 
             <Button
+                android:id="@+id/button25"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/button25"
-                android:onClick="btPreviousPage_onClick"
                 android:layout_span="14"
                 android:background="@drawable/bt_border"
+                android:onClick="btPreviousPage_onClick"
                 android:text="PREVIOUS PAGE"
                 android:textColor="@color/text_color"/>
 
             <Button
+                android:id="@+id/btPageNumber"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/btPageNumber"
-                android:layout_span="8"
                 android:layout_gravity="center_vertical"
+                android:layout_span="8"
                 android:background="@drawable/bt_border"
-                android:textColor="@color/text_color"
+                android:clickable="false"
                 android:nestedScrollingEnabled="true"
-                android:clickable="false"/>
+                android:textColor="@color/text_color"/>
 
             <Button
+                android:id="@+id/button28"
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="NEXT PAGE"
-                android:id="@+id/button28"
-                android:onClick="btNextPage_onClick"
-                android:layout_span="14"
                 android:layout_gravity="center_vertical"
+                android:layout_span="14"
                 android:background="@drawable/bt_border"
+                android:onClick="btNextPage_onClick"
+                android:text="NEXT PAGE"
                 android:textColor="@color/text_color"/>
         </TableRow>
 
